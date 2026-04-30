@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>Busca Leads del GrupoQ a partir de un termino unico que puede ser nombre, telefono o email del cliente. Detecta automaticamente el tipo de input via formula y aplica el filtro adecuado. Retorna outputStatus FOUND_ONE / FOUND_MULTIPLE / FOUND_NONE para que Agentforce encadene la accion siguiente Resumir Lead Grupo Q o pida desambiguacion al vendedor.</description>
+    <environments>Default</environments>
+    <interviewLabel>Buscar Lead Grupo Q {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Buscar Lead Grupo Q FA</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <runInMode>DefaultMode</runInMode>
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Decision_Validate_Input</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+
+    <variables>
+        <description>Termino de busqueda proporcionado por el vendedor.</description>
+        <name>inputSearchTerm</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Estado de la busqueda. FOUND_ONE / FOUND_MULTIPLE / FOUND_NONE / NEEDS_INPUT.</description>
+        <name>outputStatus</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <description>Cantidad de Leads encontrados.</description>
+        <name>outputResultCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <scale>0</scale>
+    </variables>
+    <variables>
+        <description>Mensaje legible para el agente.</description>
+        <name>outputMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <description>Lead Id unico cuando FOUND_ONE.</description>
+        <name>outputLeadId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <description>Lista formateada de Leads cuando hay multiples resultados.</description>
+        <name>outputLeadList</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <description>Tipo de busqueda detectado.</description>
+        <name>varSearchType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Termino normalizado.</description>
+        <name>varSearchNormalized</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Coleccion de Leads encontrados.</description>
+        <name>varLeadCollection</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Lead</objectType>
+    </variables>
+    <variables>
+        <description>Lead actual en el loop.</description>
+        <name>varCurrentLead</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Lead</objectType>
+    </variables>
+    <variables>
+        <description>Indice del loop.</description>
+        <name>varLoopIndex</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <description>Conteo de registros pre-decision.</description>
+        <name>varRecordCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+        <value>
+            <numberValue>0.0</numberValue>
+        </value>
+    </variables>
+    <variables>
+        <description>Patron LIKE nombre.</description>
+        <name>varNamePattern</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Patron LIKE telefono.</description>
+        <name>varPhonePattern</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <formulas>
+        <name>fIsEmail</name>
+        <dataType>Boolean</dataType>
+        <expression>CONTAINS({!inputSearchTerm}, "@")</expression>
+    </formulas>
+    <formulas>
+        <name>fIsPhone</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(
+            NOT({!fIsEmail}),
+            ISNUMBER(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE({!inputSearchTerm}, " ", ""), "-", ""), "(", ""), ")", ""), "+", ""), ".", ""), "/", "")),
+            LEN(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE({!inputSearchTerm}, " ", ""), "-", ""), "(", ""), ")", ""), "+", ""), ".", ""), "/", "")) &gt;= 7
+        )</expression>
+    </formulas>
+    <formulas>
+        <name>fNormalizeEmail</name>
+        <dataType>String</dataType>
+        <expression>LOWER(TRIM({!inputSearchTerm}))</expression>
+    </formulas>
+    <formulas>
+        <name>fNormalizePhone</name>
+        <dataType>String</dataType>
+        <expression>RIGHT(
+            SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE({!inputSearchTerm}, " ", ""), "-", ""), "(", ""), ")", ""), "+", ""), ".", ""), "/", ""),
+            4
+        )</expression>
+    </formulas>
+    <formulas>
+        <name>fNormalizeName</name>
+        <dataType>String</dataType>
+        <expression>UPPER(TRIM({!inputSearchTerm}))</expression>
+    </formulas>
+    <formulas>
+        <description>Linea formateada de cada Lead en la lista.</description>
+        <name>fFormatLeadLine</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!varLoopIndex}) &amp; ". " &amp;
+            IF(ISBLANK({!varCurrentLead.FirstName}), "", {!varCurrentLead.FirstName} &amp; " ") &amp;
+            IF(ISBLANK({!varCurrentLead.LastName}), "", {!varCurrentLead.LastName}) &amp;
+            IF(NOT(ISBLANK({!varCurrentLead.Phone})), " | Tel: ..." &amp; RIGHT({!varCurrentLead.Phone}, 4), "") &amp;
+            IF(NOT(ISBLANK({!varCurrentLead.MobilePhone})), " | Movil: ..." &amp; RIGHT({!varCurrentLead.MobilePhone}, 4), "") &amp;
+            IF(NOT(ISBLANK({!varCurrentLead.Email})), " | Email: " &amp; LEFT({!varCurrentLead.Email}, 3) &amp; "***@" &amp; IF(CONTAINS({!varCurrentLead.Email}, "@"), MID({!varCurrentLead.Email}, FIND("@", {!varCurrentLead.Email}) + 1, 30), ""), "") &amp;
+            IF(NOT(ISBLANK({!varCurrentLead.Status})), " | Status: " &amp; {!varCurrentLead.Status}, "") &amp;
+            "; "</expression>
+    </formulas>
+
+    <decisions>
+        <name>Decision_Validate_Input</name>
+        <label>Validar Input</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <defaultConnector>
+            <targetReference>Decision_Detect_Type</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Input valido</defaultConnectorLabel>
+        <rules>
+            <name>Input_Vacio</name>
+            <conditionLogic>1 OR 2</conditionLogic>
+            <conditions>
+                <leftValueReference>inputSearchTerm</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>inputSearchTerm</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue></stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Needs_Input</targetReference>
+            </connector>
+            <label>Input vacio</label>
+        </rules>
+    </decisions>
+
+    <assignments>
+        <name>Assign_Needs_Input</name>
+        <label>Assign Needs Input</label>
+        <locationX>50</locationX>
+        <locationY>254</locationY>
+        <assignmentItems>
+            <assignToReference>outputStatus</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>NEEDS_INPUT</stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputMessage</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>Necesito al menos un dato del cliente para buscar el Lead. Puede ser nombre, telefono o correo electronico.</stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputResultCount</assignToReference>
+            <operator>Assign</operator>
+            <value><numberValue>0.0</numberValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <decisions>
+        <name>Decision_Detect_Type</name>
+        <label>Detectar Tipo</label>
+        <locationX>314</locationX>
+        <locationY>254</locationY>
+        <defaultConnector>
+            <targetReference>Assign_Search_By_Name</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Buscar por Nombre</defaultConnectorLabel>
+        <rules>
+            <name>Es_Email</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>fIsEmail</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><booleanValue>true</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Assign_Search_By_Email</targetReference></connector>
+            <label>Es Email</label>
+        </rules>
+        <rules>
+            <name>Es_Telefono</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>fIsPhone</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><booleanValue>true</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Assign_Search_By_Phone</targetReference></connector>
+            <label>Es Telefono</label>
+        </rules>
+    </decisions>
+
+    <assignments>
+        <name>Assign_Search_By_Email</name>
+        <label>Assign Search By Email</label>
+        <locationX>50</locationX>
+        <locationY>374</locationY>
+        <connector><targetReference>Get_Leads_By_Email</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>varSearchType</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>EMAIL</stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>varSearchNormalized</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>fNormalizeEmail</elementReference></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Assign_Search_By_Phone</name>
+        <label>Assign Search By Phone</label>
+        <locationX>314</locationX>
+        <locationY>374</locationY>
+        <connector><targetReference>Get_Leads_By_Phone</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>varSearchType</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>PHONE</stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>varSearchNormalized</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>fNormalizePhone</elementReference></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Assign_Search_By_Name</name>
+        <label>Assign Search By Name</label>
+        <locationX>578</locationX>
+        <locationY>374</locationY>
+        <connector><targetReference>Get_Leads_By_Name</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>varSearchType</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>NAME</stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>varSearchNormalized</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>fNormalizeName</elementReference></value>
+        </assignmentItems>
+    </assignments>
+
+    <recordLookups>
+        <name>Get_Leads_By_Email</name>
+        <label>Get Leads By Email</label>
+        <locationX>50</locationX>
+        <locationY>494</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Loop_Count_Records</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Email</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>varSearchNormalized</elementReference></value>
+        </filters>
+        <filters>
+            <field>IsConverted</field>
+            <operator>EqualTo</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Lead</object>
+        <outputReference>varLeadCollection</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>FirstName</queriedFields>
+        <queriedFields>LastName</queriedFields>
+        <queriedFields>Phone</queriedFields>
+        <queriedFields>MobilePhone</queriedFields>
+        <queriedFields>Email</queriedFields>
+        <queriedFields>Status</queriedFields>
+        <queriedFields>Company</queriedFields>
+        <queriedFields>CreatedDate</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>false</storeOutputAutomatically>
+    </recordLookups>
+
+    <recordLookups>
+        <name>Get_Leads_By_Phone</name>
+        <label>Get Leads By Phone</label>
+        <locationX>314</locationX>
+        <locationY>494</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Loop_Count_Records</targetReference></connector>
+        <filterLogic>(1 OR 2) AND 3</filterLogic>
+        <filters>
+            <field>Phone</field>
+            <operator>Contains</operator>
+            <value><elementReference>varSearchNormalized</elementReference></value>
+        </filters>
+        <filters>
+            <field>MobilePhone</field>
+            <operator>Contains</operator>
+            <value><elementReference>varSearchNormalized</elementReference></value>
+        </filters>
+        <filters>
+            <field>IsConverted</field>
+            <operator>EqualTo</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Lead</object>
+        <outputReference>varLeadCollection</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>FirstName</queriedFields>
+        <queriedFields>LastName</queriedFields>
+        <queriedFields>Phone</queriedFields>
+        <queriedFields>MobilePhone</queriedFields>
+        <queriedFields>Email</queriedFields>
+        <queriedFields>Status</queriedFields>
+        <queriedFields>Company</queriedFields>
+        <queriedFields>CreatedDate</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>false</storeOutputAutomatically>
+    </recordLookups>
+
+    <recordLookups>
+        <name>Get_Leads_By_Name</name>
+        <label>Get Leads By Name</label>
+        <locationX>578</locationX>
+        <locationY>494</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Loop_Count_Records</targetReference></connector>
+        <filterLogic>(1 OR 2) AND 3</filterLogic>
+        <filters>
+            <field>LastName</field>
+            <operator>Contains</operator>
+            <value><elementReference>varSearchNormalized</elementReference></value>
+        </filters>
+        <filters>
+            <field>FirstName</field>
+            <operator>Contains</operator>
+            <value><elementReference>varSearchNormalized</elementReference></value>
+        </filters>
+        <filters>
+            <field>IsConverted</field>
+            <operator>EqualTo</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Lead</object>
+        <outputReference>varLeadCollection</outputReference>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>FirstName</queriedFields>
+        <queriedFields>LastName</queriedFields>
+        <queriedFields>Phone</queriedFields>
+        <queriedFields>MobilePhone</queriedFields>
+        <queriedFields>Email</queriedFields>
+        <queriedFields>Status</queriedFields>
+        <queriedFields>Company</queriedFields>
+        <queriedFields>CreatedDate</queriedFields>
+        <queriedFields>OwnerId</queriedFields>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>false</storeOutputAutomatically>
+    </recordLookups>
+
+    <loops>
+        <name>Loop_Count_Records</name>
+        <label>Loop Count Records</label>
+        <locationX>314</locationX>
+        <locationY>614</locationY>
+        <collectionReference>varLeadCollection</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Assign_Increment_Count</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Decision_Result_Count</targetReference>
+        </noMoreValuesConnector>
+        <assignNextValueToReference>varCurrentLead</assignNextValueToReference>
+    </loops>
+
+    <assignments>
+        <name>Assign_Increment_Count</name>
+        <label>Assign Increment Count</label>
+        <locationX>176</locationX>
+        <locationY>734</locationY>
+        <connector><targetReference>Loop_Count_Records</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>varRecordCount</assignToReference>
+            <operator>Add</operator>
+            <value><numberValue>1.0</numberValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <decisions>
+        <name>Decision_Result_Count</name>
+        <label>Decision Result Count</label>
+        <locationX>450</locationX>
+        <locationY>734</locationY>
+        <defaultConnector>
+            <targetReference>Assign_Found_Multiple_Init</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Multiples (2+)</defaultConnectorLabel>
+        <rules>
+            <name>Cero_Resultados</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varRecordCount</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><numberValue>0.0</numberValue></rightValue>
+            </conditions>
+            <connector><targetReference>Assign_Found_None</targetReference></connector>
+            <label>Cero resultados</label>
+        </rules>
+        <rules>
+            <name>Un_Resultado</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varRecordCount</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><numberValue>1.0</numberValue></rightValue>
+            </conditions>
+            <connector><targetReference>Assign_Found_One</targetReference></connector>
+            <label>Un resultado</label>
+        </rules>
+    </decisions>
+
+    <assignments>
+        <name>Assign_Found_None</name>
+        <label>Assign Found None</label>
+        <locationX>50</locationX>
+        <locationY>854</locationY>
+        <assignmentItems>
+            <assignToReference>outputStatus</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>FOUND_NONE</stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputResultCount</assignToReference>
+            <operator>Assign</operator>
+            <value><numberValue>0.0</numberValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputMessage</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>No encontre ningun Lead que coincida con ese dato. Verifica si el nombre, telefono o correo esta correcto, o intenta con otra informacion.</stringValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Assign_Found_One</name>
+        <label>Assign Found One</label>
+        <locationX>314</locationX>
+        <locationY>854</locationY>
+        <assignmentItems>
+            <assignToReference>outputStatus</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>FOUND_ONE</stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputResultCount</assignToReference>
+            <operator>Assign</operator>
+            <value><numberValue>1.0</numberValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputLeadId</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>varLeadCollection[0].Id</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputMessage</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>Encontre un Lead que coincide. Procediendo con el resumen.</stringValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Assign_Found_Multiple_Init</name>
+        <label>Assign Found Multiple Init</label>
+        <locationX>578</locationX>
+        <locationY>854</locationY>
+        <connector><targetReference>Loop_Format_Leads</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>outputStatus</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>FOUND_MULTIPLE</stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputLeadList</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue></stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>varLoopIndex</assignToReference>
+            <operator>Assign</operator>
+            <value><numberValue>0.0</numberValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <loops>
+        <name>Loop_Format_Leads</name>
+        <label>Loop Format Leads</label>
+        <locationX>578</locationX>
+        <locationY>974</locationY>
+        <collectionReference>varLeadCollection</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Assign_Append_Lead</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Assign_Found_Multiple_Final</targetReference>
+        </noMoreValuesConnector>
+        <assignNextValueToReference>varCurrentLead</assignNextValueToReference>
+    </loops>
+
+    <assignments>
+        <name>Assign_Append_Lead</name>
+        <label>Assign Append Lead</label>
+        <locationX>314</locationX>
+        <locationY>1094</locationY>
+        <connector><targetReference>Loop_Format_Leads</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>varLoopIndex</assignToReference>
+            <operator>Add</operator>
+            <value><numberValue>1.0</numberValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputLeadList</assignToReference>
+            <operator>Add</operator>
+            <value><elementReference>fFormatLeadLine</elementReference></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Assign_Found_Multiple_Final</name>
+        <label>Assign Found Multiple Final</label>
+        <locationX>578</locationX>
+        <locationY>1094</locationY>
+        <assignmentItems>
+            <assignToReference>outputResultCount</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>varLoopIndex</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputMessage</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>Encontre varios Leads que coinciden. Pedi al vendedor que confirme cual es presentando esta lista y solicitando dato adicional. Lista de candidatos: </stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>outputMessage</assignToReference>
+            <operator>Add</operator>
+            <value><elementReference>outputLeadList</elementReference></value>
+        </assignmentItems>
+    </assignments>
+
+</Flow>
