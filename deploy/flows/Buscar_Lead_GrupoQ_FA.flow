@@ -105,7 +105,7 @@
         <assignmentItems>
             <assignToReference>outputLeadId</assignToReference>
             <operator>Assign</operator>
-            <value><elementReference>varLeadCollection[0].Id</elementReference></value>
+            <value><elementReference>varCurrentLead.Id</elementReference></value>
         </assignmentItems>
         <assignmentItems>
             <assignToReference>outputMessage</assignToReference>
