@@ -315,7 +315,7 @@
             IF(NOT(ISBLANK({!varCurrentLead.Phone})), " | Tel: ..." &amp; RIGHT({!varCurrentLead.Phone}, 4), "") &amp;
             IF(NOT(ISBLANK({!varCurrentLead.MobilePhone})), " | Movil: ..." &amp; RIGHT({!varCurrentLead.MobilePhone}, 4), "") &amp;
             IF(NOT(ISBLANK({!varCurrentLead.Email})), " | Email: " &amp; LEFT({!varCurrentLead.Email}, 3) &amp; "***@" &amp; IF(CONTAINS({!varCurrentLead.Email}, "@"), MID({!varCurrentLead.Email}, FIND("@", {!varCurrentLead.Email}) + 1, 30), ""), "") &amp;
-            IF(NOT(ISBLANK({!varCurrentLead.Status})), " | Status: " &amp; {!varCurrentLead.Status}, "") &amp;
+            IF(NOT(ISBLANK(TEXT({!varCurrentLead.Status}))), " | Status: " &amp; TEXT({!varCurrentLead.Status}), "") &amp;
             "; "</expression>
     </formulas>
 
