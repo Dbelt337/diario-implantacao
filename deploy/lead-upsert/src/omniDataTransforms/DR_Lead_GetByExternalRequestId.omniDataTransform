@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GrupoQ - DataRaptor Extract: busca Lead existente por ExternalRequestId__c (idempotency key).
+  Retorna existingLead vazio (sem Id) quando nao ha duplicado; a IP usa isso para rotear
+  CB_IsDuplicate vs CB_CreateLead.
+  DESVIO/NOTA: schema OmniDataTransform montado por melhor conhecimento; validar via Check-Only.
+-->
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>DR_Lead_GetByExternalRequestId</name>
+    <type>Extract</type>
+    <inputType>JSON</inputType>
+    <outputType>JSON</outputType>
+    <description>Dado um externalRequestId, retorna o Lead existente (Id) se ja houver, para checagem de idempotencia.</description>
+    <isActive>true</isActive>
+    <versionNumber>1</versionNumber>
+    <expectedInputJson>{"externalRequestId":"550e8400-e29b-41d4-a716-446655440000"}</expectedInputJson>
+    <expectedOutputJson>{"existingLead":{"Id":"00Q5h00000EXISTING"}}</expectedOutputJson>
+    <omniDataTransformItem>
+        <name>Filter_Lead</name>
+        <transformItemSequence>1</transformItemSequence>
+        <inputObjectName>Lead</inputObjectName>
+        <inputObjectQuerySequence>1</inputObjectQuerySequence>
+        <filterData>ExternalRequestId__c</filterData>
+        <filterValue>=:externalRequestId</filterValue>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Out_Id</name>
+        <transformItemSequence>2</transformItemSequence>
+        <inputObjectName>Lead</inputObjectName>
+        <interfaceFieldApiName>Id</interfaceFieldApiName>
+        <outputFieldName>existingLead:Id</outputFieldName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Out_CreatedDate</name>
+        <transformItemSequence>3</transformItemSequence>
+        <inputObjectName>Lead</inputObjectName>
+        <interfaceFieldApiName>CreatedDate</interfaceFieldApiName>
+        <outputFieldName>existingLead:CreatedDate</outputFieldName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Out_ChannelCode</name>
+        <transformItemSequence>4</transformItemSequence>
+        <inputObjectName>Lead</inputObjectName>
+        <interfaceFieldApiName>ChannelCode__c</interfaceFieldApiName>
+        <outputFieldName>existingLead:ChannelCode__c</outputFieldName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+</OmniDataTransform>

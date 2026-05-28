@@ -2,38 +2,36 @@
 # GrupoQ Lead Upsert API - OpenAPI Contract Artifact
 # ----------------------------------------------------------------------------
 # This is a GENERATED documentation/contract artifact for GrupoQ Sales
-# Automotive. It describes the Salesforce Apex REST endpoint
-# /grupoq/v1/lead/upsert handed to consuming channels (MuleSoft, SFCC, etc.).
+# Automotive. It describes the NATIVE OmniStudio Standard Runtime Integration
+# Procedure REST endpoint (no custom Apex) handed to consuming channels
+# (MuleSoft, SFCC, Cyberfuel, etc.).
 # It has NOT been auto-validated against a live Salesforce org and may drift
-# from the deployed Apex implementation. Treat it as a reference contract.
+# from the deployed Integration Procedure. Treat it as a reference contract.
 # ============================================================================
 openapi: 3.0.3
 info:
   title: GrupoQ Lead Upsert API
   version: 1.0.0
   description: >-
-    Idempotent lead upsert endpoint exposed as a Salesforce Apex REST service
-    for GrupoQ (automotive group). Consuming channels (MuleSoft social
-    connectors, SFCC web, Cyberfuel, LexisNexis, showroom and inbot) post a
-    lead payload together with an idempotency key (externalRequestId). The
-    service creates a Lead, optional line items and optional preferred
-    sellers, deduplicating replays via the idempotency key.
+    Endpoint nativo OmniStudio para criação/upsert de Leads. Implementado como
+    Integration Procedure declarativa, sem Apex custom.
 servers:
-  - url: https://grupoq.my.salesforce.com/services/apexrest
+  - url: https://grupoq.my.salesforce.com
     description: Production org
-  - url: https://grupoq--devsales.sandbox.my.salesforce.com/services/apexrest
+  - url: https://grupoq--devsales.sandbox.my.salesforce.com
     description: DevSales sandbox org
 security:
   - oauth2: []
 paths:
-  /grupoq/v1/lead/upsert:
+  /services/apexrest/omnistudio/v1/integrationprocedure/GrupoQ_LeadUpsert/:
     post:
       operationId: upsertLead
-      summary: Upsert a lead (idempotent)
+      summary: Upsert a lead (native OmniStudio Integration Procedure)
       description: >-
-        Creates or replays a lead upsert. The externalRequestId acts as the
-        idempotency key: repeated calls with the same value return a duplicate
-        response instead of creating a new Lead.
+        Invokes the native OmniStudio Integration Procedure that creates or
+        replays a lead upsert. The endpoint always returns HTTP 200; the
+        "status" field in the JSON body discriminates success, duplicate
+        (idempotency replay) and error outcomes.
       requestBody:
         required: true
         content:
@@ -41,38 +39,18 @@ paths:
             schema:
               $ref: '#/components/schemas/LeadUpsertRequest'
       responses:
-        '201':
-          description: Lead created successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
         '200':
           description: >-
-            Duplicate / idempotency replay. The externalRequestId was already
-            processed; no new Lead was created.
+            The Integration Procedure executed. The response body is one of
+            SuccessResponse, DuplicateResponse or ErrorResponse, discriminated
+            by the "status" field.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DuplicateResponse'
-        '400':
-          description: Validation failed (missing or invalid fields).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: A referenced dealer/preferred seller was not found.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Internal server error.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                oneOf:
+                  - $ref: '#/components/schemas/SuccessResponse'
+                  - $ref: '#/components/schemas/DuplicateResponse'
+                  - $ref: '#/components/schemas/ErrorResponse'
 components:
   securitySchemes:
     oauth2:
@@ -162,12 +140,7 @@ components:
           example: '123456789'
         linhaNegocio:
           type: string
-          description: Business line picklist.
-          enum:
-            - Autos
-            - Motos
-            - Frotas
-            - Usados
+          description: Business line.
           example: Autos
     LineItem:
       type: object
@@ -273,12 +246,10 @@ components:
           enum:
             - VALIDATION_FAILED
             - DEALER_NOT_FOUND
-            - INTERNAL_ERROR
-            - IDEMPOTENCY_REPLAY
           example: VALIDATION_FAILED
         errorMessage:
           type: string
-          example: Field 'lastName' is required
+          example: 'Required fields missing: lastName, leadSource'
         externalRequestId:
           type: string
           format: uuid

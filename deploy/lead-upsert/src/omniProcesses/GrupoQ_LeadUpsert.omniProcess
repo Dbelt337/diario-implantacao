@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GrupoQ Sales Automotive - Integration Procedure IP_Lead_Upsert (OmniStudio Standard Runtime).
+  Type=GrupoQ  SubType=LeadUpsert.
+  Exposta nativamente como REST (sem Apex):
+    POST /services/apexrest/omnistudio/v1/integrationprocedure/GrupoQ_LeadUpsert/
+
+  Fluxo declarativo (valida, deduplica, cria, responde):
+    [0,1] SV_ValidateRequiredFields      isValid + missingFields
+    [0,2] CB_ValidationFailed            isValid == false -> RA_ValidationErrorResponse
+    [0,3] DR_Lead_GetByExternalRequestId lookup idempotencia (so roda se isValid == true)
+    [0,4] CB_IsDuplicate                 existingLead.Id != null -> RA_DuplicateResponse
+    [0,5] CB_CreateLead                  isValid == true AND existingLead.Id == null
+            -> resolve dealer + insert Lead/LineItems/PreferredSellers + RA_SuccessResponse
+  Conditional Blocks sao mutuamente exclusivos => exatamente uma Response Action dispara por execucao.
+
+  DESVIO/NOTA IMPORTANTE: a estrutura exata do metadado OmniProcess (campos de OmniProcessElement,
+  serializacao do propertySetConfig, fullName canonico) NAO pode ser confirmada contra a doc oficial
+  Salesforce neste ambiente de build (developer.salesforce.com / help.salesforce.com retornam 403).
+  Segue o melhor conhecimento do schema Standard Runtime (Spring '26). ANTES do deploy real:
+    1) rodar Workbench Deploy em Check-Only (Single Package + Rollback On Error);
+    2) se necessario, abrir uma vez no OmniStudio Designer para recompilar/normalizar o propertySetConfig;
+    3) confirmar o fullName: o canonico costuma ser Type_SubType_Language (ex: GrupoQ_LeadUpsert_Procedure).
+       Aqui o member/uniqueName segue o briefing v2 (GrupoQ_LeadUpsert) por consistencia com o package.xml
+       e com o endpoint REST nativo {Type}_{SubType}.
+-->
+<OmniProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>IP_Lead_Upsert</name>
+    <uniqueName>GrupoQ_LeadUpsert</uniqueName>
+    <type>GrupoQ</type>
+    <subType>LeadUpsert</subType>
+    <language>Procedure</language>
+    <omniProcessType>Integration Procedure</omniProcessType>
+    <isIntegrationProcedure>true</isIntegrationProcedure>
+    <isActive>false</isActive>
+    <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+    <isWebCompEnabled>false</isWebCompEnabled>
+    <versionNumber>1</versionNumber>
+    <description>Integration Procedure para criacao/upsert de Leads via canais externos. GrupoQ Sales Automotive.</description>
+    <propertySetConfig>{"rollbackOnError":true,"includeAllActionsInResponse":false,"chainableQueriesLimit":50,"chainableCpuLimit":2000,"ttlMinutes":5,"description":"Integration Procedure para criacao/upsert de Leads via canais externos. GrupoQ Sales Automotive.","designerCustomizationType":"Lightning"}</propertySetConfig>
+
+    <!-- ================= [0,1] Validacao ================= -->
+    <omniProcessElements>
+        <name>SV_ValidateRequiredFields</name>
+        <type>Set Values</type>
+        <level>0</level>
+        <sequenceNumber>1</sequenceNumber>
+        <isActive>true</isActive>
+        <propertySetConfig>{"label":"SV ValidateRequiredFields","elementValueMap":{"isValid":"=AND(NOT(ISBLANK(%lead:lastName%)),NOT(ISBLANK(%lead:company%)),NOT(ISBLANK(%lead:leadSource%)),NOT(ISBLANK(%externalRequestId%)),NOT(ISBLANK(%channelCode%)))","missingFields":"=TRIM(IF(ISBLANK(%lead:lastName%),'lastName ','') + IF(ISBLANK(%lead:company%),'company ','') + IF(ISBLANK(%lead:leadSource%),'leadSource ','') + IF(ISBLANK(%externalRequestId%),'externalRequestId ','') + IF(ISBLANK(%channelCode%),'channelCode ',''))"}}</propertySetConfig>
+    </omniProcessElements>
+
+    <!-- ================= [0,2] Falha de validacao ================= -->
+    <omniProcessElements>
+        <name>CB_ValidationFailed</name>
+        <type>Conditional Block</type>
+        <level>0</level>
+        <sequenceNumber>2</sequenceNumber>
+        <isActive>true</isActive>
+        <propertySetConfig>{"label":"CB ValidationFailed","executionConditionalFormula":"%SV_ValidateRequiredFields:isValid% == false"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>RA_ValidationErrorResponse</name>
+        <type>Response Action</type>
+        <level>1</level>
+        <sequenceNumber>1</sequenceNumber>
+        <parentElementName>CB_ValidationFailed</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"responseJSON":{"status":"error","errorCode":"VALIDATION_FAILED","errorMessage":"=CONCAT('Required fields missing: ',%SV_ValidateRequiredFields:missingFields%)","externalRequestId":"%externalRequestId%"}}</propertySetConfig>
+    </omniProcessElements>
+
+    <!-- ================= [0,3] Lookup idempotencia (so se valido) ================= -->
+    <omniProcessElements>
+        <name>DR_Lead_GetByExternalRequestId</name>
+        <type>DataRaptor Extract Action</type>
+        <level>0</level>
+        <sequenceNumber>3</sequenceNumber>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_Lead_GetByExternalRequestId","inputMap":{"externalRequestId":"%externalRequestId%"},"outputJSONNode":"DR_Lead_GetByExternalRequestId","responseJSONPath":"","executionConditionalFormula":"%SV_ValidateRequiredFields:isValid% == true"}</propertySetConfig>
+    </omniProcessElements>
+
+    <!-- ================= [0,4] Duplicado ================= -->
+    <omniProcessElements>
+        <name>CB_IsDuplicate</name>
+        <type>Conditional Block</type>
+        <level>0</level>
+        <sequenceNumber>4</sequenceNumber>
+        <isActive>true</isActive>
+        <propertySetConfig>{"label":"CB IsDuplicate","executionConditionalFormula":"%DR_Lead_GetByExternalRequestId:existingLead:Id% != null"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>RA_DuplicateResponse</name>
+        <type>Response Action</type>
+        <level>1</level>
+        <sequenceNumber>1</sequenceNumber>
+        <parentElementName>CB_IsDuplicate</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"responseJSON":{"status":"duplicate","leadId":null,"externalRequestId":"%externalRequestId%","isDuplicate":true,"duplicateLeadId":"%DR_Lead_GetByExternalRequestId:existingLead:Id%"}}</propertySetConfig>
+    </omniProcessElements>
+
+    <!-- ================= [0,5] Criacao ================= -->
+    <omniProcessElements>
+        <name>CB_CreateLead</name>
+        <type>Conditional Block</type>
+        <level>0</level>
+        <sequenceNumber>5</sequenceNumber>
+        <isActive>true</isActive>
+        <propertySetConfig>{"label":"CB CreateLead","executionConditionalFormula":"%SV_ValidateRequiredFields:isValid% == true AND %DR_Lead_GetByExternalRequestId:existingLead:Id% == null"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DR_BusinessProfile_Extract</name>
+        <type>DataRaptor Extract Action</type>
+        <level>1</level>
+        <sequenceNumber>1</sequenceNumber>
+        <parentElementName>CB_CreateLead</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_BusinessProfile_GetByCode","inputMap":{"dealerCode":"%preferredSellers:0:dealerCode%"},"outputJSONNode":"DR_BusinessProfile_Extract","responseJSONPath":"","executionConditionalFormula":"COUNT(%preferredSellers%) > 0"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DPA_Lead_Insert</name>
+        <type>DataRaptor Post Action</type>
+        <level>1</level>
+        <sequenceNumber>2</sequenceNumber>
+        <parentElementName>CB_CreateLead</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_Lead_Insert","inputMap":{"lead":"%lead%","externalRequestId":"%externalRequestId%","channelCode":"%channelCode%"},"outputJSONNode":"DPA_Lead_Insert"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DPA_LeadLineItem_Insert</name>
+        <type>DataRaptor Post Action</type>
+        <level>1</level>
+        <sequenceNumber>3</sequenceNumber>
+        <parentElementName>CB_CreateLead</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_LeadLineItem_Insert","inputMap":{"lineItems":"%lineItems%","leadId":"%DPA_Lead_Insert:insertedLead:Id%"},"outputJSONNode":"DPA_LeadLineItem_Insert","executionConditionalFormula":"COUNT(%lineItems%) > 0"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DPA_LeadPreferredSeller_Insert</name>
+        <type>DataRaptor Post Action</type>
+        <level>1</level>
+        <sequenceNumber>4</sequenceNumber>
+        <parentElementName>CB_CreateLead</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_LeadPreferredSeller_Insert","inputMap":{"preferredSellers":"%preferredSellers%","leadId":"%DPA_Lead_Insert:insertedLead:Id%","resolvedAccountId":"%DR_BusinessProfile_Extract:resolvedAccountId%"},"outputJSONNode":"DPA_LeadPreferredSeller_Insert","executionConditionalFormula":"COUNT(%preferredSellers%) > 0"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>RA_SuccessResponse</name>
+        <type>Response Action</type>
+        <level>1</level>
+        <sequenceNumber>5</sequenceNumber>
+        <parentElementName>CB_CreateLead</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"responseJSON":{"status":"success","leadId":"%DPA_Lead_Insert:insertedLead:Id%","externalRequestId":"%externalRequestId%","createdLineItems":"=COUNT(%DPA_LeadLineItem_Insert:insertedLineItems%)","createdPreferredSellers":"=COUNT(%DPA_LeadPreferredSeller_Insert:insertedPreferredSellers%)","isDuplicate":false,"duplicateLeadId":null}}</propertySetConfig>
+    </omniProcessElements>
+
+</OmniProcess>

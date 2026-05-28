@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "GrupoQ Lead Upsert API",
-    "description": "Generated contract artifact for the GrupoQ Salesforce Apex REST lead upsert endpoint. Not auto-validated against a live org.",
+    "description": "Generated contract artifact for the GrupoQ native OmniStudio Integration Procedure lead upsert endpoint. Not auto-validated against a live org.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -16,7 +16,7 @@
   },
   "variable": [
     {
-      "key": "baseUrl",
+      "key": "instanceUrl",
       "value": "https://grupoq--devsales.sandbox.my.salesforce.com",
       "type": "string"
     },
@@ -35,13 +35,12 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('status code is 201', function () {",
-              "  pm.response.to.have.status(201);",
+              "pm.test('status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
               "});",
-              "pm.test('response has leadId', function () {",
+              "pm.test('status is success', function () {",
               "  var json = pm.response.json();",
-              "  pm.expect(json).to.have.property('leadId');",
-              "  pm.expect(json.leadId).to.not.be.empty;",
+              "  pm.expect(json.status).to.eql('success');",
               "});"
             ]
           }
@@ -60,17 +59,18 @@
           "raw": "{\n  \"externalRequestId\": \"11111111-1111-4111-8111-111111111111\",\n  \"channelCode\": \"MULESOFT_FB\",\n  \"lead\": {\n    \"lastName\": \"Pérez\",\n    \"company\": \"Persona Física\",\n    \"leadSource\": \"WEB_FORLAND_LURUCA\"\n  }\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/services/apexrest/grupoq/v1/lead/upsert",
+          "raw": "{{instanceUrl}}/services/apexrest/omnistudio/v1/integrationprocedure/GrupoQ_LeadUpsert/",
           "host": [
-            "{{baseUrl}}"
+            "{{instanceUrl}}"
           ],
           "path": [
             "services",
             "apexrest",
-            "grupoq",
+            "omnistudio",
             "v1",
-            "lead",
-            "upsert"
+            "integrationprocedure",
+            "GrupoQ_LeadUpsert",
+            ""
           ]
         }
       }
@@ -83,11 +83,12 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('status code is 201', function () {",
-              "  pm.response.to.have.status(201);",
+              "pm.test('status code is 200', function () {",
+              "  pm.response.to.have.status(200);",
               "});",
-              "pm.test('response has leadId', function () {",
+              "pm.test('status is success and leadId present', function () {",
               "  var json = pm.response.json();",
+              "  pm.expect(json.status).to.eql('success');",
               "  pm.expect(json).to.have.property('leadId');",
               "  pm.expect(json.leadId).to.not.be.empty;",
               "});"
@@ -108,17 +109,18 @@
           "raw": "{\n  \"externalRequestId\": \"22222222-2222-4222-8222-222222222222\",\n  \"channelCode\": \"MULESOFT_IG\",\n  \"lead\": {\n    \"firstName\": \"Juan\",\n    \"lastName\": \"Pérez\",\n    \"email\": \"juan.perez@email.com\",\n    \"phone\": \"+50688887777\",\n    \"company\": \"Persona Física\",\n    \"leadSource\": \"WEB_FORLAND_LURUCA\",\n    \"country\": \"CR\",\n    \"industry\": \"Automotive\",\n    \"description\": \"Interesado en Forland T3\",\n    \"nationalId\": \"123456789\",\n    \"linhaNegocio\": \"Autos\"\n  },\n  \"lineItems\": [\n    {\n      \"productCode\": \"FORLAND-T3-2026\",\n      \"quantity\": 1,\n      \"vehicleConditionPicklist\": \"New\"\n    }\n  ],\n  \"preferredSellers\": [\n    {\n      \"dealerCode\": \"C105-LURUCA-FORLAND\",\n      \"preferredSellerType\": \"Dealer\"\n    }\n  ]\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/services/apexrest/grupoq/v1/lead/upsert",
+          "raw": "{{instanceUrl}}/services/apexrest/omnistudio/v1/integrationprocedure/GrupoQ_LeadUpsert/",
           "host": [
-            "{{baseUrl}}"
+            "{{instanceUrl}}"
           ],
           "path": [
             "services",
             "apexrest",
-            "grupoq",
+            "omnistudio",
             "v1",
-            "lead",
-            "upsert"
+            "integrationprocedure",
+            "GrupoQ_LeadUpsert",
+            ""
           ]
         }
       }
@@ -134,9 +136,10 @@
               "pm.test('status code is 200', function () {",
               "  pm.response.to.have.status(200);",
               "});",
-              "pm.test('response isDuplicate is true', function () {",
+              "pm.test('duplicate replay', function () {",
               "  var json = pm.response.json();",
               "  pm.expect(json.isDuplicate).to.eql(true);",
+              "  pm.expect(json.status).to.eql('duplicate');",
               "});"
             ]
           }
@@ -155,17 +158,18 @@
           "raw": "{\n  \"externalRequestId\": \"11111111-1111-4111-8111-111111111111\",\n  \"channelCode\": \"MULESOFT_FB\",\n  \"lead\": {\n    \"lastName\": \"Pérez\",\n    \"company\": \"Persona Física\",\n    \"leadSource\": \"WEB_FORLAND_LURUCA\"\n  }\n}"
         },
         "url": {
-          "raw": "{{baseUrl}}/services/apexrest/grupoq/v1/lead/upsert",
+          "raw": "{{instanceUrl}}/services/apexrest/omnistudio/v1/integrationprocedure/GrupoQ_LeadUpsert/",
           "host": [
-            "{{baseUrl}}"
+            "{{instanceUrl}}"
           ],
           "path": [
             "services",
             "apexrest",
-            "grupoq",
+            "omnistudio",
             "v1",
-            "lead",
-            "upsert"
+            "integrationprocedure",
+            "GrupoQ_LeadUpsert",
+            ""
           ]
         }
       }
