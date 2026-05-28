@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Lead.ExternalRequestId__c</members>
+        <members>Lead.ChannelCode__c</members>
+        <members>Lead.NationalId__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>GrupoQ_LeadUpsert_IP_Lead_Upsert</members>
+        <name>OmniProcess</name>
+    </types>
+    <types>
+        <members>DR_BusinessProfile_GetByCode</members>
+        <members>DR_Lead_Upsert</members>
+        <members>DR_LeadLineItem_Insert</members>
+        <members>DR_LeadPreferredSeller_Insert</members>
+        <name>OmniDataTransform</name>
+    </types>
+    <types>
+        <members>GrupoQ_Lead_Upsert_API</members>
+        <members>GrupoQ_Lead_Upsert_API_Test</members>
+        <name>ApexClass</name>
+    </types>
+    <version>62.0</version>
+</Package>

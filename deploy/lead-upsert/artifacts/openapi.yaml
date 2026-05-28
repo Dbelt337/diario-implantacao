@@ -1,0 +1,285 @@
+# ============================================================================
+# GrupoQ Lead Upsert API - OpenAPI Contract Artifact
+# ----------------------------------------------------------------------------
+# This is a GENERATED documentation/contract artifact for GrupoQ Sales
+# Automotive. It describes the Salesforce Apex REST endpoint
+# /grupoq/v1/lead/upsert handed to consuming channels (MuleSoft, SFCC, etc.).
+# It has NOT been auto-validated against a live Salesforce org and may drift
+# from the deployed Apex implementation. Treat it as a reference contract.
+# ============================================================================
+openapi: 3.0.3
+info:
+  title: GrupoQ Lead Upsert API
+  version: 1.0.0
+  description: >-
+    Idempotent lead upsert endpoint exposed as a Salesforce Apex REST service
+    for GrupoQ (automotive group). Consuming channels (MuleSoft social
+    connectors, SFCC web, Cyberfuel, LexisNexis, showroom and inbot) post a
+    lead payload together with an idempotency key (externalRequestId). The
+    service creates a Lead, optional line items and optional preferred
+    sellers, deduplicating replays via the idempotency key.
+servers:
+  - url: https://grupoq.my.salesforce.com/services/apexrest
+    description: Production org
+  - url: https://grupoq--devsales.sandbox.my.salesforce.com/services/apexrest
+    description: DevSales sandbox org
+security:
+  - oauth2: []
+paths:
+  /grupoq/v1/lead/upsert:
+    post:
+      operationId: upsertLead
+      summary: Upsert a lead (idempotent)
+      description: >-
+        Creates or replays a lead upsert. The externalRequestId acts as the
+        idempotency key: repeated calls with the same value return a duplicate
+        response instead of creating a new Lead.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadUpsertRequest'
+      responses:
+        '201':
+          description: Lead created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '200':
+          description: >-
+            Duplicate / idempotency replay. The externalRequestId was already
+            processed; no new Lead was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuplicateResponse'
+        '400':
+          description: Validation failed (missing or invalid fields).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: A referenced dealer/preferred seller was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      description: OAuth 2.0 Client Credentials flow against the Salesforce token endpoint.
+      flows:
+        clientCredentials:
+          tokenUrl: https://grupoq.my.salesforce.com/services/oauth2/token
+          scopes: {}
+  schemas:
+    LeadUpsertRequest:
+      type: object
+      required:
+        - externalRequestId
+        - channelCode
+        - lead
+      properties:
+        externalRequestId:
+          type: string
+          format: uuid
+          description: UUID v4 idempotency key. Repeated values trigger a duplicate response.
+          example: 550e8400-e29b-41d4-a716-446655440000
+        channelCode:
+          type: string
+          description: Originating channel.
+          enum:
+            - MULESOFT_FB
+            - MULESOFT_IG
+            - MULESOFT_LI
+            - MULESOFT_GOOGLE
+            - MULESOFT_TIKTOK
+            - SFCC_WEB
+            - CYBERFUEL_WEB
+            - LEXISNEXIS
+            - SHOWROOM
+            - INBOT
+          example: MULESOFT_FB
+        lead:
+          $ref: '#/components/schemas/LeadObject'
+        lineItems:
+          type: array
+          description: Optional product line items. May be empty or absent.
+          items:
+            $ref: '#/components/schemas/LineItem'
+        preferredSellers:
+          type: array
+          description: Optional preferred sellers. May be empty or absent.
+          items:
+            $ref: '#/components/schemas/PreferredSeller'
+    LeadObject:
+      type: object
+      required:
+        - lastName
+        - company
+        - leadSource
+      properties:
+        firstName:
+          type: string
+          example: Juan
+        lastName:
+          type: string
+          example: Pérez
+        email:
+          type: string
+          format: email
+          example: juan.perez@email.com
+        phone:
+          type: string
+          example: '+50688887777'
+        company:
+          type: string
+          example: Persona Física
+        leadSource:
+          type: string
+          example: WEB_FORLAND_LURUCA
+        country:
+          type: string
+          example: CR
+        industry:
+          type: string
+          example: Automotive
+        description:
+          type: string
+          example: Interesado en Forland T3
+        nationalId:
+          type: string
+          example: '123456789'
+        linhaNegocio:
+          type: string
+          description: Business line picklist.
+          enum:
+            - Autos
+            - Motos
+            - Frotas
+            - Usados
+          example: Autos
+    LineItem:
+      type: object
+      required:
+        - productCode
+      properties:
+        productCode:
+          type: string
+          example: FORLAND-T3-2026
+        quantity:
+          type: integer
+          minimum: 1
+          example: 1
+        vehicleConditionPicklist:
+          type: string
+          example: New
+    PreferredSeller:
+      type: object
+      required:
+        - dealerCode
+      properties:
+        dealerCode:
+          type: string
+          example: C105-LURUCA-FORLAND
+        preferredSellerType:
+          type: string
+          example: Dealer
+    SuccessResponse:
+      type: object
+      required:
+        - status
+        - leadId
+        - externalRequestId
+        - isDuplicate
+      properties:
+        status:
+          type: string
+          enum:
+            - success
+          example: success
+        leadId:
+          type: string
+          example: 00Q5h00000ABCDEF
+        externalRequestId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        createdLineItems:
+          type: integer
+          example: 1
+        createdPreferredSellers:
+          type: integer
+          example: 1
+        isDuplicate:
+          type: boolean
+          example: false
+        duplicateLeadId:
+          type: string
+          nullable: true
+          example: null
+    DuplicateResponse:
+      type: object
+      required:
+        - status
+        - externalRequestId
+        - isDuplicate
+        - duplicateLeadId
+      properties:
+        status:
+          type: string
+          enum:
+            - duplicate
+          example: duplicate
+        leadId:
+          type: string
+          nullable: true
+          example: null
+        externalRequestId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000
+        isDuplicate:
+          type: boolean
+          example: true
+        duplicateLeadId:
+          type: string
+          example: 00Q5h00000EXISTING
+    ErrorResponse:
+      type: object
+      required:
+        - status
+        - errorCode
+        - errorMessage
+        - externalRequestId
+      properties:
+        status:
+          type: string
+          enum:
+            - error
+          example: error
+        errorCode:
+          type: string
+          enum:
+            - VALIDATION_FAILED
+            - DEALER_NOT_FOUND
+            - INTERNAL_ERROR
+            - IDEMPOTENCY_REPLAY
+          example: VALIDATION_FAILED
+        errorMessage:
+          type: string
+          example: Field 'lastName' is required
+        externalRequestId:
+          type: string
+          format: uuid
+          example: 550e8400-e29b-41d4-a716-446655440000

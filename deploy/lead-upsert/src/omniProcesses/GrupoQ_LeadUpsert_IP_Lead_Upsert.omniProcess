@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GrupoQ Sales Automotive - Integration Procedure IP_Lead_Upsert (OmniStudio Standard Runtime).
+  Type=GrupoQ  SubType=LeadUpsert  =>  Apex invoca como 'GrupoQ_LeadUpsert'.
+  Roteamento por eventName: fullUpsert (default), createLeadOnly, addLineItems, addPreferredSellers.
+
+  DESVIO/NOTA IMPORTANTE: a estrutura exata do metadado OmniProcess (campos de OmniProcessElement,
+  formato do propertySetConfig serializado, e o fullName canonico) NAO pode ser confirmada contra a
+  doc oficial Salesforce neste ambiente de build (developer.salesforce.com retorna 403). Este arquivo
+  segue o melhor conhecimento do schema Standard Runtime (Spring '26). ANTES do deploy real:
+    1) rodar Workbench Deploy em modo Check-Only (Single Package + Rollback On Error);
+    2) se necessario, abrir uma vez no OmniStudio Designer para recompilar/normalizar o propertySetConfig;
+    3) confirmar o fullName: o canonico costuma ser Type_SubType_Language (ex: GrupoQ_LeadUpsert_Procedure).
+       Aqui o member/uniqueName segue o briefing (GrupoQ_LeadUpsert_IP_Lead_Upsert) por consistencia com o package.xml.
+-->
+<OmniProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>IP_Lead_Upsert</name>
+    <uniqueName>GrupoQ_LeadUpsert_IP_Lead_Upsert</uniqueName>
+    <type>GrupoQ</type>
+    <subType>LeadUpsert</subType>
+    <language>Procedure</language>
+    <omniProcessType>Integration Procedure</omniProcessType>
+    <isIntegrationProcedure>true</isIntegrationProcedure>
+    <isActive>false</isActive>
+    <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+    <isWebCompEnabled>false</isWebCompEnabled>
+    <versionNumber>1</versionNumber>
+    <description>Integration Procedure para criacao/upsert de Leads via canais externos. GrupoQ Sales Automotive.</description>
+    <propertySetConfig>{"rollbackOnError":true,"includeAllActionsInResponse":false,"chainableQueriesLimit":50,"chainableCpuLimit":2000,"ttlMinutes":5,"description":"Integration Procedure para criacao/upsert de Leads via canais externos. GrupoQ Sales Automotive.","designerCustomizationType":"Lightning"}</propertySetConfig>
+
+    <!-- ================= CB_FullUpsert (default) ================= -->
+    <omniProcessElements>
+        <name>CB_FullUpsert</name>
+        <type>Conditional Block</type>
+        <level>0</level>
+        <sequenceNumber>1</sequenceNumber>
+        <isActive>true</isActive>
+        <propertySetConfig>{"label":"CB FullUpsert","executionConditionalFormula":"%eventName% == \"fullUpsert\""}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DR_BusinessProfile_Extract</name>
+        <type>DataRaptor Extract Action</type>
+        <level>1</level>
+        <sequenceNumber>1</sequenceNumber>
+        <parentElementName>CB_FullUpsert</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_BusinessProfile_GetByCode","inputMap":{"dealerCode":"%preferredSellers:0:dealerCode%"},"outputJSONNode":"DR_BusinessProfile_Extract","responseJSONPath":""}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DPA_Lead_Insert</name>
+        <type>DataRaptor Post Action</type>
+        <level>1</level>
+        <sequenceNumber>2</sequenceNumber>
+        <parentElementName>CB_FullUpsert</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_Lead_Upsert","inputMap":{"lead":"%lead%","externalRequestId":"%externalRequestId%","channelCode":"%channelCode%"},"outputJSONNode":"DPA_Lead_Insert"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DPA_LeadLineItem_Insert</name>
+        <type>DataRaptor Post Action</type>
+        <level>1</level>
+        <sequenceNumber>3</sequenceNumber>
+        <parentElementName>CB_FullUpsert</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_LeadLineItem_Insert","inputMap":{"lineItems":"%lineItems%","leadId":"%DPA_Lead_Insert:insertedLead:Id%"},"outputJSONNode":"DPA_LeadLineItem_Insert","executionConditionalFormula":"COUNT(%lineItems%) > 0"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DPA_LeadPreferredSeller_Insert</name>
+        <type>DataRaptor Post Action</type>
+        <level>1</level>
+        <sequenceNumber>4</sequenceNumber>
+        <parentElementName>CB_FullUpsert</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_LeadPreferredSeller_Insert","inputMap":{"preferredSellers":"%preferredSellers%","leadId":"%DPA_Lead_Insert:insertedLead:Id%","resolvedAccountId":"%DR_BusinessProfile_Extract:resolvedAccountId%"},"outputJSONNode":"DPA_LeadPreferredSeller_Insert","executionConditionalFormula":"COUNT(%preferredSellers%) > 0"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>RA_FullUpsertResponse</name>
+        <type>Response Action</type>
+        <level>1</level>
+        <sequenceNumber>5</sequenceNumber>
+        <parentElementName>CB_FullUpsert</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"responseJSON":{"status":"success","leadId":"%DPA_Lead_Insert:insertedLead:Id%","createdLineItems":"%DPA_LeadLineItem_Insert:insertedLineItems%","createdPreferredSellers":"%DPA_LeadPreferredSeller_Insert:insertedPreferredSellers%","isDuplicate":false,"duplicateLeadId":null}}</propertySetConfig>
+    </omniProcessElements>
+
+    <!-- ================= CB_CreateLeadOnly ================= -->
+    <omniProcessElements>
+        <name>CB_CreateLeadOnly</name>
+        <type>Conditional Block</type>
+        <level>0</level>
+        <sequenceNumber>2</sequenceNumber>
+        <isActive>true</isActive>
+        <propertySetConfig>{"label":"CB CreateLeadOnly","executionConditionalFormula":"%eventName% == \"createLeadOnly\""}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DPA_Lead_Insert_Only</name>
+        <type>DataRaptor Post Action</type>
+        <level>1</level>
+        <sequenceNumber>1</sequenceNumber>
+        <parentElementName>CB_CreateLeadOnly</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_Lead_Upsert","inputMap":{"lead":"%lead%","externalRequestId":"%externalRequestId%","channelCode":"%channelCode%"},"outputJSONNode":"DPA_Lead_Insert"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>RA_LeadOnlyResponse</name>
+        <type>Response Action</type>
+        <level>1</level>
+        <sequenceNumber>2</sequenceNumber>
+        <parentElementName>CB_CreateLeadOnly</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"responseJSON":{"status":"success","leadId":"%DPA_Lead_Insert:insertedLead:Id%","createdLineItems":0,"createdPreferredSellers":0,"isDuplicate":false,"duplicateLeadId":null}}</propertySetConfig>
+    </omniProcessElements>
+
+    <!-- ================= CB_AddLineItems ================= -->
+    <omniProcessElements>
+        <name>CB_AddLineItems</name>
+        <type>Conditional Block</type>
+        <level>0</level>
+        <sequenceNumber>3</sequenceNumber>
+        <isActive>true</isActive>
+        <propertySetConfig>{"label":"CB AddLineItems","executionConditionalFormula":"%eventName% == \"addLineItems\""}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DPA_LeadLineItem_Add</name>
+        <type>DataRaptor Post Action</type>
+        <level>1</level>
+        <sequenceNumber>1</sequenceNumber>
+        <parentElementName>CB_AddLineItems</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_LeadLineItem_Insert","inputMap":{"lineItems":"%lineItems%","leadId":"%leadId%"},"outputJSONNode":"DPA_LeadLineItem_Insert"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>RA_LineItemsAddedResponse</name>
+        <type>Response Action</type>
+        <level>1</level>
+        <sequenceNumber>2</sequenceNumber>
+        <parentElementName>CB_AddLineItems</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"responseJSON":{"status":"success","leadId":"%leadId%","createdLineItems":"%DPA_LeadLineItem_Insert:insertedLineItems%","isDuplicate":false,"duplicateLeadId":null}}</propertySetConfig>
+    </omniProcessElements>
+
+    <!-- ================= CB_AddPreferredSellers ================= -->
+    <omniProcessElements>
+        <name>CB_AddPreferredSellers</name>
+        <type>Conditional Block</type>
+        <level>0</level>
+        <sequenceNumber>4</sequenceNumber>
+        <isActive>true</isActive>
+        <propertySetConfig>{"label":"CB AddPreferredSellers","executionConditionalFormula":"%eventName% == \"addPreferredSellers\""}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DR_BusinessProfile_Extract_PS</name>
+        <type>DataRaptor Extract Action</type>
+        <level>1</level>
+        <sequenceNumber>1</sequenceNumber>
+        <parentElementName>CB_AddPreferredSellers</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_BusinessProfile_GetByCode","inputMap":{"dealerCode":"%preferredSellers:0:dealerCode%"},"outputJSONNode":"DR_BusinessProfile_Extract","responseJSONPath":""}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>DPA_LeadPreferredSeller_Add</name>
+        <type>DataRaptor Post Action</type>
+        <level>1</level>
+        <sequenceNumber>2</sequenceNumber>
+        <parentElementName>CB_AddPreferredSellers</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"bundle":"DR_LeadPreferredSeller_Insert","inputMap":{"preferredSellers":"%preferredSellers%","leadId":"%leadId%","resolvedAccountId":"%DR_BusinessProfile_Extract:resolvedAccountId%"},"outputJSONNode":"DPA_LeadPreferredSeller_Insert"}</propertySetConfig>
+    </omniProcessElements>
+    <omniProcessElements>
+        <name>RA_PreferredSellersAddedResponse</name>
+        <type>Response Action</type>
+        <level>1</level>
+        <sequenceNumber>3</sequenceNumber>
+        <parentElementName>CB_AddPreferredSellers</parentElementName>
+        <isActive>true</isActive>
+        <propertySetConfig>{"responseJSON":{"status":"success","leadId":"%leadId%","createdPreferredSellers":"%DPA_LeadPreferredSeller_Insert:insertedPreferredSellers%","isDuplicate":false,"duplicateLeadId":null}}</propertySetConfig>
+    </omniProcessElements>
+
+</OmniProcess>

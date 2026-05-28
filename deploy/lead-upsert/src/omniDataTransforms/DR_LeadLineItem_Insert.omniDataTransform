@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GrupoQ - DataRaptor Load: bulk insert de LeadLineItem (objeto standard Automotive Cloud),
+  um por elemento de lineItems, vinculados ao Lead criado.
+  ProductId resolvido por lookup em Product2.ProductCode; se nao encontrar, ProductId fica
+  null (registro parcial, resolucao posterior).
+  DESVIO/NOTA: schema OmniDataTransform montado por melhor conhecimento; validar via Check-Only.
+-->
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>DR_LeadLineItem_Insert</name>
+    <type>Load</type>
+    <inputType>JSON</inputType>
+    <outputType>SObject</outputType>
+    <description>Insert em lote de LeadLineItem a partir da lista lineItems, vinculando ao leadId.</description>
+    <isActive>true</isActive>
+    <versionNumber>1</versionNumber>
+    <expectedInputJson>{"leadId":"00Q5h00000ABCDEF","lineItems":[{"productCode":"FORLAND-T3-2026","quantity":1,"vehicleConditionPicklist":"New"}]}</expectedInputJson>
+    <expectedOutputJson>{"insertedLineItems":[{"Id":"0WO5h00000LINE01"}]}</expectedOutputJson>
+    <omniDataTransformItem>
+        <name>Set_Lead</name>
+        <transformItemSequence>1</transformItemSequence>
+        <outputObjectName>LeadLineItem</outputObjectName>
+        <outputFieldName>LeadId</outputFieldName>
+        <interfaceFieldApiName>leadId</interfaceFieldApiName>
+        <isRequiredForUpsert>true</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Set_Product</name>
+        <transformItemSequence>2</transformItemSequence>
+        <outputObjectName>LeadLineItem</outputObjectName>
+        <outputFieldName>ProductId</outputFieldName>
+        <interfaceFieldApiName>lineItems:productCode</interfaceFieldApiName>
+        <lookupReturnObject>Product2</lookupReturnObject>
+        <lookupByFieldName>ProductCode</lookupByFieldName>
+        <lookupReturnedFieldName>Id</lookupReturnedFieldName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Set_Quantity</name>
+        <transformItemSequence>3</transformItemSequence>
+        <outputObjectName>LeadLineItem</outputObjectName>
+        <outputFieldName>Quantity</outputFieldName>
+        <interfaceFieldApiName>lineItems:quantity</interfaceFieldApiName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Set_VehicleCondition</name>
+        <transformItemSequence>4</transformItemSequence>
+        <outputObjectName>LeadLineItem</outputObjectName>
+        <outputFieldName>VehicleConditionPicklist</outputFieldName>
+        <interfaceFieldApiName>lineItems:vehicleConditionPicklist</interfaceFieldApiName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+</OmniDataTransform>

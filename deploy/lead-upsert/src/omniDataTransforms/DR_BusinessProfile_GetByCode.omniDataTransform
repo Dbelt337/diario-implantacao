@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GrupoQ - DataRaptor Extract: resolve AccountId do dealer a partir do dealerCode.
+  DESVIO/NOTA: schema OmniDataTransform (Standard Runtime, Spring '26) montado por
+  melhor conhecimento; a doc oficial nao pode ser consultada no ambiente de build.
+  Validar via Check-Only no DevSales e, idealmente, abrir uma vez no OmniStudio Designer.
+  BusinessProfile e objeto standard (Automotive Cloud). Sem namespace vlocity_cmt.
+-->
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>DR_BusinessProfile_GetByCode</name>
+    <type>Extract</type>
+    <inputType>JSON</inputType>
+    <outputType>JSON</outputType>
+    <description>Dado um dealerCode (ExternalReferenceNumber), retorna AccountId, nome do dealer e BusinessPartnerCode do BusinessProfile.</description>
+    <isActive>true</isActive>
+    <versionNumber>1</versionNumber>
+    <expectedInputJson>{"dealerCode":"C105-LURUCA-FORLAND"}</expectedInputJson>
+    <expectedOutputJson>{"resolvedAccountId":"0015h00000XYZABC","resolvedDealerName":"Luruca Forland","resolvedBusinessPartnerCode":"C105"}</expectedOutputJson>
+    <omniDataTransformItem>
+        <name>Filter_BusinessProfile</name>
+        <transformItemSequence>1</transformItemSequence>
+        <inputObjectName>BusinessProfile</inputObjectName>
+        <inputObjectQuerySequence>1</inputObjectQuerySequence>
+        <filterData>ExternalReferenceNumber</filterData>
+        <filterValue>=:dealerCode</filterValue>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Out_AccountId</name>
+        <transformItemSequence>2</transformItemSequence>
+        <inputObjectName>BusinessProfile</inputObjectName>
+        <interfaceFieldApiName>AccountId</interfaceFieldApiName>
+        <outputFieldName>resolvedAccountId</outputFieldName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Out_DealerName</name>
+        <transformItemSequence>3</transformItemSequence>
+        <inputObjectName>BusinessProfile</inputObjectName>
+        <interfaceFieldApiName>Account.Name</interfaceFieldApiName>
+        <outputFieldName>resolvedDealerName</outputFieldName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Out_BusinessPartnerCode</name>
+        <transformItemSequence>4</transformItemSequence>
+        <inputObjectName>BusinessProfile</inputObjectName>
+        <interfaceFieldApiName>BusinessPartnerCode</interfaceFieldApiName>
+        <outputFieldName>resolvedBusinessPartnerCode</outputFieldName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+</OmniDataTransform>

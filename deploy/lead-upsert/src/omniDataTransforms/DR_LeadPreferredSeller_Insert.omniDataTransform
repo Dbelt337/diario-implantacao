@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GrupoQ - DataRaptor Load: bulk insert de LeadPreferredSeller (objeto standard Automotive Cloud),
+  vinculados ao Lead. AccountId vem do resolvedAccountId resolvido pelo DR_BusinessProfile_GetByCode;
+  se null, o registro fica sem dealer para tratamento manual.
+  DESVIO/NOTA: schema OmniDataTransform montado por melhor conhecimento; validar via Check-Only.
+-->
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>DR_LeadPreferredSeller_Insert</name>
+    <type>Load</type>
+    <inputType>JSON</inputType>
+    <outputType>SObject</outputType>
+    <description>Insert em lote de LeadPreferredSeller a partir da lista preferredSellers, vinculando ao leadId e ao resolvedAccountId.</description>
+    <isActive>true</isActive>
+    <versionNumber>1</versionNumber>
+    <expectedInputJson>{"leadId":"00Q5h00000ABCDEF","resolvedAccountId":"0015h00000XYZABC","preferredSellers":[{"dealerCode":"C105-LURUCA-FORLAND","preferredSellerType":"Dealer"}]}</expectedInputJson>
+    <expectedOutputJson>{"insertedPreferredSellers":[{"Id":"0WP5h00000SELL01"}]}</expectedOutputJson>
+    <omniDataTransformItem>
+        <name>Set_Lead</name>
+        <transformItemSequence>1</transformItemSequence>
+        <outputObjectName>LeadPreferredSeller</outputObjectName>
+        <outputFieldName>LeadId</outputFieldName>
+        <interfaceFieldApiName>leadId</interfaceFieldApiName>
+        <isRequiredForUpsert>true</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Set_Account</name>
+        <transformItemSequence>2</transformItemSequence>
+        <outputObjectName>LeadPreferredSeller</outputObjectName>
+        <outputFieldName>AccountId</outputFieldName>
+        <interfaceFieldApiName>resolvedAccountId</interfaceFieldApiName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <name>Set_PreferredSellerType</name>
+        <transformItemSequence>3</transformItemSequence>
+        <outputObjectName>LeadPreferredSeller</outputObjectName>
+        <outputFieldName>PreferredSellerType</outputFieldName>
+        <interfaceFieldApiName>preferredSellers:preferredSellerType</interfaceFieldApiName>
+        <isRequiredForUpsert>false</isRequiredForUpsert>
+    </omniDataTransformItem>
+</OmniDataTransform>
