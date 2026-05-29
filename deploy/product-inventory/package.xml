@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Passo 1 do Lead_ValidateProductInventory_IP: DRProductResolve (campos nativos Product2). -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>DRProductResolve_1</members>
+        <name>OmniDataTransform</name>
+    </types>
+    <version>66.0</version>
+</Package>

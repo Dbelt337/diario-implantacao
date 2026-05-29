@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Lead_ValidateProductInventory_IP - Passo 1 (resolver produto + derivar tipo).
+  Usa SOMENTE campos nativos documentados do Product2 (ProductCode, Name, Family,
+  RecordType.DeveloperName).
+  TODO-DOC: o valor do RecordType.DeveloperName que identifica PECA (SparePart?)
+  precisa ser confirmado por DESCRIBE em DevSales antes de usar na formula de
+  derivacao de productType (VEHICLE | SPARE_PART) dentro da IP. Aqui o DR apenas
+  RETORNA Family e RecordType.DeveloperName; a classificacao fica na IP.
+-->
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <assignmentRulesUsed>false</assignmentRulesUsed>
+    <deletedOnSuccess>false</deletedOnSuccess>
+    <errorIgnored>false</errorIgnored>
+    <fieldLevelSecurityEnabled>true</fieldLevelSecurityEnabled>
+    <inputType>JSON</inputType>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <name>DRProductResolve</name>
+    <nullInputsIncludedInOutput>false</nullInputsIncludedInOutput>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterDataType>TEXTAREA</filterDataType>
+        <filterGroup>0.0</filterGroup>
+        <filterOperator>=</filterOperator>
+        <filterValue>productCode</filterValue>
+        <globalKey>c0985c99-d0fb-4205-b770-05bec323a175</globalKey>
+        <inputFieldName>ProductCode</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>1.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductResolve</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>fd2f22d9-c140-4e56-ad43-c8d63b78363e</globalKey>
+        <inputFieldName>Id</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductResolve</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>b274a296-cb5f-4594-830a-1ba408be7d83</globalKey>
+        <inputFieldName>Name</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductResolve</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>1c0f489d-227a-4a01-b28a-fcc3544c0b40</globalKey>
+        <inputFieldName>Family</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductResolve</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>aa16ef39-e104-45b2-8dc8-03ad538824d9</globalKey>
+        <inputFieldName>RecordType.DeveloperName</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductResolve</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <outputType>JSON</outputType>
+    <previewJsonData>{
+  &quot;productCode&quot; : &quot;HYU-TUCSON-2026&quot;
+}</previewJsonData>
+    <processSuperBulk>false</processSuperBulk>
+    <responseCacheTtlMinutes>0.0</responseCacheTtlMinutes>
+    <rollbackOnError>false</rollbackOnError>
+    <sourceObjectDefault>false</sourceObjectDefault>
+    <synchronousProcessThreshold>0.0</synchronousProcessThreshold>
+    <type>Turbo Extract</type>
+    <uniqueName>DRProductResolve_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+    <xmlDeclarationRemoved>false</xmlDeclarationRemoved>
+</OmniDataTransform>
