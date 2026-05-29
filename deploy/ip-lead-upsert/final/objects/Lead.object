@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GrupoQ Sales Automotive - Custom fields para IP_Lead_Upsert.
+  Formato Metadata API tradicional (MDAPI). Apenas os 3 campos novos: o upsert
+  no objeto standard Lead nao remove os campos existentes.
+  Sociedad__c e LinhaNegocio__c ja existem em DevSales e NAO sao recriados aqui.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>ExternalRequestId__c</fullName>
+        <externalId>true</externalId>
+        <label>External Request Id</label>
+        <length>100</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>true</unique>
+        <caseSensitive>false</caseSensitive>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>ChannelCode__c</fullName>
+        <externalId>false</externalId>
+        <label>Channel Code</label>
+        <length>50</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>NationalId__c</fullName>
+        <externalId>true</externalId>
+        <label>National Id</label>
+        <length>50</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+        <caseSensitive>false</caseSensitive>
+        <trackHistory>false</trackHistory>
+    </fields>
+</CustomObject>

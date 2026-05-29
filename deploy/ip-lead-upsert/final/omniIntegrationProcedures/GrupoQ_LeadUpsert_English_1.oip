@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OmniIntegrationProcedure xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customJavaScript>{"lead":{"firstName":"Juan","lastName":"Perez","email":"juan@x.com","phone":"+50688887777","company":"Persona Fisica","leadSource":"WEB_FORLAND_LURUCA","country":"CR","industry":"Automotive","nationalId":"123456789","linhaNegocio":"Autos"},"externalRequestId":"550e8400-e29b-41d4-a716-446655440000","channelCode":"MULESOFT_FB","lineItems":[{"productCode":"FORLAND-T3-2026","quantity":1,"vehicleConditionPicklist":"New"}],"preferredSellers":[{"dealerCode":"C105-LURUCA-FORLAND","preferredSellerType":"Dealer"}]}</customJavaScript>
+    <elementTypeComponentMapping>{"ElementTypeToHTMLTemplateList":[]}</elementTypeComponentMapping>
+    <isActive>false</isActive>
+    <isIntegProcdSignatureAvl>false</isIntegProcdSignatureAvl>
+    <isIntegrationProcedure>true</isIntegrationProcedure>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <isMetadataCacheDisabled>false</isMetadataCacheDisabled>
+    <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+    <isTestProcedure>false</isTestProcedure>
+    <isWebCompEnabled>false</isWebCompEnabled>
+    <language>English</language>
+    <name>LeadUpsert</name>
+    <omniProcessElements>
+        <description>Valida campos obrigatorios</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>Validacao</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"","actionMessage":"","elementValueMap":{"isValid":"=AND(NOT(ISBLANK(%lead:lastName%)),NOT(ISBLANK(%lead:company%)),NOT(ISBLANK(%lead:leadSource%)),NOT(ISBLANK(%externalRequestId%)),NOT(ISBLANK(%channelCode%)))","missingFields":"=TRIM(IF(ISBLANK(%lead:lastName%),'lastName ','')+IF(ISBLANK(%lead:company%),'company ','')+IF(ISBLANK(%lead:leadSource%),'leadSource ','')+IF(ISBLANK(%externalRequestId%),'externalRequestId ','')+IF(ISBLANK(%channelCode%),'channelCode ',''))"},"failureConditionalFormula":"","failOnStepError":false,"id":"","internalNotes":"","isActive":true,"restOptions":{},"chainOnStep":false}</propertySetConfig>
+        <sequenceNumber>1.0</sequenceNumber>
+        <type>Set Values</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Idempotencia: busca Lead por ExternalRequestId</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>GetExisting</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"sendOnlyAdditionalInput":false,"dataRaptor Input Parameters":[{"inputParam":"externalRequestId","element":"externalRequestId"}],"returnOnlyAdditionalOutput":false,"elementValueMap":{},"failOnStepError":false,"internalNotes":"","isActive":true,"chainOnStep":false,"returnOnlyFailureResponse":false,"ignoreCache":false,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"%Validacao:isValid% == true","actionMessage":"","sendJSONPath":"","failureConditionalFormula":"","id":"","restOptions":{},"bundle":"DRLeadGetByExternalRequestId","sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>2.0</sequenceNumber>
+        <type>DataRaptor Extract Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Resposta de erro de validacao</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>RespValidationError</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"returnFullDataJSON":false,"returnOnlyAdditionalOutput":true,"elementValueMap":{},"responseFormat":"","isActive":true,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"%Validacao:isValid% == false","additionalOutput":{"status":"error","errorCode":"VALIDATION_FAILED","errorMessage":"%Validacao:missingFields%","externalRequestId":"%externalRequestId%"},"sendJSONPath":"","id":"","restOptions":{},"sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>3.0</sequenceNumber>
+        <type>Response Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Resposta de duplicado</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>RespDuplicate</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"returnFullDataJSON":false,"returnOnlyAdditionalOutput":true,"elementValueMap":{},"responseFormat":"","isActive":true,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"(%Validacao:isValid% == true) &amp;&amp; NOT(ISBLANK(%existingLead:Id%))","additionalOutput":{"status":"duplicate","duplicateLeadId":"%existingLead:Id%","externalRequestId":"%externalRequestId%"},"sendJSONPath":"","id":"","restOptions":{},"sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>4.0</sequenceNumber>
+        <type>Response Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Resolve AccountId do dealer</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>GetDealer</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"sendOnlyAdditionalInput":false,"dataRaptor Input Parameters":[{"inputParam":"dealerCode","element":"preferredSellers:0:dealerCode"}],"returnOnlyAdditionalOutput":false,"elementValueMap":{},"failOnStepError":false,"internalNotes":"","isActive":true,"chainOnStep":false,"returnOnlyFailureResponse":false,"ignoreCache":false,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"(%Validacao:isValid% == true) &amp;&amp; ISBLANK(%existingLead:Id%) &amp;&amp; COUNT(%preferredSellers%) &gt; 0","actionMessage":"","sendJSONPath":"","failureConditionalFormula":"","id":"","restOptions":{},"bundle":"DRBusinessProfileGetByCode","sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>5.0</sequenceNumber>
+        <type>DataRaptor Extract Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Cria o Lead</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>InsertLead</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"sendOnlyAdditionalInput":false,"dataRaptor Input Parameters":[{"inputParam":"firstName","element":"lead:firstName"},{"inputParam":"lastName","element":"lead:lastName"},{"inputParam":"email","element":"lead:email"},{"inputParam":"phone","element":"lead:phone"},{"inputParam":"company","element":"lead:company"},{"inputParam":"leadSource","element":"lead:leadSource"},{"inputParam":"country","element":"lead:country"},{"inputParam":"industry","element":"lead:industry"},{"inputParam":"description","element":"lead:description"},{"inputParam":"nationalId","element":"lead:nationalId"},{"inputParam":"linhaNegocio","element":"lead:linhaNegocio"},{"inputParam":"externalRequestId","element":"externalRequestId"},{"inputParam":"channelCode","element":"channelCode"}],"returnOnlyAdditionalOutput":false,"elementValueMap":{},"failOnStepError":false,"internalNotes":"","isActive":true,"chainOnStep":false,"returnOnlyFailureResponse":false,"ignoreCache":false,"responseJSONPath":"","responseJSONNode":"leadResult","executionConditionalFormula":"(%Validacao:isValid% == true) &amp;&amp; ISBLANK(%existingLead:Id%)","actionMessage":"","sendJSONPath":"","failureConditionalFormula":"","id":"","restOptions":{},"bundle":"DRLeadInsert","sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>6.0</sequenceNumber>
+        <type>DataRaptor Post Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Cria os LeadLineItem</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>InsertLineItems</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"sendOnlyAdditionalInput":false,"dataRaptor Input Parameters":[{"inputParam":"leadId","element":"leadResult:Id"},{"inputParam":"lineItems","element":"lineItems"}],"returnOnlyAdditionalOutput":false,"elementValueMap":{},"failOnStepError":false,"internalNotes":"","isActive":true,"chainOnStep":false,"returnOnlyFailureResponse":false,"ignoreCache":false,"responseJSONPath":"","responseJSONNode":"lineItemsResult","executionConditionalFormula":"(%Validacao:isValid% == true) &amp;&amp; ISBLANK(%existingLead:Id%) &amp;&amp; COUNT(%lineItems%) &gt; 0","actionMessage":"","sendJSONPath":"","failureConditionalFormula":"","id":"","restOptions":{},"bundle":"DRLeadLineItemInsert","sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>7.0</sequenceNumber>
+        <type>DataRaptor Post Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Cria os LeadPreferredSeller</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>InsertSellers</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"sendOnlyAdditionalInput":false,"dataRaptor Input Parameters":[{"inputParam":"leadId","element":"leadResult:Id"},{"inputParam":"resolvedAccountId","element":"dealer:AccountId"},{"inputParam":"preferredSellers","element":"preferredSellers"}],"returnOnlyAdditionalOutput":false,"elementValueMap":{},"failOnStepError":false,"internalNotes":"","isActive":true,"chainOnStep":false,"returnOnlyFailureResponse":false,"ignoreCache":false,"responseJSONPath":"","responseJSONNode":"sellersResult","executionConditionalFormula":"(%Validacao:isValid% == true) &amp;&amp; ISBLANK(%existingLead:Id%) &amp;&amp; COUNT(%preferredSellers%) &gt; 0","actionMessage":"","sendJSONPath":"","failureConditionalFormula":"","id":"","restOptions":{},"bundle":"DRLeadPreferredSellerInsert","sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>8.0</sequenceNumber>
+        <type>DataRaptor Post Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Resposta de sucesso</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>RespSuccess</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"returnFullDataJSON":false,"returnOnlyAdditionalOutput":true,"elementValueMap":{},"responseFormat":"","isActive":true,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"(%Validacao:isValid% == true) &amp;&amp; ISBLANK(%existingLead:Id%)","additionalOutput":{"status":"success","leadId":"%leadResult:Id%","externalRequestId":"%externalRequestId%","isDuplicate":false},"sendJSONPath":"","id":"","restOptions":{},"sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>9.0</sequenceNumber>
+        <type>Response Action</type>
+    </omniProcessElements>
+    <omniProcessKey>GrupoQ_LeadUpsert</omniProcessKey>
+    <omniProcessType>Integration Procedure</omniProcessType>
+    <propertySetConfig>{"linkToExternalObject":"","trackingCustomData":{},"includeAllActionsInResponse":false,"columnsPropertyMap":[],"relationshipFieldsMap":[],"labelSingular":"","labelPlural":"","description":"Cria/upsert de Lead GrupoQ via canais externos","nameColumn":"","rollbackOnError":true,"chainableQueriesLimit":50,"chainableDMLStatementsLimit":null,"chainableCpuLimit":2000,"chainableHeapSizeLimit":null,"chainableDMLRowsLimit":null,"chainableQueryRowsLimit":null,"chainableSoslQueriesLimit":null,"additionalChainableResponse":{},"chainableActualTimeLimit":null}</propertySetConfig>
+    <subType>LeadUpsert</subType>
+    <type>GrupoQ</type>
+    <uniqueName>GrupoQ_LeadUpsert_English_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+</OmniIntegrationProcedure>

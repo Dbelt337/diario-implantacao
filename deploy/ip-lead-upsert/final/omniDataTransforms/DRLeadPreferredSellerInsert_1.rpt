@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <assignmentRulesUsed>false</assignmentRulesUsed>
+    <deletedOnSuccess>false</deletedOnSuccess>
+    <errorIgnored>false</errorIgnored>
+    <fieldLevelSecurityEnabled>true</fieldLevelSecurityEnabled>
+    <inputType>JSON</inputType>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <name>DRLeadPreferredSellerInsert</name>
+    <nullInputsIncludedInOutput>false</nullInputsIncludedInOutput>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <globalKey>c806c55f-cff4-4cb1-aa2c-bf7573c8e7f8</globalKey>
+        <inputFieldName>leadId</inputFieldName>
+        <inputObjectName>LeadPreferredSeller</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadPreferredSellerInsert</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>LeadId</outputFieldName>
+        <outputObjectName>LeadPreferredSeller</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <globalKey>ab807ab6-a29d-4529-9ed6-864856815392</globalKey>
+        <inputFieldName>resolvedAccountId</inputFieldName>
+        <inputObjectName>LeadPreferredSeller</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadPreferredSellerInsert</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>AccountId</outputFieldName>
+        <outputObjectName>LeadPreferredSeller</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <globalKey>fcf7e635-f4e8-4ddc-be0d-5044a2b8ba19</globalKey>
+        <inputFieldName>preferredSellers:preferredSellerType</inputFieldName>
+        <inputObjectName>LeadPreferredSeller</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadPreferredSellerInsert</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>PreferredSellerType</outputFieldName>
+        <outputObjectName>LeadPreferredSeller</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <outputType>SObject</outputType>
+    <previewJsonData>{
+  &quot;leadId&quot; : &quot;00Q5h00000ABCDEF&quot;,
+  &quot;resolvedAccountId&quot; : &quot;0015h00000XYZABC&quot;,
+  &quot;preferredSellers&quot; : [ { &quot;dealerCode&quot; : &quot;C105-LURUCA-FORLAND&quot;, &quot;preferredSellerType&quot; : &quot;Dealer&quot; } ]
+}</previewJsonData>
+    <processSuperBulk>false</processSuperBulk>
+    <responseCacheTtlMinutes>0.0</responseCacheTtlMinutes>
+    <rollbackOnError>false</rollbackOnError>
+    <sourceObjectDefault>false</sourceObjectDefault>
+    <synchronousProcessThreshold>0.0</synchronousProcessThreshold>
+    <type>Load</type>
+    <uniqueName>DRLeadPreferredSellerInsert_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+    <xmlDeclarationRemoved>false</xmlDeclarationRemoved>
+</OmniDataTransform>
