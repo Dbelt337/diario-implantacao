@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OmniIntegrationProcedure xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customJavaScript>{"lead":{"lastName":"TestePerez","company":"Persona Fisica","leadSource":"Web"},"externalRequestId":"test-0001","channelCode":"MULESOFT_FB"}</customJavaScript>
+    <elementTypeComponentMapping>{"ElementTypeToHTMLTemplateList":[]}</elementTypeComponentMapping>
+    <isActive>false</isActive>
+    <isIntegProcdSignatureAvl>false</isIntegProcdSignatureAvl>
+    <isIntegrationProcedure>true</isIntegrationProcedure>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <isMetadataCacheDisabled>false</isMetadataCacheDisabled>
+    <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+    <isTestProcedure>false</isTestProcedure>
+    <isWebCompEnabled>false</isWebCompEnabled>
+    <language>English</language>
+    <name>LeadUpsert</name>
+    <omniProcessElements>
+        <description>Cria o Lead (sem condicao, teste)</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>InsertLead</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"sendOnlyAdditionalInput":false,"dataRaptor Input Parameters":[{"inputParam":"firstName","element":"lead:firstName"},{"inputParam":"lastName","element":"lead:lastName"},{"inputParam":"email","element":"lead:email"},{"inputParam":"phone","element":"lead:phone"},{"inputParam":"company","element":"lead:company"},{"inputParam":"leadSource","element":"lead:leadSource"},{"inputParam":"country","element":"lead:country"},{"inputParam":"industry","element":"lead:industry"},{"inputParam":"description","element":"lead:description"},{"inputParam":"nationalId","element":"lead:nationalId"},{"inputParam":"linhaNegocio","element":"lead:linhaNegocio"},{"inputParam":"externalRequestId","element":"externalRequestId"},{"inputParam":"channelCode","element":"channelCode"}],"returnOnlyAdditionalOutput":false,"elementValueMap":{},"failOnStepError":false,"internalNotes":"","isActive":true,"chainOnStep":false,"returnOnlyFailureResponse":false,"ignoreCache":false,"responseJSONPath":"","responseJSONNode":"leadResult","executionConditionalFormula":"","actionMessage":"","sendJSONPath":"","failureConditionalFormula":"","id":"","restOptions":{},"bundle":"DRLeadInsert","sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>1.0</sequenceNumber>
+        <type>DataRaptor Post Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Resposta com tudo (teste)</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>RespSuccess</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"returnFullDataJSON":true,"returnOnlyAdditionalOutput":false,"elementValueMap":{},"responseFormat":"","isActive":true,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"","additionalOutput":{"status":"created","externalRequestId":"%externalRequestId%"},"sendJSONPath":"","id":"","restOptions":{},"sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>2.0</sequenceNumber>
+        <type>Response Action</type>
+    </omniProcessElements>
+    <omniProcessKey>GrupoQ_LeadUpsert</omniProcessKey>
+    <omniProcessType>Integration Procedure</omniProcessType>
+    <propertySetConfig>{"linkToExternalObject":"","trackingCustomData":{},"includeAllActionsInResponse":true,"columnsPropertyMap":[],"relationshipFieldsMap":[],"labelSingular":"","labelPlural":"","description":"Teste minimo criar Lead","nameColumn":"","rollbackOnError":true,"chainableQueriesLimit":50,"chainableDMLStatementsLimit":null,"chainableCpuLimit":2000,"chainableHeapSizeLimit":null,"chainableDMLRowsLimit":null,"chainableQueryRowsLimit":null,"chainableSoslQueriesLimit":null,"additionalChainableResponse":{},"chainableActualTimeLimit":null}</propertySetConfig>
+    <subType>LeadUpsert</subType>
+    <type>GrupoQ</type>
+    <uniqueName>GrupoQ_LeadUpsert_English_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+</OmniIntegrationProcedure>
