@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Teste de mecanica do Data Mapper LOAD montado a mao (sem molde de Load).
+  DRLeadInsert: type=Load, outputType=SObject, mapeia campos flat de input -> Lead.
+  Objetivo do Check-Only: confirmar o schema de Load antes de montar os outros 2
+  Loads e a IP.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>DRLeadInsert_1</members>
+        <name>OmniDataTransform</name>
+    </types>
+    <version>66.0</version>
+</Package>
