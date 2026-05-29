@@ -1,109 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <apiVersion>60.0</apiVersion>
-    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
-    <assignments>
-        <name>Assign_Final_Default</name>
-        <label>Assign Final Default</label>
-        <locationX>578</locationX>
-        <locationY>1211</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.Sociedad__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Get_Config.Default_Sociedad__c</elementReference>
-            </value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
-        <name>Assign_Final_FromMap</name>
-        <label>Assign Final From Map</label>
-        <locationX>50</locationX>
-        <locationY>1211</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.Sociedad__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>VarMatchedSociedad</elementReference>
-            </value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
-        <name>Assign_Final_FromUser</name>
-        <label>Assign Final From User</label>
-        <locationX>314</locationX>
-        <locationY>1211</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.Sociedad__c</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>$User.Sociedad__c</elementReference>
-            </value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
-        <name>Assign_MatchInLoop</name>
-        <label>Assign Match In Loop</label>
-        <locationX>402</locationX>
-        <locationY>827</locationY>
-        <assignmentItems>
-            <assignToReference>VarMatchedSociedad</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <elementReference>Loop_BrandMap.Sociedad__c</elementReference>
-            </value>
-        </assignmentItems>
-        <assignmentItems>
-            <assignToReference>VarMatchFound</assignToReference>
-            <operator>Assign</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </assignmentItems>
+    <apiVersion>65.0</apiVersion>
+    <description>Deriva Lead.Sociedad__c como FALLBACK (nivel 4 $User.Sociedad__c, nivel 5 default config Lead_Routing_Config__mdt). Dispara so quando Sociedad__c IsNull. Plan A / Opcao 2: niveis 2 (dealer) e 3 (marca do produto) sao resolvidos na Lead_Upsert_IP, pois dependem de dados ausentes no Before-Save do Lead (dealerCode no payload e LeadLineItem filho). Removida a decisao quebrada LeadSource Contains Brand (LeadSource e picklist restrito, nunca casa marca).</description>
+    <environments>Default</environments>
+    <interviewLabel>Lead_BS_DeriveSociedad {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead BS DeriveSociedad</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Config</name>
+        <label>Get Config</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Loop_BrandMap</targetReference>
+            <targetReference>Decision_FinalResolution</targetReference>
         </connector>
-    </assignments>
-    <assignments>
-        <name>Assign_ResolveCountry</name>
-        <label>Assign Resolve Country</label>
-        <locationX>314</locationX>
-        <locationY>395</locationY>
-        <assignmentItems>
-            <assignToReference>VarCountryCode</assignToReference>
-            <operator>Assign</operator>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Config.Default_Country_Code__c</elementReference>
+                <stringValue>Default</stringValue>
             </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Get_BrandMap</targetReference>
-        </connector>
-    </assignments>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead_Routing_Config__mdt</object>
+        <queriedFields>Default_Sociedad__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <decisions>
         <name>Decision_FinalResolution</name>
         <label>Decision Final Resolution</label>
-        <locationX>314</locationX>
-        <locationY>1103</locationY>
+        <locationX>176</locationX>
+        <locationY>254</locationY>
         <defaultConnector>
             <targetReference>Assign_Final_Default</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Config</defaultConnectorLabel>
-        <rules>
-            <name>MatchFoundInMap</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>VarMatchFound</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_Final_FromMap</targetReference>
-            </connector>
-            <label>Match Found In Map</label>
-        </rules>
         <rules>
             <name>UserHasSociedad</name>
             <conditionLogic>and</conditionLogic>
@@ -120,111 +65,34 @@
             <label>User Has Sociedad</label>
         </rules>
     </decisions>
-    <decisions>
-        <name>Decision_LeadSourceContainsBrand</name>
-        <label>Decision LeadSource Contains Brand</label>
-        <locationX>534</locationX>
-        <locationY>719</locationY>
-        <defaultConnector>
-            <targetReference>Loop_BrandMap</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No Match</defaultConnectorLabel>
-        <rules>
-            <name>Contains</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>$Record.LeadSource</leftValueReference>
-                <operator>Contains</operator>
-                <rightValue>
-                    <elementReference>Loop_BrandMap.Brand__c</elementReference>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Assign_MatchInLoop</targetReference>
-            </connector>
-            <label>Contains</label>
-        </rules>
-    </decisions>
-    <description>Deriva Lead.Sociedad__c via Custom Metadata Type Brand_Sociedad_Map. Escalavel para 6 paises sem alterar Flow - basta adicionar registros CMT.</description>
-    <environments>Default</environments>
-    <interviewLabel>Lead_BS_DeriveSociedad {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Lead BS DeriveSociedad</label>
-    <loops>
-        <name>Loop_BrandMap</name>
-        <label>Loop BrandMap</label>
-        <locationX>314</locationX>
-        <locationY>611</locationY>
-        <collectionReference>Get_BrandMap</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>Decision_LeadSourceContainsBrand</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Decision_FinalResolution</targetReference>
-        </noMoreValuesConnector>
-    </loops>
-    <processMetadataValues>
-        <name>BuilderType</name>
-        <value>
-            <stringValue>LightningFlowBuilder</stringValue>
-        </value>
-    </processMetadataValues>
-    <processMetadataValues>
-        <name>CanvasMode</name>
-        <value>
-            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
-        </value>
-    </processMetadataValues>
-    <processType>AutoLaunchedFlow</processType>
-    <recordLookups>
-        <name>Get_BrandMap</name>
-        <label>Get BrandMap</label>
-        <locationX>314</locationX>
-        <locationY>503</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Loop_BrandMap</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Country_Code__c</field>
-            <operator>EqualTo</operator>
+    <assignments>
+        <name>Assign_Final_FromUser</name>
+        <label>Assign Final From User</label>
+        <locationX>50</locationX>
+        <locationY>374</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Sociedad__c</assignToReference>
+            <operator>Assign</operator>
             <value>
-                <elementReference>VarCountryCode</elementReference>
+                <elementReference>$User.Sociedad__c</elementReference>
             </value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Brand_Sociedad_Map__mdt</object>
-        <queriedFields>Brand__c</queriedFields>
-        <queriedFields>Sociedad__c</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_Config</name>
-        <label>Get Config</label>
-        <locationX>314</locationX>
-        <locationY>287</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Assign_ResolveCountry</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>DeveloperName</field>
-            <operator>EqualTo</operator>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Assign_Final_Default</name>
+        <label>Assign Final Default</label>
+        <locationX>302</locationX>
+        <locationY>374</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Sociedad__c</assignToReference>
+            <operator>Assign</operator>
             <value>
-                <stringValue>Default</stringValue>
+                <elementReference>Get_Config.Default_Sociedad__c</elementReference>
             </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Lead_Routing_Config__mdt</object>
-        <queriedFields>Default_Country_Code__c</queriedFields>
-        <queriedFields>Default_Sociedad__c</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <runInMode>DefaultMode</runInMode>
+        </assignmentItems>
+    </assignments>
     <start>
-        <locationX>188</locationX>
+        <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>Get_Config</targetReference>
@@ -242,28 +110,4 @@
         <triggerType>RecordBeforeSave</triggerType>
     </start>
     <status>Active</status>
-    <variables>
-        <name>VarCountryCode</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>VarMatchedSociedad</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>VarMatchFound</name>
-        <dataType>Boolean</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <booleanValue>false</booleanValue>
-        </value>
-    </variables>
 </Flow>
