@@ -3,15 +3,18 @@
 Integration Procedure (OmniStudio Standard Runtime) para criação/upsert de Leads
 vindos de canais externos (MuleSoft, formulários web, etc.).
 
-> ⚠️ **STATUS (fonte da verdade: [`BUILD-IN-DESIGNER.md`](./BUILD-IN-DESIGNER.md)).**
-> Um retrieve da org provou que o formato MDAPI real é `omniDataTransforms/<Nome>_<v>.rpt`
-> com Ids de servidor e `globalKey` por item, e que a org não tem nenhum `OmniProcess`
-> de molde. Os arquivos `omniDataTransforms/*.omniDataTransform` e
-> `omniProcesses/*.omniProcess` deste diretório **NÃO são o formato deployável** —
-> ficam como **especificação de design** (mapeamentos de campo). O caminho válido é
-> montar no OmniStudio Designer (ver BUILD-IN-DESIGNER.md) e depois fazer Retrieve
-> para versionar no formato `.rpt` correto. O `objects/Lead.object` (campos custom)
-> é MDAPI normal e já foi deployado com sucesso.
+> ✅ **STATUS: PACOTE COMPLETO VALIDADO (Check-Only Succeeded, 0 erros, 9 componentes — 2026-05-29).**
+> Fonte da verdade para deploy: **[`final/`](./final/)** (`Deploy_IP_Lead_Upsert_COMPLETO.zip`).
+> Formatos MDAPI reais (descobertos via retrieve de moldes da org):
+> - Data Mapper: `omniDataTransforms/<Nome>_<versão>.rpt` (root `OmniDataTransform`, `globalKey` por item; **não** precisa dos Ids de servidor).
+> - Integration Procedure: `omniIntegrationProcedures/<Type>_<SubType>_<Lang>_<versão>.oip` (root `OmniIntegrationProcedure`, elementos via `omniProcessElements` + `propertySetConfig`).
+> - `package.xml` em API **66.0**; tipo da IP é **`OmniIntegrationProcedure`** (não `OmniProcess`).
+>
+> Os arquivos `omniDataTransforms/*.omniDataTransform` e `omniProcesses/*.omniProcess`
+> deste diretório foram a tentativa inicial em formato errado — ficam só como
+> **especificação de design** (mapeamentos). Os moldes reais da org estão em
+> [`moldes/`](./moldes/). Pós-deploy: ativar a IP no Designer (vem `isActive=false`)
+> e conferir 2 pontos de runtime (encadeamento `leadResult:Id` e lookup de `ProductId`).
 
 ## Conteúdo do pacote
 
