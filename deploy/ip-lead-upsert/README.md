@@ -3,6 +3,16 @@
 Integration Procedure (OmniStudio Standard Runtime) para criação/upsert de Leads
 vindos de canais externos (MuleSoft, formulários web, etc.).
 
+> ⚠️ **STATUS (fonte da verdade: [`BUILD-IN-DESIGNER.md`](./BUILD-IN-DESIGNER.md)).**
+> Um retrieve da org provou que o formato MDAPI real é `omniDataTransforms/<Nome>_<v>.rpt`
+> com Ids de servidor e `globalKey` por item, e que a org não tem nenhum `OmniProcess`
+> de molde. Os arquivos `omniDataTransforms/*.omniDataTransform` e
+> `omniProcesses/*.omniProcess` deste diretório **NÃO são o formato deployável** —
+> ficam como **especificação de design** (mapeamentos de campo). O caminho válido é
+> montar no OmniStudio Designer (ver BUILD-IN-DESIGNER.md) e depois fazer Retrieve
+> para versionar no formato `.rpt` correto. O `objects/Lead.object` (campos custom)
+> é MDAPI normal e já foi deployado com sucesso.
+
 ## Conteúdo do pacote
 
 | Componente | Tipo | Papel |
