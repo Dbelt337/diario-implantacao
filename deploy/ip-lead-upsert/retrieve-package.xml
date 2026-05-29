@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Manifesto APENAS para RETRIEVE (Workbench -> Migration -> Retrieve).
+  Objetivo: baixar um DataRaptor/Data Mapper existente (ex.: SearchAccount) para
+  servir de molde do formato real (pasta/sufixo/estrutura) que a org usa em MDAPI.
+  Nao usar para deploy.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>*</members>
+        <name>OmniDataTransform</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>OmniProcess</name>
+    </types>
+    <version>66.0</version>
+</Package>
