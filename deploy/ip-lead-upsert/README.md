@@ -8,11 +8,11 @@ vindos de canais externos (MuleSoft, formulários web, etc.).
 | Componente | Tipo | Papel |
 |---|---|---|
 | `GrupoQ_LeadUpsert` | OmniProcess (Integration Procedure) | Orquestra validação → idempotência → criação → resposta |
-| `DR_Lead_GetByExternalRequestId` | OmniDataTransform (Extract) | Idempotência por `ExternalRequestId__c` |
-| `DR_BusinessProfile_GetByCode` | OmniDataTransform (Extract) | Resolve `AccountId` do dealer pelo `dealerCode` |
-| `DR_Lead_Insert` | OmniDataTransform (Load) | Insere o Lead |
-| `DR_LeadLineItem_Insert` | OmniDataTransform (Load) | Insere os `LeadLineItem` |
-| `DR_LeadPreferredSeller_Insert` | OmniDataTransform (Load) | Insere os `LeadPreferredSeller` |
+| `DRLeadGetByExternalRequestId` | OmniDataTransform (Extract) | Idempotência por `ExternalRequestId__c` |
+| `DRBusinessProfileGetByCode` | OmniDataTransform (Extract) | Resolve `AccountId` do dealer pelo `dealerCode` |
+| `DRLeadInsert` | OmniDataTransform (Load) | Insere o Lead |
+| `DRLeadLineItemInsert` | OmniDataTransform (Load) | Insere os `LeadLineItem` |
+| `DRLeadPreferredSellerInsert` | OmniDataTransform (Load) | Insere os `LeadPreferredSeller` |
 | `Lead.object` | CustomField | Campos novos: `ExternalRequestId__c`, `ChannelCode__c`, `NationalId__c` |
 
 Endpoint REST nativo (sem Apex):
@@ -34,12 +34,33 @@ Endpoint REST nativo (sem Apex):
 Os Conditional Blocks são mutuamente exclusivos: exatamente uma Response Action
 dispara por execução.
 
+## Pré-requisito obrigatório: OmniStudio Metadata API Support
+
+`OmniDataTransform`/`OmniProcess` **só deployam via Metadata API se o setting
+"Omnistudio Metadata" estiver habilitado** (Setup → OmniStudio Settings). Enquanto
+estiver OFF, o deploy falha com *"named in package.xml, but was not found in zipped
+directory"* (sintoma observado no Check-Only de 2026-05-29, `State Detail:
+Processing Type: OmniDataTransform`).
+
+Atenção ao ligar:
+- **É irreversível** ("After enabling, this setting can't be disabled").
+- Ao habilitar, a org **valida o nome único de todos os componentes OmniStudio
+  existentes**; nomes com espaço/caractere especial/**underscore** impedem o enable.
+- As config tables (`OmniDataTransformConfig`, `OmniScriptConfig`, etc.) precisam
+  estar sem registros conflitantes.
+
+### Regra de nomes (motivo do rename dos DataRaptors)
+
+O nome único é gerado por: Data Mapper → campo `Name`; Integration Procedure →
+`Type + SubType`. Esses campos **não podem conter underscore**. Por isso os
+DataRaptors foram renomeados de `DR_Lead_Insert` → `DRLeadInsert` etc. A IP
+permanece `GrupoQ_LeadUpsert` (Type `GrupoQ` + SubType `LeadUpsert`; o `_` é só
+separador do fullName).
+
 ## Deploy (Workbench / Metadata API)
 
-1. **Deploy em Check-Only** primeiro (Single Package + Rollback On Error).
-2. O erro anterior "OmniDataTransform ... was not found in zipped directory" ocorreu
-   porque um zip sem a pasta `omniDataTransforms/` foi enviado. Este pacote já inclui
-   os 5 `.omniDataTransform`, então esse erro não deve reaparecer.
+1. Habilitar **Omnistudio Metadata** (ver pré-requisito acima).
+2. **Deploy em Check-Only** primeiro (Single Package + Rollback On Error).
 3. Após o deploy, abrir o `GrupoQ_LeadUpsert` uma vez no OmniStudio Designer para
    recompilar/normalizar o `propertySetConfig` e então **ativar** a versão
    (`isActive` está `false` no metadado).

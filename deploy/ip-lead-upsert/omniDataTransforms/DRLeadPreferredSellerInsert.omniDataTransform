@@ -6,7 +6,7 @@
   DESVIO/NOTA: schema OmniDataTransform montado por melhor conhecimento; validar via Check-Only.
 -->
 <OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
-    <name>DR_LeadPreferredSeller_Insert</name>
+    <name>DRLeadPreferredSellerInsert</name>
     <type>Load</type>
     <inputType>JSON</inputType>
     <outputType>SObject</outputType>

@@ -6,7 +6,7 @@
   DESVIO/NOTA: schema OmniDataTransform montado por melhor conhecimento; validar via Check-Only.
 -->
 <OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
-    <name>DR_Lead_GetByExternalRequestId</name>
+    <name>DRLeadGetByExternalRequestId</name>
     <type>Extract</type>
     <inputType>JSON</inputType>
     <outputType>JSON</outputType>

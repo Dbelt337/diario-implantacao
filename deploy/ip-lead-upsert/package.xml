@@ -11,11 +11,11 @@
         <name>OmniProcess</name>
     </types>
     <types>
-        <members>DR_Lead_GetByExternalRequestId</members>
-        <members>DR_BusinessProfile_GetByCode</members>
-        <members>DR_Lead_Insert</members>
-        <members>DR_LeadLineItem_Insert</members>
-        <members>DR_LeadPreferredSeller_Insert</members>
+        <members>DRLeadGetByExternalRequestId</members>
+        <members>DRBusinessProfileGetByCode</members>
+        <members>DRLeadInsert</members>
+        <members>DRLeadLineItemInsert</members>
+        <members>DRLeadPreferredSellerInsert</members>
         <name>OmniDataTransform</name>
     </types>
     <version>62.0</version>

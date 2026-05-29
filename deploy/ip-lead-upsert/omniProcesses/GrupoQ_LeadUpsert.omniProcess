@@ -75,7 +75,7 @@
         <level>0</level>
         <sequenceNumber>3</sequenceNumber>
         <isActive>true</isActive>
-        <propertySetConfig>{"bundle":"DR_Lead_GetByExternalRequestId","inputMap":{"externalRequestId":"%externalRequestId%"},"outputJSONNode":"DR_Lead_GetByExternalRequestId","responseJSONPath":"","executionConditionalFormula":"%SV_ValidateRequiredFields:isValid% == true"}</propertySetConfig>
+        <propertySetConfig>{"bundle":"DRLeadGetByExternalRequestId","inputMap":{"externalRequestId":"%externalRequestId%"},"outputJSONNode":"DR_Lead_GetByExternalRequestId","responseJSONPath":"","executionConditionalFormula":"%SV_ValidateRequiredFields:isValid% == true"}</propertySetConfig>
     </omniProcessElements>
 
     <!-- ================= [0,4] Duplicado ================= -->
@@ -113,7 +113,7 @@
         <sequenceNumber>1</sequenceNumber>
         <parentElementName>CB_CreateLead</parentElementName>
         <isActive>true</isActive>
-        <propertySetConfig>{"bundle":"DR_BusinessProfile_GetByCode","inputMap":{"dealerCode":"%preferredSellers:0:dealerCode%"},"outputJSONNode":"DR_BusinessProfile_Extract","responseJSONPath":"","executionConditionalFormula":"COUNT(%preferredSellers%) > 0"}</propertySetConfig>
+        <propertySetConfig>{"bundle":"DRBusinessProfileGetByCode","inputMap":{"dealerCode":"%preferredSellers:0:dealerCode%"},"outputJSONNode":"DR_BusinessProfile_Extract","responseJSONPath":"","executionConditionalFormula":"COUNT(%preferredSellers%) > 0"}</propertySetConfig>
     </omniProcessElements>
     <omniProcessElements>
         <name>DPA_Lead_Insert</name>
@@ -122,7 +122,7 @@
         <sequenceNumber>2</sequenceNumber>
         <parentElementName>CB_CreateLead</parentElementName>
         <isActive>true</isActive>
-        <propertySetConfig>{"bundle":"DR_Lead_Insert","inputMap":{"lead":"%lead%","externalRequestId":"%externalRequestId%","channelCode":"%channelCode%"},"outputJSONNode":"DPA_Lead_Insert"}</propertySetConfig>
+        <propertySetConfig>{"bundle":"DRLeadInsert","inputMap":{"lead":"%lead%","externalRequestId":"%externalRequestId%","channelCode":"%channelCode%"},"outputJSONNode":"DPA_Lead_Insert"}</propertySetConfig>
     </omniProcessElements>
     <omniProcessElements>
         <name>DPA_LeadLineItem_Insert</name>
@@ -131,7 +131,7 @@
         <sequenceNumber>3</sequenceNumber>
         <parentElementName>CB_CreateLead</parentElementName>
         <isActive>true</isActive>
-        <propertySetConfig>{"bundle":"DR_LeadLineItem_Insert","inputMap":{"lineItems":"%lineItems%","leadId":"%DPA_Lead_Insert:insertedLead:Id%"},"outputJSONNode":"DPA_LeadLineItem_Insert","executionConditionalFormula":"COUNT(%lineItems%) > 0"}</propertySetConfig>
+        <propertySetConfig>{"bundle":"DRLeadLineItemInsert","inputMap":{"lineItems":"%lineItems%","leadId":"%DPA_Lead_Insert:insertedLead:Id%"},"outputJSONNode":"DPA_LeadLineItem_Insert","executionConditionalFormula":"COUNT(%lineItems%) > 0"}</propertySetConfig>
     </omniProcessElements>
     <omniProcessElements>
         <name>DPA_LeadPreferredSeller_Insert</name>
@@ -140,7 +140,7 @@
         <sequenceNumber>4</sequenceNumber>
         <parentElementName>CB_CreateLead</parentElementName>
         <isActive>true</isActive>
-        <propertySetConfig>{"bundle":"DR_LeadPreferredSeller_Insert","inputMap":{"preferredSellers":"%preferredSellers%","leadId":"%DPA_Lead_Insert:insertedLead:Id%","resolvedAccountId":"%DR_BusinessProfile_Extract:resolvedAccountId%"},"outputJSONNode":"DPA_LeadPreferredSeller_Insert","executionConditionalFormula":"COUNT(%preferredSellers%) > 0"}</propertySetConfig>
+        <propertySetConfig>{"bundle":"DRLeadPreferredSellerInsert","inputMap":{"preferredSellers":"%preferredSellers%","leadId":"%DPA_Lead_Insert:insertedLead:Id%","resolvedAccountId":"%DR_BusinessProfile_Extract:resolvedAccountId%"},"outputJSONNode":"DPA_LeadPreferredSeller_Insert","executionConditionalFormula":"COUNT(%preferredSellers%) > 0"}</propertySetConfig>
     </omniProcessElements>
     <omniProcessElements>
         <name>RA_SuccessResponse</name>
