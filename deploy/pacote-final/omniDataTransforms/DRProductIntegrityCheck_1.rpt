@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DRProductIntegrityCheck (DEC-04): dado um productId reusado da consulta, confirma
+  que o Product2 existe e esta IsActive=true. Retorna Id/Name/Family/IsActive no no
+  product; a IP decide (warning PRODUCT_NOT_FOUND se vazio ou IsActive=false).
+  Campos padrao Product2. Filtro por Id (input-keyed), padrao do molde validado.
+-->
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <assignmentRulesUsed>false</assignmentRulesUsed>
+    <deletedOnSuccess>false</deletedOnSuccess>
+    <errorIgnored>false</errorIgnored>
+    <fieldLevelSecurityEnabled>true</fieldLevelSecurityEnabled>
+    <inputType>JSON</inputType>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <name>DRProductIntegrityCheck</name>
+    <nullInputsIncludedInOutput>false</nullInputsIncludedInOutput>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterDataType>TEXTAREA</filterDataType>
+        <filterGroup>0.0</filterGroup>
+        <filterOperator>=</filterOperator>
+        <filterValue>productId</filterValue>
+        <globalKey>c0ec6360-4401-40d7-ba71-d141a585d9bb</globalKey>
+        <inputFieldName>Id</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>1.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductIntegrityCheck</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>af704e4d-7f70-4b76-a773-ab875f4194ff</globalKey>
+        <inputFieldName>Id</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductIntegrityCheck</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>3bb0da51-1fec-4dd0-82a0-52519c0283c3</globalKey>
+        <inputFieldName>Name</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductIntegrityCheck</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>a473c952-a837-4d5d-8f1a-33c39e01ec62</globalKey>
+        <inputFieldName>Family</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductIntegrityCheck</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>3010ddca-9d03-4ce9-bd01-c4809d018975</globalKey>
+        <inputFieldName>IsActive</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductIntegrityCheck</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>product</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <outputType>JSON</outputType>
+    <previewJsonData>{
+  &quot;productId&quot; : &quot;01t5h00000XXXXXAAA&quot;
+}</previewJsonData>
+    <processSuperBulk>false</processSuperBulk>
+    <responseCacheTtlMinutes>0.0</responseCacheTtlMinutes>
+    <rollbackOnError>false</rollbackOnError>
+    <sourceObjectDefault>false</sourceObjectDefault>
+    <synchronousProcessThreshold>0.0</synchronousProcessThreshold>
+    <type>Turbo Extract</type>
+    <uniqueName>DRProductIntegrityCheck_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+    <xmlDeclarationRemoved>false</xmlDeclarationRemoved>
+</OmniDataTransform>

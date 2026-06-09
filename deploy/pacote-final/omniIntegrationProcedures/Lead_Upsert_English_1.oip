@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Lead_Upsert (final, enxuta). Chama o Data Mapper Load "arvore" DRLeadInsert
+  (montado no Designer: Lead + LeadLineItem + LeadPreferredSeller, com auto-link do
+  LeadId). A IP so orquestra: passa o payload canonico ao Load e responde.
+  IMPORTANTE: DRLeadInsert NAO esta neste pacote - e o Load do seu Designer (o
+  hand-author de Load .rpt nao funciona). Este pacote NAO sobrescreve o seu Load.
+-->
+<OmniIntegrationProcedure xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customJavaScript>{"channelCode":"WEB_MARCA","externalRequestId":"REQ-0001","lead":{"sociedad":"C101","linhaNegocio":"Autos","lastName":"Mendoza","firstName":"Alan","company":"Persona Fisica","leadSource":"Website","email":"alan@buzz.cr","phone":"+50688887777"},"lineItems":[{"productId":"01t5h00000XXXXXAAA","quantity":1,"vehicleCondition":"New"}],"preferredSellers":[{"dealerCode":"C101-URUCA-HYUNDAI","preferredSellerType":"Dealer"}]}</customJavaScript>
+    <elementTypeComponentMapping>{"ElementTypeToHTMLTemplateList":[]}</elementTypeComponentMapping>
+    <isActive>false</isActive>
+    <isIntegProcdSignatureAvl>false</isIntegProcdSignatureAvl>
+    <isIntegrationProcedure>true</isIntegrationProcedure>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <isMetadataCacheDisabled>false</isMetadataCacheDisabled>
+    <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+    <isTestProcedure>false</isTestProcedure>
+    <isWebCompEnabled>false</isWebCompEnabled>
+    <language>English</language>
+    <name>Upsert</name>
+    <omniProcessElements>
+        <description>Cria Lead + filhos via Data Mapper Load arvore (DRLeadInsert)</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>CreateTree</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"sendOnlyAdditionalInput":false,"dataRaptor Input Parameters":[{"inputParam":"lead","element":"lead"},{"inputParam":"lineItems","element":"lineItems"},{"inputParam":"preferredSellers","element":"preferredSellers"},{"inputParam":"externalRequestId","element":"externalRequestId"},{"inputParam":"channelCode","element":"channelCode"}],"returnOnlyAdditionalOutput":false,"elementValueMap":{},"failOnStepError":false,"internalNotes":"","isActive":true,"chainOnStep":false,"returnOnlyFailureResponse":false,"ignoreCache":false,"responseJSONPath":"","responseJSONNode":"createResult","executionConditionalFormula":"","actionMessage":"","sendJSONPath":"","failureConditionalFormula":"","id":"","restOptions":{},"bundle":"DRLeadInsert","sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>1.0</sequenceNumber>
+        <type>DataRaptor Post Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Resposta</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>RespSuccess</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"returnFullDataJSON":true,"returnOnlyAdditionalOutput":false,"elementValueMap":{},"responseFormat":"","isActive":true,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"","additionalOutput":{"status":"success","sociedad":"%lead:sociedad%","externalRequestId":"%externalRequestId%","isDuplicate":false},"sendJSONPath":"","id":"","restOptions":{},"sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>2.0</sequenceNumber>
+        <type>Response Action</type>
+    </omniProcessElements>
+    <omniProcessKey>Lead_Upsert</omniProcessKey>
+    <omniProcessType>Integration Procedure</omniProcessType>
+    <propertySetConfig>{"linkToExternalObject":"","trackingCustomData":{},"includeAllActionsInResponse":true,"columnsPropertyMap":[],"relationshipFieldsMap":[],"labelSingular":"","labelPlural":"","description":"Cria Lead (+ arvore) chamando o Data Mapper Load DRLeadInsert do Designer.","nameColumn":"","rollbackOnError":true,"chainableQueriesLimit":50,"chainableDMLStatementsLimit":null,"chainableCpuLimit":2000,"chainableHeapSizeLimit":null,"chainableDMLRowsLimit":null,"chainableQueryRowsLimit":null,"chainableSoslQueriesLimit":null,"additionalChainableResponse":{},"chainableActualTimeLimit":null}</propertySetConfig>
+    <subType>Upsert</subType>
+    <type>Lead</type>
+    <uniqueName>Lead_Upsert_English_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+</OmniIntegrationProcedure>

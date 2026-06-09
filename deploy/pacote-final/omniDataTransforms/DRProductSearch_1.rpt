@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DRProductSearch (PROBE) - Lead_SearchActiveProducts Passo 1: busca Product2 ativo
+  por texto. Campos padrao Product2.
+  PROBE/TODO-DOC: operador LIKE (texto) e filtro CONSTANTE IsActive=true ainda nao
+  validados no formato .rpt (o molde so tinha "="). Este Check-Only serve pra
+  confirmar a sintaxe. A IP envia searchText ja com curingas (%term%).
+  Decisao em aberto (instrucao): SOQL LIKE (este) vs SOSL via Apex Remote Action
+  para relevancia textual multi-campo. Native-first -> comecamos por SOQL LIKE.
+-->
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <assignmentRulesUsed>false</assignmentRulesUsed>
+    <deletedOnSuccess>false</deletedOnSuccess>
+    <errorIgnored>false</errorIgnored>
+    <fieldLevelSecurityEnabled>true</fieldLevelSecurityEnabled>
+    <inputType>JSON</inputType>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <name>DRProductSearch</name>
+    <nullInputsIncludedInOutput>false</nullInputsIncludedInOutput>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterDataType>TEXTAREA</filterDataType>
+        <filterGroup>0.0</filterGroup>
+        <filterOperator>LIKE</filterOperator>
+        <filterValue>searchText</filterValue>
+        <globalKey>9e1113e3-12cd-4a4e-b255-7ad25219831a</globalKey>
+        <inputFieldName>Name</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>1.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductSearch</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>products</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterDataType>TEXTAREA</filterDataType>
+        <filterGroup>0.0</filterGroup>
+        <filterOperator>=</filterOperator>
+        <filterValue>true</filterValue>
+        <globalKey>c24395ff-ca20-44ef-8ace-3a055f2e2a64</globalKey>
+        <inputFieldName>IsActive</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>1.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductSearch</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>products</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>5e8fb955-51fc-41d3-ab37-a5f3cec005d5</globalKey>
+        <inputFieldName>Id</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductSearch</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>products</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>363ff9d4-99a5-43a6-b40a-fad71a31b255</globalKey>
+        <inputFieldName>Name</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductSearch</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>products</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>637f7a67-db91-4fae-bf09-f91b43f2faf1</globalKey>
+        <inputFieldName>ProductCode</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductSearch</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>products</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>90824c12-af6b-4bef-898a-531e71de7357</globalKey>
+        <inputFieldName>Family</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductSearch</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>products</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>c68aff57-f882-425d-823c-1cdefff919f5</globalKey>
+        <inputFieldName>IsActive</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductSearch</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>products</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>6d1fd54d-89ae-4df9-8011-92136d82ea66</globalKey>
+        <inputFieldName>BusinessBrandId</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductSearch</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>products</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>a5a8d2f2-dc90-4ffc-a4d2-1efd051e5bf8</globalKey>
+        <inputFieldName>MakeName</inputFieldName>
+        <inputObjectName>Product2</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRProductSearch</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>products</outputFieldName>
+        <outputObjectName>Turbo Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <outputType>JSON</outputType>
+    <previewJsonData>{
+  &quot;searchText&quot; : &quot;%Tucson%&quot;
+}</previewJsonData>
+    <processSuperBulk>false</processSuperBulk>
+    <responseCacheTtlMinutes>0.0</responseCacheTtlMinutes>
+    <rollbackOnError>false</rollbackOnError>
+    <sourceObjectDefault>false</sourceObjectDefault>
+    <synchronousProcessThreshold>0.0</synchronousProcessThreshold>
+    <type>Turbo Extract</type>
+    <uniqueName>DRProductSearch_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+    <xmlDeclarationRemoved>false</xmlDeclarationRemoved>
+</OmniDataTransform>
