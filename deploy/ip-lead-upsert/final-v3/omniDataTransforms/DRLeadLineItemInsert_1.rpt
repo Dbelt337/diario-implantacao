@@ -61,7 +61,7 @@
         <linkedObjectSequence>0.0</linkedObjectSequence>
         <name>DRLeadLineItemInsert</name>
         <outputCreationSequence>0.0</outputCreationSequence>
-        <outputFieldName>ProductId</outputFieldName>
+        <outputFieldName>Product2Id</outputFieldName>
         <outputObjectName>LeadLineItem</outputObjectName>
         <requiredForUpsert>false</requiredForUpsert>
         <upsertKey>false</upsertKey>
