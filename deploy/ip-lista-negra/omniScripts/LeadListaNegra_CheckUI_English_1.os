@@ -16,6 +16,10 @@
        nome      (Text)
     ChamaListaNegra (Integration Procedure Action) -> IP LeadListaNegra_Check
        envia { leadId, documento, nome }; resposta no node "consulta"
+       OBS: integrationProcedureKey vai VAZIO de proposito. Se apontar para a IP, o
+       deploy falha com "Couldn't find dependent components INTEGRATION_PROCEDURE
+       [LeadListaNegra_Check]" porque o OmniScript so resolve dependencia de IP ATIVA
+       (a IP sobe inativa no mesmo pacote). Selecione a IP no Designer apos o deploy.
     Step "Resultado"
        MsgResultado (Text Block) mostra %consulta:statusListaNegra% / %consulta:mensagem%
 
@@ -91,7 +95,7 @@
         <level>0.0</level>
         <name>ChamaListaNegra</name>
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
-        <propertySetConfig>{"integrationProcedureKey":"LeadListaNegra_Check","sendOnlyAdditionalInput":true,"additionalInput":{"leadId":"%leadId%","documento":"%documento%","nome":"%nome%"},"returnOnlyAdditionalOutput":false,"responseJSONPath":"","responseJSONNode":"consulta","useFutureMethod":false,"useQueueable":false,"useContinuation":false,"failOnStepError":true,"chainOnStep":false,"isActive":true,"id":"","executionConditionalFormula":"","remoteTimeout":30000}</propertySetConfig>
+        <propertySetConfig>{"integrationProcedureKey":"","sendOnlyAdditionalInput":true,"additionalInput":{"leadId":"%leadId%","documento":"%documento%","nome":"%nome%"},"returnOnlyAdditionalOutput":false,"responseJSONPath":"","responseJSONNode":"consulta","useFutureMethod":false,"useQueueable":false,"useContinuation":false,"failOnStepError":true,"chainOnStep":false,"isActive":true,"id":"","executionConditionalFormula":"","remoteTimeout":30000}</propertySetConfig>
         <sequenceNumber>2.0</sequenceNumber>
         <type>Integration Procedure Action</type>
     </omniProcessElements>
