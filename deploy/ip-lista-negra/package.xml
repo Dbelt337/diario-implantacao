@@ -7,6 +7,7 @@
     </types>
     <types>
         <members>DRLeadListaNegraUpdate_1</members>
+        <members>DRLeadGetForListaNegra_1</members>
         <name>OmniDataTransform</name>
     </types>
     <types>
