@@ -4,17 +4,18 @@ import { LightningElement, api } from 'lwc';
  * Wrapper que permite usar o OmniScript LeadListaNegra/CheckUI como Quick Action
  * (botao no Highlights Panel do Lead, ao lado de Edit/Delete/Clone).
  *
- * O LWC gerado pelo OmniScript nao tem o target lightning__RecordAction, entao nao
- * aparece sozinho no dropdown da New Action. Este wrapper tem esse target e embute
- * o OmniScript, repassando o Id do Lead como ContextId.
+ * No OmniStudio Standard Runtime nao existe um LWC gerado por OmniScript; usa-se o
+ * componente base lightning-omnistudio-omniscript, identificando o script por
+ * type/sub-type/language. Este wrapper tem o target lightning__RecordAction (que o
+ * OmniScript sozinho nao tem) e injeta o Id do Lead via prefill.
  */
 export default class LeadListaNegraAction extends LightningElement {
     // recordId e injetado automaticamente quando o LWC roda como Record Action.
     @api recordId;
 
-    // Parametros entregues ao OmniScript. ContextId = Id do Lead (o SetLeadId do
-    // OmniScript faz leadId = %ContextId%).
-    get omniPrefill() {
-        return JSON.stringify({ ContextId: this.recordId, leadId: this.recordId });
+    // prefill alimenta o Data JSON do OmniScript. O SetLeadId faz leadId = %ContextId%;
+    // mandamos ContextId e leadId para cobrir os dois caminhos.
+    get prefill() {
+        return { ContextId: this.recordId, leadId: this.recordId };
     }
 }

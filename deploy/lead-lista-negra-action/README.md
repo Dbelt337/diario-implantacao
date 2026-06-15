@@ -4,20 +4,18 @@ Wrapper LWC que aparece no Highlights Panel do Lead (ao lado de Edit/Delete/Clon
 e abre o OmniScript `LeadListaNegra/CheckUI` num modal.
 
 ## Por que precisa de wrapper
-O LWC gerado pelo OmniScript **não** tem o target `lightning__RecordAction`, então
-não aparece no dropdown "Lightning Web Component" da New Action. Este wrapper tem o
-target e **embute** o OmniScript, repassando o Id do Lead como `ContextId`.
+O OmniScript ativo **não** aparece sozinho no dropdown "Lightning Web Component" da
+New Action (não tem o target `lightning__RecordAction`). No OmniStudio **Standard
+Runtime** também NÃO existe um LWC gerado por OmniScript (isso era do pacote Vlocity).
+Este wrapper:
+- tem o target `lightning__RecordAction` → aparece no dropdown da Action;
+- embute o OmniScript pelo componente base padrão **`lightning-omnistudio-omniscript`**
+  (existe em toda org OmniStudio → o deploy compila, sem dependência de componente gerado);
+- identifica o script por `type=LeadListaNegra`, `sub-type=CheckUI`, `language=English`;
+- injeta o Id do Lead via `prefill` (`ContextId`/`leadId`).
 
-## ⚠️ ANTES de deployar — confirmar o nome do LWC gerado
-O wrapper referencia o componente gerado pelo OmniScript. **Se a tag não bater, o
-deploy falha** (dependência de compilação).
-
-1. Garanta que o OmniScript `LeadListaNegra/CheckUI` está **Ativo**.
-2. **Setup → Custom Code → Lightning Components**, filtre por `LeadListaNegra`
-   (ou `CheckUI`). Anote o **nome exato** do componente gerado.
-3. Convenção esperada (Standard Runtime): `cfLeadListaNegraCheckUIEnglish`
-   → tag em `leadListaNegraAction.html`: `<c-cf-lead-lista-negra-check-u-i-english>`.
-4. Se o nome for diferente, edite a tag em `lwc/leadListaNegraAction/leadListaNegraAction.html`.
+## Pré-requisito
+O OmniScript `LeadListaNegra/CheckUI` precisa estar **Ativo** (já está).
 
 ## Deploy
 ```bash
