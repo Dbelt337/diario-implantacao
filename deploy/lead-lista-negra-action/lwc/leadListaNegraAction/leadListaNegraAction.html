@@ -1,0 +1,18 @@
+<template>
+    <!--
+      A tag abaixo e o LWC que o OmniStudio gera ao ATIVAR o OmniScript.
+      Convencao Standard Runtime: cf<Type><SubType><Language>
+        Type=LeadListaNegra  SubType=CheckUI  Language=English
+        -> cfLeadListaNegraCheckUIEnglish
+        -> tag em kebab-case: <c-cf-lead-lista-negra-check-u-i-english>
+
+      CONFIRME o nome exato em: Setup -> Custom Code -> Lightning Components,
+      filtrando por "LeadListaNegra" (ou "CheckUI"). Se for diferente, troque a tag
+      aqui (o deploy do wrapper FALHA se a tag nao existir, pois e dependencia de compilacao).
+    -->
+    <c-cf-lead-lista-negra-check-u-i-english
+        layout="lightning"
+        record-id={recordId}
+        prefill={omniPrefill}>
+    </c-cf-lead-lista-negra-check-u-i-english>
+</template>
