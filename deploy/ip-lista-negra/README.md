@@ -36,10 +36,17 @@ Lead (record page) ─ Action "Consultar Lista Negra"
 | `objects/Lead.object` | 2 campos novos: `ListaNegraStatus__c` (picklist), `ListaNegraDataConsulta__c` (DateTime) |
 | `omniDataTransforms/DRLeadListaNegraUpdate_1.rpt` | Data Mapper Load: upsert no Lead por Id |
 | `omniIntegrationProcedures/LeadListaNegra_Check_English_1.oip` | IP de consulta (mock) |
+| `omniScripts/LeadListaNegra_CheckUI_English_1.os` | OmniScript da UI (Type=LeadListaNegra, SubType=**CheckUI**) |
 | `package.xml` | Manifesto MDAPI (API 66.0) |
 
-O **OmniScript** e a **Action no Lead** são montados no Designer (passos abaixo) —
-OmniScript é frágil de hand-author, igual fizemos com o Load da árvore.
+> **OmniScript no pacote (best-effort).** O `.os` é metadata hand-authored e a doc
+> oficial está bloqueada (403) neste build, então **deploye em CHECK-ONLY primeiro**
+> (Workbench → Single Package + Rollback On Error). Após deployar, abra UMA vez no
+> Designer: re-selecione a IP `LeadListaNegra_Check` no elemento `ChamaListaNegra`
+> e **Active** (a ativação gera o LWC que aparece no dropdown da Action). O passo a
+> passo manual abaixo continua válido como fallback caso o `.os` não importe limpo.
+> O SubType é **CheckUI** (e não `Check`) de propósito: IP e OmniScript dividem o
+> objeto `OmniProcess`, então o `uniqueName` precisa ser distinto.
 
 ## Deploy
 

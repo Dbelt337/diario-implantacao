@@ -13,5 +13,9 @@
         <members>LeadListaNegra_Check_English_1</members>
         <name>OmniIntegrationProcedure</name>
     </types>
+    <types>
+        <members>LeadListaNegra_CheckUI_English_1</members>
+        <name>OmniScript</name>
+    </types>
     <version>66.0</version>
 </Package>
