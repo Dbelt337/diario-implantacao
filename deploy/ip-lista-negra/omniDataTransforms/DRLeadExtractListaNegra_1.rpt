@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DRLeadExtractListaNegra - Data Mapper EXTRACT (comum, NAO Turbo).
+  Extract comum roda no load do OmniScript (via DataRaptor Extract Action).
+  Recebe { leadId } e retorna node lead[] com Name, NationalId__c, Email, Phone.
+  Merge no OmniScript: %lead:0:Name% , %lead:0:NationalId__c% , etc.
+-->
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <assignmentRulesUsed>false</assignmentRulesUsed>
+    <deletedOnSuccess>false</deletedOnSuccess>
+    <errorIgnored>false</errorIgnored>
+    <fieldLevelSecurityEnabled>true</fieldLevelSecurityEnabled>
+    <inputType>JSON</inputType>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <name>DRLeadExtractListaNegra</name>
+    <nullInputsIncludedInOutput>false</nullInputsIncludedInOutput>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterDataType>TEXTAREA</filterDataType>
+        <filterGroup>0.0</filterGroup>
+        <filterOperator>=</filterOperator>
+        <filterValue>leadId</filterValue>
+        <globalKey>b2e4d6a1-2001-4c3d-8e4f-300000000001</globalKey>
+        <inputFieldName>Id</inputFieldName>
+        <inputObjectName>Lead</inputObjectName>
+        <inputObjectQuerySequence>1.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadExtractListaNegra</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>lead</outputFieldName>
+        <outputObjectName>Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>b2e4d6a1-2001-4c3d-8e4f-300000000002</globalKey>
+        <inputFieldName>Name</inputFieldName>
+        <inputObjectName>Lead</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadExtractListaNegra</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>lead:Name</outputFieldName>
+        <outputObjectName>Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>b2e4d6a1-2001-4c3d-8e4f-300000000003</globalKey>
+        <inputFieldName>NationalId__c</inputFieldName>
+        <inputObjectName>Lead</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadExtractListaNegra</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>lead:NationalId__c</outputFieldName>
+        <outputObjectName>Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>b2e4d6a1-2001-4c3d-8e4f-300000000004</globalKey>
+        <inputFieldName>Email</inputFieldName>
+        <inputObjectName>Lead</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadExtractListaNegra</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>lead:Email</outputFieldName>
+        <outputObjectName>Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <filterGroup>0.0</filterGroup>
+        <globalKey>b2e4d6a1-2001-4c3d-8e4f-300000000005</globalKey>
+        <inputFieldName>Phone</inputFieldName>
+        <inputObjectName>Lead</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadExtractListaNegra</name>
+        <outputCreationSequence>1.0</outputCreationSequence>
+        <outputFieldName>lead:Phone</outputFieldName>
+        <outputObjectName>Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <outputType>JSON</outputType>
+    <previewJsonData>{
+  &quot;leadId&quot; : &quot;00QWK00000OGZyU2AX&quot;
+}</previewJsonData>
+    <processSuperBulk>false</processSuperBulk>
+    <responseCacheTtlMinutes>0.0</responseCacheTtlMinutes>
+    <rollbackOnError>false</rollbackOnError>
+    <sourceObjectDefault>false</sourceObjectDefault>
+    <synchronousProcessThreshold>0.0</synchronousProcessThreshold>
+    <type>Extract</type>
+    <uniqueName>DRLeadExtractListaNegra_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+    <xmlDeclarationRemoved>false</xmlDeclarationRemoved>
+</OmniDataTransform>
