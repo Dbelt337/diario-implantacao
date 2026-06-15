@@ -61,7 +61,7 @@
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
         <parentElementName>StepDados</parentElementName>
         <propertySetConfig>{"elementValueMap":{"leadId":"%ContextId%"},"isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
-        <sequenceNumber>1.0</sequenceNumber>
+        <sequenceNumber>2.0</sequenceNumber>
         <type>Set Values</type>
     </omniProcessElements>
     <omniProcessElements>
@@ -73,7 +73,7 @@
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
         <parentElementName>StepDados</parentElementName>
         <propertySetConfig>{"label":"Documento","required":true,"readOnly":false,"hide":false,"placeholder":"Ex.: 1-2345-6789","help":"","helpText":"","isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
-        <sequenceNumber>2.0</sequenceNumber>
+        <sequenceNumber>3.0</sequenceNumber>
         <type>Text</type>
     </omniProcessElements>
     <omniProcessElements>
@@ -85,7 +85,7 @@
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
         <parentElementName>StepDados</parentElementName>
         <propertySetConfig>{"label":"Nome","required":false,"readOnly":false,"hide":false,"placeholder":"Ex.: Juan Perez","isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
-        <sequenceNumber>3.0</sequenceNumber>
+        <sequenceNumber>4.0</sequenceNumber>
         <type>Text</type>
     </omniProcessElements>
     <omniProcessElements>
@@ -96,7 +96,7 @@
         <name>ChamaListaNegra</name>
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
         <propertySetConfig>{"integrationProcedureKey":"","sendOnlyAdditionalInput":true,"additionalInput":{"leadId":"%leadId%","documento":"%documento%","nome":"%nome%"},"returnOnlyAdditionalOutput":false,"responseJSONPath":"","responseJSONNode":"consulta","useFutureMethod":false,"useQueueable":false,"useContinuation":false,"failOnStepError":true,"chainOnStep":false,"isActive":true,"id":"","executionConditionalFormula":"","remoteTimeout":30000}</propertySetConfig>
-        <sequenceNumber>2.0</sequenceNumber>
+        <sequenceNumber>5.0</sequenceNumber>
         <type>Integration Procedure Action</type>
     </omniProcessElements>
     <omniProcessElements>
@@ -107,7 +107,7 @@
         <name>StepResultado</name>
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
         <propertySetConfig>{"label":"Resultado","instructions":"","showSaveBtn":false,"showNextLabel":"Concluir","showPreviousLabel":"Voltar","isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
-        <sequenceNumber>3.0</sequenceNumber>
+        <sequenceNumber>6.0</sequenceNumber>
         <type>Step</type>
     </omniProcessElements>
     <omniProcessElements>
@@ -119,7 +119,7 @@
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
         <parentElementName>StepResultado</parentElementName>
         <propertySetConfig>{"text":"&lt;p&gt;Consulta realizada: &lt;b&gt;%consulta:statusListaNegra%&lt;/b&gt;&lt;/p&gt;&lt;p&gt;%consulta:mensagem%&lt;/p&gt;","isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
-        <sequenceNumber>1.0</sequenceNumber>
+        <sequenceNumber>7.0</sequenceNumber>
         <type>Text Block</type>
     </omniProcessElements>
     <omniProcessType>OmniScript</omniProcessType>
