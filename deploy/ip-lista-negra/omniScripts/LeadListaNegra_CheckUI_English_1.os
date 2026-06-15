@@ -104,7 +104,7 @@
         <level>0.0</level>
         <name>ChamaListaNegra</name>
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
-        <propertySetConfig>{"integrationProcedureKey":"LeadListaNegra_Check","sendOnlyAdditionalInput":true,"additionalInput":{"leadId":"%leadId%","documento":"%documento%","nome":"%nome%"},"returnOnlyAdditionalOutput":false,"responseJSONPath":"","responseJSONNode":"consulta","useFutureMethod":false,"useQueueable":false,"useContinuation":false,"failOnStepError":true,"chainOnStep":false,"isActive":true,"id":"","executionConditionalFormula":"","remoteTimeout":30000}</propertySetConfig>
+        <propertySetConfig>{"integrationProcedureKey":"","sendOnlyAdditionalInput":true,"additionalInput":{"leadId":"%leadId%","documento":"%documento%","nome":"%nome%"},"returnOnlyAdditionalOutput":false,"responseJSONPath":"","responseJSONNode":"consulta","useFutureMethod":false,"useQueueable":false,"useContinuation":false,"failOnStepError":true,"chainOnStep":false,"isActive":true,"id":"","executionConditionalFormula":"","remoteTimeout":30000}</propertySetConfig>
         <sequenceNumber>7.0</sequenceNumber>
         <type>Integration Procedure Action</type>
     </omniProcessElements>
