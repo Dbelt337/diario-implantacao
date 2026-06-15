@@ -43,7 +43,7 @@
         <linkedObjectSequence>0.0</linkedObjectSequence>
         <name>DRLeadExtractListaNegra</name>
         <outputCreationSequence>1.0</outputCreationSequence>
-        <outputFieldName>lead:Name</outputFieldName>
+        <outputFieldName>lead</outputFieldName>
         <outputObjectName>Extract</outputObjectName>
         <requiredForUpsert>false</requiredForUpsert>
         <upsertKey>false</upsertKey>
@@ -58,7 +58,7 @@
         <linkedObjectSequence>0.0</linkedObjectSequence>
         <name>DRLeadExtractListaNegra</name>
         <outputCreationSequence>1.0</outputCreationSequence>
-        <outputFieldName>lead:NationalId__c</outputFieldName>
+        <outputFieldName>lead</outputFieldName>
         <outputObjectName>Extract</outputObjectName>
         <requiredForUpsert>false</requiredForUpsert>
         <upsertKey>false</upsertKey>
@@ -73,7 +73,7 @@
         <linkedObjectSequence>0.0</linkedObjectSequence>
         <name>DRLeadExtractListaNegra</name>
         <outputCreationSequence>1.0</outputCreationSequence>
-        <outputFieldName>lead:Email</outputFieldName>
+        <outputFieldName>lead</outputFieldName>
         <outputObjectName>Extract</outputObjectName>
         <requiredForUpsert>false</requiredForUpsert>
         <upsertKey>false</upsertKey>
@@ -88,7 +88,7 @@
         <linkedObjectSequence>0.0</linkedObjectSequence>
         <name>DRLeadExtractListaNegra</name>
         <outputCreationSequence>1.0</outputCreationSequence>
-        <outputFieldName>lead:Phone</outputFieldName>
+        <outputFieldName>lead</outputFieldName>
         <outputObjectName>Extract</outputObjectName>
         <requiredForUpsert>false</requiredForUpsert>
         <upsertKey>false</upsertKey>
