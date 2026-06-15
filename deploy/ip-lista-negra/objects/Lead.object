@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  GrupoQ Sales Automotive - Consulta Lista Negra (blacklist check).
+  Campos novos no Lead para registrar o resultado da consulta ao servico externo.
+  Formato MDAPI tradicional: o upsert no objeto standard Lead NAO remove campos
+  existentes (NationalId__c, Brand__c, Sociedad__c etc. permanecem intactos).
+  O documento do cliente reutiliza o campo ja existente NationalId__c.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>ListaNegraStatus__c</fullName>
+        <label>Status Lista Negra</label>
+        <type>Picklist</type>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Pendente</fullName>
+                    <default>true</default>
+                    <label>Pendente</label>
+                </value>
+                <value>
+                    <fullName>OK - Sem Restricao</fullName>
+                    <default>false</default>
+                    <label>OK - Sem Restricao</label>
+                </value>
+                <value>
+                    <fullName>Com Restricao</fullName>
+                    <default>false</default>
+                    <label>Com Restricao</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ListaNegraDataConsulta__c</fullName>
+        <label>Data Consulta Lista Negra</label>
+        <type>DateTime</type>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+    </fields>
+</CustomObject>

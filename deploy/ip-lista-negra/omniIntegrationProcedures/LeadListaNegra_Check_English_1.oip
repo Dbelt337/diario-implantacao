@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IP LeadListaNegra_Check (MOCK). Recebe { leadId, documento, nome } do OmniScript,
+  simula a consulta ao servico externo de lista negra (Set Values), grava o
+  resultado no Lead via Data Mapper Load DRLeadListaNegraUpdate e responde.
+
+  Para plugar o servico REAL:
+    1) Crie um Named Credential apontando para a API de lista negra.
+    2) Substitua o elemento "SimulaServico" (Set Values) por um "HTTP Action"
+       (ou Remote Action) usando esse Named Credential, mapeando documento/nome
+       no request e lendo o flag de restricao no response para "servico:temRestricao".
+    3) Para tratar o caso "Com Restricao", troque o literal de "DefineStatus" por
+       um Conditional Block (ou formula IF) sobre %servico:temRestricao%.
+
+  OBS: ao abrir no Designer, RE-SELECIONE o bundle DRLeadListaNegraUpdate no dropdown
+  do elemento GravaLead (colar JSON nao faz o bind) e confirme os Set Values.
+-->
+<OmniIntegrationProcedure xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customJavaScript>{"leadId":"00QXXXXXXXXXXXXXXX","documento":"1-2345-6789","nome":"Juan Perez"}</customJavaScript>
+    <elementTypeComponentMapping>{"ElementTypeToHTMLTemplateList":[]}</elementTypeComponentMapping>
+    <isActive>false</isActive>
+    <isIntegProcdSignatureAvl>false</isIntegProcdSignatureAvl>
+    <isIntegrationProcedure>true</isIntegrationProcedure>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <isMetadataCacheDisabled>false</isMetadataCacheDisabled>
+    <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+    <isTestProcedure>false</isTestProcedure>
+    <isWebCompEnabled>false</isWebCompEnabled>
+    <language>English</language>
+    <name>Check</name>
+    <omniProcessElements>
+        <description>MOCK do servico externo: simula resposta sem restricao. Trocar por HTTP Action.</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>SimulaServico</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"elementValueMap":{"servico:temRestricao":"false","servico:mensagem":"Nenhuma restricao encontrada na base de lista negra"},"isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
+        <sequenceNumber>1.0</sequenceNumber>
+        <type>Set Values</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Define status e data da consulta a partir do retorno do servico.</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>DefineStatus</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"elementValueMap":{"statusListaNegra":"OK - Sem Restricao","dataConsulta":"=NOW()"},"isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
+        <sequenceNumber>2.0</sequenceNumber>
+        <type>Set Values</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Grava resultado no Lead via Data Mapper Load DRLeadListaNegraUpdate (upsert por Id).</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>GravaLead</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"sendOnlyAdditionalInput":false,"dataRaptor Input Parameters":[{"inputParam":"leadId","element":"leadId"},{"inputParam":"statusListaNegra","element":"statusListaNegra"},{"inputParam":"dataConsulta","element":"dataConsulta"}],"returnOnlyAdditionalOutput":false,"elementValueMap":{},"failOnStepError":true,"internalNotes":"","isActive":true,"chainOnStep":false,"returnOnlyFailureResponse":false,"ignoreCache":false,"responseJSONPath":"","responseJSONNode":"saveResult","executionConditionalFormula":"","actionMessage":"","sendJSONPath":"","failureConditionalFormula":"","id":"","restOptions":{},"bundle":"DRLeadListaNegraUpdate","sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>3.0</sequenceNumber>
+        <type>DataRaptor Post Action</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Resposta enxuta para o OmniScript.</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>Resposta</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"returnFullDataJSON":false,"returnOnlyAdditionalOutput":true,"elementValueMap":{},"responseFormat":"","isActive":true,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"","additionalOutput":{"status":"success","statusListaNegra":"%statusListaNegra%","mensagem":"%servico:mensagem%","leadId":"%leadId%"},"sendJSONPath":"","id":"","restOptions":{},"sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>4.0</sequenceNumber>
+        <type>Response Action</type>
+    </omniProcessElements>
+    <omniProcessKey>LeadListaNegra_Check</omniProcessKey>
+    <omniProcessType>Integration Procedure</omniProcessType>
+    <propertySetConfig>{"linkToExternalObject":"","trackingCustomData":{},"includeAllActionsInResponse":false,"columnsPropertyMap":[],"relationshipFieldsMap":[],"labelSingular":"","labelPlural":"","description":"Consulta lista negra (mock) e grava resultado no Lead.","nameColumn":"","rollbackOnError":true,"chainableQueriesLimit":50,"chainableDMLStatementsLimit":null,"chainableCpuLimit":2000,"chainableHeapSizeLimit":null,"chainableDMLRowsLimit":null,"chainableQueryRowsLimit":null,"chainableSoslQueriesLimit":null,"additionalChainableResponse":{},"chainableActualTimeLimit":null}</propertySetConfig>
+    <subType>Check</subType>
+    <type>LeadListaNegra</type>
+    <uniqueName>LeadListaNegra_Check_English_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+</OmniIntegrationProcedure>

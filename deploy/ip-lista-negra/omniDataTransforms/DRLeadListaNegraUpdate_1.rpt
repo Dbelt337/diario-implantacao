@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DRLeadListaNegraUpdate - Data Mapper Load (upsert no Lead por Id).
+  Grava o resultado da consulta a lista negra no Lead.
+  Se o deploy deste .rpt falhar (hand-author de Load as vezes nao cola),
+  monte-o no OmniStudio Designer com estes 3 mapeamentos (ver README).
+-->
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <assignmentRulesUsed>false</assignmentRulesUsed>
+    <deletedOnSuccess>false</deletedOnSuccess>
+    <errorIgnored>false</errorIgnored>
+    <fieldLevelSecurityEnabled>true</fieldLevelSecurityEnabled>
+    <inputType>JSON</inputType>
+    <isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+    <name>DRLeadListaNegraUpdate</name>
+    <nullInputsIncludedInOutput>false</nullInputsIncludedInOutput>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <globalKey>8eb68f92-5205-4857-99d9-8f47f074a5b3</globalKey>
+        <inputFieldName>leadId</inputFieldName>
+        <inputObjectName>Lead</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadListaNegraUpdate</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>Id</outputFieldName>
+        <outputObjectName>Lead</outputObjectName>
+        <requiredForUpsert>true</requiredForUpsert>
+        <upsertKey>true</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <globalKey>6d8e4fb1-7bd3-4ab9-9af8-d6f8f6ecc4d4</globalKey>
+        <inputFieldName>statusListaNegra</inputFieldName>
+        <inputObjectName>Lead</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadListaNegraUpdate</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>ListaNegraStatus__c</outputFieldName>
+        <outputObjectName>Lead</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
+        <globalKey>981ca11e-1882-4a33-88c7-2445c07190e7</globalKey>
+        <inputFieldName>dataConsulta</inputFieldName>
+        <inputObjectName>Lead</inputObjectName>
+        <inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRLeadListaNegraUpdate</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>ListaNegraDataConsulta__c</outputFieldName>
+        <outputObjectName>Lead</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <outputType>SObject</outputType>
+    <previewJsonData>{
+  &quot;leadId&quot; : &quot;00QXXXXXXXXXXXXXXX&quot;,
+  &quot;statusListaNegra&quot; : &quot;OK - Sem Restricao&quot;,
+  &quot;dataConsulta&quot; : &quot;2026-06-15T14:42:00.000Z&quot;
+}</previewJsonData>
+    <processSuperBulk>false</processSuperBulk>
+    <responseCacheTtlMinutes>0.0</responseCacheTtlMinutes>
+    <rollbackOnError>false</rollbackOnError>
+    <sourceObjectDefault>false</sourceObjectDefault>
+    <synchronousProcessThreshold>0.0</synchronousProcessThreshold>
+    <type>Load</type>
+    <uniqueName>DRLeadListaNegraUpdate_1</uniqueName>
+    <versionNumber>1.0</versionNumber>
+    <xmlDeclarationRemoved>false</xmlDeclarationRemoved>
+</OmniDataTransform>
