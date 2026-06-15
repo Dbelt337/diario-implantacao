@@ -29,25 +29,36 @@
     <language>English</language>
     <name>Check</name>
     <omniProcessElements>
-        <description>MOCK do servico externo: simula resposta sem restricao. Trocar por HTTP Action.</description>
+        <description>MOCK - caminho COM restricao: dispara quando documento = 00000000 (sentinela de teste). Trocar a condicao pelo retorno do servico real.</description>
         <isActive>true</isActive>
         <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
         <level>0.0</level>
-        <name>SimulaServico</name>
+        <name>SimulaComRestricao</name>
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
-        <propertySetConfig>{"elementValueMap":{"servico:temRestricao":"false","servico:mensagem":"Nenhuma restricao encontrada na base de lista negra"},"isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
+        <propertySetConfig>{"elementValueMap":{"servico:temRestricao":"true","statusListaNegra":"Com Restricao","servico:mensagem":"Possivel cliente esta em lista negra"},"isActive":true,"id":"","executionConditionalFormula":"%documento% == \"00000000\""}</propertySetConfig>
         <sequenceNumber>1.0</sequenceNumber>
         <type>Set Values</type>
     </omniProcessElements>
     <omniProcessElements>
-        <description>Define status e data da consulta a partir do retorno do servico.</description>
+        <description>MOCK - caminho SEM restricao: dispara para qualquer documento diferente de 00000000.</description>
         <isActive>true</isActive>
         <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
         <level>0.0</level>
-        <name>DefineStatus</name>
+        <name>SimulaSemRestricao</name>
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
-        <propertySetConfig>{"elementValueMap":{"statusListaNegra":"OK - Sem Restricao","dataConsulta":"=NOW()"},"isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
+        <propertySetConfig>{"elementValueMap":{"servico:temRestricao":"false","statusListaNegra":"OK - Sem Restricao","servico:mensagem":"Lista negra consultada com sucesso"},"isActive":true,"id":"","executionConditionalFormula":"%documento% != \"00000000\""}</propertySetConfig>
         <sequenceNumber>2.0</sequenceNumber>
+        <type>Set Values</type>
+    </omniProcessElements>
+    <omniProcessElements>
+        <description>Carimba a data/hora da consulta (sempre executa).</description>
+        <isActive>true</isActive>
+        <isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+        <level>0.0</level>
+        <name>SetDataConsulta</name>
+        <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+        <propertySetConfig>{"elementValueMap":{"dataConsulta":"=NOW()"},"isActive":true,"id":"","executionConditionalFormula":""}</propertySetConfig>
+        <sequenceNumber>3.0</sequenceNumber>
         <type>Set Values</type>
     </omniProcessElements>
     <omniProcessElements>
@@ -58,7 +69,7 @@
         <name>GravaLead</name>
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
         <propertySetConfig>{"sendOnlyAdditionalInput":false,"dataRaptor Input Parameters":[{"inputParam":"leadId","element":"leadId"},{"inputParam":"statusListaNegra","element":"statusListaNegra"},{"inputParam":"dataConsulta","element":"dataConsulta"}],"returnOnlyAdditionalOutput":false,"elementValueMap":{},"failOnStepError":true,"internalNotes":"","isActive":true,"chainOnStep":false,"returnOnlyFailureResponse":false,"ignoreCache":false,"responseJSONPath":"","responseJSONNode":"saveResult","executionConditionalFormula":"","actionMessage":"","sendJSONPath":"","failureConditionalFormula":"","id":"","restOptions":{},"bundle":"DRLeadListaNegraUpdate","sendJSONNode":""}</propertySetConfig>
-        <sequenceNumber>3.0</sequenceNumber>
+        <sequenceNumber>4.0</sequenceNumber>
         <type>DataRaptor Post Action</type>
     </omniProcessElements>
     <omniProcessElements>
@@ -68,8 +79,8 @@
         <level>0.0</level>
         <name>Resposta</name>
         <omniProcessVersionNumber>0.0</omniProcessVersionNumber>
-        <propertySetConfig>{"returnFullDataJSON":false,"returnOnlyAdditionalOutput":true,"elementValueMap":{},"responseFormat":"","isActive":true,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"","additionalOutput":{"status":"success","statusListaNegra":"%statusListaNegra%","mensagem":"%servico:mensagem%","leadId":"%leadId%"},"sendJSONPath":"","id":"","restOptions":{},"sendJSONNode":""}</propertySetConfig>
-        <sequenceNumber>4.0</sequenceNumber>
+        <propertySetConfig>{"returnFullDataJSON":false,"returnOnlyAdditionalOutput":true,"elementValueMap":{},"responseFormat":"","isActive":true,"responseJSONPath":"","responseJSONNode":"","executionConditionalFormula":"","additionalOutput":{"status":"success","temRestricao":"%servico:temRestricao%","statusListaNegra":"%statusListaNegra%","mensagem":"%servico:mensagem%","leadId":"%leadId%"},"sendJSONPath":"","id":"","restOptions":{},"sendJSONNode":""}</propertySetConfig>
+        <sequenceNumber>5.0</sequenceNumber>
         <type>Response Action</type>
     </omniProcessElements>
     <omniProcessKey>LeadListaNegra_Check</omniProcessKey>

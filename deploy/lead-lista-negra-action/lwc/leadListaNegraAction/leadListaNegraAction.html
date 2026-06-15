@@ -1,14 +1,15 @@
 <template>
     <!--
-      OmniStudio Standard Runtime: embute o OmniScript pelo componente base padrao
-      lightning-omnistudio-omniscript (existe em toda org OmniStudio, sem dependencia
-      de componente gerado). Identificacao = type + sub-type + language.
-      prefill injeta o Id do Lead (ContextId/leadId) no Data JSON do OmniScript.
+      Renderiza o OmniScript somente apos carregar os dados do Lead, para o modal
+      ja subir com nome/documento preenchidos (prefill).
+      lightning-omnistudio-omniscript: componente base do OmniStudio Standard Runtime.
     -->
-    <lightning-omnistudio-omniscript
-        type="LeadListaNegra"
-        sub-type="CheckUI"
-        language="English"
-        prefill={prefill}>
-    </lightning-omnistudio-omniscript>
+    <template if:true={ready}>
+        <lightning-omnistudio-omniscript
+            type="LeadListaNegra"
+            sub-type="CheckUI"
+            language="English"
+            prefill={prefill}>
+        </lightning-omnistudio-omniscript>
+    </template>
 </template>
