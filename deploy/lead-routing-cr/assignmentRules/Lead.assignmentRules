@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Lead_Routing_GrupoQ - regra unica do objeto Lead (o AssignmentRules e UM arquivo
-  por objeto e contem TODAS as regras). Este deploy SOBRESCREVE a regra inteira,
-  migrando do padrao antigo (por pais) para Sociedad + Linha de Negocio.
-  Escopo: Costa Rica (C101, C105). Sem Motos em CR.
-  Fallback (so Sociedad, sem Linha) e a ULTIMA entrada - regras avaliam em ordem
-  e param na primeira que casa.
--->
 <AssignmentRules xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignmentRule>
         <fullName>Lead_Routing_GrupoQ</fullName>
         <active>true</active>
         <ruleEntries>
-            <!-- C101 Autos -->
             <assignedTo>Leads_C101_Autos</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
@@ -27,7 +18,6 @@
             </criteriaItems>
         </ruleEntries>
         <ruleEntries>
-            <!-- C105 Autos -->
             <assignedTo>Leads_C105_Autos</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
@@ -42,7 +32,6 @@
             </criteriaItems>
         </ruleEntries>
         <ruleEntries>
-            <!-- CR Frotas (C101 ou C105) -->
             <assignedTo>Leads_CR_Frotas</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
@@ -57,7 +46,6 @@
             </criteriaItems>
         </ruleEntries>
         <ruleEntries>
-            <!-- CR Usados (C101 ou C105) -->
             <assignedTo>Leads_CR_Usados</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
@@ -72,7 +60,6 @@
             </criteriaItems>
         </ruleEntries>
         <ruleEntries>
-            <!-- Fallback CR: Sociedade CR sem linha que casou acima (ULTIMA) -->
             <assignedTo>Leads_CR_Offline</assignedTo>
             <assignedToType>Queue</assignedToType>
             <criteriaItems>
