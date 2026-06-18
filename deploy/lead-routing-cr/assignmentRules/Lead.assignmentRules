@@ -2,9 +2,8 @@
 <AssignmentRules xmlns="http://soap.sforce.com/2006/04/metadata">
     <assignmentRule>
         <fullName>Lead_Routing_GrupoQ</fullName>
+        <active>true</active>
         <ruleEntries>
-            <assignedTo>Leads_C101_Autos</assignedTo>
-            <assignedToType>Queue</assignedToType>
             <criteriaItems>
                 <field>Lead.Sociedad__c</field>
                 <operation>equals</operation>
@@ -15,10 +14,10 @@
                 <operation>equals</operation>
                 <value>Autos</value>
             </criteriaItems>
+            <assignedTo>Leads_C101_Autos</assignedTo>
+            <assignedToType>Queue</assignedToType>
         </ruleEntries>
         <ruleEntries>
-            <assignedTo>Leads_C105_Autos</assignedTo>
-            <assignedToType>Queue</assignedToType>
             <criteriaItems>
                 <field>Lead.Sociedad__c</field>
                 <operation>equals</operation>
@@ -29,10 +28,10 @@
                 <operation>equals</operation>
                 <value>Autos</value>
             </criteriaItems>
+            <assignedTo>Leads_C105_Autos</assignedTo>
+            <assignedToType>Queue</assignedToType>
         </ruleEntries>
         <ruleEntries>
-            <assignedTo>Leads_CR_Frotas</assignedTo>
-            <assignedToType>Queue</assignedToType>
             <criteriaItems>
                 <field>Lead.Sociedad__c</field>
                 <operation>equals</operation>
@@ -43,10 +42,10 @@
                 <operation>equals</operation>
                 <value>Frotas</value>
             </criteriaItems>
+            <assignedTo>Leads_CR_Frotas</assignedTo>
+            <assignedToType>Queue</assignedToType>
         </ruleEntries>
         <ruleEntries>
-            <assignedTo>Leads_CR_Usados</assignedTo>
-            <assignedToType>Queue</assignedToType>
             <criteriaItems>
                 <field>Lead.Sociedad__c</field>
                 <operation>equals</operation>
@@ -57,16 +56,17 @@
                 <operation>equals</operation>
                 <value>Usados</value>
             </criteriaItems>
+            <assignedTo>Leads_CR_Usados</assignedTo>
+            <assignedToType>Queue</assignedToType>
         </ruleEntries>
         <ruleEntries>
-            <assignedTo>Leads_CR_Offline</assignedTo>
-            <assignedToType>Queue</assignedToType>
             <criteriaItems>
                 <field>Lead.Sociedad__c</field>
                 <operation>equals</operation>
                 <value>C101,C105</value>
             </criteriaItems>
+            <assignedTo>Leads_CR_Offline</assignedTo>
+            <assignedToType>Queue</assignedToType>
         </ruleEntries>
-        <active>true</active>
     </assignmentRule>
 </AssignmentRules>
