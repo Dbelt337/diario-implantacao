@@ -42,6 +42,24 @@
     </omniDataTransformItem>
     <omniDataTransformItem>
         <disabled>false</disabled>
+        <filterDataType>STRING</filterDataType>
+        <filterGroup>0.0</filterGroup>
+        <filterOperator>=</filterOperator>
+        <filterValue>"Sales Dealer"</filterValue>
+        <globalKey>c4f1a2b3-3001-4d5e-9f10-300000000002</globalKey>
+        <inputFieldName>BusinessPartnerType</inputFieldName>
+        <inputObjectName>BusinessProfile</inputObjectName>
+        <inputObjectQuerySequence>1.0</inputObjectQuerySequence>
+        <linkedObjectSequence>0.0</linkedObjectSequence>
+        <name>DRBusinessProfileExtract</name>
+        <outputCreationSequence>0.0</outputCreationSequence>
+        <outputFieldName>dealerLookup</outputFieldName>
+        <outputObjectName>Extract</outputObjectName>
+        <requiredForUpsert>false</requiredForUpsert>
+        <upsertKey>false</upsertKey>
+    </omniDataTransformItem>
+    <omniDataTransformItem>
+        <disabled>false</disabled>
         <filterGroup>0.0</filterGroup>
         <globalKey>c4f1a2b3-3001-4d5e-9f10-300000000003</globalKey>
         <inputFieldName>AccountId</inputFieldName>
