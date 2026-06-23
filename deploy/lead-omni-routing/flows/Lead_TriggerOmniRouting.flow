@@ -197,9 +197,6 @@
         <label>Invocar OmniRouting</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <faultConnector>
-            <targetReference>Log_Falha_Roteamento</targetReference>
-        </faultConnector>
         <flowName>LeadRouting_OmniFlow</flowName>
         <inputAssignments>
             <name>recordId</name>
