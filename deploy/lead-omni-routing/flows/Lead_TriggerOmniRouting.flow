@@ -1,30 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Lead_TriggerOmniRouting - Record-Triggered Flow (CORRIGIDO + sem Id hardcoded)
-  ----------------------------------------------------------------------------
-  Dispara o roteamento Omni-Channel do Lead chamando o Omni-Channel Flow
-  LeadRouting_OmniFlow (Route Work: Lead_Channel + SkillsBased + RunSBRRules).
+  Lead_TriggerOmniRouting : Record-Triggered Flow (sem Id hardcoded).
+  Dispara o roteamento Omni-Channel chamando o Omni-Channel Flow
+  LeadRouting_OmniFlow (Route Work: Lead_Channel, SkillsBased, RunSBRRules).
 
-  >>> SEM Id de fila/config hardcoded <<<
-  O routingConfigId e' resolvido EM RUNTIME: faz Get Records no Group (Queue)
-  pela DeveloperName 'Queue_Vendedores_CR' (estavel entre ambientes) e pega o
-  campo QueueRoutingConfigId. Esse Id e' passado pro LeadRouting_OmniFlow como
-  variavel (routingConfigId). Assim nada de Id muda entre dev/UAT/prod.
+  SEM Id de fila/config hardcoded: o routingConfigId e' resolvido em RUNTIME via
+  Get Records no Group (Queue) pela DeveloperName 'Queue_Vendedores_CR' (estavel
+  entre ambientes), pegando o campo QueueRoutingConfigId e passando para o
+  LeadRouting_OmniFlow como variavel. Nada de Id muda entre dev, UAT e prod.
 
-  Logica:
-    Start (Create/Update, async after commit)
-      entry: Marca__c preenchido E IsConverted=false E Sociedad CR (C101/C105)
-      anti-redisparo: doesRequireRecordChangedToMeetCriteria=true
-        -> Get_Queue_CR (Group WHERE DeveloperName='Queue_Vendedores_CR')
-           -> Check_Config (QueueRoutingConfigId != null?)
-               SIM -> Invocar_OmniRouting (subflow LeadRouting_OmniFlow,
-                        recordId + routingConfigId) -- fault -> Log_Falha_Roteamento
-               NAO -> Log_Falha_Config (Task avisando que a fila nao tem config)
+  Logica: Start (Create/Update, async after commit), entry = Marca__c preenchido
+  E IsConverted=false E Sociedad em (C101, C105); anti-redisparo
+  (doesRequireRecordChangedToMeetCriteria=true). Get_Queue_CR, depois Check_Config
+  (tem QueueRoutingConfigId?): se sim chama o subflow; se nao cria Task de aviso.
+  Fault do subflow cria Task de erro.
 
-  ESCOPO: Costa Rica (Sociedad C101/C105 + fila Queue_Vendedores_CR).
-  Para outros paises: trocar a Sociedad da entry criteria e a DeveloperName da
-  fila no Get_Queue_CR (ou um Decision por prefixo de Sociedad escolhendo a fila).
-  Nada de Id muda - so DeveloperName.
+  ESCOPO: Costa Rica. Para outros paises, trocar a Sociedad da entry criteria e a
+  DeveloperName da fila no Get_Queue_CR. Nada de Id muda, so DeveloperName.
 -->
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>66.0</apiVersion>
