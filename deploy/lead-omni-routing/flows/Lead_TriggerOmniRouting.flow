@@ -168,14 +168,14 @@
             </value>
         </filters>
         <filters>
-            <field>Sociedad__c</field>
+            <field>CompanyCode__c</field>
             <operator>EqualTo</operator>
             <value>
                 <stringValue>C101</stringValue>
             </value>
         </filters>
         <filters>
-            <field>Sociedad__c</field>
+            <field>CompanyCode__c</field>
             <operator>EqualTo</operator>
             <value>
                 <stringValue>C105</stringValue>
