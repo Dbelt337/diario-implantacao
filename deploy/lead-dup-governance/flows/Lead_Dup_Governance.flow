@@ -191,6 +191,11 @@ IF(ISBLANK({!Get_Duplicado.LastActivityDate}), DATEVALUE({!Get_Duplicado.Created
 IF({!Get_Dono_Dup.VendedorOnline__c}, 6, 3))</expression>
     </formulas>
     <formulas>
+        <name>nomeLead</name>
+        <dataType>String</dataType>
+        <expression>TRIM(BLANKVALUE({!$Record.FirstName}, "") &amp; " " &amp; BLANKVALUE({!$Record.LastName}, ""))</expression>
+    </formulas>
+    <formulas>
         <name>temBypass</name>
         <dataType>Boolean</dataType>
         <expression>{!$Permission.Bypass_Lead_Dup_Governance}</expression>
@@ -273,7 +278,7 @@ IF({!Get_Dono_Dup.VendedorOnline__c}, 6, 3))</expression>
         <inputAssignments>
             <field>LeadName__c</field>
             <value>
-                <elementReference>$Record.Name</elementReference>
+                <elementReference>nomeLead</elementReference>
             </value>
         </inputAssignments>
         <object>Lead_Contact_Attempt__e</object>

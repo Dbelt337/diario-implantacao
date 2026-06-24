@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Tipo de Custom Notification usado pelo flow de notificacao (in-app, desktop+mobile). -->
 <CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
-    <customNotifTypeName>Lead Contact Attempt</customNotifTypeName>
+    <customNotifTypeName>Lead_Contact_Attempt_Notif</customNotifTypeName>
     <desktop>true</desktop>
+    <masterLabel>Lead Contact Attempt</masterLabel>
     <mobile>true</mobile>
 </CustomNotificationType>
