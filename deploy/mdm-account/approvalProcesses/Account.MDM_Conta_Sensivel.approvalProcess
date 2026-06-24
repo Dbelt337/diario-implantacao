@@ -47,9 +47,13 @@
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
+            <!-- PLACEHOLDER (CR): aprovador de teste. Account nao aceita fila como
+                 aprovadora (nao e queue-enabled); aprovador num Approval Process so
+                 pode ser User/Queue. Trocar pelos Users reais do time Creditos y
+                 Cobros (pode adicionar varios <approver> + whenMultipleApprovers). -->
             <approver>
-                <type>queue</type>
-                <name>Creditos_y_Cobros</name>
+                <type>user</type>
+                <name>diego.beltrao@grupoq.com.devsales</name>
             </approver>
         </assignedApprover>
         <entryCriteria>
@@ -69,9 +73,11 @@
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
+            <!-- PLACEHOLDER (CR): aprovador de teste. Trocar pelos Users reais do
+                 time CrediQ Aprobacion (pode adicionar varios <approver>). -->
             <approver>
-                <type>queue</type>
-                <name>CrediQ_Aprobacion</name>
+                <type>user</type>
+                <name>diego.beltrao@grupoq.com.devsales</name>
             </approver>
         </assignedApprover>
         <entryCriteria>
