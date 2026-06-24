@@ -3,6 +3,5 @@
 <CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
     <customNotifTypeName>Lead Contact Attempt</customNotifTypeName>
     <desktop>true</desktop>
-    <developerName>Lead_Contact_Attempt_Notif</developerName>
     <mobile>true</mobile>
 </CustomNotificationType>

@@ -60,7 +60,7 @@
             <label>Dono nao e User (fila)</label>
         </rules>
         <rules>
-            <name>Expirou</name>
+            <name>Fora_Do_Prazo</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>expirou</leftValueReference>
