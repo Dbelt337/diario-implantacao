@@ -5,11 +5,10 @@
         <members>Account.ApprovalInProgress__c</members>
         <name>CustomField</name>
     </types>
-    <types>
-        <members>Creditos_y_Cobros</members>
-        <members>CrediQ_Aprobacion</members>
-        <name>Queue</name>
-    </types>
+    <!-- Filas Creditos_y_Cobros e CrediQ_Aprobacion ja existem no org; removidas
+         deste pacote para o Approval Process resolver contra a fila ja commitada
+         (evita o erro de ordem de deploy "queue doesn't exist" na mesma transacao).
+         Arquivos .queue mantidos no repo para setup inicial de um org novo. -->
     <types>
         <members>PS_Data_Steward</members>
         <name>PermissionSet</name>

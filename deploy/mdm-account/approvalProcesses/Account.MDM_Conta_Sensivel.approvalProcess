@@ -49,7 +49,7 @@
         <assignedApprover>
             <approver>
                 <type>queue</type>
-                <name>Creditos y Cobros</name>
+                <name>Creditos_y_Cobros</name>
             </approver>
         </assignedApprover>
         <entryCriteria>
@@ -71,7 +71,7 @@
         <assignedApprover>
             <approver>
                 <type>queue</type>
-                <name>CrediQ Aprobacion</name>
+                <name>CrediQ_Aprobacion</name>
             </approver>
         </assignedApprover>
         <entryCriteria>
