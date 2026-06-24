@@ -32,7 +32,6 @@
         <fullName>MDM_Reverter_Dados_Sensiveis</fullName>
         <assignedToType>owner</assignedToType>
         <description>A solicitacao de alteracao de dados sensiveis desta conta foi REJEITADA no Approval Process de MDM. Reverter manualmente os campos sensiveis ao valor anterior aprovado. (Reversao automatica nao e' possivel sem campos de trazabilidade, que foram intencionalmente nao criados.)</description>
-        <dueDateInterval>1</dueDateInterval>
         <notifyAssignee>true</notifyAssignee>
         <priority>High</priority>
         <protected>false</protected>

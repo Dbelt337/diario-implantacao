@@ -62,6 +62,9 @@
         <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
         <label>Cuenta Corriente - Creditos y Cobros</label>
         <name>Cuenta_Corriente_Creditos</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
     </approvalStep>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
@@ -81,6 +84,9 @@
         <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
         <label>CrediQ - CrediQ Aprobacion</label>
         <name>CrediQ_Aprobacion_Step</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
     </approvalStep>
     <description>MDM: aprovacao de alteracao de dados sensiveis de conta, com aprovador por cenario financeiro.</description>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
