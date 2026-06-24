@@ -24,6 +24,10 @@
         <name>CustomNotificationType</name>
     </types>
     <types>
+        <members>PS_Lead_Dup_Bypass</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
         <members>Lead_Dup_Governance</members>
         <members>Lead_Contact_Attempt_Notify</members>
         <name>Flow</name>

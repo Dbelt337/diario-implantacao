@@ -313,12 +313,26 @@ IF({!Get_Dono_Dup.VendedorOnline__c}, 6, 3))</expression>
         <faultConnector>
             <targetReference>Log_Falha</targetReference>
         </faultConnector>
-        <filterLogic>1 AND 2 AND ((3 AND 5) OR (4 AND 6))</filterLogic>
+        <filterLogic>1 AND 2 AND 3 AND 4 AND ((5 AND 6) OR (7 AND 8))</filterLogic>
         <filters>
             <field>CompanyCode__c</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>$Record.CompanyCode__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Brand__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Brand__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Brand__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
             </value>
         </filters>
         <filters>
@@ -336,17 +350,17 @@ IF({!Get_Dono_Dup.VendedorOnline__c}, 6, 3))</expression>
             </value>
         </filters>
         <filters>
-            <field>Phone</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.Phone</elementReference>
-            </value>
-        </filters>
-        <filters>
             <field>Email</field>
             <operator>IsNull</operator>
             <value>
                 <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Phone</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Phone</elementReference>
             </value>
         </filters>
         <filters>

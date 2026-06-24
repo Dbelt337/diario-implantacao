@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Concede a Custom Permission Bypass_Lead_Dup_Governance. Atribuir aos usuarios de
+  integracao (LeadsBridge, SFCC) para que o flow Lead_Dup_Governance nao bloqueie
+  leads de canais automaticos. So a permissao de bypass - nada de objeto/campo aqui.
+-->
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>PS Lead Dup Bypass</label>
+    <hasActivationRequired>false</hasActivationRequired>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>Bypass_Lead_Dup_Governance</name>
+    </customPermissions>
+</PermissionSet>
