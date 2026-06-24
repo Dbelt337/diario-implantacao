@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Bypass da governanca de duplicados na CRIACAO de Lead. Atribuir (via Permission Set)
+  aos usuarios de integracao (LeadsBridge, SFCC) para que a logica manual nao bloqueie
+  leads de canais automaticos. Escalavel/env-safe: nada de LeadSource ou usuario chumbado
+  no Flow; quem tem a permissao e' ignorado.
+-->
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <isLicensed>false</isLicensed>
+    <label>Bypass Lead Dup Governance</label>
+</CustomPermission>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Platform Event para notificar o dono do lead existente quando a criacao de um
+  duplicado e' bloqueada (criterio 2). publishBehavior=PublishImmediately: o evento
+  e' publicado FORA da transacao, entao sobrevive ao rollback do Custom Error que
+  bloqueia a criacao. Um flow separado (Lead_Contact_Attempt_Notify), disparado por
+  este evento, envia a Custom Notification ao dono - em transacao propria.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <eventType>HighVolume</eventType>
+    <label>Lead Contact Attempt</label>
+    <pluralLabel>Lead Contact Attempts</pluralLabel>
+    <publishBehavior>PublishImmediately</publishBehavior>
+    <fields>
+        <fullName>ExistingOwnerId__c</fullName>
+        <label>Existing Owner Id</label>
+        <length>18</length>
+        <required>true</required>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>ExistingLeadId__c</fullName>
+        <label>Existing Lead Id</label>
+        <length>18</length>
+        <required>false</required>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>AttemptedByUserId__c</fullName>
+        <label>Attempted By User Id</label>
+        <length>18</length>
+        <required>false</required>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>LeadName__c</fullName>
+        <label>Lead Name</label>
+        <length>120</length>
+        <required>false</required>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>LeadEmail__c</fullName>
+        <label>Lead Email</label>
+        <length>80</length>
+        <required>false</required>
+        <type>Text</type>
+    </fields>
+</CustomObject>

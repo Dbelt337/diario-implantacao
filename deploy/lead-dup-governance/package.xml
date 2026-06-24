@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Lead.TransferidoDe__c</members>
+        <members>Lead.DataTransferencia__c</members>
+        <members>Lead.LeadDuplicadoDe__c</members>
+        <members>Lead_Contact_Attempt__e.ExistingOwnerId__c</members>
+        <members>Lead_Contact_Attempt__e.ExistingLeadId__c</members>
+        <members>Lead_Contact_Attempt__e.AttemptedByUserId__c</members>
+        <members>Lead_Contact_Attempt__e.LeadName__c</members>
+        <members>Lead_Contact_Attempt__e.LeadEmail__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Lead_Contact_Attempt__e</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Bypass_Lead_Dup_Governance</members>
+        <name>CustomPermission</name>
+    </types>
+    <types>
+        <members>Lead_Contact_Attempt_Notif</members>
+        <name>CustomNotificationType</name>
+    </types>
+    <types>
+        <members>Lead_Dup_Governance</members>
+        <members>Lead_Contact_Attempt_Notify</members>
+        <name>Flow</name>
+    </types>
+    <version>65.0</version>
+</Package>

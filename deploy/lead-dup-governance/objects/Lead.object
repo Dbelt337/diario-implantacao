@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-009 - campos de registro de transferencia (criterio 4). Deploy parcial/additive.
+  Gravados no lead NOVO (procedencia). No criterio 4 nenhum OwnerId muda (o showroom
+  CRIA um lead novo; o lead antigo segue com o dono online), por isso Field History do
+  OwnerId nao serve - usamos campos dedicados.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>TransferidoDe__c</fullName>
+        <externalId>false</externalId>
+        <label>Transferido De (Consultor Online)</label>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Leads Transferidos</relationshipLabel>
+        <relationshipName>Leads_Transferidos</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>DataTransferencia__c</fullName>
+        <externalId>false</externalId>
+        <label>Data da Transferencia</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>LeadDuplicadoDe__c</fullName>
+        <externalId>false</externalId>
+        <label>Lead Duplicado De</label>
+        <referenceTo>Lead</referenceTo>
+        <relationshipLabel>Leads Duplicados</relationshipLabel>
+        <relationshipName>Leads_Duplicados</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+</CustomObject>

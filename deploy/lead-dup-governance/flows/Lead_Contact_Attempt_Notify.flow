@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Lead_Contact_Attempt_Notify - assinante do Platform Event Lead_Contact_Attempt__e.
+  Roda em TRANSACAO PROPRIA (assincrona), por isso a notificacao chega mesmo quando a
+  criacao do lead foi bloqueada (rollback) pelo Lead_Dup_Governance.
+  Busca o CustomNotificationType por DeveloperName (env-safe, sem Id chumbado) e envia
+  Custom Notification in-app ao dono do lead existente (ExistingOwnerId__c).
+-->
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Enviar_Notificacao</name>
+        <label>Enviar Notificacao</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>customNotificationAction</actionName>
+        <actionType>customNotificationAction</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>customNotifTypeId</name>
+            <value>
+                <elementReference>Get_NotifType.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>title</name>
+            <value>
+                <stringValue>Tentativa de contato com seu lead</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>body</name>
+            <value>
+                <elementReference>corpoMsg</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>recipientIds</name>
+            <value>
+                <elementReference>recipientIds</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>targetId</name>
+            <value>
+                <elementReference>$Record.ExistingLeadId__c</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Montar_Destinatarios</name>
+        <label>Montar Destinatarios</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>recipientIds</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>$Record.ExistingOwnerId__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Enviar_Notificacao</targetReference>
+        </connector>
+    </assignments>
+    <environments>Default</environments>
+    <formulas>
+        <name>corpoMsg</name>
+        <dataType>String</dataType>
+        <expression>"Alguem tentou criar um lead duplicado do cliente " &amp; BLANKVALUE({!$Record.LeadName__c}, "(sem nome)") &amp; ". Voce e o proprietario atual deste cliente; foi registrada uma tentativa de contato."</expression>
+    </formulas>
+    <interviewLabel>Lead_Contact_Attempt_Notify {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_Contact_Attempt_Notify</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_NotifType</name>
+        <label>Get NotifType</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Montar_Destinatarios</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Lead_Contact_Attempt_Notif</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>CustomNotificationType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_NotifType</targetReference>
+        </connector>
+        <object>Lead_Contact_Attempt__e</object>
+        <triggerType>PlatformEvent</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>recipientIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

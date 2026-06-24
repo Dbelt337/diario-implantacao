@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Lead_Dup_Governance (US-009) - governanca de duplicados na CRIACAO de Lead.
+  Record-Triggered, AFTER-SAVE, CREATE-only. NAO mexe na Matching/Duplicate Rule
+  (o alerta visual continua vindo delas); este flow aplica os criterios de ownership.
+
+  Por que AFTER-SAVE: o criterio 2 exige bloquear E notificar. Notificar mesmo
+  bloqueando so e' possivel publicando um Platform Event publish-immediately (sobrevive
+  ao rollback do Custom Error). before-save nao publica evento. CREATE-only evita loop
+  (o Update de transferencia dispara um update, mas o flow so roda em create).
+
+  Ordem de decisao:
+   0. Bypass (Custom Permission de integracao) ou sem Email/Phone -> sai.
+   1. Acha duplicado (Email exato OR Phone, mesmo CompanyCode__c, exclui o proprio).
+      Sem duplicado -> permite. Fim.
+   2. Duplicado e' do usuario atual (OwnerId == $User.Id) -> permite (criterio 1). Fim.
+   3. Dono do dup nao e' User (fila) -> permite. Fim.
+   4. Fora do prazo (ADDMONTHS sobre LastActivityDate||CreatedDate; 6m se dono online,
+      3m se fisico) -> expirou -> permite (criterio 3). Fim.
+   5. Dentro do prazo:
+      - Criador e' showroom (NOT $User.VendedorOnline__c) -> permite + registra
+        transferencia no lead novo (criterio 4). Fim.
+      - Criador e' online -> publica Platform Event (notifica dono) + Custom Error
+        bloqueia a criacao (criterio 2). Fim.
+  Fault: qualquer query/DML/publish que falhe cai em Log_Falha (Task) e PERMITE o lead
+  (fallback seguro: nunca perder o lead por erro de automacao).
+-->
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <name>Bloquear_Criacao</name>
+        <label>Bloquear Criacao</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Este cliente ja e' um lead ativo de outro consultor. Dentro do prazo de exclusividade, nao e' possivel criar um lead duplicado. O proprietario atual foi notificado da sua tentativa de contato.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>Avalia_Prazo_e_Dono</name>
+        <label>Avalia Prazo e Dono</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Avalia_Papel_Criador</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Dentro do prazo</defaultConnectorLabel>
+        <rules>
+            <name>Dono_Nao_E_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Dono_Dup</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Dono nao e User (fila)</label>
+        </rules>
+        <rules>
+            <name>Expirou</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>expirou</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Fora do prazo (expirou)</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Avalia_Papel_Criador</name>
+        <label>Avalia Papel Criador</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Publicar_Evento</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Criador online (bloqueia)</defaultConnectorLabel>
+        <rules>
+            <name>Criador_Showroom</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>criadorOnline</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Registrar_Transferencia</targetReference>
+            </connector>
+            <label>Criador showroom (permite + transfere)</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Deve_Avaliar</name>
+        <label>Deve Avaliar</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Pular (bypass/sem chave)</defaultConnectorLabel>
+        <rules>
+            <name>Avaliar</name>
+            <conditionLogic>1 AND (2 OR 3)</conditionLogic>
+            <conditions>
+                <leftValueReference>temBypass</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Email</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Phone</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Duplicado</targetReference>
+            </connector>
+            <label>Avaliar</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Dup_E_Meu</name>
+        <label>Dup E Meu</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_Dono_Dup</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>De outro usuario</defaultConnectorLabel>
+        <rules>
+            <name>E_Meu</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Duplicado.OwnerId</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>$User.Id</elementReference>
+                </rightValue>
+            </conditions>
+            <label>E meu (criterio 1 - permite)</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Tem_Duplicado</name>
+        <label>Tem Duplicado</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Sem duplicado (permite)</defaultConnectorLabel>
+        <rules>
+            <name>Existe_Dup</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Duplicado</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Dup_E_Meu</targetReference>
+            </connector>
+            <label>Existe duplicado</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>criadorOnline</name>
+        <dataType>Boolean</dataType>
+        <expression>{!$User.VendedorOnline__c}</expression>
+    </formulas>
+    <formulas>
+        <name>expirou</name>
+        <dataType>Boolean</dataType>
+        <expression>TODAY() &gt; ADDMONTHS(
+IF(ISBLANK({!Get_Duplicado.LastActivityDate}), DATEVALUE({!Get_Duplicado.CreatedDate}), {!Get_Duplicado.LastActivityDate}),
+IF({!Get_Dono_Dup.VendedorOnline__c}, 6, 3))</expression>
+    </formulas>
+    <formulas>
+        <name>temBypass</name>
+        <dataType>Boolean</dataType>
+        <expression>{!$Permission.Bypass_Lead_Dup_Governance}</expression>
+    </formulas>
+    <interviewLabel>Lead_Dup_Governance {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_Dup_Governance</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Log_Falha</name>
+        <label>Log Falha</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Falha na governanca de duplicados de Lead (US-009) - lead permitido por seguranca</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Publicar_Evento</name>
+        <label>Publicar Evento</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Bloquear_Criacao</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>AttemptedByUserId__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ExistingLeadId__c</field>
+            <value>
+                <elementReference>Get_Duplicado.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ExistingOwnerId__c</field>
+            <value>
+                <elementReference>Get_Duplicado.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>LeadEmail__c</field>
+            <value>
+                <elementReference>$Record.Email</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>LeadName__c</field>
+            <value>
+                <elementReference>$Record.Name</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Lead_Contact_Attempt__e</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Dono_Dup</name>
+        <label>Get Dono Dup</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Avalia_Prazo_e_Dono</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Duplicado.OwnerId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Duplicado</name>
+        <label>Get Duplicado</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Tem_Duplicado</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>1 AND 2 AND ((3 AND 5) OR (4 AND 6))</filterLogic>
+        <filters>
+            <field>CompanyCode__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.CompanyCode__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Email</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Email</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Phone</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Phone</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Email</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Phone</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Registrar_Transferencia</name>
+        <label>Registrar Transferencia</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>DataTransferencia__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>LeadDuplicadoDe__c</field>
+            <value>
+                <elementReference>Get_Duplicado.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>TransferidoDe__c</field>
+            <value>
+                <elementReference>Get_Duplicado.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Deve_Avaliar</targetReference>
+        </connector>
+        <object>Lead</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
