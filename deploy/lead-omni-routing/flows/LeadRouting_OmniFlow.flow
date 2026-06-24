@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  LeadRouting_OmniFlow - Omni-Channel Flow (RoutingFlow) com Route Work.
-  MUDANCA: routingConfigId NAO e' mais hardcoded. Agora vem da variavel de
-  entrada 'routingConfigId', que o Lead_TriggerOmniRouting resolve em runtime
-  pela DeveloperName da fila (Queue_Vendedores_CR -> QueueRoutingConfigId).
-  Assim o Id de routing config nao precisa ser trocado entre ambientes.
+  LeadRouting_OmniFlow (Omni-Channel Flow) - AFINIDADE COM CHECAGEM DE SKILL.
+  Regra: Direct-to-Agent para o vendedor anterior (Account.OwnerId) SO se:
+    (a) o Owner for um User (prefixo 005, nao fila),
+    (b) esse User tiver a skill da MARCA do Lead (ServiceResourceSkill),
+    (c) esse User estiver online (UserServicePresence IsCurrentState).
+  Qualquer ramo que nao validar a afinidade cai no roteamento por SKILL
+  (Rotear_Lead_Queue). Skill por marca e' o fallback universal.
 
-  serviceChannelId ja era env-agnostico (setupReference Lead_Channel por DevName).
+  Fault paths: todas as queries e os dois Route Work caem no skill (ou em
+  Update_Lead_Error no caso do proprio skill falhar) - nunca deixa o Lead sem rota.
+
+  Sem Id hardcoded: queueId do Direct-to-Agent vem da variavel TargetQueueId
+  (o Lead_TriggerOmniRouting resolve pela DeveloperName da fila). routingConfigId
+  ja vem por variavel; serviceChannelId por setupReference (DevName).
 -->
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
@@ -16,6 +23,12 @@
         <locationY>0</locationY>
         <actionName>routeWork</actionName>
         <actionType>routeWork</actionType>
+        <connector>
+            <targetReference>Update_Lead</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Update_Lead_Error</targetReference>
+        </faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>recordId</name>
@@ -42,37 +55,10 @@
             </value>
         </inputParameters>
         <inputParameters>
-            <name>routingConfigLabel</name>
-        </inputParameters>
-        <inputParameters>
-            <name>agentLabel</name>
-        </inputParameters>
-        <inputParameters>
-            <name>queueLabel</name>
-        </inputParameters>
-        <inputParameters>
             <name>skillOption</name>
             <value>
                 <stringValue>RunSBRRules</stringValue>
             </value>
-        </inputParameters>
-        <inputParameters>
-            <name>skillRequirementsResourceItem</name>
-        </inputParameters>
-        <inputParameters>
-            <name>botLabel</name>
-        </inputParameters>
-        <inputParameters>
-            <name>externalConversationBotLabel</name>
-        </inputParameters>
-        <inputParameters>
-            <name>copilotLabel</name>
-        </inputParameters>
-        <inputParameters>
-            <name>agentforceEmployeeAgentLabel</name>
-        </inputParameters>
-        <inputParameters>
-            <name>digitalWorkerLabel</name>
         </inputParameters>
         <inputParameters>
             <name>isQueueVariable</name>
@@ -99,26 +85,96 @@
                 <elementReference>routingConfigId</elementReference>
             </value>
         </inputParameters>
+        <nameSegment>routeWork</nameSegment>
+        <offset>0</offset>
+        <versionString>2.0.0</versionString>
+    </actionCalls>
+    <actionCalls>
+        <name>Route_Agente</name>
+        <label>Route Agente</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>routeWork</actionName>
+        <actionType>routeWork</actionType>
+        <connector>
+            <targetReference>Copy_2_of_Update_Lead</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
-            <name>botId</name>
+            <name>recordId</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
         </inputParameters>
         <inputParameters>
-            <name>copilotId</name>
+            <name>serviceChannelLabel</name>
+            <value>
+                <stringValue>Lead_Channel</stringValue>
+            </value>
         </inputParameters>
         <inputParameters>
-            <name>agentforceEmployeeAgentId</name>
+            <name>serviceChannelDevName</name>
+            <value>
+                <stringValue>Lead_Channel</stringValue>
+            </value>
         </inputParameters>
         <inputParameters>
-            <name>externalConversationBotId</name>
+            <name>routingType</name>
+            <value>
+                <stringValue>Agent</stringValue>
+            </value>
         </inputParameters>
         <inputParameters>
-            <name>digitalWorkerId</name>
+            <name>isAgentRequired</name>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>isAgentVariable</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>isQueueVariable</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>isRoutingConfigVariable</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>serviceChannelId</name>
+            <value>
+                <setupReference>Lead_Channel</setupReference>
+                <setupReferenceType>ServiceChannel</setupReferenceType>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>routingConfigId</name>
+            <value>
+                <elementReference>routingConfigId</elementReference>
+            </value>
         </inputParameters>
         <inputParameters>
             <name>queueId</name>
+            <value>
+                <elementReference>TargetQueueId</elementReference>
+            </value>
         </inputParameters>
         <inputParameters>
             <name>agentId</name>
+            <value>
+                <elementReference>Get_Cuenta.OwnerId</elementReference>
+            </value>
         </inputParameters>
         <nameSegment>routeWork</nameSegment>
         <offset>0</offset>
@@ -126,7 +182,131 @@
     </actionCalls>
     <apiVersion>66.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Afinidad_Valida</name>
+        <label>Afinidad Valida</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin Afinidad</defaultConnectorLabel>
+        <rules>
+            <name>Owner_Con_Skill_Y_Online</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_SR_Skill</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Presencia</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Route_Agente</targetReference>
+            </connector>
+            <label>Owner com skill e online</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Lead_Tiene_Email</name>
+        <label>Lead Tiene Email</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin Email</defaultConnectorLabel>
+        <rules>
+            <name>Con_Email</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Leads.Email</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Contact</targetReference>
+            </connector>
+            <label>Con Email</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Owner_Es_User</name>
+        <label>Owner Es User</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Owner es Fila</defaultConnectorLabel>
+        <rules>
+            <name>Es_User</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>EsUsuario</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_ServiceResource</targetReference>
+            </connector>
+            <label>Es User</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Tiene_Cuenta</name>
+        <label>Tiene Cuenta</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin Cuenta</defaultConnectorLabel>
+        <rules>
+            <name>Con_Cuenta</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Contact</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Contact.AccountId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Cuenta</targetReference>
+            </connector>
+            <label>Con Cuenta</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
+    <formulas>
+        <name>EsUsuario</name>
+        <dataType>Boolean</dataType>
+        <expression>BEGINS({!Get_Cuenta.OwnerId}, "005")</expression>
+    </formulas>
+    <formulas>
+        <name>SkillDevName</name>
+        <dataType>String</dataType>
+        <expression>"Marca_" &amp; {!Get_Leads.Marca__c}</expression>
+    </formulas>
     <interviewLabel>LeadRouting_OmniFlow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>LeadRouting_OmniFlow</label>
     <processMetadataValues>
@@ -148,11 +328,265 @@
         </value>
     </processMetadataValues>
     <processType>RoutingFlow</processType>
+    <recordLookups>
+        <name>Get_Leads</name>
+        <label>Get Leads</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Lead_Tiene_Email</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Contact</name>
+        <label>Get Contact</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Tiene_Cuenta</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Email</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Leads.Email</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Cuenta</name>
+        <label>Get Cuenta</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Owner_Es_User</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Contact.AccountId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Account</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_ServiceResource</name>
+        <label>Get ServiceResource</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Skill_Marca</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>RelatedRecordId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Cuenta.OwnerId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsActive</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceResource</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Skill_Marca</name>
+        <label>Get Skill Marca</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_SR_Skill</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>SkillDevName</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Skill</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_SR_Skill</name>
+        <label>Get SR Skill</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Presencia</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ServiceResourceId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_ServiceResource.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>SkillId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Skill_Marca.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceResourceSkill</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Presencia</name>
+        <label>Get Presencia</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Afinidad_Valida</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Rotear_Lead_Queue</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>UserId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Cuenta.OwnerId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsCurrentState</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>UserServicePresence</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Copy_2_of_Update_Lead</name>
+        <label>Update Lead Afinidad</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>WebMessage__c</field>
+            <value>
+                <stringValue>Ruteado a vendedor preferido con skill (Account.OwnerId) - {!$Flow.CurrentDateTime}</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Lead</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Lead</name>
+        <label>Update Lead Skill</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>WebMessage__c</field>
+            <value>
+                <stringValue>Ruteado por skills (marca) - {!$Flow.CurrentDateTime}</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Lead</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Update_Lead_Error</name>
+        <label>Update Lead Error</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>WebMessage__c</field>
+            <value>
+                <stringValue>Falha no roteamento Omni - revisar. {!$Flow.FaultMessage}</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Lead</object>
+    </recordUpdates>
     <start>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Rotear_Lead_Queue</targetReference>
+            <targetReference>Get_Leads</targetReference>
         </connector>
     </start>
     <status>Active</status>

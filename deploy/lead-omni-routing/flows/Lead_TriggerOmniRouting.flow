@@ -210,5 +210,11 @@
                 <elementReference>Get_Queue_CR.QueueRoutingConfigId</elementReference>
             </value>
         </inputAssignments>
+        <inputAssignments>
+            <name>TargetQueueId</name>
+            <value>
+                <elementReference>Get_Queue_CR.Id</elementReference>
+            </value>
+        </inputAssignments>
     </subflows>
 </Flow>
