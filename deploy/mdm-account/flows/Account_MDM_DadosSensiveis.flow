@@ -45,12 +45,6 @@
             </value>
         </inputParameters>
         <inputParameters>
-            <name>approvalProcessName</name>
-            <value>
-                <stringValue>MDM_Conta_Sensivel</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
             <name>submitterId</name>
             <value>
                 <elementReference>$Record.OwnerId</elementReference>
