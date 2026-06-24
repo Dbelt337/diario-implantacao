@@ -81,7 +81,6 @@
                 <value>CrediQ</value>
             </criteriaItems>
         </entryCriteria>
-        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
         <label>CrediQ - CrediQ Aprobacion</label>
         <name>CrediQ_Aprobacion_Step</name>
         <rejectBehavior>
