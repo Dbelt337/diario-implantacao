@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Approval Process - alteracao de dados sensiveis de Account (MDM, Passo 3).
+  100% declarativo. O Flow Account_MDM_DadosSensiveis classifica o cenario,
+  grava CreditScenario__c e submete via acao nativa Submit for Approval.
+
+  3 passos mutuamente exclusivos (so um casa, pelos criterios em CreditScenario__c):
+    Passo 1  SinCredito      -> Gerente do submitter (userHierarchyField Manager)
+    Passo 2  ContaCorriente  -> Fila Creditos_y_Cobros
+    Passo 3  CrediQ          -> Fila CrediQ_Aprobacion
+  ifCriteriaNotMet=GotoNextStep: o passo que nao casa cai pro proximo.
+
+  Lock/unlock nativo (sem field update):
+    Initial Submission -> recordEditability AdminOnly (registro trava)
+                          + liga ApprovalInProgress__c
+    Final Approval     -> finalApprovalRecordLock=false (destrava)
+                          + desliga ApprovalInProgress__c
+    Final Rejection    -> finalRejectionRecordLock=false (destrava)
+                          + desliga ApprovalInProgress__c
+                          + Task de reversao manual pro Data Steward
+  submitterId = OwnerId (o Flow submete em nome do dono), por isso allowedSubmitters=owner.
+-->
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>true</allowRecall>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>userHierarchyField</type>
+            </approver>
+        </assignedApprover>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Account.CreditScenario__c</field>
+                <operation>equals</operation>
+                <value>SinCredito</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Sin Credito - Gerente</label>
+        <name>Sin_Credito_Gerente</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>queue</type>
+                <name>Creditos_y_Cobros</name>
+            </approver>
+        </assignedApprover>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Account.CreditScenario__c</field>
+                <operation>equals</operation>
+                <value>ContaCorriente</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>Cuenta Corriente - Creditos y Cobros</label>
+        <name>Cuenta_Corriente_Creditos</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <type>queue</type>
+                <name>CrediQ_Aprobacion</name>
+            </approver>
+        </assignedApprover>
+        <entryCriteria>
+            <criteriaItems>
+                <field>Account.CreditScenario__c</field>
+                <operation>equals</operation>
+                <value>CrediQ</value>
+            </criteriaItems>
+        </entryCriteria>
+        <ifCriteriaNotMet>GotoNextStep</ifCriteriaNotMet>
+        <label>CrediQ - CrediQ Aprobacion</label>
+        <name>CrediQ_Aprobacion_Step</name>
+    </approvalStep>
+    <description>MDM: aprovacao de alteracao de dados sensiveis de conta, com aprovador por cenario financeiro.</description>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <finalApprovalActions>
+        <action>
+            <name>MDM_Set_ApprovalInProgress_False</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>MDM_Set_ApprovalInProgress_False</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>MDM_Reverter_Dados_Sensiveis</name>
+            <type>Task</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <initialSubmissionActions>
+        <action>
+            <name>MDM_Set_ApprovalInProgress_True</name>
+            <type>FieldUpdate</type>
+        </action>
+    </initialSubmissionActions>
+    <label>MDM Conta Sensivel</label>
+    <nextAutomatedApprover>
+        <useApproverFieldOfRecordOwner>false</useApproverFieldOfRecordOwner>
+        <userHierarchyField>Manager</userHierarchyField>
+    </nextAutomatedApprover>
+    <processOrder>1</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

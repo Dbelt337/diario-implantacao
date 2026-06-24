@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Campos auxiliares para o MDM de Account (Passos 3-4).
+  Deploy parcial (additive) - NAO remove campos existentes da Account.
+
+  CreditScenario__c  : classificacao do vinculo financeiro, setada pelo Flow
+                       (a Account NAO consegue chegar no FinancialAccount por
+                        formula - so via junction FinancialAccountParty - entao
+                        o Flow classifica e grava aqui). E o campo que os passos
+                        do Approval Process leem para rotear o aprovador.
+  ApprovalInProgress__c : flag anti-loop. O Approval Process liga no Initial
+                          Submission e desliga no Final Approval/Rejection.
+                          O Flow so submete quando ele esta false.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>CreditScenario__c</fullName>
+        <externalId>false</externalId>
+        <label>Credit Scenario</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>SinCredito</fullName>
+                    <default>false</default>
+                    <label>Sin Credito</label>
+                </value>
+                <value>
+                    <fullName>ContaCorriente</fullName>
+                    <default>false</default>
+                    <label>Cuenta Corriente</label>
+                </value>
+                <value>
+                    <fullName>CrediQ</fullName>
+                    <default>false</default>
+                    <label>CrediQ</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ApprovalInProgress__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Approval In Progress</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+</CustomObject>

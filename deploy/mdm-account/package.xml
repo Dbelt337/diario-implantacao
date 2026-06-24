@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
+        <members>Account.CreditScenario__c</members>
+        <members>Account.ApprovalInProgress__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
         <members>Creditos_y_Cobros</members>
         <members>CrediQ_Aprobacion</members>
         <name>Queue</name>
@@ -8,6 +13,23 @@
     <types>
         <members>PS_Data_Steward</members>
         <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>Account.MDM_Set_ApprovalInProgress_True</members>
+        <members>Account.MDM_Set_ApprovalInProgress_False</members>
+        <name>WorkflowFieldUpdate</name>
+    </types>
+    <types>
+        <members>Account.MDM_Reverter_Dados_Sensiveis</members>
+        <name>WorkflowTask</name>
+    </types>
+    <types>
+        <members>Account.MDM_Conta_Sensivel</members>
+        <name>ApprovalProcess</name>
+    </types>
+    <types>
+        <members>Account_MDM_DadosSensiveis</members>
+        <name>Flow</name>
     </types>
     <version>65.0</version>
 </Package>

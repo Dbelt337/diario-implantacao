@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Account_MDM_DadosSensiveis - Record-Triggered Flow (Passo 4).
+
+  Por que AFTER-SAVE (e nao before-save): precisamos CONSULTAR os
+  FinancialAccountParty/FinancialAccount e SUBMETER pro Approval Process -
+  before-save nao permite query nem submit. Trigger = Update (so modificacoes,
+  nao criacao - evita submeter conta nova e dispensa checar $Record__Prior nulo).
+
+  Anti-loop: entry exige ApprovalInProgress__c=false (o Approval liga essa flag
+  no Initial Submission, entao o re-disparo causado pela submissao nao reentra).
+  O re-disparo causado pelo nosso proprio Update de CreditScenario__c reentra
+  mas sai na decisao Houve_Mudanca_Sensivel (CreditScenario nao e sensivel).
+
+  Deteccao de campo sensivel por tipo (formula houveMudancaSensivel):
+    B2C (IsPersonAccount): PersonEmail, PersonMobilePhone, DocumentNumber__c,
+                           PersonMailingStreet, PersonMailingCity
+    B2B: DocumentNumber__c, Phone, BillingStreet, BillingCity
+    (Account padrao NAO tem campo Email no B2B - usar Phone/Billing.)
+
+  Classificacao do cenario (CreditScenario__c) via junction:
+    FinancialAccountParty (AccountId, IsRoleActive=true) -> FinancialAccount.
+    >>> PLACEHOLDERS a confirmar com a FSC: Status='Active', Type='CrediQ',
+        Type='ContaCorriente'. Ajustar os valores na decisao Avalia_FA. <<<
+    CrediQ ativo -> CrediQ ; senao Conta Corrente -> ContaCorriente ; senao SinCredito.
+
+  Fault: toda query/DML/submit cai numa Task de aviso (Log_Falha).
+-->
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Submit_Aprovacao</name>
+        <label>Submit Aprovacao</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>submit</actionName>
+        <actionType>submit</actionType>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>objectId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>approvalProcessName</name>
+            <value>
+                <stringValue>MDM_Conta_Sensivel</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>submitterId</name>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Assign_ContaCorr</name>
+        <label>Assign ContaCorr</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>varTieneContaCorr</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_FAccounts</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_CrediQ</name>
+        <label>Assign CrediQ</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>varTieneCrediQ</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Loop_FAccounts</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Scenario_ContaCorr</name>
+        <label>Assign Scenario ContaCorr</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>varScenario</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>ContaCorriente</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Cenario</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Scenario_CrediQ</name>
+        <label>Assign Scenario CrediQ</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>varScenario</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>CrediQ</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Cenario</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Assign_Scenario_SinCredito</name>
+        <label>Assign Scenario SinCredito</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>varScenario</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>SinCredito</stringValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Update_Cenario</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>Avalia_FA</name>
+        <label>Avalia FA</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Loop_FAccounts</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Outro/Ignora</defaultConnectorLabel>
+        <rules>
+            <name>EhCrediQ</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_FA.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Active</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_FA.Type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>CrediQ</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_CrediQ</targetReference>
+            </connector>
+            <label>Eh CrediQ ativo</label>
+        </rules>
+        <rules>
+            <name>EhContaCorr</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_FA.Type</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>ContaCorriente</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_ContaCorr</targetReference>
+            </connector>
+            <label>Eh Conta Corrente</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Classificar_Cenario</name>
+        <label>Classificar Cenario</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Assign_Scenario_SinCredito</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin Credito</defaultConnectorLabel>
+        <rules>
+            <name>TemCrediQ</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varTieneCrediQ</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Scenario_CrediQ</targetReference>
+            </connector>
+            <label>Tem CrediQ</label>
+        </rules>
+        <rules>
+            <name>TemContaCorr</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varTieneContaCorr</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Assign_Scenario_ContaCorr</targetReference>
+            </connector>
+            <label>Tem Conta Corrente</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Houve_Mudanca_Sensivel</name>
+        <label>Houve Mudanca Sensivel</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Sem mudanca sensivel</defaultConnectorLabel>
+        <rules>
+            <name>Sim</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>houveMudancaSensivel</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_FAParty</targetReference>
+            </connector>
+            <label>Sim</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>houveMudancaSensivel</name>
+        <dataType>Boolean</dataType>
+        <expression>IF({!$Record.IsPersonAccount},
+NOT(BLANKVALUE({!$Record.PersonEmail},"") = BLANKVALUE({!$Record__Prior.PersonEmail},""))
+|| NOT(BLANKVALUE({!$Record.PersonMobilePhone},"") = BLANKVALUE({!$Record__Prior.PersonMobilePhone},""))
+|| NOT(BLANKVALUE({!$Record.DocumentNumber__c},"") = BLANKVALUE({!$Record__Prior.DocumentNumber__c},""))
+|| NOT(BLANKVALUE({!$Record.PersonMailingStreet},"") = BLANKVALUE({!$Record__Prior.PersonMailingStreet},""))
+|| NOT(BLANKVALUE({!$Record.PersonMailingCity},"") = BLANKVALUE({!$Record__Prior.PersonMailingCity},"")),
+NOT(BLANKVALUE({!$Record.DocumentNumber__c},"") = BLANKVALUE({!$Record__Prior.DocumentNumber__c},""))
+|| NOT(BLANKVALUE({!$Record.Phone},"") = BLANKVALUE({!$Record__Prior.Phone},""))
+|| NOT(BLANKVALUE({!$Record.BillingStreet},"") = BLANKVALUE({!$Record__Prior.BillingStreet},""))
+|| NOT(BLANKVALUE({!$Record.BillingCity},"") = BLANKVALUE({!$Record__Prior.BillingCity},"")))</expression>
+    </formulas>
+    <interviewLabel>Account_MDM_DadosSensiveis {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Account_MDM_DadosSensiveis</label>
+    <loops>
+        <name>Loop_FAccounts</name>
+        <label>Loop FAccounts</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>Get_FAParty</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Get_FA</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Classificar_Cenario</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Log_Falha</name>
+        <label>Log Falha</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Falha no MDM de conta (classificacao/aprovacao)</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_FA</name>
+        <label>Get FA</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Avalia_FA</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Loop_FAccounts.FinancialAccountId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>FinancialAccount</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_FAParty</name>
+        <label>Get FAParty</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Loop_FAccounts</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>AccountId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsRoleActive</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>FinancialAccountParty</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Update_Cenario</name>
+        <label>Update Cenario</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Submit_Aprovacao</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>CreditScenario__c</field>
+            <value>
+                <elementReference>varScenario</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Houve_Mudanca_Sensivel</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ApprovalInProgress__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Account</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>varScenario</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>varTieneContaCorr</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+    <variables>
+        <name>varTieneCrediQ</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+</Flow>
