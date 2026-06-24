@@ -6,9 +6,15 @@
 
   3 passos mutuamente exclusivos (so um casa, pelos criterios em CreditScenario__c):
     Passo 1  SinCredito      -> Gerente do submitter (userHierarchyField Manager)
-    Passo 2  ContaCorriente  -> Fila Creditos_y_Cobros
-    Passo 3  CrediQ          -> Fila CrediQ_Aprobacion
+    Passo 2  ContaCorriente  -> User (PLACEHOLDER CR diego.beltrao@grupoq.com.devsales)
+    Passo 3  CrediQ          -> User (PLACEHOLDER CR diego.beltrao@grupoq.com.devsales)
   ifCriteriaNotMet=GotoNextStep: o passo que nao casa cai pro proximo.
+
+  NOTA: Account NAO e queue-enabled, entao fila nao pode ser aprovadora aqui
+  (aprovador num Approval Process so pode ser User ou Queue). Os passos 2/3 usam
+  User como placeholder de teste; trocar pelos Users reais do time de credito
+  (pode adicionar varios <approver>; whenMultipleApprovers=FirstResponse ja setado
+  da a semantica de grupo "primeiro que responder aprova").
 
   Lock/unlock nativo (sem field update):
     Initial Submission -> recordEditability AdminOnly (registro trava)
@@ -47,14 +53,11 @@
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
-            <!-- PLACEHOLDER (CR): aprovador de teste. Account nao aceita fila como
-                 aprovadora (nao e queue-enabled); aprovador num Approval Process so
-                 pode ser User/Queue. Trocar pelos Users reais do time Creditos y
-                 Cobros (pode adicionar varios <approver> + whenMultipleApprovers). -->
             <approver>
                 <type>user</type>
                 <name>diego.beltrao@grupoq.com.devsales</name>
             </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
         <entryCriteria>
             <criteriaItems>
@@ -73,12 +76,11 @@
     <approvalStep>
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
-            <!-- PLACEHOLDER (CR): aprovador de teste. Trocar pelos Users reais do
-                 time CrediQ Aprobacion (pode adicionar varios <approver>). -->
             <approver>
                 <type>user</type>
                 <name>diego.beltrao@grupoq.com.devsales</name>
             </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
         <entryCriteria>
             <criteriaItems>
