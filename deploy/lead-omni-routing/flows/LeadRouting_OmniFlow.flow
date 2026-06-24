@@ -305,7 +305,7 @@
     <formulas>
         <name>SkillDevName</name>
         <dataType>String</dataType>
-        <expression>"Marca_" &amp; {!Get_Leads.Marca__c}</expression>
+        <expression>"Marca_" &amp; TEXT({!Get_Leads.Brand__c})</expression>
     </formulas>
     <interviewLabel>LeadRouting_OmniFlow {!$Flow.CurrentDateTime}</interviewLabel>
     <label>LeadRouting_OmniFlow</label>

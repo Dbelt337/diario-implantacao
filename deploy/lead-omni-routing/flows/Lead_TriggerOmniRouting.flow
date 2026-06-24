@@ -9,7 +9,7 @@
   entre ambientes), pegando o campo QueueRoutingConfigId e passando para o
   LeadRouting_OmniFlow como variavel. Nada de Id muda entre dev, UAT e prod.
 
-  Logica: Start (Create/Update, async after commit), entry = Marca__c preenchido
+  Logica: Start (Create/Update, async after commit), entry = Brand__c preenchido
   E IsConverted=false E Sociedad em (C101, C105); anti-redisparo
   (doesRequireRecordChangedToMeetCriteria=true). Get_Queue_CR, depois Check_Config
   (tem QueueRoutingConfigId?): se sim chama o subflow; se nao cria Task de aviso.
@@ -154,7 +154,7 @@
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>1 AND 2 AND (3 OR 4)</filterLogic>
         <filters>
-            <field>Marca__c</field>
+            <field>Brand__c</field>
             <operator>IsNull</operator>
             <value>
                 <booleanValue>false</booleanValue>
