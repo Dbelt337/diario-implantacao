@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-031 Fase 1 - campos de governanca de SLA/reatribuicao no Lead. Deploy additive.
+  Reusa nativo/existente para asesor anterior (TransferredFromOnlineConsultant__c),
+  data (TransferDate__c) e prioridade (IsPriorityRecord) - NAO recriados aqui.
+  Campos NOVOS (aprovados + 1 tecnico necessario, ver relatorio):
+   - SLAReassignCount__c  : contador de reatribuicoes por SLA (idempotencia/escalada)
+   - ReassignReason__c    : motivo da ultima reatribuicao
+   - LastGestionDate__c   : carimbo da ultima gestao (criterio de inatividade, Fase 2)
+   - SLADeadline__c       : prazo de 1a atencion calculado do CMT. NECESSARIO porque
+                            Scheduled Path nao le offset dinamico do CMT - ele dispara
+                            no Time Source = este campo (offset 0). Sem ele, o SLA seria
+                            hardcoded no path. Ver justificativa no relatorio.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>SLAReassignCount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>SLA Reassign Count</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ReassignReason__c</fullName>
+        <externalId>false</externalId>
+        <label>Reassign Reason</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>SLA_Primera_Atencion</fullName>
+                    <default>false</default>
+                    <label>SLA Primera Atencion</label>
+                </value>
+                <value>
+                    <fullName>Inactividad_24h</fullName>
+                    <default>false</default>
+                    <label>Inactividad 24h</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>LastGestionDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Gestion Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>SLADeadline__c</fullName>
+        <externalId>false</externalId>
+        <label>SLA Deadline</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+</CustomObject>

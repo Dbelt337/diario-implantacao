@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-031 Fase 1. Registros do CMT (Lead_SLA_Config) FORA daqui (bug de deploy de CMD
+     record = UNKNOWN_EXCEPTION); criar na UI ou deployar separado. Ver README. -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Lead.SLAReassignCount__c</members>
+        <members>Lead.ReassignReason__c</members>
+        <members>Lead.LastGestionDate__c</members>
+        <members>Lead.SLADeadline__c</members>
+        <members>Lead_SLA_Config__mdt.Channel__c</members>
+        <members>Lead_SLA_Config__mdt.Sociedad__c</members>
+        <members>Lead_SLA_Config__mdt.BusinessLine__c</members>
+        <members>Lead_SLA_Config__mdt.SLAMinutes__c</members>
+        <members>Lead_SLA_Config__mdt.MaxReassignments__c</members>
+        <members>Lead_SLA_Config__mdt.EscalationQueueDevName__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Lead_SLA_Config__mdt</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Lead_SLA_Alert</members>
+        <name>CustomNotificationType</name>
+    </types>
+    <types>
+        <members>Lead_BS_SetSLADeadline</members>
+        <members>Lead_SLA_Escalation</members>
+        <name>Flow</name>
+    </types>
+    <version>62.0</version>
+</Package>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-031 Fase 1 - Lead_BS_SetSLADeadline (Record-Triggered BEFORE-SAVE, Create).
+  Calcula SLADeadline__c = agora + SLAMinutes (lido do CMT Lead_SLA_Config__mdt pelo
+  CANAL do lead). Roda no before-save pra o campo ja existir quando o Scheduled Path do
+  Lead_SLA_Escalation (after-save) for agendado. Sem CMT pro canal -> nao seta (o lead
+  segue normal, sem escalada de SLA).
+  >>> ASSUNCAO: o canal vem de LeadSource. Se for outro campo (ChannelCode__c), trocar 1 ref.
+-->
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <assignments>
+        <name>Set_Deadline</name>
+        <label>Set Deadline</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.SLADeadline__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>deadlineFx</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Tem_SLA</name>
+        <label>Tem SLA</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Sem SLA</defaultConnectorLabel>
+        <rules>
+            <name>Encontrou</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_SLA.SLAMinutes__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Deadline</targetReference>
+            </connector>
+            <label>Encontrou</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>deadlineFx</name>
+        <dataType>DateTime</dataType>
+        <expression>{!$Flow.CurrentDateTime} + ({!Get_SLA.SLAMinutes__c} / 1440)</expression>
+    </formulas>
+    <interviewLabel>Lead_BS_SetSLADeadline {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_BS_SetSLADeadline</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_SLA</name>
+        <label>Get SLA</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Tem_SLA</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Channel__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.LeadSource</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead_SLA_Config__mdt</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_SLA</targetReference>
+        </connector>
+        <object>Lead</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
