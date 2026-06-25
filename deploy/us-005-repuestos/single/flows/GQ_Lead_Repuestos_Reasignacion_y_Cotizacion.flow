@@ -14,15 +14,32 @@
      LeadRouting_OmniFlow (Omni Route Work). Este flow nao mexe no OwnerId nesse caso.
    - FALLBACK SEM MARCA: se o lead de Repuestos NAO tem Brand__c, o Omni o ignora
      (a entrada dele exige marca). Entao aqui roteamos por SOCIEDADE: fila
-     <FallbackQueuePrefix><Pais> (CMT, default Queue_Vendedores_<Pais>) derivada do
+     {PrefijoCola}<Pais> (constante PrefijoCola, default Queue_Vendedores_) derivada do
      prefixo de CompanyCode__c. Sem conflito com o Omni (ele nao toca leads sem marca).
      A criacao NUNCA e' bloqueada por falta de marca.
    - UNIFICACION (candidato, nao automatica): mesma peca (NATIVO ProductId) dentro da janela
-     (CMT.RecurrenceWindowDays__c, 5 dias) -> popula UnifiedFromLeadId__c.
+     (constante VentanaDias, 5 dias) -> popula UnifiedFromLeadId__c.
+   NOTA: parametros como CONSTANTES no topo do flow (VentanaDias, PrefijoCola) - o CMT
+   GQ_Dedup_Repuestos_Config__mdt NAO e' mais usado (deploy de registro CMD da
+   UNKNOWN_EXCEPTION nesta org). Para mudar valor, editar a constante e redeployar o flow.
    - Nao bloqueia, nao deleta. Fault -> Task, sem perder lead.
 -->
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>60.0</apiVersion>
+    <constants>
+        <name>VentanaDias</name>
+        <dataType>Number</dataType>
+        <value>
+            <numberValue>5.0</numberValue>
+        </value>
+    </constants>
+    <constants>
+        <name>PrefijoCola</name>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Queue_Vendedores_</stringValue>
+        </value>
+    </constants>
     <decisions>
         <name>Asset_Encontrado</name>
         <label>Asset Encontrado</label>
@@ -261,7 +278,7 @@
     <formulas>
         <name>dentroJanela</name>
         <dataType>Boolean</dataType>
-        <expression>(TODAY() - DATEVALUE({!Get_Lead_Anterior.CreatedDate})) &lt; {!Get_Config.RecurrenceWindowDays__c}</expression>
+        <expression>(TODAY() - DATEVALUE({!Get_Lead_Anterior.CreatedDate})) &lt; {!VentanaDias}</expression>
     </formulas>
     <formulas>
         <name>descAsset</name>
@@ -276,7 +293,7 @@
     <formulas>
         <name>queueDevName</name>
         <dataType>String</dataType>
-        <expression>{!Get_Config.FallbackQueuePrefix__c} &amp; CASE(LEFT(TEXT({!$Record.CompanyCode__c}), 1), "C", "CR", "G", "GT", "H", "HN", "N", "NI", "P", "PA", "S", "SV", "")</expression>
+        <expression>{!PrefijoCola} &amp; CASE(LEFT(TEXT({!$Record.CompanyCode__c}), 1), "C", "CR", "G", "GT", "H", "HN", "N", "NI", "P", "PA", "S", "SV", "")</expression>
     </formulas>
     <interviewLabel>GQ_Lead_Repuestos_Reasignacion_y_Cotizacion {!$Flow.CurrentDateTime}</interviewLabel>
     <label>GQ_Lead_Repuestos_Reasignacion_y_Cotizacion</label>
@@ -446,29 +463,6 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Config</name>
-        <label>Get Config</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Get_LineItem_New</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>Log_Falha</targetReference>
-        </faultConnector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>DeveloperName</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Default</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>GQ_Dedup_Repuestos_Config__mdt</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Lead_Anterior</name>
         <label>Get Lead Anterior</label>
         <locationX>0</locationX>
@@ -632,7 +626,7 @@
         <recordTriggerType>Create</recordTriggerType>
         <scheduledPaths>
             <connector>
-                <targetReference>Get_Config</targetReference>
+                <targetReference>Get_LineItem_New</targetReference>
             </connector>
             <pathType>AsyncAfterCommit</pathType>
         </scheduledPaths>
