@@ -9,6 +9,7 @@
         <members>GQ_Dedup_Repuestos_Config__mdt.RecurrenceWindowDays__c</members>
         <members>GQ_Dedup_Repuestos_Config__mdt.KeyGranularity__c</members>
         <members>GQ_Dedup_Repuestos_Config__mdt.DominantRule__c</members>
+        <members>GQ_Dedup_Repuestos_Config__mdt.FallbackQueuePrefix__c</members>
         <name>CustomField</name>
     </types>
     <types>

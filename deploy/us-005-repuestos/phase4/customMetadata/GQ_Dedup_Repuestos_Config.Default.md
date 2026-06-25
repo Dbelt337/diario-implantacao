@@ -15,4 +15,8 @@
         <field>DominantRule__c</field>
         <value xsi:type="xsd:string">IndependentPerPart</value>
     </values>
+    <values>
+        <field>FallbackQueuePrefix__c</field>
+        <value xsi:type="xsd:string">Queue_Vendedores_</value>
+    </values>
 </CustomMetadata>

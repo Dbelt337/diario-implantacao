@@ -39,4 +39,14 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>FallbackQueuePrefix__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Fallback Queue Prefix</label>
+        <length>60</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
 </CustomObject>

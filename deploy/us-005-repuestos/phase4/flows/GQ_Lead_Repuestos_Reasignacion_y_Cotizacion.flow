@@ -10,9 +10,13 @@
      preenchido, busca Vehicle (VehicleIdentificationNumber =) e, senao, Asset (SerialNumber =).
      Se acha, LOGA o match numa Task pro asesor. >>> ver flag: registrar via Task (sem custom
      lookup) vs campo de texto no Lead - decisao pendente.
-   - REASIGNACION / ROTEAMENTO: NAO e' feito aqui. Para evitar corrida e nao furar o
-     modelo Omni, a atribuicao/afinidade fica 100% no LeadRouting_OmniFlow (Omni Route
-     Work). Este flow NAO seta OwnerId.
+   - REASIGNACION / ROTEAMENTO (com marca): NAO e' feito aqui. Fica 100% no
+     LeadRouting_OmniFlow (Omni Route Work). Este flow nao mexe no OwnerId nesse caso.
+   - FALLBACK SEM MARCA: se o lead de Repuestos NAO tem Brand__c, o Omni o ignora
+     (a entrada dele exige marca). Entao aqui roteamos por SOCIEDADE: fila
+     <FallbackQueuePrefix><Pais> (CMT, default Queue_Vendedores_<Pais>) derivada do
+     prefixo de CompanyCode__c. Sem conflito com o Omni (ele nao toca leads sem marca).
+     A criacao NUNCA e' bloqueada por falta de marca.
    - UNIFICACION (candidato, nao automatica): mesma peca (NATIVO ProductId) dentro da janela
      (CMT.RecurrenceWindowDays__c, 5 dias) -> popula UnifiedFromLeadId__c.
    - Nao bloqueia, nao deleta. Fault -> Task, sem perder lead.
@@ -105,9 +109,59 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Tiene_VIN</targetReference>
+                <targetReference>Sin_Brand</targetReference>
             </connector>
             <label>Es Parte o Accesorio</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Cola_Encontrada</name>
+        <label>Cola Encontrada</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Tiene_VIN</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin cola (no asigna)</defaultConnectorLabel>
+        <rules>
+            <name>Hay_Cola</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Cola_Pais</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Asignar_Cola</targetReference>
+            </connector>
+            <label>Hay cola</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Sin_Brand</name>
+        <label>Sin Brand</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Tiene_VIN</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Con marca (rutea Omni)</defaultConnectorLabel>
+        <rules>
+            <name>Sin_Marca</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Brand__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Cola_Pais</targetReference>
+            </connector>
+            <label>Sin marca (fallback por Sociedad)</label>
         </rules>
     </decisions>
     <decisions>
@@ -219,6 +273,11 @@
         <name>descVehiculo</name>
         <dataType>String</dataType>
         <expression>"Cotizacion vinculada a Vehicle " &amp; {!Get_Vehicle.Id} &amp; " por coincidencia de VIN " &amp; {!Get_LineItem_New.AssetIdentificationNumber}</expression>
+    </formulas>
+    <formulas>
+        <name>queueDevName</name>
+        <dataType>String</dataType>
+        <expression>{!Get_Config.FallbackQueuePrefix__c} &amp; CASE(LEFT(TEXT({!$Record.CompanyCode__c}), 1), "C", "CR", "G", "GT", "H", "HN", "N", "NI", "P", "PA", "S", "SV", "")</expression>
     </formulas>
     <interviewLabel>GQ_Lead_Repuestos_Reasignacion_y_Cotizacion {!$Flow.CurrentDateTime}</interviewLabel>
     <label>GQ_Lead_Repuestos_Reasignacion_y_Cotizacion</label>
@@ -355,6 +414,36 @@
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Asset</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Cola_Pais</name>
+        <label>Get Cola Pais</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Cola_Encontrada</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Tiene_VIN</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>queueDevName</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Type</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Queue</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Group</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
@@ -502,6 +591,25 @@
         <object>Vehicle</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordUpdates>
+        <name>Asignar_Cola</name>
+        <label>Asignar Cola</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Tiene_VIN</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Tiene_VIN</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Get_Cola_Pais.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
     <recordUpdates>
         <name>Marcar_Candidato</name>
         <label>Marcar Candidato</label>
