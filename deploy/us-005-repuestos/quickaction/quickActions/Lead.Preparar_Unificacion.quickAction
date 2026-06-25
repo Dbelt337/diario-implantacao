@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Quick Action no Lead que abre o screen flow PreMerge. recordId do Lead vai automatico. -->
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <flowDefinition>GQ_Lead_Repuestos_PreMerge</flowDefinition>
+    <label>Preparar Unificacion</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>
