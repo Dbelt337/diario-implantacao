@@ -10,8 +10,9 @@
      preenchido, busca Vehicle (VehicleIdentificationNumber =) e, senao, Asset (SerialNumber =).
      Se acha, LOGA o match numa Task pro asesor. >>> ver flag: registrar via Task (sem custom
      lookup) vs campo de texto no Lead - decisao pendente.
-   - REASIGNACION: Lead anterior do mesmo contato (Email OR MobilePhone). Se o asesor anterior
-     tem presenca Omni ativa -> atribui o lead novo a ele; senao nao mexe (roteamento padrao).
+   - REASIGNACION / ROTEAMENTO: NAO e' feito aqui. Para evitar corrida e nao furar o
+     modelo Omni, a atribuicao/afinidade fica 100% no LeadRouting_OmniFlow (Omni Route
+     Work). Este flow NAO seta OwnerId.
    - UNIFICACION (candidato, nao automatica): mesma peca (NATIVO ProductId) dentro da janela
      (CMT.RecurrenceWindowDays__c, 5 dias) -> popula UnifiedFromLeadId__c.
    - Nao bloqueia, nao deleta. Fault -> Task, sem perder lead.
@@ -19,31 +20,6 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>60.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
-    <decisions>
-        <name>Asesor_Disponivel</name>
-        <label>Asesor Disponivel</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Get_LineItem_Prev</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No disponible</defaultConnectorLabel>
-        <rules>
-            <name>Disponible</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Presencia</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Reasignar</targetReference>
-            </connector>
-            <label>Disponible</label>
-        </rules>
-    </decisions>
     <decisions>
         <name>Asset_Encontrado</name>
         <label>Asset Encontrado</label>
@@ -151,7 +127,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Presencia</targetReference>
+                <targetReference>Get_LineItem_Prev</targetReference>
             </connector>
             <label>Existe anterior</label>
         </rules>
@@ -504,36 +480,6 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Presencia</name>
-        <label>Get Presencia</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Asesor_Disponivel</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>Log_Falha</targetReference>
-        </faultConnector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>UserId</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Lead_Anterior.OwnerId</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>IsCurrentState</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>UserServicePresence</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_Vehicle</name>
         <label>Get Vehicle</label>
         <locationX>0</locationX>
@@ -568,25 +514,6 @@
             <field>UnifiedFromLeadId__c</field>
             <value>
                 <elementReference>Get_Lead_Anterior.Id</elementReference>
-            </value>
-        </inputAssignments>
-        <inputReference>$Record</inputReference>
-    </recordUpdates>
-    <recordUpdates>
-        <name>Reasignar</name>
-        <label>Reasignar</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Get_LineItem_Prev</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>Log_Falha</targetReference>
-        </faultConnector>
-        <inputAssignments>
-            <field>OwnerId</field>
-            <value>
-                <elementReference>Get_Lead_Anterior.OwnerId</elementReference>
             </value>
         </inputAssignments>
         <inputReference>$Record</inputReference>
