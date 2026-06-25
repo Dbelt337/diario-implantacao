@@ -25,6 +25,14 @@
         <name>PermissionSet</name>
     </types>
     <types>
+        <members>Lead.GQ_Lead_Repuestos_Match</members>
+        <name>MatchingRule</name>
+    </types>
+    <types>
+        <members>GQ_Dedup_Repuestos_Config.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
         <members>GQ_Lead_Repuestos_Reasignacion_y_Cotizacion</members>
         <members>GQ_Lead_Repuestos_PreMerge</members>
         <name>Flow</name>
