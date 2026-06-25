@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  US-005 - GQ_Lead_Repuestos_PreMerge (Screen Flow). Roda no Lead MASTER (recordId).
-  Prepara campos ANTES do merge nativo (acao manual do usuario):
-   - Master: WasUnified__c=true, UnifiedFromLeadId__c = ID do lead duplicado.
-   - Lead duplicado: DuplicateReason__c = motivo escolhido.
-  NAO executa merge, NAO chama Database.merge, NAO deleta. So prepara campos.
-  runInMode SystemModeWithSharing: grava trazabilidade (read-only no FLS) respeitando sharing.
+  US-005 - GQ_Lead_Repuestos_PreMerge (Screen Flow) - UX melhorado.
+  Roda no Lead MASTER (recordId, auto pela Quick Action). Em vez de digitar o Id,
+  LISTA automaticamente os leads duplicados do mesmo contato (Email OR MobilePhone OR
+  Phone, exclui o proprio) num dropdown. O usuario escolhe o duplicado + o motivo.
+  Prepara campos ANTES do merge nativo (manual):
+   - Master: WasUnified__c=true, UnifiedFromLeadId__c = lead escolhido.
+   - Lead duplicado: DuplicateReason__c = motivo.
+  NAO faz merge, NAO deleta. runInMode SystemModeWithSharing p/ gravar trazabilidade.
 -->
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>60.0</apiVersion>
@@ -25,6 +27,91 @@
             <stringValue>Duplicado_MismoContacto</stringValue>
         </value>
     </choices>
+    <decisions>
+        <name>Hay_Duplicados</name>
+        <label>Hay Duplicados</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>No_Hay</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No hay</defaultConnectorLabel>
+        <rules>
+            <name>Si_Hay</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Dup_Check</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Preparar</targetReference>
+            </connector>
+            <label>Si hay</label>
+        </rules>
+    </decisions>
+    <dynamicChoiceSets>
+        <name>Dups_Choice</name>
+        <dataType>String</dataType>
+        <displayField>Name</displayField>
+        <filterLogic>1 AND ((2 AND 3) OR (4 AND 5) OR (6 AND 7))</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Email</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Master.Email</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Email</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>MobilePhone</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Master.MobilePhone</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>MobilePhone</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Phone</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Master.Phone</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Phone</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <limit>50</limit>
+        <object>Lead</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
     <environments>Default</environments>
     <interviewLabel>GQ_Lead_Repuestos_PreMerge {!$Flow.CurrentDateTime}</interviewLabel>
     <label>GQ_Lead_Repuestos_PreMerge</label>
@@ -41,6 +128,94 @@
         </value>
     </processMetadataValues>
     <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Dup_Check</name>
+        <label>Get Dup Check</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Hay_Duplicados</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Tela_Erro</targetReference>
+        </faultConnector>
+        <filterLogic>1 AND ((2 AND 3) OR (4 AND 5) OR (6 AND 7))</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Email</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Master.Email</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Email</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>MobilePhone</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Master.MobilePhone</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>MobilePhone</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Phone</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Master.Phone</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Phone</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Master</name>
+        <label>Get Master</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Dup_Check</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Tela_Erro</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>Update_Dup</name>
         <label>Update Lead Duplicado</label>
@@ -57,7 +232,7 @@
             <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>In_DupLeadId</elementReference>
+                <elementReference>In_Dup</elementReference>
             </value>
         </filters>
         <inputAssignments>
@@ -96,12 +271,28 @@
         <inputAssignments>
             <field>UnifiedFromLeadId__c</field>
             <value>
-                <elementReference>In_DupLeadId</elementReference>
+                <elementReference>In_Dup</elementReference>
             </value>
         </inputAssignments>
         <object>Lead</object>
     </recordUpdates>
     <runInMode>SystemModeWithSharing</runInMode>
+    <screens>
+        <name>No_Hay</name>
+        <label>Sin duplicados</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>MsgNoHay</name>
+            <fieldText>&lt;p&gt;No se encontraron Leads duplicados (mismo Email/Teléfono) para este Lead.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
     <screens>
         <name>Preparar</name>
         <label>Preparar Unificacion</label>
@@ -114,10 +305,11 @@
             <targetReference>Update_Master</targetReference>
         </connector>
         <fields>
-            <name>In_DupLeadId</name>
+            <name>In_Dup</name>
+            <choiceReferences>Dups_Choice</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>ID del Lead duplicado (que sera inactivado en el merge nativo)</fieldText>
-            <fieldType>InputField</fieldType>
+            <fieldText>Lead duplicado (sera inactivado en el merge nativo)</fieldText>
+            <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
         <fields>
@@ -168,7 +360,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Preparar</targetReference>
+            <targetReference>Get_Master</targetReference>
         </connector>
     </start>
     <status>Active</status>
