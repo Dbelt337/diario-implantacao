@@ -29,10 +29,6 @@
         <name>MatchingRule</name>
     </types>
     <types>
-        <members>Lead.GQ_Lead_Repuestos_Dup</members>
-        <name>DuplicateRule</name>
-    </types>
-    <types>
         <members>GQ_Dedup_Repuestos_Config.Default</members>
         <name>CustomMetadata</name>
     </types>
