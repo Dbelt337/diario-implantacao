@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-005: SO o registro CMT. Deploy separado (o tipo ja existe no org -> sobe limpo). -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>GQ_Dedup_Repuestos_Config.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+    <version>60.0</version>
+</Package>
