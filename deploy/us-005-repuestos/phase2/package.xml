@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- US-005 FASE 2: ATIVA a Matching Rule (mesma regra, ruleStatus=Active). Deploy separado. -->
+<!-- US-005 FASE 2: ATIVA a Matching Rule. -->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>Lead.GQ_Lead_Repuestos_Match</members>

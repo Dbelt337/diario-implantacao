@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 Fase 1 - UNICO custom field no LeadLineItem: LicensePlate__c (Placa).
+  VIN e peca sao NATIVOS (AssetIdentificationNumber, ProductId, ItemType) - nao criar.
+  Placa nao tem campo nativo no LeadLineItem -> custom (mesmo padrao do Asset, Sec 57.7).
+  Formato Metadata API: campo embutido no LeadLineItem.object.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>LicensePlate__c</fullName>
+        <externalId>false</externalId>
+        <label>Placa</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>

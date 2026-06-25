@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  US-005 - GQ_Lead_Repuestos_Reasignacion (Record-Triggered, Lead CREATE).
-  Roda no caminho ASYNC AFTER COMMIT: 1) da tempo dos LeadLineItem do lead novo
-  serem inseridos (a chave de cotizacion e' LeadLineItem.Product2Id, que costuma ser
-  gravado logo apos o Lead); 2) create-only -> os Updates de OwnerId/UnifiedFromLeadId
-  nao re-disparam o flow.
+  US-005 - GQ_Lead_Repuestos_Reasignacion_y_Cotizacion (Record-Triggered, Lead CREATE,
+  ASYNC AFTER COMMIT para os LeadLineItem ja existirem; create-only evita re-disparo).
 
-  Logica:
-   - So leads de Repuestos (LeadSource == CMT.RepuestosLeadSource__c). >>> confirmar valor.
-   - Acha o Lead anterior mais recente do mesmo contato (Email OR MobilePhone OR VIN OR Placa).
-   - REASIGNACION (independe de peca): se o asesor do lead anterior tem presenca Omni ativa
-     (UserServicePresence IsCurrentState), atribui o lead novo a ele; senao, NAO mexe
-     (deixa o roteamento padrao por pais).
-   - UNIFICACAO (candidato, nao automatico): se mesma peca (Product2Id igual) E dentro da
-     janela (CMT.RecurrenceWindowDays__c, default 5 dias) -> popula UnifiedFromLeadId__c.
-     NAO unifica, NAO bloqueia, NAO deleta.
-   - Fault: tudo cai em Log_Falha (Task) sem perder o lead.
-
-  >>> ASSUNCOES sinalizadas (ver relatorio): campo do produto = Product2Id;
-      valor de Repuestos no CMT; valores D-005-A/B/C.
+  Camada 2 (filho LeadLineItem):
+   - Le o LeadLineItem do lead novo. Sem item -> sai.
+   - Repuestos? NATIVO ItemType IN (Part, Accessory). Se nao -> sai.
+   - VINCULO AO VEICULO REAL (por IGUALDADE de VIN, sem lookup): se AssetIdentificationNumber
+     preenchido, busca Vehicle (VehicleIdentificationNumber =) e, senao, Asset (SerialNumber =).
+     Se acha, LOGA o match numa Task pro asesor. >>> ver flag: registrar via Task (sem custom
+     lookup) vs campo de texto no Lead - decisao pendente.
+   - REASIGNACION: Lead anterior do mesmo contato (Email OR MobilePhone). Se o asesor anterior
+     tem presenca Omni ativa -> atribui o lead novo a ele; senao nao mexe (roteamento padrao).
+   - UNIFICACION (candidato, nao automatica): mesma peca (NATIVO ProductId) dentro da janela
+     (CMT.RecurrenceWindowDays__c, 5 dias) -> popula UnifiedFromLeadId__c.
+   - Nao bloqueia, nao deleta. Fault -> Task, sem perder lead.
 -->
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>60.0</apiVersion>
@@ -29,11 +25,11 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <defaultConnector>
-            <targetReference>Get_LineItem_New</targetReference>
+            <targetReference>Get_LineItem_Prev</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>No disponible (no reasigna)</defaultConnectorLabel>
+        <defaultConnectorLabel>No disponible</defaultConnectorLabel>
         <rules>
-            <name>Disponivel</name>
+            <name>Disponible</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Presencia</leftValueReference>
@@ -49,21 +45,39 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Avalia_Unificacao</name>
-        <label>Avalia Unificacao</label>
+        <name>Asset_Encontrado</name>
+        <label>Asset Encontrado</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnectorLabel>No es candidato</defaultConnectorLabel>
+        <defaultConnector>
+            <targetReference>Get_Lead_Anterior</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No</defaultConnectorLabel>
         <rules>
-            <name>Candidato</name>
-            <conditionLogic>1 AND 2 AND 3 AND 4</conditionLogic>
+            <name>Hay_Asset</name>
+            <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_LineItem_New</leftValueReference>
+                <leftValueReference>Get_Asset</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>false</booleanValue>
                 </rightValue>
             </conditions>
+            <connector>
+                <targetReference>Log_Asset</targetReference>
+            </connector>
+            <label>Hay Asset</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Avalia_Unificacion</name>
+        <label>Avalia Unificacion</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No es candidato</defaultConnectorLabel>
+        <rules>
+            <name>Candidato</name>
+            <conditionLogic>1 AND 2 AND 3</conditionLogic>
             <conditions>
                 <leftValueReference>Get_LineItem_Prev</leftValueReference>
                 <operator>IsNull</operator>
@@ -72,10 +86,10 @@
                 </rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>Get_LineItem_New.Product2Id</leftValueReference>
+                <leftValueReference>Get_LineItem_New.ProductId</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>Get_LineItem_Prev.Product2Id</elementReference>
+                    <elementReference>Get_LineItem_Prev.ProductId</elementReference>
                 </rightValue>
             </conditions>
             <conditions>
@@ -88,29 +102,36 @@
             <connector>
                 <targetReference>Marcar_Candidato</targetReference>
             </connector>
-            <label>Mesma peca dentro da janela</label>
+            <label>Misma pieza dentro de la ventana</label>
         </rules>
     </decisions>
     <decisions>
-        <name>Eh_Repuestos</name>
-        <label>Eh Repuestos</label>
+        <name>Es_Repuestos</name>
+        <label>Es Repuestos</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnectorLabel>No es Repuestos</defaultConnectorLabel>
+        <defaultConnectorLabel>No es Repuestos/PA</defaultConnectorLabel>
         <rules>
-            <name>Es_Repuestos</name>
-            <conditionLogic>and</conditionLogic>
+            <name>Es_Parte_o_Accesorio</name>
+            <conditionLogic>1 OR 2</conditionLogic>
             <conditions>
-                <leftValueReference>$Record.LeadSource</leftValueReference>
+                <leftValueReference>Get_LineItem_New.ItemType</leftValueReference>
                 <operator>EqualTo</operator>
                 <rightValue>
-                    <elementReference>Get_Config.RepuestosLeadSource__c</elementReference>
+                    <stringValue>Part</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_LineItem_New.ItemType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Accessory</stringValue>
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>Get_Lead_Anterior</targetReference>
+                <targetReference>Tiene_VIN</targetReference>
             </connector>
-            <label>Es Repuestos</label>
+            <label>Es Parte o Accesorio</label>
         </rules>
     </decisions>
     <decisions>
@@ -135,14 +156,96 @@
             <label>Existe anterior</label>
         </rules>
     </decisions>
+    <decisions>
+        <name>Tiene_LineItem</name>
+        <label>Tiene LineItem</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Sin LineItem</defaultConnectorLabel>
+        <rules>
+            <name>Hay_LineItem</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_LineItem_New</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Es_Repuestos</targetReference>
+            </connector>
+            <label>Hay LineItem</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Tiene_VIN</name>
+        <label>Tiene VIN</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_Lead_Anterior</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin VIN</defaultConnectorLabel>
+        <rules>
+            <name>Hay_VIN</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_LineItem_New.AssetIdentificationNumber</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Vehicle</targetReference>
+            </connector>
+            <label>Hay VIN</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Vehiculo_Encontrado</name>
+        <label>Vehiculo Encontrado</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_Asset</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No (intenta Asset)</defaultConnectorLabel>
+        <rules>
+            <name>Hay_Vehiculo</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Vehicle</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Log_Vehiculo</targetReference>
+            </connector>
+            <label>Hay Vehiculo</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <formulas>
         <name>dentroJanela</name>
         <dataType>Boolean</dataType>
         <expression>(TODAY() - DATEVALUE({!Get_Lead_Anterior.CreatedDate})) &lt; {!Get_Config.RecurrenceWindowDays__c}</expression>
     </formulas>
-    <interviewLabel>GQ_Lead_Repuestos_Reasignacion {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>GQ_Lead_Repuestos_Reasignacion</label>
+    <formulas>
+        <name>descAsset</name>
+        <dataType>String</dataType>
+        <expression>"Cotizacion vinculada a Asset " &amp; {!Get_Asset.Id} &amp; " por coincidencia de VIN/Serial " &amp; {!Get_LineItem_New.AssetIdentificationNumber}</expression>
+    </formulas>
+    <formulas>
+        <name>descVehiculo</name>
+        <dataType>String</dataType>
+        <expression>"Cotizacion vinculada a Vehicle " &amp; {!Get_Vehicle.Id} &amp; " por coincidencia de VIN " &amp; {!Get_LineItem_New.AssetIdentificationNumber}</expression>
+    </formulas>
+    <interviewLabel>GQ_Lead_Repuestos_Reasignacion_y_Cotizacion {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>GQ_Lead_Repuestos_Reasignacion_y_Cotizacion</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -157,6 +260,43 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordCreates>
+        <name>Log_Asset</name>
+        <label>Log Asset</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Lead_Anterior</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Get_Lead_Anterior</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>descAsset</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Cotizacion vinculada a Asset por VIN</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordCreates>
         <name>Log_Falha</name>
         <label>Log Falha</label>
         <locationX>0</locationX>
@@ -170,7 +310,44 @@
         <inputAssignments>
             <field>Subject</field>
             <value>
-                <stringValue>Falha em GQ_Lead_Repuestos_Reasignacion (US-005) - lead mantido</stringValue>
+                <stringValue>Falha em GQ_Lead_Repuestos_Reasignacion_y_Cotizacion (US-005) - lead mantido</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordCreates>
+        <name>Log_Vehiculo</name>
+        <label>Log Vehiculo</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Lead_Anterior</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Get_Lead_Anterior</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>descVehiculo</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Cotizacion vinculada a Vehicle por VIN</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -182,12 +359,35 @@
         <object>Task</object>
     </recordCreates>
     <recordLookups>
+        <name>Get_Asset</name>
+        <label>Get Asset</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Asset_Encontrado</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Get_Lead_Anterior</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SerialNumber</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_LineItem_New.AssetIdentificationNumber</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Asset</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>Get_Config</name>
         <label>Get Config</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Eh_Repuestos</targetReference>
+            <targetReference>Get_LineItem_New</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Log_Falha</targetReference>
@@ -201,7 +401,7 @@
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>GQ_Lead_Repuestos_Config__mdt</object>
+        <object>GQ_Dedup_Repuestos_Config__mdt</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
@@ -215,7 +415,7 @@
         <faultConnector>
             <targetReference>Log_Falha</targetReference>
         </faultConnector>
-        <filterLogic>1 AND ((2 AND 3) OR (4 AND 5) OR (6 AND 7) OR (8 AND 9))</filterLogic>
+        <filterLogic>1 AND ((2 AND 3) OR (4 AND 5))</filterLogic>
         <filters>
             <field>Id</field>
             <operator>NotEqualTo</operator>
@@ -251,34 +451,6 @@
                 <booleanValue>false</booleanValue>
             </value>
         </filters>
-        <filters>
-            <field>VIN__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.VIN__c</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>VIN__c</field>
-            <operator>IsNull</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </filters>
-        <filters>
-            <field>VehiclePlate__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.VehiclePlate__c</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>VehiclePlate__c</field>
-            <operator>IsNull</operator>
-            <value>
-                <booleanValue>false</booleanValue>
-            </value>
-        </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Lead</object>
         <sortField>CreatedDate</sortField>
@@ -291,7 +463,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_LineItem_Prev</targetReference>
+            <targetReference>Tiene_LineItem</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Log_Falha</targetReference>
@@ -314,7 +486,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Avalia_Unificacao</targetReference>
+            <targetReference>Avalia_Unificacion</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Log_Falha</targetReference>
@@ -361,6 +533,29 @@
         <object>UserServicePresence</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Vehicle</name>
+        <label>Get Vehicle</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Vehiculo_Encontrado</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Get_Lead_Anterior</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>VehicleIdentificationNumber</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_LineItem_New.AssetIdentificationNumber</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Vehicle</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordUpdates>
         <name>Marcar_Candidato</name>
         <label>Marcar Candidato</label>
@@ -383,7 +578,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_LineItem_New</targetReference>
+            <targetReference>Get_LineItem_Prev</targetReference>
         </connector>
         <faultConnector>
             <targetReference>Log_Falha</targetReference>

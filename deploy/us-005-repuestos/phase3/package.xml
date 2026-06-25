@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- US-005 FASE 3: Duplicate Rule (referencia a Matching Rule ja ATIVA da Fase 2). -->
+<!-- US-005 FASE 3: Duplicate Rule (Matching Rule ja ATIVA). -->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>Lead.GQ_Lead_Repuestos_Dup</members>

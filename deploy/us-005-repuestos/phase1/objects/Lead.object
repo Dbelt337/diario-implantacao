@@ -1,30 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  US-005 Fase 1 - 5 custom fields no Lead (formato Metadata API tradicional:
-  campos EMBUTIDOS no Lead.object, nao como *.field-meta.xml separados).
-  Deploy parcial/additive: nao remove campos existentes.
+  US-005 Fase 1 - 3 custom fields no Lead (trazabilidade de unificacao). VIN e placa
+  NAO ficam no Lead (sao do LeadLineItem). Formato Metadata API (embutido). Additive.
 -->
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fields>
-        <fullName>VIN__c</fullName>
-        <externalId>false</externalId>
-        <label>VIN</label>
-        <length>17</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>VehiclePlate__c</fullName>
-        <externalId>false</externalId>
-        <label>Placa</label>
-        <length>20</length>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
     <fields>
         <fullName>WasUnified__c</fullName>
         <defaultValue>false</defaultValue>

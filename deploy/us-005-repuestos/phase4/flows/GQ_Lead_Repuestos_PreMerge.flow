@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   US-005 - GQ_Lead_Repuestos_PreMerge (Screen Flow). Roda no Lead MASTER (recordId).
-  Prepara os campos ANTES do merge nativo (que e' acao manual do usuario):
+  Prepara campos ANTES do merge nativo (acao manual do usuario):
    - Master: WasUnified__c=true, UnifiedFromLeadId__c = ID do lead duplicado.
-   - Lead duplicado (a ser inativado): DuplicateReason__c = motivo escolhido.
-  NAO executa o merge, NAO chama Database.merge, NAO deleta. So prepara campos.
-  runInMode SystemModeWithSharing: grava os campos de trazabilidade (read-only no FLS)
-  respeitando o sharing.
+   - Lead duplicado: DuplicateReason__c = motivo escolhido.
+  NAO executa merge, NAO chama Database.merge, NAO deleta. So prepara campos.
+  runInMode SystemModeWithSharing: grava trazabilidade (read-only no FLS) respeitando sharing.
 -->
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>60.0</apiVersion>
