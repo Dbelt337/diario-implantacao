@@ -458,9 +458,9 @@
             </value>
         </inputAssignments>
         <inputAssignments>
-            <field>IsPriorityRecord</field>
+            <field>Rating</field>
             <value>
-                <booleanValue>true</booleanValue>
+                <stringValue>Hot</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -501,9 +501,9 @@
             <targetReference>Log_Falha</targetReference>
         </faultConnector>
         <inputAssignments>
-            <field>IsPriorityRecord</field>
+            <field>Rating</field>
             <value>
-                <booleanValue>true</booleanValue>
+                <stringValue>Hot</stringValue>
             </value>
         </inputAssignments>
         <inputAssignments>
