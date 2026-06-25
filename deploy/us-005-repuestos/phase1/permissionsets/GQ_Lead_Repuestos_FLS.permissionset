@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 - FLS dos 5 campos novos. A spec pedia FLS nos PROFILES AC_Vend_Rep e
+  AC_Sup_Rep; entreguei via Permission Set por ser reversivel e NAO depender do
+  nome interno exato do profile (principio "nao inventar nomes"). Atribuir este PS
+  aos usuarios desses perfis. Se preferir aplicar direto nos profiles, me confirme
+  os API names exatos e eu gero os profiles parciais.
+
+  Trazabilidade (WasUnified__c, UnifiedFromLeadId__c) = somente leitura para usuario
+  (escritos pelos Flows em system context). VIN/Placa/DuplicateReason = editaveis.
+-->
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>GQ Lead Repuestos FLS</label>
+    <hasActivationRequired>false</hasActivationRequired>
+    <fieldPermissions>
+        <field>Lead.VIN__c</field>
+        <editable>true</editable>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Lead.VehiclePlate__c</field>
+        <editable>true</editable>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Lead.DuplicateReason__c</field>
+        <editable>true</editable>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Lead.WasUnified__c</field>
+        <editable>false</editable>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Lead.UnifiedFromLeadId__c</field>
+        <editable>false</editable>
+        <readable>true</readable>
+    </fieldPermissions>
+</PermissionSet>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 - Custom Metadata Type com os valores parametrizados (D-005-A/B/C).
+  NUNCA hard-coded em formula: os Flows leem o registro 'Default' deste CMT.
+  RepuestosLeadSource__c: valor de LeadSource que identifica linha Repuestos/PA.
+    >>> ASSUNCAO a confirmar - ver flag no relatorio (qual campo/valor marca Repuestos).
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>GQ Lead Repuestos Config</label>
+    <pluralLabel>GQ Lead Repuestos Config</pluralLabel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>RecurrenceWindowDays__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Recurrence Window Days</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RepuestosLeadSource__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Repuestos Lead Source</label>
+        <length>80</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>KeyGranularity__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Key Granularity</label>
+        <length>40</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DominantRule__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Dominant Rule</label>
+        <length>40</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>

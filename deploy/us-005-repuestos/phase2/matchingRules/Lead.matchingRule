@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 Fase 2 - ATIVA a Matching Rule (ruleStatus=Active). Deploy separado, depois
+  da Fase 1. Os campos ja existem na org, entao a ativacao passa. Identica a Fase 1
+  exceto ruleStatus=Active.
+-->
+<MatchingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <matchingRules>
+        <fullName>GQ_Lead_Repuestos_Match</fullName>
+        <label>GQ Lead Repuestos Match</label>
+        <description>US-005: deteccion de duplicados de Lead de Repuestos/PA por Email, MobilePhone, VIN o Placa (exact match, OR).</description>
+        <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>Email</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>MobilePhone</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>VIN__c</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>VehiclePlate__c</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <ruleStatus>Active</ruleStatus>
+    </matchingRules>
+</MatchingRules>

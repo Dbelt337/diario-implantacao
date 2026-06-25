@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 Fase 1 - Matching Rule INATIVA (ruleStatus=Inactive). Sobe junto com os
+  campos VIN__c/VehiclePlate__c (mesmo pacote). Tem que vir inativa: ativar uma
+  matching rule dispara reindexacao assincrona e nao pode ocorrer no mesmo deploy
+  que cria os campos referenciados. Ativacao = Fase 2.
+
+  UMA unica matching rule consolidando os criterios via OR (teto de plataforma: 1
+  matching rule ativa por objeto). Exact match em todos (dados deterministicos, 6
+  paises; Fuzzy so cobre latinos). blankValueBehavior=NullNotAllowed (branco nao casa).
+-->
+<MatchingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <matchingRules>
+        <fullName>GQ_Lead_Repuestos_Match</fullName>
+        <label>GQ Lead Repuestos Match</label>
+        <description>US-005: deteccion de duplicados de Lead de Repuestos/PA por Email, MobilePhone, VIN o Placa (exact match, OR).</description>
+        <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>Email</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>MobilePhone</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>VIN__c</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>VehiclePlate__c</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <ruleStatus>Inactive</ruleStatus>
+    </matchingRules>
+</MatchingRules>

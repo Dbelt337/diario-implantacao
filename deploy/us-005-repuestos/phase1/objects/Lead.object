@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 Fase 1 - 5 custom fields no Lead (formato Metadata API tradicional:
+  campos EMBUTIDOS no Lead.object, nao como *.field-meta.xml separados).
+  Deploy parcial/additive: nao remove campos existentes.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>VIN__c</fullName>
+        <externalId>false</externalId>
+        <label>VIN</label>
+        <length>17</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>VehiclePlate__c</fullName>
+        <externalId>false</externalId>
+        <label>Placa</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WasUnified__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Was Unified</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>UnifiedFromLeadId__c</fullName>
+        <externalId>false</externalId>
+        <label>Unified From Lead Id</label>
+        <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DuplicateReason__c</fullName>
+        <externalId>false</externalId>
+        <label>Duplicate Reason</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Duplicado_MismaPieza</fullName>
+                    <default>false</default>
+                    <label>Duplicado_MismaPieza</label>
+                </value>
+                <value>
+                    <fullName>Duplicado_MismoContacto</fullName>
+                    <default>false</default>
+                    <label>Duplicado_MismoContacto</label>
+                </value>
+                <value>
+                    <fullName>No_Duplicado</fullName>
+                    <default>false</default>
+                    <label>No_Duplicado</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+</CustomObject>

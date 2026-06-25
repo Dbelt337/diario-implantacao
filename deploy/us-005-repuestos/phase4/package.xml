@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-005 FASE 4: CMT (config) + registro Default + os 2 Flows. So depois de confirmar D-005-A/B/C com a BA. -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>GQ_Lead_Repuestos_Config__mdt</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>GQ_Lead_Repuestos_Config__mdt.RecurrenceWindowDays__c</members>
+        <members>GQ_Lead_Repuestos_Config__mdt.RepuestosLeadSource__c</members>
+        <members>GQ_Lead_Repuestos_Config__mdt.KeyGranularity__c</members>
+        <members>GQ_Lead_Repuestos_Config__mdt.DominantRule__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>GQ_Lead_Repuestos_Config.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>GQ_Lead_Repuestos_Reasignacion</members>
+        <members>GQ_Lead_Repuestos_PreMerge</members>
+        <name>Flow</name>
+    </types>
+    <version>60.0</version>
+</Package>

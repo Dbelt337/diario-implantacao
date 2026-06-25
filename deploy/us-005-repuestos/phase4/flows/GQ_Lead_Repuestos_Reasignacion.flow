@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 - GQ_Lead_Repuestos_Reasignacion (Record-Triggered, Lead CREATE).
+  Roda no caminho ASYNC AFTER COMMIT: 1) da tempo dos LeadLineItem do lead novo
+  serem inseridos (a chave de cotizacion e' LeadLineItem.Product2Id, que costuma ser
+  gravado logo apos o Lead); 2) create-only -> os Updates de OwnerId/UnifiedFromLeadId
+  nao re-disparam o flow.
+
+  Logica:
+   - So leads de Repuestos (LeadSource == CMT.RepuestosLeadSource__c). >>> confirmar valor.
+   - Acha o Lead anterior mais recente do mesmo contato (Email OR MobilePhone OR VIN OR Placa).
+   - REASIGNACION (independe de peca): se o asesor do lead anterior tem presenca Omni ativa
+     (UserServicePresence IsCurrentState), atribui o lead novo a ele; senao, NAO mexe
+     (deixa o roteamento padrao por pais).
+   - UNIFICACAO (candidato, nao automatico): se mesma peca (Product2Id igual) E dentro da
+     janela (CMT.RecurrenceWindowDays__c, default 5 dias) -> popula UnifiedFromLeadId__c.
+     NAO unifica, NAO bloqueia, NAO deleta.
+   - Fault: tudo cai em Log_Falha (Task) sem perder o lead.
+
+  >>> ASSUNCOES sinalizadas (ver relatorio): campo do produto = Product2Id;
+      valor de Repuestos no CMT; valores D-005-A/B/C.
+-->
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>60.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Asesor_Disponivel</name>
+        <label>Asesor Disponivel</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_LineItem_New</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No disponible (no reasigna)</defaultConnectorLabel>
+        <rules>
+            <name>Disponivel</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Presencia</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Reasignar</targetReference>
+            </connector>
+            <label>Disponible</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Avalia_Unificacao</name>
+        <label>Avalia Unificacao</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No es candidato</defaultConnectorLabel>
+        <rules>
+            <name>Candidato</name>
+            <conditionLogic>1 AND 2 AND 3 AND 4</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_LineItem_New</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_LineItem_Prev</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_LineItem_New.Product2Id</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Get_LineItem_Prev.Product2Id</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>dentroJanela</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Marcar_Candidato</targetReference>
+            </connector>
+            <label>Mesma peca dentro da janela</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Eh_Repuestos</name>
+        <label>Eh Repuestos</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No es Repuestos</defaultConnectorLabel>
+        <rules>
+            <name>Es_Repuestos</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.LeadSource</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Get_Config.RepuestosLeadSource__c</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Lead_Anterior</targetReference>
+            </connector>
+            <label>Es Repuestos</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Tem_Anterior</name>
+        <label>Tem Anterior</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Sin lead anterior</defaultConnectorLabel>
+        <rules>
+            <name>Existe_Anterior</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Lead_Anterior</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Presencia</targetReference>
+            </connector>
+            <label>Existe anterior</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>dentroJanela</name>
+        <dataType>Boolean</dataType>
+        <expression>(TODAY() - DATEVALUE({!Get_Lead_Anterior.CreatedDate})) &lt; {!Get_Config.RecurrenceWindowDays__c}</expression>
+    </formulas>
+    <interviewLabel>GQ_Lead_Repuestos_Reasignacion {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>GQ_Lead_Repuestos_Reasignacion</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Log_Falha</name>
+        <label>Log Falha</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Falha em GQ_Lead_Repuestos_Reasignacion (US-005) - lead mantido</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Config</name>
+        <label>Get Config</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Eh_Repuestos</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Default</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>GQ_Lead_Repuestos_Config__mdt</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Lead_Anterior</name>
+        <label>Get Lead Anterior</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Tem_Anterior</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>1 AND ((2 AND 3) OR (4 AND 5) OR (6 AND 7) OR (8 AND 9))</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Email</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Email</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Email</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>MobilePhone</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.MobilePhone</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>MobilePhone</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>VIN__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.VIN__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>VIN__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>VehiclePlate__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.VehiclePlate__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>VehiclePlate__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <sortField>CreatedDate</sortField>
+        <sortOrder>Desc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_LineItem_New</name>
+        <label>Get LineItem New</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_LineItem_Prev</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>LeadId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>LeadLineItem</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_LineItem_Prev</name>
+        <label>Get LineItem Prev</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Avalia_Unificacao</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>LeadId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Lead_Anterior.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>LeadLineItem</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Presencia</name>
+        <label>Get Presencia</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Asesor_Disponivel</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>UserId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Lead_Anterior.OwnerId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>IsCurrentState</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>UserServicePresence</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Marcar_Candidato</name>
+        <label>Marcar Candidato</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>UnifiedFromLeadId__c</field>
+            <value>
+                <elementReference>Get_Lead_Anterior.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Reasignar</name>
+        <label>Reasignar</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_LineItem_New</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>Get_Lead_Anterior.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <object>Lead</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <scheduledPaths>
+            <connector>
+                <targetReference>Get_Config</targetReference>
+            </connector>
+            <pathType>AsyncAfterCommit</pathType>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
