@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 - Custom Metadata Type com os valores D-005-A/B/C (parametrizados, nao hard-coded).
+  O Flow le o registro 'Default'. Linha Repuestos NAO entra aqui: e' identificada pelo
+  NATIVO LeadLineItem.ItemType (Part/Accessory), conforme decisao de arquitetura.
+-->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>GQ Dedup Repuestos Config</label>
+    <pluralLabel>GQ Dedup Repuestos Config</pluralLabel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>RecurrenceWindowDays__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Recurrence Window Days</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>KeyGranularity__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Key Granularity</label>
+        <length>40</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DominantRule__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Dominant Rule</label>
+        <length>40</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>

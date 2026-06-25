@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 - FLS de LicensePlate__c (LeadLineItem) + 3 campos do Lead. Via Permission Set
+  (a spec pedia nos profiles AC_Vend_Rep/AC_Sup_Rep; PS evita depender do API name do
+  profile). Atribuir aos usuarios desses perfis. Trazabilidade (WasUnified/UnifiedFromLeadId)
+  = read-only p/ usuario (escrito pelos Flows em system context).
+-->
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>GQ Lead Repuestos FLS</label>
+    <hasActivationRequired>false</hasActivationRequired>
+    <fieldPermissions>
+        <field>LeadLineItem.LicensePlate__c</field>
+        <editable>true</editable>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Lead.DuplicateReason__c</field>
+        <editable>true</editable>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Lead.WasUnified__c</field>
+        <editable>false</editable>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Lead.UnifiedFromLeadId__c</field>
+        <editable>false</editable>
+        <readable>true</readable>
+    </fieldPermissions>
+</PermissionSet>

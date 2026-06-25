@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 Fase 1 - Matching Rule INATIVA. Criterios SO de campos do proprio Lead
+  (Matching Rule de Lead nao le campo do LeadLineItem filho): Email OR Phone OR
+  MobilePhone, todos Exact, blank nao casa. VIN/peca/placa sao resolvidos no Flow da
+  Camada 2 (LeadLineItem). Inativa de proposito (ativar = Fase 2; reindexacao assincrona).
+-->
+<MatchingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <matchingRules>
+        <fullName>GQ_Lead_Repuestos_Match</fullName>
+        <label>GQ Lead Repuestos Match</label>
+        <description>US-005: deteccion de Lead de Repuestos/PA duplicado por Email, Phone o MobilePhone (exact, OR).</description>
+        <booleanFilter>1 OR 2 OR 3</booleanFilter>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>Email</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>Phone</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <matchingRuleItems>
+            <blankValueBehavior>NullNotAllowed</blankValueBehavior>
+            <fieldName>MobilePhone</fieldName>
+            <matchingMethod>Exact</matchingMethod>
+        </matchingRuleItems>
+        <ruleStatus>Inactive</ruleStatus>
+    </matchingRules>
+</MatchingRules>

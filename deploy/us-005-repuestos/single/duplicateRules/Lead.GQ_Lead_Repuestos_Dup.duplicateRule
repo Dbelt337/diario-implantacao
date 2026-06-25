@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-005 DEPLOY UNICO - Duplicate Rule INATIVA (isActive=false). Sobe junto com a
+  Matching Rule INATIVA no mesmo pacote (so funciona com AMBAS inativas; ativar regra
+  nova no deploy e' proibido pela plataforma). Apos o deploy, ATIVAR no Setup:
+  1) Setup -> Matching Rules -> GQ Lead Repuestos Match -> Activate
+  2) Setup -> Duplicate Rules -> GQ Lead Repuestos Dup -> Activate
+  Politica mantida: Alert + Allow (nunca Block).
+-->
+<DuplicateRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOnInsert>Allow</actionOnInsert>
+    <actionOnUpdate>Allow</actionOnUpdate>
+    <alertText>Se encontraron Leads que podrian ser duplicados (mismo contacto). Puede guardar de todas formas.</alertText>
+    <description>US-005: alerta de Lead de Repuestos duplicado. Nunca bloquea (Alert + Allow).</description>
+    <duplicateRuleMatchRules>
+        <matchRuleSObjectType>Lead</matchRuleSObjectType>
+        <matchingRule>GQ_Lead_Repuestos_Match</matchingRule>
+    </duplicateRuleMatchRules>
+    <isActive>false</isActive>
+    <masterLabel>GQ Lead Repuestos Dup</masterLabel>
+    <operationsOnInsert>Alert</operationsOnInsert>
+    <operationsOnUpdate>Alert</operationsOnUpdate>
+    <securityOption>EnforceSharingRules</securityOption>
+    <sortOrder>1</sortOrder>
+</DuplicateRule>
