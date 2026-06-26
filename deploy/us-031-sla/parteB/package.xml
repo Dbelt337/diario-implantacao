@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-031 Parte B + correções da auditoria (Parte A).
+     - Lead_AW_StampAtendido: NOVO flow no AgentWork; marca Lead.Status='Working' no aceite.
+     - Lead_Sched_Inactividad: F3 (idempotência) — reseta LastGestionDate__c no reassign.
+     Decisão A2: status de atendido = 'Working' (sem picklist nova). -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Lead_AW_StampAtendido</members>
+        <members>Lead_Sched_Inactividad</members>
+        <name>Flow</name>
+    </types>
+    <version>62.0</version>
+</Package>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  US-031 Parte B - Lead_AW_StampAtendido (Record-Triggered AFTER-SAVE no AgentWork).
+  Decisao de negocio: "Lead atendido" = o agente ACEITA o trabajo no Omni-Channel.
+  O Omni nao muda o Status do Lead no aceite (confirmado: aceite seta Owner, nao Status).
+  Este flow carimba Lead.Status = 'Working' no instante do aceite, usando AcceptDateTime
+  (so se popula no aceite) como gatilho.
+   - Gatilho: AgentWork criado/atualizado, AcceptDateTime != null (so quando passa a estar
+     preenchido -> dispara 1x; cobre auto-accept no create e accept manual no update).
+   - Filtro Lead: WorkItemId comeca com '00Q' (prefixo de Lead; = ServiceChannel Lead_Channel).
+   - Idempotencia: so muda se o Lead ainda esta em 'New' (nao sobrescreve status mais
+     avancado: Working/Nurturing/Qualified/Unqualified). Re-accept (varios AgentWork) nao
+     reverte o status.
+-->
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <decisions>
+        <name>Es_Lead</name>
+        <label>Es Lead</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Nao e Lead</defaultConnectorLabel>
+        <rules>
+            <name>WorkItem_Es_Lead</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>esLead</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Lead</targetReference>
+            </connector>
+            <label>WorkItem e Lead</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Es_New</name>
+        <label>Es New</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Ya atendido (sai)</defaultConnectorLabel>
+        <rules>
+            <name>Sigue_New</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Lead.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>New</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Marcar_Atendido</targetReference>
+            </connector>
+            <label>Sigue en New</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <formulas>
+        <name>esLead</name>
+        <dataType>Boolean</dataType>
+        <expression>BEGINS({!$Record.WorkItemId}, "00Q")</expression>
+    </formulas>
+    <interviewLabel>Lead_AW_StampAtendido {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_AW_StampAtendido</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Log_Falha</name>
+        <label>Log Falha</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <elementReference>$Flow.FaultMessage</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Falha em Lead_AW_StampAtendido (US-031 Parte B)</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value>
+                <elementReference>$Record.WorkItemId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Lead</name>
+        <label>Get Lead</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Es_New</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.WorkItemId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Marcar_Atendido</name>
+        <label>Marcar Atendido</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Working</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>Get_Lead</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Es_Lead</targetReference>
+        </connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>AcceptDateTime</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>AgentWork</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
