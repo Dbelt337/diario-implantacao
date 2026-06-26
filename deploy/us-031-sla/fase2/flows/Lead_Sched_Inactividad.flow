@@ -3,17 +3,17 @@
   US-031 Fase 2 - Lead_Sched_Inactividad (Scheduled-Triggered Flow, Daily).
   Reasigna leads que foram CONTACTADOS (tem LastGestionDate__c) mas ficaram sem gestao
   por +24h. Bulkificado: 1 Get -> Loop monta coleccion -> 1 unico Update DML.
-   - Inativos = IsConverted=false AND LastGestionDate__c < (agora - 1 dia).
-     (LastGestionDate so e carimbado em mudanca de Status pelo Lead_BS_SetSLADeadline,
-      logo so leads ja trabalhados entram; New nunca carimbado fica de fora.)
+   - Inativos = Status='Working' AND LastGestionDate__c < (agora - 1 dia).
+     'Working' = unico status de atendimento ativo; exclui de proposito New (Fase 1),
+     Nurturing (cadencia longa deliberada), Unqualified/"No habilitado" (descartado) e
+     Qualified/convertido. LastGestionDate so e carimbado em mudanca de Status pelo
+     Lead_BS_SetSLADeadline, logo so leads ja trabalhados entram.
    - Reasignacao: devolve a fila do CMT (EscalationQueueDevName__c) -> Omni re-roteia.
      NAO reescreve roteamento (igual Fase 1 / ver relatorio).
    - Marca Rating='Hot', contador +1, ReassignReason='Inactividad_24h', TransferDate e
      asesor anterior (TransferredFromOnlineConsultant__c).
    - Notifica o(s) GERENTE(s) (perfil 'Gerente de Ventas / Gerente de Marca') com resumo.
      O NOVO asesor e notificado pelo proprio Omni quando re-rotea da fila (nativo).
-  AJUSTE PENDENTE DE VALIDACAO: se houver Status de "perdido/cerrado nao convertido",
-  adicionar como filtro negativo no Get_Inactivos pra nao reasignar lead morto.
 -->
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
@@ -387,10 +387,10 @@
         </faultConnector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>IsConverted</field>
+            <field>Status</field>
             <operator>EqualTo</operator>
             <value>
-                <booleanValue>false</booleanValue>
+                <stringValue>Working</stringValue>
             </value>
         </filters>
         <filters>
