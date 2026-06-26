@@ -68,7 +68,7 @@
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>Get_Config</targetReference>
+            <targetReference>Get_FilaAnterior</targetReference>
         </connector>
     </assignments>
     <assignments>
@@ -195,6 +195,11 @@
         <dataType>String</dataType>
         <expression>IF(BEGINS({!varPrevOwner}, "005"), {!varPrevOwner}, "")</expression>
     </formulas>
+    <formulas>
+        <name>msgReasign</name>
+        <dataType>String</dataType>
+        <expression>"Reasignado por SLA - origen " &amp; IF(BEGINS({!varPrevOwner}, "00G"), "fila " &amp; {!Get_FilaAnterior.DeveloperName}, "consultor " &amp; {!varPrevOwner})</expression>
+    </formulas>
     <interviewLabel>Lead_SLA_Escalation {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Lead_SLA_Escalation</label>
     <processMetadataValues>
@@ -263,6 +268,36 @@
         </inputAssignments>
         <object>Task</object>
     </recordCreates>
+    <recordLookups>
+        <name>Get_FilaAnterior</name>
+        <label>Get Fila Anterior</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Config</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Log_Falha</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>varPrevOwner</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Type</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Queue</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Group</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <recordLookups>
         <name>Get_Config</name>
         <label>Get Config</label>
@@ -490,6 +525,12 @@
             <field>TransferredFromOnlineConsultant__c</field>
             <value>
                 <elementReference>prevConsultor</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WebMessage__c</field>
+            <value>
+                <elementReference>msgReasign</elementReference>
             </value>
         </inputAssignments>
         <inputReference>$Record</inputReference>
