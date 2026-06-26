@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-031 Fase 2. Atualiza o Lead_BS_SetSLADeadline (agora Create+Update, carimba
+     LastGestionDate) e adiciona o agendado Lead_Sched_Inactividad.
+     Campos (LastGestionDate__c etc.) ja deployados na Fase 1. -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Lead_BS_SetSLADeadline</members>
+        <members>Lead_Sched_Inactividad</members>
+        <name>Flow</name>
+    </types>
+    <version>62.0</version>
+</Package>
