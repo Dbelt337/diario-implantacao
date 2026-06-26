@@ -8,7 +8,7 @@
 //       * 0 ou >1 filas      -> imprime a lista no debug e PARA (escolha e preencha
 //                               QUEUE_DEV_NAME com o DeveloperName desejado).
 
-String QUEUE_DEV_NAME = '';   // <- opcional: forcar uma fila especifica (DeveloperName)
+String QUEUE_DEV_NAME = 'Queue_Vendedores_CR';   // fila de escalada/re-roteamento (Fase 1 e 2)
 
 // --- Resolve a fila de escalada -------------------------------------------------
 if (String.isBlank(QUEUE_DEV_NAME)) {
