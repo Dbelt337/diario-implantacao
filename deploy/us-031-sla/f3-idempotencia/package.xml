@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-031 - Correcao F3 da auditoria (idempotencia da varredura de inatividade).
+     Lead_Sched_Inactividad reseta LastGestionDate__c no reassign, evitando reasignar
+     o mesmo lead todo dia. NAO inclui o flow de aceite (negocio optou por status manual). -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Lead_Sched_Inactividad</members>
+        <name>Flow</name>
+    </types>
+    <version>62.0</version>
+</Package>
