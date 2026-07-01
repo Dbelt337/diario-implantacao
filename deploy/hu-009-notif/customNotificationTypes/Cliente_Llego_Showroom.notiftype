@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HU-009: Custom Notification Type para "cliente chegou na loja".
+     Desktop (sino/in-app) + Mobile (push). Confirmado na Fase 0 que nao existe
+     um tipo equivalente (so Lead_Contact_Attempt_Notif e Lead_SLA_Alert). -->
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>Cliente_Llego_Showroom</customNotifTypeName>
+    <desktop>true</desktop>
+    <mobile>true</mobile>
+    <title>Cliente en showroom</title>
+</CustomNotificationType>
