@@ -3,6 +3,7 @@
    Execute Anonymous + Open Log. Filtrar o log por: CTRY
    ============================================================================ */
 final String P = 'CTRY | ';
+System.debug(LoggingLevel.ERROR, P + 'SCRIPT v3 (dinamico; sem SOQL estatica de Sociedad__c/Country__c)');
 
 /* ---- 0.0 Lead: descobrir os campos reais (sociedad/company/country/pais) ---- */
 try {
