@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Lead.Country__c: clone EXATO do picklist Account.Country__c (Fase 0.1).
+     ATENCAO: "PA Panamá" leva acento (byte a byte igual ao Account). Restricted. -->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Country__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Debe coincidir EXACTAMENTE con Account.Country__c (mapeo de conversion de Lead). Divida de gobernanza: cualquier valor nuevo debe agregarse en AMBOS campos (Lead.Country__c y Account.Country__c).</inlineHelpText>
+        <label>País</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>CR Costa Rica</fullName>
+                    <default>false</default>
+                    <label>CR Costa Rica</label>
+                </value>
+                <value>
+                    <fullName>SV El Salvador</fullName>
+                    <default>false</default>
+                    <label>SV El Salvador</label>
+                </value>
+                <value>
+                    <fullName>GT Guatemala</fullName>
+                    <default>false</default>
+                    <label>GT Guatemala</label>
+                </value>
+                <value>
+                    <fullName>HN Honduras</fullName>
+                    <default>false</default>
+                    <label>HN Honduras</label>
+                </value>
+                <value>
+                    <fullName>NI Nicaragua</fullName>
+                    <default>false</default>
+                    <label>NI Nicaragua</label>
+                </value>
+                <value>
+                    <fullName>PA Panamá</fullName>
+                    <default>false</default>
+                    <label>PA Panamá</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+</CustomObject>
