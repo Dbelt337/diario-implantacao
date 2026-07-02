@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- FLS do Lead.Country__c: leitura + edicao. Atribuir aos perfis de Vendas
+     (quem cria/edita Lead) e ao Integration User. Se preferir so leitura para
+     alguns perfis, criar uma variante read-only. -->
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Lead Country Access</label>
+    <description>Acesso (leitura/edicao) ao campo Lead.Country__c para conversao de Lead (HU Country).</description>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Lead.Country__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+</PermissionSet>

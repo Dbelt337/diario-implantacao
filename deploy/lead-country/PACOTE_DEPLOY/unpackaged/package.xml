@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HU Lead.Country__c - pacote consolidado (Traditional). Deploy: Check Only antes.
+     Passos fora deste pacote (rodar depois): Popular_CMT_Country.apex, Map Lead Fields (UI),
+     atribuir permission set, e o backfill (Backfill_Executar.apex). -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Lead.Country__c</members>
+        <members>Sociedad_Config__mdt.Country_Picklist_Value__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Lead_BS_DeriveCountry</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>Lead_Country_Access</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>LeadCountryBackfill</members>
+        <name>ApexClass</name>
+    </types>
+    <version>65.0</version>
+</Package>

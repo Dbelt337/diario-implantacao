@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Novo campo no CMT: guarda o valor EXATO do picklist (ex.: "CR Costa Rica",
+     "PA Panamá"). Necessario porque Country__c ("CR") e Country_Name__c
+     ("Costa Rica") nao batem com o picklist, e concatenar quebra em Panama (acento). -->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Country_Picklist_Value__c</fullName>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <inlineHelpText>Valor EXATO do picklist Account.Country__c / Lead.Country__c (ex.: "CR Costa Rica", "PA Panamá"). Usado pelo flow de derivacao para carimbar Lead.Country__c.</inlineHelpText>
+        <label>Country Picklist Value</label>
+        <length>40</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>
