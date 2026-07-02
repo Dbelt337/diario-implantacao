@@ -7,7 +7,7 @@
 Map<String,String> dev2val = new Map<String,String>{
     'C101' => 'CR Costa Rica', 'C105' => 'CR Costa Rica',
     'S101' => 'SV El Salvador', 'S105' => 'SV El Salvador', 'S206' => 'SV El Salvador',
-    'G101' => 'GT Guatemala',
+    'G101' => 'GT Guatemala', 'G105' => 'GT Guatemala',
     'H101' => 'HN Honduras', 'H105' => 'HN Honduras',
     'N101' => 'NI Nicaragua', 'N105' => 'NI Nicaragua',
     'P101' => 'PA Panamá', 'P103' => 'PA Panamá', 'P105' => 'PA Panamá'
