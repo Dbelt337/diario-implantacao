@@ -10,7 +10,7 @@ Map<String,String> dev2val = new Map<String,String>{
     'G101' => 'GT Guatemala',
     'H101' => 'HN Honduras', 'H105' => 'HN Honduras',
     'N101' => 'NI Nicaragua', 'N105' => 'NI Nicaragua',
-    'P101' => 'PA Panamá', 'P105' => 'PA Panamá'
+    'P101' => 'PA Panamá', 'P103' => 'PA Panamá', 'P105' => 'PA Panamá'
 };
 
 Metadata.DeployContainer container = new Metadata.DeployContainer();
