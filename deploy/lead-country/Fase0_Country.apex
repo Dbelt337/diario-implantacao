@@ -4,6 +4,18 @@
    ============================================================================ */
 final String P = 'CTRY | ';
 
+/* ---- 0.0 Lead: descobrir os campos reais (sociedad/company/country/pais) ---- */
+try {
+    System.debug(LoggingLevel.ERROR, P + '===== 0.0 Lead campos candidatos (sociedad/company/country/pais) =====');
+    Map<String,Schema.SObjectField> lm = Schema.SObjectType.Lead.fields.getMap();
+    for (String k : lm.keySet()) {
+        Schema.DescribeFieldResult d = lm.get(k).getDescribe();
+        String n = d.getName().toLowerCase();
+        if (n.contains('sociedad') || n.contains('company') || n.contains('country') || n.contains('pais'))
+            System.debug(LoggingLevel.ERROR, P + 'LEADFLD ' + d.getName() + ' | label=' + d.getLabel() + ' | type=' + d.getType());
+    }
+} catch (Exception e) { System.debug(LoggingLevel.ERROR, P + '0.0 ERRO: ' + e.getMessage()); }
+
 /* ---- 0.1 Account.Country__c: valores EXATOS (clone byte a byte) ---- */
 try {
     System.debug(LoggingLevel.ERROR, P + '===== 0.1 Account.Country__c =====');
@@ -55,18 +67,24 @@ try {
     }
 } catch (Exception e) { System.debug(LoggingLevel.ERROR, P + '0.3 ERRO: ' + e.getMessage()); }
 
-/* ---- 0.5 Contagem para backfill ---- */
+/* ---- 0.5 Backfill: campo de "sociedad" detectado dinamicamente ---- */
 try {
-    Integer total = [SELECT COUNT() FROM Lead WHERE IsConverted = false AND Sociedad__c != null];
-    System.debug(LoggingLevel.ERROR, P + '===== 0.5 Backfill: leads nao convertidos com Sociedad != null = ' + total);
+    Map<String,Schema.SObjectField> lm = Schema.SObjectType.Lead.fields.getMap();
+    String socF = lm.containsKey('sociedad__c') ? 'Sociedad__c'
+                 : (lm.containsKey('companycode__c') ? 'CompanyCode__c' : null);
+    Boolean temPais = lm.containsKey('country__c');
+    if (socF == null) {
+        System.debug(LoggingLevel.ERROR, P + '0.5 Nenhum Sociedad__c/CompanyCode__c em Lead - ver bloco 0.0 para o nome real');
+    } else {
+        Integer total = Database.countQuery('SELECT COUNT() FROM Lead WHERE IsConverted = false AND ' + socF + ' != null');
+        System.debug(LoggingLevel.ERROR, P + '===== 0.5 Backfill: campo=' + socF + ' | nao convertidos com ' + socF + ' != null = ' + total);
+        if (temPais) {
+            Integer semPais = Database.countQuery('SELECT COUNT() FROM Lead WHERE IsConverted = false AND ' + socF + ' != null AND Country__c = null');
+            System.debug(LoggingLevel.ERROR, P + '0.5b desses, com Country__c NULO = ' + semPais);
+        } else {
+            System.debug(LoggingLevel.ERROR, P + '0.5b Country__c ainda nao existe (nada a contar)');
+        }
+    }
 } catch (Exception e) { System.debug(LoggingLevel.ERROR, P + '0.5 ERRO: ' + e.getMessage()); }
-
-/* ---- 0.5b subset ja com Country preenchido (dinamico: campo pode nao existir ainda) ---- */
-try {
-    if (Schema.SObjectType.Lead.fields.getMap().containsKey('country__c')) {
-        Integer semPais = Database.countQuery('SELECT COUNT() FROM Lead WHERE IsConverted = false AND Sociedad__c != null AND Country__c = null');
-        System.debug(LoggingLevel.ERROR, P + '0.5b desses, com Country__c NULO = ' + semPais);
-    } else { System.debug(LoggingLevel.ERROR, P + '0.5b Country__c ainda nao existe (nada a contar)'); }
-} catch (Exception e) { System.debug(LoggingLevel.ERROR, P + '0.5b ERRO: ' + e.getMessage()); }
 
 System.debug(LoggingLevel.ERROR, P + '===== FIM CTRY FASE 0 =====');
