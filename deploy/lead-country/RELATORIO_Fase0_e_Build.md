@@ -5,6 +5,20 @@ Problema: conversão de Lead falha com `REQUIRED_FIELD_MISSING` — "missing a f
 
 ---
 
+## 0. ADENDO (correção final) — `Lead.Country__c` deve ser picklist LOCAL, não GVS
+
+Durante os testes de conversão pela **tela padrão "Convert"** (caminho que os vendedores usam), o erro *"missing a field mapping for Account.Country__c"* **persistiu mesmo com o mapeamento País→País salvo e valores idênticos**.
+
+**Causa raiz confirmada:** `Lead.Country__c` foi criado sobre um **Global Value Set ("País")**, enquanto `Account.Country__c` é **picklist local**. O pré-check da **UI padrão de conversão não honra um mapeamento entre value sets de tipos diferentes** (GVS × local) — embora a conversão via **Apex/API funcione** (o motor honra o mapeamento). Como os vendedores convertem pela **tela padrão**, o erro é bloqueante.
+
+**Correção:** recriar `Lead.Country__c` como **picklist LOCAL restricted** com os 6 valores idênticos ao Account (`PA Panamá` acentuado) — exatamente o que a **§3.1** já orientava ("não usar GVS"). GVS→local **não muda no lugar**; exige delete + recriação.
+
+**Passos:** (1) Map Lead Fields País→None; (2) desativar flow que referencia `Country__c` + tirar de layouts; (3) deletar o campo GVS; (4) deploy `Deploy_Lead_Country_LOCAL.zip`; (5) re-mapear País→País (local→local); (6) re-FLS + reativar flow. O Global Value Set "País" fica órfão (inofensivo).
+
+> Testes de conversão são feitos pela **tela padrão "Convert"** (confirmado com o time). Conversão via Apex/API já funcionava com GVS — a recriação local é para destravar a UI.
+
+---
+
 ## 1. Desvios da instrução × realidade da org (LER PRIMEIRO)
 
 A Fase 0 (via Apex read-only) revelou 4 pontos onde a instrução **assumia** algo diferente do que a org tem. Os builds seguem a **realidade**, não os placeholders.
