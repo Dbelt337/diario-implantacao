@@ -19,7 +19,7 @@ try {
     Map<String,Schema.SObjectField> lf = Schema.SObjectType.Lead.fields.getMap();
     if (lf.containsKey('country__c')) {
         System.debug(LoggingLevel.ERROR, P + '0.1b Lead.Country__c JA EXISTE:');
-        for (Schema.PicklistEntry pe : Lead.Country__c.getDescribe().getPicklistValues())
+        for (Schema.PicklistEntry pe : lf.get('country__c').getDescribe().getPicklistValues())
             System.debug(LoggingLevel.ERROR, P + 'LEADVAL value=[' + pe.getValue() + '] label=[' + pe.getLabel() + ']');
     } else { System.debug(LoggingLevel.ERROR, P + '0.1b Lead.Country__c NAO existe (sera criado)'); }
 } catch (Exception e) { System.debug(LoggingLevel.ERROR, P + '0.1b ERRO: ' + e.getMessage()); }
@@ -61,10 +61,12 @@ try {
     System.debug(LoggingLevel.ERROR, P + '===== 0.5 Backfill: leads nao convertidos com Sociedad != null = ' + total);
 } catch (Exception e) { System.debug(LoggingLevel.ERROR, P + '0.5 ERRO: ' + e.getMessage()); }
 
-/* ---- 0.5b subset ja com Country preenchido (se o campo existir) ---- */
+/* ---- 0.5b subset ja com Country preenchido (dinamico: campo pode nao existir ainda) ---- */
 try {
-    Integer semPais = [SELECT COUNT() FROM Lead WHERE IsConverted = false AND Sociedad__c != null AND Country__c = null];
-    System.debug(LoggingLevel.ERROR, P + '0.5b desses, com Country__c NULO = ' + semPais);
-} catch (Exception e) { System.debug(LoggingLevel.ERROR, P + '0.5b (Country__c ainda nao existe): ' + e.getMessage()); }
+    if (Schema.SObjectType.Lead.fields.getMap().containsKey('country__c')) {
+        Integer semPais = Database.countQuery('SELECT COUNT() FROM Lead WHERE IsConverted = false AND Sociedad__c != null AND Country__c = null');
+        System.debug(LoggingLevel.ERROR, P + '0.5b desses, com Country__c NULO = ' + semPais);
+    } else { System.debug(LoggingLevel.ERROR, P + '0.5b Country__c ainda nao existe (nada a contar)'); }
+} catch (Exception e) { System.debug(LoggingLevel.ERROR, P + '0.5b ERRO: ' + e.getMessage()); }
 
 System.debug(LoggingLevel.ERROR, P + '===== FIM CTRY FASE 0 =====');
