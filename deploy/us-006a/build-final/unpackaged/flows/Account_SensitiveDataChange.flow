@@ -151,6 +151,15 @@
         <faultConnector>
             <targetReference>Pantalla_Error_Tecnico</targetReference>
         </faultConnector>
+        <object>Account</object>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
         <inputAssignments>
             <field>Name</field>
             <value>
@@ -181,7 +190,6 @@
                 <stringValue>Aprobado</stringValue>
             </value>
         </inputAssignments>
-        <inputReference>Get_Account</inputReference>
     </recordUpdates>
 
     
@@ -196,6 +204,15 @@
         <faultConnector>
             <targetReference>Pantalla_Error_Tecnico</targetReference>
         </faultConnector>
+        <object>Account</object>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
         <inputAssignments>
             <field>ProposedName__c</field>
             <value>
@@ -244,7 +261,6 @@
                 <elementReference>$Flow.CurrentDateTime</elementReference>
             </value>
         </inputAssignments>
-        <inputReference>Get_Account</inputReference>
     </recordUpdates>
 
     
