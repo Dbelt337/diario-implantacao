@@ -340,7 +340,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <allowBack>false</allowBack>
-        <allowFinish>false</allowFinish>
+        <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
             <targetReference>Evalua_Cambios</targetReference>
