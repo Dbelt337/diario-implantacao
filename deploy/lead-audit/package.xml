@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Retrieve dos 13 flows de Lead para a auditoria (Fase 0 2.1). Traditional. -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>AddLeadtoCadence</members>
+        <members>GQ_Lead_Repuestos_Reasignacion_y_Cotizacion</members>
+        <members>Lead_Dup_Governance</members>
+        <members>Lead_SLA_Escalation</members>
+        <members>Lead_TriggerOmniRouting</members>
+        <members>RemoveOptOutLead</members>
+        <members>RemoveUQLead</members>
+        <members>ReferralNotification</members>
+        <members>Lead_BS_DeriveSociedad</members>
+        <members>Lead_SetStatusOnConversion</members>
+        <members>Lead_BS_ObligatoriedadMotos</members>
+        <members>Lead_BS_SetSLADeadline</members>
+        <members>Lead_BS_TransicionEstado</members>
+        <name>Flow</name>
+    </types>
+    <version>62.0</version>
+</Package>
