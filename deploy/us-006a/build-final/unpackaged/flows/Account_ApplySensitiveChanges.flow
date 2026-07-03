@@ -16,7 +16,7 @@
     <formulas>
         <name>fApplyDocType</name>
         <dataType>String</dataType>
-        <expression>IF(ISBLANK(TEXT({!$Record.ProposedDocumentType__c})), {!$Record.DocumentType__c}, {!$Record.ProposedDocumentType__c})</expression>
+        <expression>IF(ISBLANK(TEXT({!$Record.ProposedDocumentType__c})), TEXT({!$Record.DocumentType__c}), TEXT({!$Record.ProposedDocumentType__c}))</expression>
     </formulas>
     <formulas>
         <name>fApplyDocNumber</name>

@@ -22,6 +22,7 @@
                 <name>SensitiveChangeApprover__c</name>
                 <type>relatedUserField</type>
             </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
         <label>Aprobacion Datos Sensibles</label>
         <name>Aprobacion_Datos_Sensibles</name>
