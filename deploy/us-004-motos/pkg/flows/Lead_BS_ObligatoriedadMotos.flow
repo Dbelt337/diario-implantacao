@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <name>Error_LLI_Requerido</name>
+        <label>Error: Moto de Interés Requerida</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Para avanzar el estado de un Lead Motos, el modelo de moto de interés es obligatorio. Agrega un producto en la lista relacionada antes de continuar.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
+        <name>Error_LPS_Requerido</name>
+        <label>Error: Sucursal Requerida</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Para avanzar el estado de un Lead Motos, la sucursal es obligatoria. Agrega una sucursal en la lista relacionada (Preferred Seller) antes de continuar.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>Hubo_Cambio_Status</name>
+        <label>¿Cambió el Status?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No cambió (nada que hacer)</defaultConnectorLabel>
+        <rules>
+            <name>Si_Cambio</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>statusCambio</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>bypassGate</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_LLI</targetReference>
+            </connector>
+            <label>Sí cambió</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Tiene_LLI</name>
+        <label>¿Tiene moto de interés?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Get_LPS</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Con moto (continuar a sucursal)</defaultConnectorLabel>
+        <rules>
+            <name>Sin_LLI</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varLLI.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Error_LLI_Requerido</targetReference>
+            </connector>
+            <label>Sin moto de interés (bloquear)</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Tiene_LPS</name>
+        <label>¿Tiene sucursal?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Con sucursal (válido)</defaultConnectorLabel>
+        <rules>
+            <name>Sin_LPS</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varLPS.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Error_LPS_Requerido</targetReference>
+            </connector>
+            <label>Sin sucursal (bloquear)</label>
+        </rules>
+    </decisions>
+    <description>Bloquea el avance de estado de un Lead Motos si no tiene moto de interés (LeadLineItem) o sucursal (LeadPreferredSeller). Se activa en Update cuando Industry = Motos y Status cambia. Usa $Permission.BypassLeadLifecycle para excluir Integration User y flujos automatizados.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>bypassGate</name>
+        <dataType>Boolean</dataType>
+        <expression>{!$Permission.Bypass_Gates_Automacao}</expression>
+    </formulas>
+    <formulas>
+        <name>statusCambio</name>
+        <dataType>Boolean</dataType>
+        <expression>ISCHANGED({!$Record.Status}) &amp;&amp; ISPICKVAL({!$Record.Status}, &apos;En contacto&apos;)</expression>
+    </formulas>
+    <interviewLabel>Lead_BS_ObligatoriedadMotos {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_BS_ObligatoriedadMotos</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_LLI</name>
+        <label>Buscar moto de interés (LeadLineItem)</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Tiene_LLI</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>LeadId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <object>LeadLineItem</object>
+        <outputReference>varLLI</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_LPS</name>
+        <label>Buscar sucursal (LeadPreferredSeller)</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Tiene_LPS</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>LeadId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <object>LeadPreferredSeller</object>
+        <outputReference>varLPS</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Hubo_Cambio_Status</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Industry</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Motos</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>IsConverted</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>varLLI</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>LeadLineItem</objectType>
+    </variables>
+    <variables>
+        <name>varLPS</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>LeadPreferredSeller</objectType>
+    </variables>
+</Flow>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Exime o portador dos gates declarativos de automacao (Custom Error flows, VRs de processo). Atribuir SOMENTE ao Permission Set do Integration User e, temporariamente, a usuarios de data load durante cargas.</description>
+    <isLicensed>false</isLicensed>
+    <label>Bypass Gates Automacao</label>
+</CustomPermission>
