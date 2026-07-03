@@ -4,6 +4,19 @@
 final String P = 'S6 | ';
 Map<String, Schema.SObjectField> af = Schema.SObjectType.Account.fields.getMap();
 
+/* 1.1 — Apex indevido (Sensitive/Approval/Submitter) a limpar */
+try {
+    System.debug(LoggingLevel.ERROR, P+'=== 1.1 Apex classes suspeitas (Sensitive/Approval/Submitter) ===');
+    Integer c = 0;
+    for (ApexClass a : [SELECT Name, CreatedDate, CreatedBy.Name FROM ApexClass
+                        WHERE Name LIKE '%Sensitive%' OR Name LIKE '%Approval%' OR Name LIKE '%Submitter%'
+                        ORDER BY CreatedDate DESC]) {
+        System.debug(LoggingLevel.ERROR, P+'APEX ['+a.Name+'] criada '+a.CreatedDate+' por '+a.CreatedBy.Name+' -> avaliar destructiveChanges');
+        c++;
+    }
+    if (c==0) System.debug(LoggingLevel.ERROR, P+'nenhuma classe Apex suspeita (limpo)');
+} catch (Exception e) { System.debug(LoggingLevel.ERROR, P+'1.1 ERRO: '+e.getMessage()); }
+
 /* 2.1 — campos esperados (existencia + API name exato) */
 System.debug(LoggingLevel.ERROR, P+'=== 2.1 campos esperados em Account ===');
 for (String f : new List<String>{
