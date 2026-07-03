@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <description>Record-Triggered Flow que aplica los cambios de datos sensibles al Account cuando el Approval Process los aprueba. Se dispara cuando SensitiveChangeStatus__c cambia a Approved.</description>
+    <interviewLabel>Account_ApplySensitiveChanges {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Account - Aplicar Cambios Sensibles Aprobados</label>
+    <processType>AutoLaunchedFlow</processType>
+    <status>Active</status>
+    <environments>Default</environments>
+
+    <formulas>
+        <name>fApplyName</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.ProposedName__c}), {!$Record.Name}, {!$Record.ProposedName__c})</expression>
+    </formulas>
+    <formulas>
+        <name>fApplyDocType</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.ProposedDocumentType__c}), {!$Record.DocumentType__c}, {!$Record.ProposedDocumentType__c})</expression>
+    </formulas>
+    <formulas>
+        <name>fApplyDocNumber</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.ProposedDocumentNumber__c}), {!$Record.DocumentNumber__c}, {!$Record.ProposedDocumentNumber__c})</expression>
+    </formulas>
+    <formulas>
+        <name>fApplyBillingEmail</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.ProposedBillingEmail__c}), {!$Record.BillingEmail__c}, {!$Record.ProposedBillingEmail__c})</expression>
+    </formulas>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Aplicar_Cambios</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SensitiveChangeStatus__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Approved</stringValue>
+            </value>
+        </filters>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <object>Account</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+
+    <!-- 
+        IMPORTANT: Este flow corre Before Save para evitar un DML adicional.
+        Los assignments sobre $Record se persisten en el mismo DML del Approval.
+        No necesita un Record Update separado.
+    -->
+    <assignments>
+        <name>Aplicar_Cambios</name>
+        <label>Aplicar valores propuestos a campos reales</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Limpiar_Staging</targetReference>
+        </connector>
+        <assignmentItems>
+            <!-- Aplicar Nombre -->
+            <assignToReference>$Record.Name</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>fApplyName</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <!-- Aplicar Tipo de Documento -->
+            <assignToReference>$Record.DocumentType__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>fApplyDocType</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <!-- Aplicar Número de Documento -->
+            <assignToReference>$Record.DocumentNumber__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>fApplyDocNumber</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <!-- Aplicar Correo de Factura -->
+            <assignToReference>$Record.BillingEmail__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>fApplyBillingEmail</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+
+    <!-- Limpiar campos staging después de aplicar -->
+    <assignments>
+        <name>Limpiar_Staging</name>
+        <label>Limpiar campos staging</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.ProposedName__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.ProposedDocumentType__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.ProposedDocumentNumber__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.ProposedBillingEmail__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <!-- Marcar como completado -->
+            <assignToReference>$Record.SensitiveChangeStatus__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Completed</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+
+</Flow>

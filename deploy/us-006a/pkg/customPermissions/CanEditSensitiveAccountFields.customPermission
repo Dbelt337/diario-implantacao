@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Habilita el branch de edicion directa de datos sensibles en el Screen Flow Account_SensitiveDataChange, sin pasar por aprobacion. NO ASIGNAR por defecto: la edicion directa es decision de negocio pendiente (D-US006a). Referenciada por la formula hasBypass del flow.</description>
+    <isLicensed>false</isLicensed>
+    <label>Can Edit Sensitive Account Fields</label>
+</CustomPermission>
