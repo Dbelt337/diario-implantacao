@@ -4,6 +4,7 @@
     <types>
         <members>Account.SensitiveChangeStatus__c</members>
         <members>Account.ProposedElectronicBillingEmail__c</members>
+        <members>Account.SensitiveChangeRequestedBy__c</members>
         <name>CustomField</name>
     </types>
     <types>

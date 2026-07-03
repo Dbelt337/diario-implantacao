@@ -44,4 +44,15 @@
         <type>Email</type>
         <unique>false</unique>
     </fields>
+    <fields>
+        <fullName>SensitiveChangeRequestedBy__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <label>Solicitado Por</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>AccountsSensitiveRequestedBy</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
 </CustomObject>
