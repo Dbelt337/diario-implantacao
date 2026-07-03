@@ -1,0 +1,570 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <decisions>
+        <name>Evalua_Solicitud_Pendiente</name>
+        <label>¿Tiene solicitud pendiente?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Evalua_Bypass</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin solicitud pendiente</defaultConnectorLabel>
+        <rules>
+            <name>Tiene_Pendiente</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Account.SensitiveChangeStatus__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Pendiente</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Pantalla_Solicitud_En_Curso</targetReference>
+            </connector>
+            <label>Ya tiene solicitud pendiente</label>
+        </rules>
+    </decisions>
+
+    
+    <decisions>
+        <name>Evalua_Bypass</name>
+        <label>¿Tiene permiso de edición directa?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Pantalla_Solicitud</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin bypass → flujo de aprobación</defaultConnectorLabel>
+        <rules>
+            <name>Tiene_Bypass</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>hasBypass</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Pantalla_Edicion_Directa</targetReference>
+            </connector>
+            <label>Tiene bypass → edición directa</label>
+        </rules>
+    </decisions>
+
+    
+    <decisions>
+        <name>Evalua_Cambios</name>
+        <label>¿Hay cambios reales?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Pantalla_Sin_Cambios</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin cambios (igual al actual)</defaultConnectorLabel>
+        <rules>
+            <name>Hay_Cambios</name>
+            <conditionLogic>1 OR 2 OR 3 OR 4</conditionLogic>
+            <conditions>
+                <leftValueReference>inp_ProposedName</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>Get_Account.Name</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>inp_ProposedDocType</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>Get_Account.DocumentType__c</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>inp_ProposedDocNumber</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>Get_Account.DocumentNumber__c</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>inp_ProposedEmail</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>Get_Account.ElectronicBillingEmail__c</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Update_Staging</targetReference>
+            </connector>
+            <label>Hay al menos un cambio</label>
+        </rules>
+    </decisions>
+
+    
+    <description>Screen Flow para solicitar modificación de datos sensibles en Account. Usa campos staging y dispara proceso de aprobación. Invocado desde Quick Action en el objeto Account.</description>
+    <environments>Default</environments>
+
+    
+    <formulas>
+        <name>hasBypass</name>
+        <dataType>Boolean</dataType>
+        <expression>{!$Permission.CanEditSensitiveAccountFields}</expression>
+    </formulas>
+
+    
+    <interviewLabel>Account_SensitiveDataChange {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Modificar Datos Sensibles - Cuenta</label>
+    <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Account</name>
+        <label>Get Account</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Evalua_Solicitud_Pendiente</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Pantalla_Error_Tecnico</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Account</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
+    
+    <recordUpdates>
+        <name>Update_Directo</name>
+        <label>Actualizar Account directo</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Pantalla_Error_Tecnico</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>inp_Nombre_Directo</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>DocumentType__c</field>
+            <value>
+                <elementReference>inp_TipoDoc_Directo</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>DocumentNumber__c</field>
+            <value>
+                <elementReference>inp_NumDoc_Directo</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ElectronicBillingEmail__c</field>
+            <value>
+                <elementReference>inp_Email_Directo</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SensitiveChangeStatus__c</field>
+            <value>
+                <stringValue>Aprobado</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>Get_Account</inputReference>
+    </recordUpdates>
+
+    
+    <recordUpdates>
+        <name>Update_Staging</name>
+        <label>Guardar propuesta en campos staging</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Submit_Approval</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Pantalla_Error_Tecnico</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>ProposedName__c</field>
+            <value>
+                <elementReference>inp_ProposedName</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ProposedDocumentType__c</field>
+            <value>
+                <elementReference>inp_ProposedDocType</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ProposedDocumentNumber__c</field>
+            <value>
+                <elementReference>inp_ProposedDocNumber</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ProposedElectronicBillingEmail__c</field>
+            <value>
+                <elementReference>inp_ProposedEmail</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SensitiveChangeStatus__c</field>
+            <value>
+                <stringValue>Pendiente</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SensitiveChangeReason__c</field>
+            <value>
+                <elementReference>inp_Reason</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SensitiveChangeRequestedBy__c</field>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>SensitiveChangeRequestedDate__c</field>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>Get_Account</inputReference>
+    </recordUpdates>
+
+    
+    <screens>
+        <name>Pantalla_Solicitud_En_Curso</name>
+        <label>Solicitud en curso</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Aviso_Pendiente</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Solicitud de cambio en proceso&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Este registro ya tiene una solicitud de modificación de datos sensibles &lt;strong&gt;pendiente de aprobación&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;No es posible enviar una nueva solicitud hasta que la actual sea aprobada o rechazada por el área encargada.&lt;/p&gt;
+&lt;p&gt;Si necesita agilizar la revisión, comuníquese con el equipo de Gestión de Datos.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Cerrar</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    
+    <screens>
+        <name>Pantalla_Edicion_Directa</name>
+        <label>Modificar Datos Sensibles</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>false</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Update_Directo</targetReference>
+        </connector>
+        <fields>
+            <name>Aviso_Admin</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Edición directa habilitada&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Estás modificando datos sensibles del cliente directamente. Esta acción queda registrada en el historial del registro.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>inp_Nombre_Directo</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Account.Name</elementReference>
+            </defaultValue>
+            <fieldText>Nombre / Razón Social</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>inp_TipoDoc_Directo</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Account.DocumentType__c</elementReference>
+            </defaultValue>
+            <fieldText>Tipo de Documento</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+            
+        </fields>
+        <fields>
+            <name>inp_NumDoc_Directo</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Account.DocumentNumber__c</elementReference>
+            </defaultValue>
+            <fieldText>Número de Documento</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>inp_Email_Directo</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Account.ElectronicBillingEmail__c</elementReference>
+            </defaultValue>
+            <fieldText>Correo de Factura Electrónica</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <nextOrFinishButtonLabel>Guardar Cambios</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    
+    <screens>
+        <name>Pantalla_Solicitud</name>
+        <label>Solicitar Cambio de Datos Sensibles</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>false</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Evalua_Cambios</targetReference>
+        </connector>
+        <fields>
+            <name>Aviso_Solicitud</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Solicitud de modificación de datos sensibles&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Completá los campos que deseas modificar. Los cambios serán enviados al área de &lt;strong&gt;Gestión de Datos&lt;/strong&gt; para su aprobación antes de aplicarse al registro.&lt;/p&gt;
+&lt;p&gt;Los campos en gris muestran el valor actual del cliente.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+
+        
+        <fields>
+            <name>txt_NombreActual</name>
+            <fieldText>Nombre actual: {!Get_Account.Name}</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>inp_ProposedName</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Account.Name</elementReference>
+            </defaultValue>
+            <fieldText>Nuevo Nombre / Razón Social</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+            <helpText>Ingresá el nombre o razón social actualizado del cliente.</helpText>
+        </fields>
+
+        
+        <fields>
+            <name>txt_TipoDocActual</name>
+            <fieldText>Tipo de documento actual: {!Get_Account.DocumentType__c}</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>inp_ProposedDocType</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Account.DocumentType__c</elementReference>
+            </defaultValue>
+            <fieldText>Nuevo Tipo de Documento</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+            
+        </fields>
+
+        
+        <fields>
+            <name>txt_NumDocActual</name>
+            <fieldText>Número de documento actual: {!Get_Account.DocumentNumber__c}</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>inp_ProposedDocNumber</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Account.DocumentNumber__c</elementReference>
+            </defaultValue>
+            <fieldText>Nuevo Número de Documento</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+            <helpText>Solo números, sin puntos ni guiones.</helpText>
+        </fields>
+
+        
+        <fields>
+            <name>txt_EmailActual</name>
+            <fieldText>Correo de factura actual: {!Get_Account.ElectronicBillingEmail__c}</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>inp_ProposedEmail</name>
+            <dataType>String</dataType>
+            <defaultValue>
+                <elementReference>Get_Account.ElectronicBillingEmail__c</elementReference>
+            </defaultValue>
+            <fieldText>Nuevo Correo de Factura Electrónica</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+            <helpText>Dirección de correo donde se enviarán las facturas electrónicas.</helpText>
+        </fields>
+
+        
+        <fields>
+            <name>inp_Reason</name>
+            <dataType>String</dataType>
+            <fieldText>Motivo del cambio</fieldText>
+            <fieldType>LargeTextArea</fieldType>
+            <isRequired>true</isRequired>
+            <helpText>Explicá brevemente por qué es necesario modificar estos datos. Este texto quedará registrado en el historial del proceso de aprobación.</helpText>
+        </fields>
+
+        <nextOrFinishButtonLabel>Enviar Solicitud</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    
+    <screens>
+        <name>Pantalla_Sin_Cambios</name>
+        <label>Sin cambios detectados</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Aviso_Sin_Cambios</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Sin cambios detectados&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Los valores ingresados son iguales a los datos actuales del cliente. No se generará ninguna solicitud de cambio.&lt;/p&gt;
+&lt;p&gt;Si querés modificar algún dato, hacé clic en &lt;strong&gt;Atrás&lt;/strong&gt; para revisar los campos.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Cerrar</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    
+    <screens>
+        <name>Pantalla_Confirmacion</name>
+        <label>Solicitud enviada</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Aviso_Exito</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Solicitud enviada exitosamente&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Tu solicitud de cambio de datos sensibles fue enviada al área de &lt;strong&gt;Gestión de Datos&lt;/strong&gt; para su revisión y aprobación.&lt;/p&gt;
+&lt;p&gt;Recibirás una notificación cuando la solicitud sea aprobada o rechazada. El campo &lt;strong&gt;"Estado de Cambio Sensible"&lt;/strong&gt; del registro mostrará el estado actual del proceso.&lt;/p&gt;
+&lt;p&gt;El cambio &lt;strong&gt;no se aplica hasta que el área encargada lo apruebe&lt;/strong&gt;.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Cerrar</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    
+    <screens>
+        <name>Pantalla_Error_Tecnico</name>
+        <label>Error técnico</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Aviso_Error</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Error al procesar la solicitud&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Ocurrió un error técnico al procesar tu solicitud. Por favor intentá nuevamente o contactá al administrador del sistema.&lt;/p&gt;
+&lt;p&gt;Detalle técnico: {!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <nextOrFinishButtonLabel>Cerrar</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+<start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Account</targetReference>
+        </connector>
+    </start>
+
+    
+    <status>Active</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <description>ID del Account desde la Quick Action</description>
+    </variables>
+
+    
+    <variables>
+        <name>varHasPendingRequest</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    
+    <actionCalls>
+        <name>Submit_Approval</name>
+        <label>Enviar al proceso de aprobación</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>submit</actionName>
+        <actionType>submit</actionType>
+        <connector>
+            <targetReference>Pantalla_Confirmacion</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Pantalla_Error_Tecnico</targetReference>
+        </faultConnector>
+        <inputParameters>
+            <name>objectId</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>comment</name>
+            <value>
+                <elementReference>inp_Reason</elementReference>
+            </value>
+        </inputParameters>
+            <inputParameters>
+            <name>processDefinitionNameOrId</name>
+            <value>
+                <stringValue>Aprobacion_Datos_Sensibles_Cuenta</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
+
+    
+    </Flow>

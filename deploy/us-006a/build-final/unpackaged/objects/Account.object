@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-006a Fase 2: SensitiveChangeStatus__c + Completado (R8, valueSet completo) + ProposedElectronicBillingEmail__c (staging email). -->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>SensitiveChangeStatus__c</fullName>
+        <label>Estado de la solicitud</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Pendiente</fullName>
+                    <default>false</default>
+                    <label>Pendiente</label>
+                </value>
+                <value>
+                    <fullName>Aprobado</fullName>
+                    <default>false</default>
+                    <label>Aprobado</label>
+                </value>
+                <value>
+                    <fullName>Rechazado</fullName>
+                    <default>false</default>
+                    <label>Rechazado</label>
+                </value>
+                <value>
+                    <fullName>Completado</fullName>
+                    <default>false</default>
+                    <label>Completado</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ProposedElectronicBillingEmail__c</fullName>
+        <externalId>false</externalId>
+        <label>Correo de Factura Electronica Propuesto</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>

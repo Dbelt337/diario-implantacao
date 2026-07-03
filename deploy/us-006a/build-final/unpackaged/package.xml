@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-006a Fases 2+3 consolidado. Deploy: Check Only + Single Package. -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Account.SensitiveChangeStatus__c</members>
+        <members>Account.ProposedElectronicBillingEmail__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Account_SensitiveDataChange</members>
+        <members>Account_ApplySensitiveChanges</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>Account.Modificar_Datos_Sensibles</members>
+        <name>QuickAction</name>
+    </types>
+    <types>
+        <members>CanEditSensitiveAccountFields</members>
+        <name>CustomPermission</name>
+    </types>
+    <types>
+        <members>Account.SDS_Set_Aprobado</members>
+        <members>Account.SDS_Set_Rechazado</members>
+        <name>WorkflowFieldUpdate</name>
+    </types>
+    <types>
+        <members>Account.Aprobacion_Datos_Sensibles_Cuenta</members>
+        <name>ApprovalProcess</name>
+    </types>
+    <version>62.0</version>
+</Package>

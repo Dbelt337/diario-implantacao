@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuickAction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionSubtype>ScreenAction</actionSubtype>
+    <description>Permite solicitar la modificación de datos sensibles del cliente (Nombre, Tipo de Documento, Número de Documento, Correo de Factura Electrónica). Los cambios requieren aprobación del área de Gestión de Datos.</description>
+    <flowDefinition>Account_SensitiveDataChange</flowDefinition>
+    <label>Modificar Datos Sensibles</label>
+    <optionsCreateFeedItem>false</optionsCreateFeedItem>
+    <type>Flow</type>
+</QuickAction>
