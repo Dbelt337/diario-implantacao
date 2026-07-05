@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-006a: ProposedDocumentType__c (staging) espelha o value set do DocumentType__c real
+     (codigos API 03/05/06...). NAO inclui DocumentType__c (campo real intocado). -->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>ProposedDocumentType__c</fullName>
+        <label>Tipo de Documento Propuesto</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>03</fullName>
+                    <default>false</default>
+                    <label>Carnet de Residente</label>
+                </value>
+                <value>
+                    <fullName>05</fullName>
+                    <default>false</default>
+                    <label>Cedula de Identidad</label>
+                </value>
+                <value>
+                    <fullName>07</fullName>
+                    <default>false</default>
+                    <label>Cedula de Vecindad</label>
+                </value>
+                <value>
+                    <fullName>06</fullName>
+                    <default>false</default>
+                    <label>Cedula Jurídica</label>
+                </value>
+                <value>
+                    <fullName>97</fullName>
+                    <default>false</default>
+                    <label>Cod.Único Identif. CUI GT</label>
+                </value>
+                <value>
+                    <fullName>10</fullName>
+                    <default>false</default>
+                    <label>Documento Personal de Identificación</label>
+                </value>
+                <value>
+                    <fullName>04</fullName>
+                    <default>false</default>
+                    <label>DUI</label>
+                </value>
+                <value>
+                    <fullName>99</fullName>
+                    <default>false</default>
+                    <label>Extranjeros</label>
+                </value>
+                <value>
+                    <fullName>01</fullName>
+                    <default>false</default>
+                    <label>NIT</label>
+                </value>
+                <value>
+                    <fullName>12</fullName>
+                    <default>false</default>
+                    <label>NITE</label>
+                </value>
+                <value>
+                    <fullName>02</fullName>
+                    <default>false</default>
+                    <label>Pasaporte Extranjero</label>
+                </value>
+                <value>
+                    <fullName>98</fullName>
+                    <default>false</default>
+                    <label>Registro Fiscal</label>
+                </value>
+                <value>
+                    <fullName>08</fullName>
+                    <default>false</default>
+                    <label>RTN</label>
+                </value>
+                <value>
+                    <fullName>11</fullName>
+                    <default>false</default>
+                    <label>RTU</label>
+                </value>
+                <value>
+                    <fullName>09</fullName>
+                    <default>false</default>
+                    <label>RUC</label>
+                </value>
+                <value>
+                    <fullName>96</fullName>
+                    <default>false</default>
+                    <label>RUC NT Panamá</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+</CustomObject>
