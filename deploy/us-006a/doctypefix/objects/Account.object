@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- US-006a: ProposedDocumentType__c (staging) espelha o value set do DocumentType__c real
-     (codigos API 03/05/06...). NAO inclui DocumentType__c (campo real intocado). -->
+<!-- US-006a: ProposedDocumentType__c (staging) recebe os codigos API do DocumentType__c real
+     (03/05/06...). Campo NUNCA e exibido (dropdown le do real), entao labels sao apenas
+     internos e sufixados com o codigo para nao colidir com os valores de texto pre-existentes.
+     NAO inclui DocumentType__c (campo real intocado). -->
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
         <fullName>ProposedDocumentType__c</fullName>
@@ -16,82 +18,82 @@
                 <value>
                     <fullName>03</fullName>
                     <default>false</default>
-                    <label>Carnet de Residente</label>
+                    <label>Carnet de Residente (03)</label>
                 </value>
                 <value>
                     <fullName>05</fullName>
                     <default>false</default>
-                    <label>Cedula de Identidad</label>
+                    <label>Cedula de Identidad (05)</label>
                 </value>
                 <value>
                     <fullName>07</fullName>
                     <default>false</default>
-                    <label>Cedula de Vecindad</label>
+                    <label>Cedula de Vecindad (07)</label>
                 </value>
                 <value>
                     <fullName>06</fullName>
                     <default>false</default>
-                    <label>Cedula Jurídica</label>
+                    <label>Cedula Jurídica (06)</label>
                 </value>
                 <value>
                     <fullName>97</fullName>
                     <default>false</default>
-                    <label>Cod.Único Identif. CUI GT</label>
+                    <label>Cod.Único Identif. CUI GT (97)</label>
                 </value>
                 <value>
                     <fullName>10</fullName>
                     <default>false</default>
-                    <label>Documento Personal de Identificación</label>
+                    <label>Documento Personal de Identificación (10)</label>
                 </value>
                 <value>
                     <fullName>04</fullName>
                     <default>false</default>
-                    <label>DUI</label>
+                    <label>DUI (04)</label>
                 </value>
                 <value>
                     <fullName>99</fullName>
                     <default>false</default>
-                    <label>Extranjeros</label>
+                    <label>Extranjeros (99)</label>
                 </value>
                 <value>
                     <fullName>01</fullName>
                     <default>false</default>
-                    <label>NIT</label>
+                    <label>NIT (01)</label>
                 </value>
                 <value>
                     <fullName>12</fullName>
                     <default>false</default>
-                    <label>NITE</label>
+                    <label>NITE (12)</label>
                 </value>
                 <value>
                     <fullName>02</fullName>
                     <default>false</default>
-                    <label>Pasaporte Extranjero</label>
+                    <label>Pasaporte Extranjero (02)</label>
                 </value>
                 <value>
                     <fullName>98</fullName>
                     <default>false</default>
-                    <label>Registro Fiscal</label>
+                    <label>Registro Fiscal (98)</label>
                 </value>
                 <value>
                     <fullName>08</fullName>
                     <default>false</default>
-                    <label>RTN</label>
+                    <label>RTN (08)</label>
                 </value>
                 <value>
                     <fullName>11</fullName>
                     <default>false</default>
-                    <label>RTU</label>
+                    <label>RTU (11)</label>
                 </value>
                 <value>
                     <fullName>09</fullName>
                     <default>false</default>
-                    <label>RUC</label>
+                    <label>RUC (09)</label>
                 </value>
                 <value>
                     <fullName>96</fullName>
                     <default>false</default>
-                    <label>RUC NT Panamá</label>
+                    <label>RUC NT Panamá (96)</label>
                 </value>
             </valueSetDefinition>
         </valueSet>
