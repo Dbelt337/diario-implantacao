@@ -47,18 +47,11 @@ try {
     if (t == 0) System.debug(LoggingLevel.ERROR, P+'nenhum ApexTrigger em Account (limpo)');
 } catch (Exception e) { System.debug(LoggingLevel.ERROR, P+'3 ERRO: '+e.getMessage()); }
 
-/* 4 — Estado atual dos campos-chave da conta (staging vs real vs status) */
+/* 4 — Estado atual dos campos-chave da conta (status) */
 try {
     System.debug(LoggingLevel.ERROR, P+'=== 4 Snapshot da conta ===');
-    Account a = [SELECT Name, SensitiveChangeStatus__c, IsLocked FROM Account WHERE Id = :accId];
+    Account a = [SELECT Name, SensitiveChangeStatus__c FROM Account WHERE Id = :accId];
     System.debug(LoggingLevel.ERROR, P+'Name='+a.Name+' status='+a.SensitiveChangeStatus__c);
-} catch (Exception e) {
-    // IsLocked pode nao ser consultavel em toda org; tenta sem ele
-    System.debug(LoggingLevel.ERROR, P+'4 (com IsLocked) ERRO: '+e.getMessage()+' -> tentando sem IsLocked');
-    try {
-        Account a = [SELECT Name, SensitiveChangeStatus__c FROM Account WHERE Id = :accId];
-        System.debug(LoggingLevel.ERROR, P+'Name='+a.Name+' status='+a.SensitiveChangeStatus__c);
-    } catch (Exception e2) { System.debug(LoggingLevel.ERROR, P+'4 ERRO2: '+e2.getMessage()); }
-}
+} catch (Exception e) { System.debug(LoggingLevel.ERROR, P+'4 ERRO: '+e.getMessage()); }
 
 System.debug(LoggingLevel.ERROR, P+'=== FIM WLK ===');
