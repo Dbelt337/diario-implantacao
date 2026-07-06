@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>MDG Aprobador - Lectura Datos Sensibles</label>
+    <description>Aprovador: READ dos campos da tela de aprovacao (staging + reales). Sem edit, sem custom permission. O field update do AP e o apply rodam em system context.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <objectPermissions>
+        <object>Account</object>
+        <allowRead>true</allowRead>
+        <allowCreate>false</allowCreate>
+        <allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>false</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>Contact</object>
+        <allowRead>true</allowRead>
+        <allowCreate>false</allowCreate>
+        <allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>false</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <fieldPermissions><field>Account.ProposedName__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.ProposedDocumentType__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.ProposedDocumentNumber__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.ProposedElectronicBillingEmail__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.SensitiveChangeReason__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.SensitiveChangeStatus__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.SensitiveChangeRequestedBy__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.SensitiveChangeApprover__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.DocumentType__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.DocumentNumber__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.ElectronicBillingEmail__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+</PermissionSet>
