@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <description>Subflow SYSTEM CONTEXT: grava staging + resuelve aprobador + submete a aprovacao. Chamado pelo screen flow. Permite que o vendedor NAO tenha edit em nenhum campo (governanca).</description>
+    <interviewLabel>Account_SensitiveData_Submit {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Account - Submit Datos Sensibles (System)</label>
+    <processType>AutoLaunchedFlow</processType>
+    <runInMode>SystemModeWithoutSharing</runInMode>
+    <status>Active</status>
+    <environments>Default</environments>
+
+    <variables>
+        <name>recordId</name><dataType>String</dataType><isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>inProposedName</name><dataType>String</dataType><isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>inProposedDocType</name><dataType>String</dataType><isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>inProposedDocNumber</name><dataType>String</dataType><isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>inProposedEmail</name><dataType>String</dataType><isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>inReason</name><dataType>String</dataType><isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>inSubmitterId</name><dataType>String</dataType><isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>varGrupo</name><dataType>String</dataType><isCollection>false</isCollection><isInput>false</isInput><isOutput>false</isOutput>
+    </variables>
+
+    <start>
+        <locationX>0</locationX><locationY>0</locationY>
+        <connector><targetReference>Get_Cuenta</targetReference></connector>
+    </start>
+
+    <recordLookups>
+        <name>Get_Cuenta</name><label>Get Cuenta</label><locationX>0</locationX><locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Update_Staging</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters><field>Id</field><operator>EqualTo</operator><value><elementReference>recordId</elementReference></value></filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>Account</object><storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_User_Solicitante</name><label>Get User Solicitante</label><locationX>0</locationX><locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Get_Regla_Keyed</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters><field>Id</field><operator>EqualTo</operator><value><elementReference>inSubmitterId</elementReference></value></filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>User</object><storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Regla_Keyed</name><label>Get Regla keyed</label><locationX>0</locationX><locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Dec_Regla_Found</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters><field>Sociedad__c</field><operator>EqualTo</operator><value><elementReference>Get_Cuenta.Sociedad__c</elementReference></value></filters>
+        <filters><field>Departamento__c</field><operator>EqualTo</operator><value><elementReference>Get_User_Solicitante.Department</elementReference></value></filters>
+        <filters><field>Escenario_Credito__c</field><operator>EqualTo</operator><value><elementReference>Get_Cuenta.CreditScenario__c</elementReference></value></filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>Aprobador_Datos_Sensibles__mdt</object><storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Regla_Default</name><label>Get Regla Default</label><locationX>0</locationX><locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Asig_Grupo_Default</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters><field>Es_Default__c</field><operator>EqualTo</operator><value><booleanValue>true</booleanValue></value></filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>Aprobador_Datos_Sensibles__mdt</object><storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Group</name><label>Get Public Group</label><locationX>0</locationX><locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Get_GroupMember</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters><field>DeveloperName</field><operator>EqualTo</operator><value><elementReference>varGrupo</elementReference></value></filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>Group</object><storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_GroupMember</name><label>Get Group Member</label><locationX>0</locationX><locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Set_Aprobador</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters><field>GroupId</field><operator>EqualTo</operator><value><elementReference>Get_Group.Id</elementReference></value></filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>GroupMember</object><storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
+    <recordUpdates>
+        <name>Update_Staging</name><label>Guardar staging (Pending)</label><locationX>0</locationX><locationY>0</locationY>
+        <connector><targetReference>Get_User_Solicitante</targetReference></connector>
+        <object>Account</object><filterLogic>and</filterLogic>
+        <filters><field>Id</field><operator>EqualTo</operator><value><elementReference>recordId</elementReference></value></filters>
+        <inputAssignments><field>ProposedName__c</field><value><elementReference>inProposedName</elementReference></value></inputAssignments>
+        <inputAssignments><field>ProposedDocumentType__c</field><value><elementReference>inProposedDocType</elementReference></value></inputAssignments>
+        <inputAssignments><field>ProposedDocumentNumber__c</field><value><elementReference>inProposedDocNumber</elementReference></value></inputAssignments>
+        <inputAssignments><field>ProposedElectronicBillingEmail__c</field><value><elementReference>inProposedEmail</elementReference></value></inputAssignments>
+        <inputAssignments><field>SensitiveChangeStatus__c</field><value><stringValue>Pending</stringValue></value></inputAssignments>
+        <inputAssignments><field>SensitiveChangeReason__c</field><value><elementReference>inReason</elementReference></value></inputAssignments>
+        <inputAssignments><field>SensitiveChangeRequestedBy__c</field><value><elementReference>inSubmitterId</elementReference></value></inputAssignments>
+        <inputAssignments><field>SensitiveChangeRequestedDate__c</field><value><elementReference>$Flow.CurrentDateTime</elementReference></value></inputAssignments>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Set_Aprobador</name><label>Set Aprobador</label><locationX>0</locationX><locationY>0</locationY>
+        <connector><targetReference>Submit_Approval</targetReference></connector>
+        <object>Account</object><filterLogic>and</filterLogic>
+        <filters><field>Id</field><operator>EqualTo</operator><value><elementReference>recordId</elementReference></value></filters>
+        <inputAssignments><field>SensitiveChangeApprover__c</field><value><elementReference>Get_GroupMember.UserOrGroupId</elementReference></value></inputAssignments>
+    </recordUpdates>
+
+    <decisions>
+        <name>Dec_Regla_Found</name><label>Regla encontrada?</label><locationX>0</locationX><locationY>0</locationY>
+        <defaultConnector><targetReference>Get_Regla_Default</targetReference></defaultConnector>
+        <defaultConnectorLabel>No (Default)</defaultConnectorLabel>
+        <rules><name>Regla_Si</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>Get_Regla_Keyed.Grupo_Aprobador__c</leftValueReference><operator>IsNull</operator><rightValue><booleanValue>false</booleanValue></rightValue></conditions>
+            <connector><targetReference>Asig_Grupo_Keyed</targetReference></connector><label>Si</label></rules>
+    </decisions>
+
+    <assignments>
+        <name>Asig_Grupo_Keyed</name><label>Asig grupo keyed</label><locationX>0</locationX><locationY>0</locationY>
+        <assignmentItems><assignToReference>varGrupo</assignToReference><operator>Assign</operator><value><elementReference>Get_Regla_Keyed.Grupo_Aprobador__c</elementReference></value></assignmentItems>
+        <connector><targetReference>Get_Group</targetReference></connector>
+    </assignments>
+    <assignments>
+        <name>Asig_Grupo_Default</name><label>Asig grupo default</label><locationX>0</locationX><locationY>0</locationY>
+        <assignmentItems><assignToReference>varGrupo</assignToReference><operator>Assign</operator><value><elementReference>Get_Regla_Default.Grupo_Aprobador__c</elementReference></value></assignmentItems>
+        <connector><targetReference>Get_Group</targetReference></connector>
+    </assignments>
+
+    <actionCalls>
+        <name>Submit_Approval</name><label>Enviar a aprobacion</label><locationX>0</locationX><locationY>0</locationY>
+        <actionName>submit</actionName><actionType>submit</actionType>
+        <inputParameters><name>objectId</name><value><elementReference>recordId</elementReference></value></inputParameters>
+        <inputParameters><name>submitterId</name><value><elementReference>inSubmitterId</elementReference></value></inputParameters>
+        <inputParameters><name>comment</name><value><elementReference>inReason</elementReference></value></inputParameters>
+        <inputParameters><name>processDefinitionNameOrId</name><value><stringValue>Aprobacion_Datos_Sensibles_Cuenta</stringValue></value></inputParameters>
+    </actionCalls>
+</Flow>

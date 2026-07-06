@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>MDG Datos Sensibles - Acceso Flow</label>
+    <description>Vendedor: SOLO LECTURA. La escritura (staging/aprobador/submit) corre en un subflow System Context. El vendedor NO edita ningun campo sensible directamente (gobernanza).</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <objectPermissions>
+        <object>Account</object>
+        <allowRead>true</allowRead><allowCreate>false</allowCreate><allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete><viewAllRecords>false</viewAllRecords><modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>Contact</object>
+        <allowRead>true</allowRead><allowCreate>false</allowCreate><allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete><viewAllRecords>false</viewAllRecords><modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <fieldPermissions><field>Account.DocumentType__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.DocumentNumber__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.ElectronicBillingEmail__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+    <fieldPermissions><field>Account.SensitiveChangeStatus__c</field><readable>true</readable><editable>false</editable></fieldPermissions>
+</PermissionSet>
