@@ -134,22 +134,13 @@
         </rules>
     </decisions>
     <decisions>
-        <name>Dec_Regla_Found</name>
-        <label>Regla encontrada?</label>
+        <name>Dec_Regla_Found</name><label>Regla encontrada?</label>
         <locationX>0</locationX><locationY>0</locationY>
         <defaultConnector><targetReference>Get_Regla_Default</targetReference></defaultConnector>
-        <defaultConnectorLabel>No (fallback Default)</defaultConnectorLabel>
-        <rules>
-            <name>Regla_Si</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Get_Regla_Keyed.Grupo_Aprobador__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue><booleanValue>false</booleanValue></rightValue>
-            </conditions>
-            <connector><targetReference>Asig_Grupo_Keyed</targetReference></connector>
-            <label>Si</label>
-        </rules>
+        <defaultConnectorLabel>No (Default)</defaultConnectorLabel>
+        <rules><name>Regla_Si</name><conditionLogic>and</conditionLogic>
+            <conditions><leftValueReference>Get_Regla_Keyed.Grupo_Aprobador__c</leftValueReference><operator>IsNull</operator><rightValue><booleanValue>false</booleanValue></rightValue></conditions>
+            <connector><targetReference>Asig_Grupo_Keyed</targetReference></connector><label>Si</label></rules>
     </decisions>
     <description>Screen Flow para solicitar modificación de datos sensibles en Account. Usa campos staging y dispara proceso de aprobación. Invocado desde Quick Action en el objeto Account.</description>
     <dynamicChoiceSets>
@@ -157,7 +148,7 @@
         <dataType>Picklist</dataType>
         <displayField xsi:nil="true" />
         <object xsi:nil="true" />
-        <picklistField>ProposedDocumentType__c</picklistField>
+        <picklistField>DocumentType__c</picklistField>
         <picklistObject>Account</picklistObject>
     </dynamicChoiceSets>
     <environments>Default</environments>
@@ -206,21 +197,17 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_User_Solicitante</name>
-        <label>Get User Solicitante</label>
+        <name>Get_User_Solicitante</name><label>Get User Solicitante</label>
         <locationX>0</locationX><locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>Get_Regla_Keyed</targetReference></connector>
         <faultConnector><targetReference>Pantalla_Error_Tecnico</targetReference></faultConnector>
         <filterLogic>and</filterLogic>
         <filters><field>Id</field><operator>EqualTo</operator><value><elementReference>$User.Id</elementReference></value></filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>User</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>User</object><storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Regla_Keyed</name>
-        <label>Get Regla (Sociedad+Depto+Escenario)</label>
+        <name>Get_Regla_Keyed</name><label>Get Regla keyed</label>
         <locationX>0</locationX><locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>Dec_Regla_Found</targetReference></connector>
@@ -229,48 +216,37 @@
         <filters><field>Sociedad__c</field><operator>EqualTo</operator><value><elementReference>Get_Account.Sociedad__c</elementReference></value></filters>
         <filters><field>Departamento__c</field><operator>EqualTo</operator><value><elementReference>Get_User_Solicitante.Department</elementReference></value></filters>
         <filters><field>Escenario_Credito__c</field><operator>EqualTo</operator><value><elementReference>Get_Account.CreditScenario__c</elementReference></value></filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Aprobador_Datos_Sensibles__mdt</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>Aprobador_Datos_Sensibles__mdt</object><storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Regla_Default</name>
-        <label>Get Regla Default</label>
+        <name>Get_Regla_Default</name><label>Get Regla Default</label>
         <locationX>0</locationX><locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>Asig_Grupo_Default</targetReference></connector>
         <faultConnector><targetReference>Pantalla_Error_Tecnico</targetReference></faultConnector>
         <filterLogic>and</filterLogic>
         <filters><field>Es_Default__c</field><operator>EqualTo</operator><value><booleanValue>true</booleanValue></value></filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Aprobador_Datos_Sensibles__mdt</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>Aprobador_Datos_Sensibles__mdt</object><storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_Group</name>
-        <label>Get Public Group</label>
+        <name>Get_Group</name><label>Get Public Group</label>
         <locationX>0</locationX><locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>Get_GroupMember</targetReference></connector>
         <faultConnector><targetReference>Pantalla_Error_Tecnico</targetReference></faultConnector>
         <filterLogic>and</filterLogic>
         <filters><field>DeveloperName</field><operator>EqualTo</operator><value><elementReference>varGrupo</elementReference></value></filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Group</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>Group</object><storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>Get_GroupMember</name>
-        <label>Get Group Member (aprobador)</label>
+        <name>Get_GroupMember</name><label>Get Group Member</label>
         <locationX>0</locationX><locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>Set_Aprobador</targetReference></connector>
         <faultConnector><targetReference>Pantalla_Error_Tecnico</targetReference></faultConnector>
         <filterLogic>and</filterLogic>
         <filters><field>GroupId</field><operator>EqualTo</operator><value><elementReference>Get_Group.Id</elementReference></value></filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>GroupMember</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <getFirstRecordOnly>true</getFirstRecordOnly><object>GroupMember</object><storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
         <name>Update_Directo</name>
@@ -390,13 +366,11 @@
         <object>Account</object>
     </recordUpdates>
     <recordUpdates>
-        <name>Set_Aprobador</name>
-        <label>Set Aprobador en la Cuenta</label>
+        <name>Set_Aprobador</name><label>Set Aprobador</label>
         <locationX>0</locationX><locationY>0</locationY>
         <connector><targetReference>Submit_Approval</targetReference></connector>
         <faultConnector><targetReference>Pantalla_Error_Tecnico</targetReference></faultConnector>
-        <object>Account</object>
-        <filterLogic>and</filterLogic>
+        <object>Account</object><filterLogic>and</filterLogic>
         <filters><field>Id</field><operator>EqualTo</operator><value><elementReference>recordId</elementReference></value></filters>
         <inputAssignments><field>SensitiveChangeApprover__c</field><value><elementReference>Get_GroupMember.UserOrGroupId</elementReference></value></inputAssignments>
     </recordUpdates>
@@ -474,6 +448,7 @@
         </fields>
         <fields>
             <name>inp_TipoDoc_Directo</name>
+            <choiceReferences>Document_type</choiceReferences>
             <dataType>String</dataType>
             <defaultValue>
                 <elementReference>Get_Account.DocumentType__c</elementReference>
@@ -667,7 +642,7 @@
                 <elementReference>Get_Account.DocumentType__c</elementReference>
             </defaultValue>
             <fieldText>Nuevo Tipo de Documento</fieldText>
-            <fieldType>MultiSelectCheckboxes</fieldType>
+            <fieldType>DropdownBox</fieldType>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <styleProperties>
@@ -794,34 +769,18 @@
         <showHeader>true</showHeader>
     </screens>
     <assignments>
-        <name>Asig_Grupo_Keyed</name>
-        <label>Asignar grupo (keyed)</label>
+        <name>Asig_Grupo_Keyed</name><label>Asig grupo keyed</label>
         <locationX>0</locationX><locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>varGrupo</assignToReference>
-            <operator>Assign</operator>
-            <value><elementReference>Get_Regla_Keyed.Grupo_Aprobador__c</elementReference></value>
-        </assignmentItems>
+        <assignmentItems><assignToReference>varGrupo</assignToReference><operator>Assign</operator><value><elementReference>Get_Regla_Keyed.Grupo_Aprobador__c</elementReference></value></assignmentItems>
         <connector><targetReference>Get_Group</targetReference></connector>
     </assignments>
     <assignments>
-        <name>Asig_Grupo_Default</name>
-        <label>Asignar grupo (default)</label>
+        <name>Asig_Grupo_Default</name><label>Asig grupo default</label>
         <locationX>0</locationX><locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>varGrupo</assignToReference>
-            <operator>Assign</operator>
-            <value><elementReference>Get_Regla_Default.Grupo_Aprobador__c</elementReference></value>
-        </assignmentItems>
+        <assignmentItems><assignToReference>varGrupo</assignToReference><operator>Assign</operator><value><elementReference>Get_Regla_Default.Grupo_Aprobador__c</elementReference></value></assignmentItems>
         <connector><targetReference>Get_Group</targetReference></connector>
     </assignments>
-    <variables>
-        <name>varGrupo</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-    </variables>
+    <variables><name>varGrupo</name><dataType>String</dataType><isCollection>false</isCollection><isInput>false</isInput><isOutput>false</isOutput></variables>
     <variables>
         <description>ID del Account desde la Quick Action</description>
         <name>recordId</name>
