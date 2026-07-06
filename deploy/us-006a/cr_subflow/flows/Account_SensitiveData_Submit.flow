@@ -136,8 +136,9 @@
         <name>Submit_Approval</name><label>Enviar a aprobacion</label><locationX>0</locationX><locationY>0</locationY>
         <actionName>submit</actionName><actionType>submit</actionType>
         <inputParameters><name>objectId</name><value><elementReference>recordId</elementReference></value></inputParameters>
-        <inputParameters><name>submitterId</name><value><elementReference>inSubmitterId</elementReference></value></inputParameters>
+        <inputParameters><name>submitterId</name><value><elementReference>Get_Cuenta.OwnerId</elementReference></value></inputParameters>
         <inputParameters><name>comment</name><value><elementReference>inReason</elementReference></value></inputParameters>
         <inputParameters><name>processDefinitionNameOrId</name><value><stringValue>Aprobacion_Datos_Sensibles_Cuenta</stringValue></value></inputParameters>
+        <inputParameters><name>skipEntryCriteria</name><value><booleanValue>true</booleanValue></value></inputParameters>
     </actionCalls>
 </Flow>
