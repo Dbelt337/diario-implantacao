@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- US-006a: bloqueia edicao direta de datos sensibles. Name (padrao) nao tem FLS -> VR. -->
+<!-- US-006a: bloqueia SO edicao direta de datos sensibles por quem nao tem bypass.
+     Exceto: circuito (status->Completed), CanEditSensitiveAccountFields, Bypass_Gates_Automacao (integracoes/automacoes). -->
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <validationRules>
         <fullName>Bloquear_Edicion_Datos_Sensibles</fullName>
         <active>true</active>
-        <description>Bloquea edicion DIRECTA de Nombre / Tipo y Numero de Documento / Correo de factura. Solo el circuito (apply -> status Completed) o usuarios con CanEditSensitiveAccountFields.</description>
+        <description>Bloquea edicion DIRECTA de Nombre/Documento/Email por usuarios sin bypass. Exento: apply (status Completed), CanEditSensitiveAccountFields, Bypass_Gates_Automacao (integraciones/otros flows).</description>
         <errorConditionFormula>AND(
   OR(
     ISCHANGED(Name),
@@ -13,7 +14,8 @@
     ISCHANGED(ElectronicBillingEmail__c)
   ),
   NOT( AND( ISCHANGED(SensitiveChangeStatus__c), ISPICKVAL(SensitiveChangeStatus__c, "Completed") ) ),
-  NOT( $Permission.CanEditSensitiveAccountFields )
+  NOT( $Permission.CanEditSensitiveAccountFields ),
+  NOT( $Permission.Bypass_Gates_Automacao )
 )</errorConditionFormula>
         <errorMessage>Los datos sensibles (Nombre / Tipo y Número de Documento / Correo de factura electrónica) solo pueden modificarse mediante el flujo &quot;Modificar Datos Sensibles&quot; con aprobación. No es posible editarlos directamente.</errorMessage>
     </validationRules>
