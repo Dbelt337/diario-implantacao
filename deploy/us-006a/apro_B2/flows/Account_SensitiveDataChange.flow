@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionCalls>
         <name>Submit_Approval</name>
@@ -137,8 +137,8 @@
     <dynamicChoiceSets>
         <name>Document_type</name>
         <dataType>Picklist</dataType>
-        <displayField xsi:nil="true"/>
-        <object xsi:nil="true"/>
+        <displayField xsi:nil="true" />
+        <object xsi:nil="true" />
         <picklistField>ProposedDocumentType__c</picklistField>
         <picklistObject>Account</picklistObject>
     </dynamicChoiceSets>
@@ -185,6 +185,54 @@
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Account</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Regla_Aprobador</name>
+        <label>Get Regla Aprobador (Default)</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_User_Aprobador</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Pantalla_Error_Tecnico</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Es_Default__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Aprobador_Datos_Sensibles__mdt</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_User_Aprobador</name>
+        <label>Get User Aprobador</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Set_Aprobador</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Pantalla_Error_Tecnico</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Username</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Regla_Aprobador.Aprobador_Username__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
@@ -304,6 +352,33 @@
         </inputAssignments>
         <object>Account</object>
     </recordUpdates>
+    <recordUpdates>
+        <name>Set_Aprobador</name>
+        <label>Set Aprobador en la Cuenta</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Submit_Approval</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Pantalla_Error_Tecnico</targetReference>
+        </faultConnector>
+        <object>Account</object>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>SensitiveChangeApprover__c</field>
+            <value>
+                <elementReference>Get_User_Aprobador.Id</elementReference>
+            </value>
+        </inputAssignments>
+    </recordUpdates>
     <screens>
         <name>Pantalla_Confirmacion</name>
         <label>Solicitud enviada</label>
@@ -316,7 +391,7 @@
             <name>Aviso_Exito</name>
             <fieldText>&lt;p&gt;&lt;strong&gt;Solicitud enviada exitosamente&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Tu solicitud de cambio de datos sensibles fue enviada al área de &lt;strong&gt;Gestión de Datos&lt;/strong&gt; para su revisión y aprobación.&lt;/p&gt;
-&lt;p&gt;Recibirás una notificación cuando la solicitud sea aprobada o rechazada. El campo &lt;strong&gt;&quot;Estado de Cambio Sensible&quot;&lt;/strong&gt; del registro mostrará el estado actual del proceso.&lt;/p&gt;
+&lt;p&gt;Recibirás una notificación cuando la solicitud sea aprobada o rechazada. El campo &lt;strong&gt;"Estado de Cambio Sensible"&lt;/strong&gt; del registro mostrará el estado actual del proceso.&lt;/p&gt;
 &lt;p&gt;El cambio &lt;strong&gt;no se aplica hasta que el área encargada lo apruebe&lt;/strong&gt;.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
             <styleProperties>
@@ -697,81 +772,6 @@
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
-    <recordLookups>
-        <name>Get_Regla_Aprobador</name>
-        <label>Get Regla Aprobador (Default)</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Get_User_Aprobador</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>Pantalla_Error_Tecnico</targetReference>
-        </faultConnector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Es_Default__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <booleanValue>true</booleanValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Aprobador_Datos_Sensibles__mdt</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Get_User_Aprobador</name>
-        <label>Get User Aprobador</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Set_Aprobador</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>Pantalla_Error_Tecnico</targetReference>
-        </faultConnector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Username</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Get_Regla_Aprobador.Aprobador_Username__c</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>User</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordUpdates>
-        <name>Set_Aprobador</name>
-        <label>Set Aprobador en la Cuenta</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <connector>
-            <targetReference>Submit_Approval</targetReference>
-        </connector>
-        <faultConnector>
-            <targetReference>Pantalla_Error_Tecnico</targetReference>
-        </faultConnector>
-        <object>Account</object>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <inputAssignments>
-            <field>SensitiveChangeApprover__c</field>
-            <value>
-                <elementReference>Get_User_Aprobador.Id</elementReference>
-            </value>
-        </inputAssignments>
-    </recordUpdates>
     <start>
         <locationX>670</locationX>
         <locationY>50</locationY>
