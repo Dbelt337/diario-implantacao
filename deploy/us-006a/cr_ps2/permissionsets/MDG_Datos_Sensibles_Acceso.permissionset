@@ -3,6 +3,15 @@
     <label>MDG Datos Sensibles - Acceso Flow</label>
     <description>Vendedor: edita campos STAGING (propoe cambio) + le reales/credito. NAO edita campos reales (governanca). NAO incluye CanEditSensitiveAccountFields.</description>
     <hasActivationRequired>false</hasActivationRequired>
+    <objectPermissions>
+        <object>Account</object>
+        <allowRead>true</allowRead>
+        <allowCreate>false</allowCreate>
+        <allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>false</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
     <!-- STAGING: edit (o screen flow grava em contexto de usuario) -->
     <fieldPermissions><field>Account.ProposedName__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
     <fieldPermissions><field>Account.ProposedDocumentType__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
