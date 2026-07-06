@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Aprobador_Datos_Sensibles__mdt</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Aprobador_Datos_Sensibles.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>Account_SensitiveDataChange</members>
+        <name>Flow</name>
+    </types>
+    <version>65.0</version>
+</Package>

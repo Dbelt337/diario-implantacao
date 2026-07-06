@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- US-006a Fase B (framework) - Matriz de aprobadores de datos sensibles (MDG).
+     Estructura lista para la matriz completa (Sociedad + Departamento + Escenario).
+     Fase A: solo el registro Default se usa. -->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Aprobador Datos Sensibles</label>
+    <pluralLabel>Aprobadores Datos Sensibles</pluralLabel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>Sociedad__c</fullName>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <label>Sociedad</label>
+        <length>20</length>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Departamento__c</fullName>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <label>Departamento (del solicitante)</label>
+        <length>120</length>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Escenario_Credito__c</fullName>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <label>Escenario de Credito</label>
+        <length>40</length>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Aprobador_Username__c</fullName>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <label>Aprobador (Username)</label>
+        <length>80</length>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Es_Default__c</fullName>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <label>Es Default (fallback)</label>
+        <type>Checkbox</type>
+        <defaultValue>false</defaultValue>
+    </fields>
+</CustomObject>
