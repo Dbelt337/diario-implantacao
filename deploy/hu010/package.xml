@@ -3,7 +3,6 @@
     <types>
         <members>Lead.CumplioSLA__c</members>
         <members>Lead.FechaPrimerContacto__c</members>
-        <members>Lead.Temperatura__c</members>
         <members>Lead.PrioridadRuteo__c</members>
         <name>CustomField</name>
     </types>

@@ -17,34 +17,6 @@
         <description>HU-010: fecha y hora de la primera gestión válida con el cliente. Cubre todos los leads (no depende de licencia Sales Engagement).</description>
     </fields>
     <fields>
-        <fullName>Temperatura__c</fullName>
-        <externalId>false</externalId>
-        <label>Temperatura</label>
-        <type>Picklist</type>
-        <description>HU-010: temperatura del lead. Señales del cliente dominan; Einstein Score como secundario.</description>
-        <valueSet>
-            <restricted>false</restricted>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>Frío</fullName>
-                    <default>false</default>
-                    <label>Frío</label>
-                </value>
-                <value>
-                    <fullName>Tibio</fullName>
-                    <default>false</default>
-                    <label>Tibio</label>
-                </value>
-                <value>
-                    <fullName>Caliente</fullName>
-                    <default>false</default>
-                    <label>Caliente</label>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
-    </fields>
-    <fields>
         <fullName>PrioridadRuteo__c</fullName>
         <externalId>false</externalId>
         <label>Prioridad de Ruteo</label>
