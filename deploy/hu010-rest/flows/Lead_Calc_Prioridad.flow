@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HU-010 B4: prioridad de ruteo -> Lead.PrioridadRuteo__c (alimenta Secondary Routing Priority del canal Lead_Channel).
+     Menor numero = mayor prioridad (convencion Omni). Caliente (Rating=Hot) o SLA vencido => 1; Warm => 5; resto => 10.
+     Before-save, triggerOrder 50 (corre despues de Lead_Score_Temperatura=30, para leer el Rating ya calculado). -->
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <assignments>
+        <name>Set_Prioridad</name>
+        <label>Set Prioridad</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.PrioridadRuteo__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>fPrioridad</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <environments>Default</environments>
+    <formulas>
+        <name>fPrioridad</name>
+        <dataType>Number</dataType>
+        <scale>0</scale>
+        <expression>IF( OR( {!$Record.Rating} = &quot;Hot&quot;, AND( NOT(ISBLANK({!$Record.SLADeadline__c})), {!$Record.SLADeadline__c} &lt; {!$Flow.CurrentDateTime} ) ), 1, IF( {!$Record.Rating} = &quot;Warm&quot;, 5, 10) )</expression>
+    </formulas>
+    <interviewLabel>Lead_Calc_Prioridad {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_Calc_Prioridad</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Prioridad</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>IsConverted</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Draft</status>
+    <triggerOrder>50</triggerOrder>
+</Flow>
