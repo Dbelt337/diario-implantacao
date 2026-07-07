@@ -120,3 +120,36 @@ Delta `metadata_31` (hoje) vs `audit` (07-03): idênticos na lógica; só adicio
 11. **Industry como "línea":** roteamento usa Industry=Repuestos/PA, mas há lead com Industry=`"Gobierno"` — picklist standard reaproveitada, conflito de premissa.
 
 ## (6) Nada foi alterado na org. Execução aguarda GO.
+
+---
+
+## APÊNDICE A — Native-first (licenças confirmadas 2026-07-07, com evidência)
+> Correção de método (Beltrão): checar doc oficial + release notes e reusar NATIVO antes de customizar.
+
+**Evidências de licença/feature (Setup → Company Information + queries):**
+- **Sales Engagement Basic:** Active, `TotalLicenses=100`, `UsedLicenses=5`, exp. 2031-02-10. (`PermissionSetLicense.DeveloperName=SalesEngagementBasicPsl`.) Busca "High Velocity Sales" = 0/0 (produto renomeado para Sales Engagement).
+- **ActionCadence:** `SELECT FIELDS(ALL) FROM ActionCadence` → **11 registros** (cadências padrão em espanhol, criadas 2026-05-07) — feature provisionada.
+- **Sales Cloud Einstein:** Active, `80/6` → Einstein Lead Scoring viável (`Lead.ScoreIntelligenceId` → `ScoreIntelligence.Score`).
+- **Limite do Basic (doc oficial):** o permission set Basic é para usuários que criam **apenas Quick Cadences** — não as Sales Cadences automatizadas completas.
+
+**Veredito nativo × custom por requisito HU-010:**
+| Requisito | Nativo disponível | Cobre sozinho? | Custom inevitável |
+|---|---|---|---|
+| Temperatura frío/tibio/caliente | `Rating` (Hot/Warm/Cold) + Einstein `ScoreIntelligenceId` | **Sim** | `Temperatura__c` só se não reusar `Rating` (conflito: escalation sobrescreve Rating=Hot) |
+| Priorização no roteamento | Omni **Secondary Routing Priority** (campo no ServiceChannel) | **Mecanismo sim** | `PrioridadRuteo__c` (campo que alimenta) + config do canal = DECISÃO (altera fila) |
+| Primeiro contato (data/hora) | `FirstCallDateTime`/`FirstEmailDateTime` (Sales Engagement) + `LastActivityDate` | **Parcial** (só 5 licenciados; depende de registrar atividade) | carimbo confiável p/ TODOS os leads (flow B1) |
+| Escada de follow-up (recordatório) | Quick Cadences (Basic) | **Parcial** (prospecção do rep, não SLA) | recordatório por SLA (path B2, usa `LastReminderDate__c` + `ReminderIntervalHours__c`) |
+| SLA deadline + reasignação por SLA | **NENHUM** (Entitlement/Milestones é só Case) | **Não** | `Lead_SLA_Escalation` (já existe) + `SLADeadline__c` + `CumplioSLA__c` |
+| "Gestión" válida | `LastActivityDate`, `ActivityMetric`, `FirstCallDateTime` | **Parcial** | definição + flag (B1) |
+
+**Lista final de campos a CRIAR (mínima, pós native-first):**
+- `CumplioSLA__c` (Checkbox) — sem nativo.
+- `PrioridadRuteo__c` (Number/Picklist) — alimenta o Secondary Routing Priority nativo.
+- `FechaPrimerContacto__c` (DateTime) — só se não bastar `FirstCallDateTime` (que cobre só 5 licenciados).
+- `Temperatura__c` (Picklist) — só se não reusar `Rating`.
+
+**Reusar sem criar:** `SLADeadline__c`, `LastGestionDate__c`, `LastContactAttemptDate__c`, `LastReminderDate__c`, `ContactAttempts__c`, `SLAReassignCount__c`, `ReassignReason__c` (já tem `Inactividad_24h`), `TransferDate__c`, `Rating`, `EstimatedPurchaseTime__c`, `TestDriveDateTime__c`, `ScoreIntelligenceId`; CMT `ReminderIntervalHours__c` + `MaxContactAttempts__c`.
+
+**Fontes:** [Secondary Routing Priority](https://help.salesforce.com/s/articleView?id=service.omnichannel_secondary_routing_priority.htm&language=en_US&type=5) · [Einstein Lead Scoring](https://help.salesforce.com/s/articleView?language=en_US&id=sf.einstein_sales_setup_enable_lead_insights.htm&type=5) · [Assign PS for Sales Engagement (Basic = Quick Cadences)](https://help.salesforce.com/s/articleView?language=en_US&id=sf.hvs_setup_assign.htm&type=5)
+
+**Nada foi alterado na org. Execução aguarda GO.**
