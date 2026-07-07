@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HU-010 - campos custom novos no Lead (aditivo, R2). FLS via Permission Set (separado). -->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>CumplioSLA__c</fullName>
+        <externalId>false</externalId>
+        <label>Cumplió SLA</label>
+        <type>Checkbox</type>
+        <defaultValue>false</defaultValue>
+        <description>HU-010: marca si el primer contacto ocurrió dentro del SLADeadline__c. Escrito por el flujo de primer contacto.</description>
+    </fields>
+    <fields>
+        <fullName>FechaPrimerContacto__c</fullName>
+        <externalId>false</externalId>
+        <label>Fecha Primer Contacto</label>
+        <type>DateTime</type>
+        <description>HU-010: fecha y hora de la primera gestión válida con el cliente. Cubre todos los leads (no depende de licencia Sales Engagement).</description>
+    </fields>
+</CustomObject>
