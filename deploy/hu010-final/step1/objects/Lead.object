@@ -6,8 +6,9 @@
         <externalId>false</externalId>
         <label>Cumplió SLA</label>
         <type>Checkbox</type>
-        <defaultValue>false</defaultValue>
-        <description>HU-010: marca si el primer contacto ocurrió dentro del SLADeadline__c. Escrito por el flujo de primer contacto.</description>
+        <formula>AND( NOT(ISBLANK(FechaPrimerContacto__c)), NOT(ISBLANK(SLADeadline__c)), FechaPrimerContacto__c &lt;= SLADeadline__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <description>HU-010: FORMULA - true si el primer contacto (FechaPrimerContacto__c) ocurrió dentro del SLADeadline__c. Derivado, no almacenado.</description>
     </fields>
     <fields>
         <fullName>FechaPrimerContacto__c</fullName>

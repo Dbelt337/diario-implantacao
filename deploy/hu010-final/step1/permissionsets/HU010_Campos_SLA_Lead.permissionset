@@ -11,6 +11,6 @@
     <fieldPermissions>
         <field>Lead.CumplioSLA__c</field>
         <readable>true</readable>
-        <editable>true</editable>
+        <editable>false</editable>
     </fieldPermissions>
 </PermissionSet>

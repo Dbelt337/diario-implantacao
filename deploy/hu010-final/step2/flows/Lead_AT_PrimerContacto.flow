@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- HU-010 B1: primer contacto. Trigger em TASK completada vinculada a um Lead (gestion valida real).
-     Carimba Lead.FechaPrimerContacto__c (1a vez) + Lead.CumplioSLA__c. Nao toca SetSLADeadline nem TransicionEstado. -->
+     Carimba Lead.FechaPrimerContacto__c (1a vez). CumplioSLA__c virou formula (derivado). Nao toca SetSLADeadline nem TransicionEstado. -->
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>62.0</apiVersion>
     <decisions>
@@ -33,11 +33,6 @@
         </rules>
     </decisions>
     <environments>Default</environments>
-    <formulas>
-        <name>fCumplioSLA</name>
-        <dataType>Boolean</dataType>
-        <expression>AND( NOT(ISBLANK({!Get_Lead.SLADeadline__c})), {!$Flow.CurrentDateTime} &lt;= {!Get_Lead.SLADeadline__c} )</expression>
-    </formulas>
     <interviewLabel>Lead_AT_PrimerContacto {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Lead_AT_PrimerContacto</label>
     <processMetadataValues>
@@ -116,12 +111,6 @@
             <field>FechaPrimerContacto__c</field>
             <value>
                 <elementReference>$Flow.CurrentDateTime</elementReference>
-            </value>
-        </inputAssignments>
-        <inputAssignments>
-            <field>CumplioSLA__c</field>
-            <value>
-                <elementReference>fCumplioSLA</elementReference>
             </value>
         </inputAssignments>
         <object>Lead</object>
