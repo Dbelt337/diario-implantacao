@@ -124,10 +124,10 @@
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Status</field>
+            <field>IsClosed</field>
             <operator>EqualTo</operator>
             <value>
-                <stringValue>Completed</stringValue>
+                <booleanValue>true</booleanValue>
             </value>
         </filters>
         <filters>
