@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- DEPLOY B (flows de Omni) - subir DEPOIS que o A passar, com os flows INATIVOS (Draft) e ativar na tela.
+     A subflow LeadRouting_OmniFlow tem que estar antes/junto do Lead_TriggerOmniRouting (o SF ordena sozinho no mesmo pacote). -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>LeadRouting_OmniFlow</members>
+        <members>Lead_TriggerOmniRouting</members>
+        <name>Flow</name>
+    </types>
+    <version>67.0</version>
+</Package>
