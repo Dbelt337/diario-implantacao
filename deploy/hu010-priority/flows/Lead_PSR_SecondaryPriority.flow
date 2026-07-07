@@ -121,7 +121,7 @@
             </value>
         </filters>
         <inputAssignments>
-            <field>SecondaryRoutingPriority</field>
+            <field>RoutingPriority</field>
             <value>
                 <elementReference>fPrioridad</elementReference>
             </value>
