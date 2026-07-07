@@ -133,7 +133,6 @@
         <nameSegment>customNotificationAction</nameSegment>
     </actionCalls>
     <apiVersion>62.0</apiVersion>
-    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Asig_Ctx_Max</name>
         <label>Ctx = MAX</label>
