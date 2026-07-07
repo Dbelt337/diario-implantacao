@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HU-010: FLS dos campos novos do Lead. Atribuir aos usuarios (e ao seu admin) para o Flow Builder enxergar os campos. -->
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>HU-010 Campos SLA Lead</label>
+    <hasActivationRequired>false</hasActivationRequired>
+    <fieldPermissions>
+        <field>Lead.FechaPrimerContacto__c</field>
+        <readable>true</readable>
+        <editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Lead.CumplioSLA__c</field>
+        <readable>true</readable>
+        <editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>Lead.PrioridadRuteo__c</field>
+        <readable>true</readable>
+        <editable>true</editable>
+    </fieldPermissions>
+</PermissionSet>

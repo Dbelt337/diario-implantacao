@@ -22,7 +22,7 @@
         <name>fPrioridad</name>
         <dataType>Number</dataType>
         <scale>0</scale>
-        <expression>IF( OR( {!$Record.Rating} = &quot;Hot&quot;, AND( NOT(ISBLANK({!$Record.SLADeadline__c})), {!$Record.SLADeadline__c} &lt; {!$Flow.CurrentDateTime} ) ), 1, IF( {!$Record.Rating} = &quot;Warm&quot;, 5, 10) )</expression>
+        <expression>IF( OR( TEXT({!$Record.Rating}) = &quot;Hot&quot;, AND( NOT(ISBLANK({!$Record.SLADeadline__c})), {!$Record.SLADeadline__c} &lt; {!$Flow.CurrentDateTime} ) ), 1, IF( TEXT({!$Record.Rating}) = &quot;Warm&quot;, 5, 10) )</expression>
     </formulas>
     <interviewLabel>Lead_Calc_Prioridad {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Lead_Calc_Prioridad</label>
