@@ -1,0 +1,4 @@
+AccountId,BusinessPartnerType,ExternalReferenceNumber,BusinessPartnerCode,BusinessPartnerRegisteredName
+# NAO EXECUTADO. Achado A-01. 1 linha por dealer sem BP (saida WL> A01_DEALER_SEM_BP do discovery).
+# ExternalReferenceNumber = codigo SAP do dealer (idLookup, unico). BusinessPartnerType deve ser 'Sales Dealer'.
+# Ex.: 001XXXXXXXXXXXXXXX,Sales Dealer,SAP12345,DLR-001,Nome do Dealer

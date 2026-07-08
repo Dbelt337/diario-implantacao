@@ -152,7 +152,7 @@ Lookup padrão **`BusinessProfile.AccountId`**. Confirmado por describe.
 - P-01: A coleta foi executada pelo usuário via Execute Anonymous (o ambiente de auditoria não tinha acesso de rede/CLI à org). Evidência = log de debug do próprio usuário.
 - P-02: Reconciliação do Account de sociedade feita por `Name` (o código aparece embutido, ex.: "GrupoQ Costa Rica C101"); por isso `acc=-` na matriz apesar de as 3 sociedades existirem.
 - P-03: O GVS `GVS_Sociedad` foi aproximado pelos valores ativos de `User.Sociedad__c` (Apex não consulta GlobalValueSet diretamente); um retrieve de metadado confirmaria o GVS em si.
-- P-04: Fase 8 (flows/dealerCode step) **pendente**: `FlowDefinitionView` não suporta `queryMore()` via `Database.query`; requer `LIMIT`. Ver snippet de correção no anexo.
+- P-04: Fase 8 concluída em re-execução com `LIMIT`. **`Lead_BS_DeriveSociedad` está ATIVO** (AutoLaunchedFlow, RecordBeforeSave), assim como toda a família de Lead (`Lead_BS_SetSLADeadline`, `Lead_TriggerOmniRouting`, `Lead_SLA_Escalation`, `Lead_Scheduled_*`, `Lead_BeforeSave_*`) e `GQ_Lead_Repuestos_Reasignacion_y_Cotizacion`, `Buscar_Lead_GrupoQ_FA`. Nenhum flow ativo popula `BrandName__c` (reforça A-09). O passo interno de dealerCode lookup não é inspecionável via Apex; requer retrieve/abertura do flow para confirmar a chave `BusinessProfile.ExternalReferenceNumber`.
 
 **Divergências doc x org (a org é a fonte da verdade)**
 - D-01: Doc prevê `User.SucursalBP__c` Lookup(BusinessProfile) — **não existe** (A-06).

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NAO EXECUTADO. Achado A-09. Campo auxiliar ausente na org.
+     Texto (nao formula/lookup) porque criteria-based Sharing Rules nao aceitam
+     lookup nem formula. Deve ser populado por Flow (ver PLANO_REMEDIACAO 4.2).
+     Deploy: force-app/main/default/objects/Account/fields/ -->
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BrandName__c</fullName>
+    <label>Brand Name</label>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+    <externalId>false</externalId>
+    <unique>false</unique>
+    <trackHistory>false</trackHistory>
+    <description>Texto auxiliar para criteria-based Sharing Rules por marca. Populado por Flow a partir da marca do dealer.</description>
+</CustomField>

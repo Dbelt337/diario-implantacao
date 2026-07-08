@@ -1,0 +1,4 @@
+Id,Name,ParentId
+# NAO EXECUTADO. Achado A-03. Update de ParentId. 1 linha por Account a re-parentar.
+# Dealer.ParentId = Id da Sociedade; Sociedade.ParentId = Id do Pais; Pais.ParentId = Id do Holding.
+# Use as saidas WL> A03_SOCIEDADE / A03_PAIS do discovery para os Ids de pai.

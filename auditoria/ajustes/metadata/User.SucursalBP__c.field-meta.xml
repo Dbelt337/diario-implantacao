@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NAO EXECUTADO. Achado A-06. Campo do Modelo B ausente na org.
+     Deploy: copiar para force-app/main/default/objects/User/fields/ e
+     sf project deploy start -o <alias> -d force-app/main/default/objects/User -->
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SucursalBP__c</fullName>
+    <label>Sucursal (BusinessProfile)</label>
+    <type>Lookup</type>
+    <referenceTo>BusinessProfile</referenceTo>
+    <relationshipLabel>Vendedores</relationshipLabel>
+    <relationshipName>Vendedores_Sucursal</relationshipName>
+    <required>false</required>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <trackHistory>false</trackHistory>
+    <description>Sucursal de atuacao do vendedor (Modelo B). Aponta para o BusinessProfile do dealer.</description>
+</CustomField>

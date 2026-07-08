@@ -1,0 +1,3 @@
+Id,Name,AccountId
+# NAO EXECUTADO. Achado A-04. Update de AccountId nas 15 IOUs sem Account (WL> A04_IOU_SEM_ACC).
+# AccountId = Id do Account da sociedade correspondente. Excedentes (19->17) devem ser mesclados/removidos manualmente.
