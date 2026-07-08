@@ -31,8 +31,8 @@ if(cA!=null&&cL!=null){Set<String> ae=new Set<String>();for(SObject o:Database.q
 List<SObject> a2=new List<SObject>();
 for(String x:D){List<String> p=x.split('\\|');Id ai=aN.get(p[1]);for(String k:p[3].split(',')){Id li=lN.get(k);if(ai==null||li==null)continue;String ch=''+ai+'|'+li;if(ae.contains(ch))continue;ae.add(ch);SObject o=aT.newSObject();o.put(cA,ai);o.put(cL,li);a2.add(o);}}
 System.debug('4.AL:'+a2.size());if(!a2.isEmpty())insert a2;}else System.debug('4.PULADO lookups AL');}
-Map<String,Schema.SObjectField> iF=InternalOrganizationUnit.SObjectType.getDescribe().fields.getMap();
-String pf=null;for(Schema.SObjectField f:iF.values()){Schema.DescribeFieldResult d=f.getDescribe();if(d.getType()==Schema.DisplayType.REFERENCE)for(Schema.SObjectType t:d.getReferenceTo())if(t.getDescribe().getName()=='InternalOrganizationUnit'&&pf==null)pf=d.getName();}
+Map<String,Schema.SObjectField> iomap=InternalOrganizationUnit.SObjectType.getDescribe().fields.getMap();
+String pf=null;for(Schema.SObjectField f:iomap.values()){Schema.DescribeFieldResult d=f.getDescribe();if(d.getType()==Schema.DisplayType.REFERENCE)for(Schema.SObjectType t:d.getReferenceTo())if(t.getDescribe().getName()=='InternalOrganizationUnit'&&pf==null)pf=d.getName();}
 Map<String,SObject> iC=new Map<String,SObject>();
 for(SObject i:Database.query('SELECT Id,OrganizationCode,AccountId'+(pf!=null?(', '+pf):'')+' FROM InternalOrganizationUnit')){Object oc=i.get('OrganizationCode');if(oc!=null)iC.put((String)oc,i);}
 List<SObject> iU=new List<SObject>();
