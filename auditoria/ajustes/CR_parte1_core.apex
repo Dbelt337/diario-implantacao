@@ -1,8 +1,10 @@
 List<String> D=new List<String>{'C101|GrupoQ La Uruca|C011-1200','C101|GrupoQ Liberia|C011-1209','C101|GrupoQ San Carlos|C011-1211','C101|GrupoQ Lindora|C011-1210','C101|GrupoQ Ayarco|C011-1223','C101|GrupoQ Uruca Usados|C817-NOALM','C101|GrupoQ Uruca Flotas|C011-1200','C101|GrupoQ Guapiles|C011-1273','C101|GrupoQ Perez Zeledon|C011-1272','C105|GrupoQ Active Motors Sucursal Central|C311-1200','C105|GrupoQ Forland Liberia|C211-1201','C105|GrupoQ Forland Perez Zeledon|C211-1202','C105|GrupoQ Forland San Carlos|C211-1203','C105|GrupoQ Forland Guapiles|C211-1204','C105|GrupoQ Forland La Uruca Sucursal Central|C311-1200','C105|GrupoQ Active Motors SABANA|C211-1212','C105|GrupoQ Vehiculos La Uruca|C311-1220','C105|GrupoQ Active Motors Paseo Las Flores|C211-1524','C105|GrupoQ Terrazas Lindora|C311-1222','C105|GrupoQ Ventas Guapiles|C311-1237'};
 Map<String,Id> aN=new Map<String,Id>();
 for(Account a:[SELECT Id,Name FROM Account])aN.put(a.Name,a.Id);
-Id s1=aN.get('GrupoQ Costa Rica C101'),s5=aN.get('GrupoQ Costa Rica C105');
-if(s1==null||s5==null)throw new IllegalArgumentException('ABORT: sociedade C101/C105 nao encontrada');
+Id s1,s5;
+for(Account a:[SELECT Id,Name FROM Account WHERE Name LIKE '%C101%' OR Name LIKE '%C105%']){System.debug('soc cand:'+a.Name);if(s1==null&&a.Name.contains('C101'))s1=a.Id;if(s5==null&&a.Name.contains('C105'))s5=a.Id;}
+if(s1==null||s5==null)throw new IllegalArgumentException('ABORT: sociedade C101/C105 nao encontrada. Veja "soc cand" no log p/ os nomes reais.');
+System.debug('soc: C101='+s1+' C105='+s5);
 Set<Id> bA=new Set<Id>();Set<String> bE=new Set<String>();
 for(BusinessProfile b:[SELECT AccountId,ExternalReferenceNumber FROM BusinessProfile]){if(b.AccountId!=null)bA.add(b.AccountId);if(b.ExternalReferenceNumber!=null)bE.add(b.ExternalReferenceNumber);}
 List<Account> aC=new List<Account>();Set<String> tt=new Set<String>();
@@ -19,8 +21,10 @@ String pf=null;for(Schema.SObjectField f:iomap.values()){Schema.DescribeFieldRes
 Map<String,SObject> iC=new Map<String,SObject>();
 for(SObject i:Database.query('SELECT Id,OrganizationCode,AccountId'+(pf!=null?(', '+pf):'')+' FROM InternalOrganizationUnit')){Object oc=i.get('OrganizationCode');if(oc!=null)iC.put((String)oc,i);}
 List<SObject> iU=new List<SObject>();
-Map<String,String> mA=new Map<String,String>{'GQ_HOLDING'=>'GrupoQ Holding','GQ_CR'=>'GrupoQ Costa Rica','C101'=>'GrupoQ Costa Rica C101','C105'=>'GrupoQ Costa Rica C105'};
-for(String c:mA.keySet())if(iC.containsKey(c)){SObject i=iC.get(c);Id ai=aN.get(mA.get(c));if(ai!=null&&(Id)i.get('AccountId')!=ai){i.put('AccountId',ai);if(!iU.contains(i))iU.add(i);}}
+Map<String,Id> iA=new Map<String,Id>{'C101'=>s1,'C105'=>s5};
+Id pCR=aN.get('GrupoQ Costa Rica');if(pCR==null)pCR=aN.get('Grupo Q Costa Rica');if(pCR!=null)iA.put('GQ_CR',pCR);
+Id pH=aN.get('GrupoQ Holding');if(pH==null)pH=aN.get('Grupo Q Holding');if(pH!=null)iA.put('GQ_HOLDING',pH);
+for(String c:iA.keySet())if(iC.containsKey(c)){SObject i=iC.get(c);Id ai=iA.get(c);if(ai!=null&&(Id)i.get('AccountId')!=ai){i.put('AccountId',ai);if(!iU.contains(i))iU.add(i);}}
 Map<String,String> mP=new Map<String,String>{'GQ_CR'=>'GQ_HOLDING','C101'=>'GQ_CR','C105'=>'GQ_CR'};
 if(pf!=null)for(String c:mP.keySet())if(iC.containsKey(c)&&iC.containsKey(mP.get(c))){SObject i=iC.get(c);Id pi=(Id)iC.get(mP.get(c)).get('Id');if((Id)i.get(pf)!=pi){i.put(pf,pi);if(!iU.contains(i))iU.add(i);}}
 System.debug('5.IOU upd:'+iU.size());if(!iU.isEmpty())update iU;
