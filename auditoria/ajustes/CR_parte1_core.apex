@@ -14,7 +14,7 @@ for(String x:D){List<String> p=x.split('\\|');String nm=p[1];String c=p[2];if(bn
 System.debug('3.BP:'+bC.size());
 for(BusinessProfile b:bC)System.debug('  +'+b.ExternalReferenceNumber);
 if(!bC.isEmpty())insert bC;
-Map<String,Schema.SObjectField> iomap=InternalOrganizationUnit.SObjectType.getDescribe().fields.getMap();
+Map<String,Schema.SObjectField> iomap=Schema.getGlobalDescribe().get('InternalOrganizationUnit').getDescribe().fields.getMap();
 String pf=null;for(Schema.SObjectField f:iomap.values()){Schema.DescribeFieldResult d=f.getDescribe();if(d.getType()==Schema.DisplayType.REFERENCE)for(Schema.SObjectType t:d.getReferenceTo())if(t.getDescribe().getName()=='InternalOrganizationUnit'&&pf==null)pf=d.getName();}
 Map<String,SObject> iC=new Map<String,SObject>();
 for(SObject i:Database.query('SELECT Id,OrganizationCode,AccountId'+(pf!=null?(', '+pf):'')+' FROM InternalOrganizationUnit')){Object oc=i.get('OrganizationCode');if(oc!=null)iC.put((String)oc,i);}

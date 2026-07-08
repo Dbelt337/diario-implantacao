@@ -171,7 +171,7 @@ if (alT!=null) {
 }
 
 // ===== 5. IOUs CR: arvore societaria + vinculo Account (acesso dinamico - A-1) =====
-Map<String,Schema.SObjectField> iouF = InternalOrganizationUnit.SObjectType.getDescribe().fields.getMap();
+Map<String,Schema.SObjectField> iouF = Schema.getGlobalDescribe().get('InternalOrganizationUnit').getDescribe().fields.getMap();
 Boolean hasCode = iouF.containsKey('organizationcode');
 Boolean hasAcc = iouF.containsKey('accountid');
 // detecta dinamicamente o campo de parent (auto-referencia da IOU) - label "Parent Organization"
