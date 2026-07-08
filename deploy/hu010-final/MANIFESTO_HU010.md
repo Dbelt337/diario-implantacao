@@ -15,14 +15,19 @@
 - `Lead_Score_Temperatura` — grava `Rating` a partir do Einstein Score/sinais.
 - Sobem **Draft** → ativar na tela.
 
-### Passo 3 — `Deploy_HU010_Priorizacion.zip`
-- `Lead_PSR_SecondaryPriority` — record-triggered no `PendingServiceRouting`: lê o `Rating` do Lead roteado e grava **`RoutingPriority`** (Hot=0, Warm=1, Cold=2; 0 = maior prioridade). Draft → ativar.
+### Passo 3 — `deploy/hu010-priority-omni/` (priorización na Route Work action)
+- **Correção de arquitetura.** A abordagem anterior (`Lead_PSR_SecondaryPriority`, record-triggered *after-save* no PSR) **não funciona**: o PSR trava em `IsReadyForRouting=true` e recusa `update`, e no roteamento por fila o objeto *"doesn't invoke triggers"* (Object Reference). O `RoutingPriority` só é honrado **na criação do PSR** e **apenas em skills-based**.
+- **A Route Work action NÃO tem input de prioridade numérica** (confirmado no builder + Check Only: só `Work Item Request Date`, `Acceptance Due Date`, `Screen Pop`). Portanto usamos **`Acceptance Due Date` → `TargetAcceptDateTime`**, que a doc do objeto define como o lever de priorização por Flow: *"influences backlog ordering by prioritizing work items with earlier target acceptance deadlines"* (v65+).
+- **Solução:** `LeadRouting_OmniFlow` (V9 Active) usa a fórmula DateTime `fAcceptBy = CurrentDateTime + (Hot 15m / Warm 60m / Cold 240m / default 480m)` no campo **Acceptance Due Date → Accept By Variable** da ação skills-based `Rotear_Lead_Queue`. Prazo mais cedo = roteado antes. Zero Apex.
+- **Input real (via retrieve): `acceptBy`** → `<elementReference>fAcceptBy</elementReference>` na ação `Rotear_Lead_Queue`. (Os chutes `routingPriority` e `targetAcceptDateTime` foram rejeitados; o correto é `acceptBy`.) O flow no repo é a **V11 ativada da org**, já com o wiring — reproduzível pra prod direto.
+- **Retirar `Lead_PSR_SecondaryPriority`**: passo manual no Setup → **Desativar** (delete opcional; delete de flow ativo dá "insufficient access rights"). Fora deste zip para o deploy sair verde.
 
 ## 2. Config pós-deploy (por ambiente)
 - [ ] **Atribuir** o PS `HU010_Campos_SLA_Lead` aos usuários (senão os campos ficam invisíveis).
-- [ ] **Ativar os 4 flows**: `Lead_SLA_Escalation`, `Lead_AT_PrimerContacto`, `Lead_Score_Temperatura`, `Lead_PSR_SecondaryPriority`.
+- [ ] **Ativar os 3 flows**: `Lead_SLA_Escalation`, `Lead_AT_PrimerContacto`, `Lead_Score_Temperatura`. (A priorización agora vive dentro do `LeadRouting_OmniFlow`, já ativo — basta subir a nova versão e ativá-la.)
+- [ ] **Desativar** `Lead_PSR_SecondaryPriority` (substituído; será deletado pelo destructiveChanges).
 - [ ] **Record Type**: garantir que o valor de `Rating` funciona (é standard).
-- [ ] **NÃO precisa** configurar "Secondary Routing Priority" no Service Channel — usamos `RoutingPriority` direto via flow (o campo `SecondaryRoutingPriority` não existe nesta org).
+- [ ] **NÃO precisa** configurar "Secondary Routing Priority" no Service Channel — a prioridade vai por `routingPriority` na Route Work action (skills-based).
 - [ ] **US-031**: confirmar com o dono que a reasignación passou de 0 para +10 min (mudança intencional no `Lead_SLA_Escalation`).
 
 ## 3. Dependências pré-existentes (têm que existir no destino)
@@ -63,17 +68,23 @@ Falhas: consulte Tasks "Falha em Lead_SLA_Escalation (HU-010)" ou Setup → Paus
 SELECT Id, Rating, ScoreIntelligenceId FROM Lead WHERE Id='<lead>'
 ```
 
-### T4 — Priorización (`Lead_PSR_SecondaryPriority`)
-Pré: precisa de **backlog** (itens esperando na fila, sem agente pegando na hora).
+### T4 — Priorización (`LeadRouting_OmniFlow` / Route Work skills-based)
+Pré: precisa de **backlog** (itens esperando na fila, sem agente pegando na hora) **e** roteamento **skills-based** (`RoutingPriority` só é considerado em skills-based; queue-based usa a Priority da Routing Configuration).
 1. Deixe agentes offline (ou sem capacidade) para segurar os itens na fila.
-2. Roteie 2 leads: um `Rating=Hot`, um `Rating=Cold`.
-3. Confira o valor gravado no PSR:
+2. Roteie 2 leads com `Rating` já preenchido: um `Hot`, um `Cold`.
+3. Confira **enquanto ainda está na fila** (o PSR é transiente e some quando aceito):
 ```sql
-SELECT Id, WorkItemId, RoutingPriority FROM PendingServiceRouting ORDER BY CreatedDate DESC
+SELECT Id, WorkItemId, RoutingType, TargetAcceptDateTime FROM PendingServiceRouting ORDER BY CreatedDate DESC
 ```
-- Lead Hot → `RoutingPriority = 0`; Lead Cold → `2`.
-4. Traga um agente online → o **caliente deve ser roteado antes** do cold.
-> A prioridade só se manifesta com backlog. Sem fila de espera, não há o que reordenar (correto).
+- `RoutingType = SkillsBased`; Lead Hot com `TargetAcceptDateTime` **mais cedo** que o Cold (≈ agora+15m vs agora+240m).
+4. Traga um agente online → o **caliente (prazo mais cedo) deve ser roteado antes** do cold.
+> A priorização vem do **prazo de aceitação** (mais cedo = mais prioritário), gravado na criação do PSR pela Route Work action. Se os prazos vierem iguais/vazios: (a) confirme `RoutingType=SkillsBased`, (b) confirme que a nova versão do `LeadRouting_OmniFlow` está ativa e que o `Rating` está preenchido, (c) veja `Update_Lead_Error` no Lead ou Setup → Paused And Failed Flow Interviews.
+
+> ⚠️ **Pré-condição de roteamento:** o `Lead_TriggerOmniRouting` só entra no Omni com `Brand__c` (Marca) **E** `CompanyCode__c` preenchidos. Sem Marca → não roteia → nenhum PSR (não é bug de priorización).
+
+**✅ VALIDADO (2026-07-08, sandbox DevSales):** 2 leads skills-based —
+Hot (Costa): `CreatedDate 00:52:18 → TargetAcceptDateTime 01:07:18` (**+15 min**);
+Cold (Moraes): `00:51:58 → 04:51:57` (**+240 min**). Hot com prazo mais cedo → priorizado. `RoutingType=SkillsBased` nos dois.
 
 ---
 
@@ -85,7 +96,7 @@ SELECT Id, WorkItemId, RoutingPriority FROM PendingServiceRouting ORDER BY Creat
 | "Gestión" válida | Task completada → `FechaPrimerContacto__c` | declarativo |
 | Cumpriu SLA | `CumplioSLA__c` (fórmula) | declarativo |
 | Temperatura frío/tibio/caliente | `Rating` nativo (via B3 + Einstein) | declarativo |
-| Priorización calientes / SLA vencido | `RoutingPriority` via flow no PSR | declarativo |
+| Priorización calientes / SLA vencido | `TargetAcceptDateTime` (Acceptance Due Date) na Route Work action do `LeadRouting_OmniFlow` (skills-based), derivado do `Rating` | declarativo |
 | Sticky-agent por presença | `LeadRouting_OmniFlow` (nativo, já existia) | nativo |
 
 **Campos novos criados: 1 (`FechaPrimerContacto__c`) + 1 fórmula (`CumplioSLA__c`). Zero Apex.**
