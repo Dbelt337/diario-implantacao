@@ -1,0 +1,18 @@
+codigo_sociedad,pais,pais_codigo,provisorio
+C101,Costa Rica,CR,false
+C105,Costa Rica,CR,false
+C106-PROV,Costa Rica,CR,true
+H101,Honduras,HN,false
+H105,Honduras,HN,false
+H106-PROV,Honduras,HN,true
+S101,El Salvador,SV,false
+S105,El Salvador,SV,false
+S106-PROV,El Salvador,SV,true
+S206,El Salvador,SV,false
+N101,Nicaragua,NI,false
+N105,Nicaragua,NI,false
+N106-PROV,Nicaragua,NI,true
+G101,Guatemala,GT,false
+G105,Guatemala,GT,false
+P103,Panama,PA,false
+P105,Panama,PA,false

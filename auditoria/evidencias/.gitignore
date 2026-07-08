@@ -1,0 +1,7 @@
+# Saida da coleta de evidencia (CSV/JSON). Gerada por scripts/run_auditoria.sh.
+# Nao commitar dumps de dados reais da org sem revisao.
+*.csv
+*.json
+mdt_gvs/
+_apendice_comandos.log
+!.gitignore
