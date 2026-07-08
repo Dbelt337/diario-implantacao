@@ -1,0 +1,103 @@
+Auditoria Modelo Organizacional - GrupoQ DevSales
+Org: grupoq--devsales | Usuario: diego.beltrao@grupoq.com.devsales
+Execucao: 2026-07-08 ~11:33-11:34 (America/Mexico_City, GMT-06:00)
+Fonte: 4 blocos de Apex anonimo (Execute Anonymous), linhas USER_DEBUG 'AUDIT>'.
+
+===== BLOCO 1 - SCHEMA E DESCOBERTAS =====
+obj Account: PRESENTE
+obj BusinessProfile: PRESENTE
+obj InternalOrganizationUnit: PRESENTE
+obj BranchUnit: PRESENTE
+obj ServiceTerritory: PRESENTE
+obj BusinessBrand: PRESENTE
+obj User: PRESENTE
+AccRT BusinessAccount active=true
+AccRT PersonAccount active=true
+-- campos Account relevantes --
+Acc.f Sociedad__c TEXTAREA ref=()            <- sociedade em texto livre (nao picklist/GVS)
+Acc.f ListaNegraStatus__c TEXTAREA
+Acc.f DocumentNumber__c STRING
+Acc.f DocumentType__c PICKLIST
+Acc.f Email__c EMAIL
+Acc.f CreditScenario__c PICKLIST
+Acc.f Country__c PICKLIST
+Acc.f ElectronicBillingEmail__c EMAIL
+Acc.f ProposedName__c STRING
+Acc.f ProposedDocumentNumber__c STRING
+Acc.f SensitiveChangeReason__c TEXTAREA
+Acc.f ProposedDocumentType__c PICKLIST
+Acc.f SensitiveChangeStatus__c PICKLIST
+Acc.f SensitiveChangeRequestedDate__c DATETIME
+Acc.f SensitiveChangeApprover__c REFERENCE ref=(User)
+Acc.f ProposedElectronicBillingEmail__c EMAIL
+Acc.f SensitiveChangeRequestedBy__c REFERENCE ref=(User)
+Acc.f CurrencyCode__c STRING
+Acc.f Customertype__c PICKLIST
+(NAO existe Account.BrandName__c; NAO existe campo de codigo SAP em Account)
+-- campos User alvo --
+User.sociedad__c: PRESENTE
+User.sucursalbp__c: AUSENTE          <- campo do Modelo B nao existe
+User.tipoautoquevende__c: PRESENTE
+User.canal__c: PRESENTE
+-- lookup --
+BP->Account lookup: AccountId
+
+===== BLOCO 2 - CONTAGENS / HIERARQUIA =====
+n1 Holding[alvo 1]: 1220             <- 1220 Accounts com ParentId nulo
+n2 Pais[alvo 6]: 2
+n3 Sociedade[alvo 17]: 3
+n4 Dealer[alvo 128]: 21
+n5+ (achado se>0): 1                 <- 1 Account com profundidade > 4
+ParentId nulo (holding+orfaos): 1220
+AccByRT PersonAccount=3
+AccByRT BusinessAccount=1244         <- total 1247 Accounts
+DUP sob pai: 0 linhas (sem duplicidade de nome sob mesmo pai)
+
+===== BLOCO 3 - BUSINESSPROFILE / CHAVE SAP =====
+BP->Account field: AccountId
+BP SalesDealer extref NULO[P0]: 0    <- nenhum SAP nulo entre os BP existentes
+extref DUP: 0 linhas                 <- nenhum SAP duplicado
+BPtype null=1                        <- 1 BP com BusinessPartnerType nulo
+BPtype Sales Dealer=4                <- apenas 4 BP 'Sales Dealer' (total 5 BP)
+BP orfaos (sem Account): 0
+DEALERS n4 SEM BP SalesDealer[P0]: 17 de 21
+IOU total[alvo 17]: 19
+IOU AccountId nulo: 15               <- 15 de 19 IOU sem Account
+BranchUnit total: 1
+ServiceTerritory total: 0
+BusinessBrand total[alvo 22]: 23
+
+===== BLOCO 4 - RECONCILIACAO / CONFIG / FLOWS =====
+-- Matriz canonica x GVS(User.Sociedad__c) x CMT(Sociedad_Config__mdt) x Account(nome) --
+RECON C101 gvsUser=X cmt=X acc=-
+RECON C105 gvsUser=X cmt=X acc=-
+RECON C106-PROV gvsUser=- cmt=- acc=-
+RECON H101 gvsUser=X cmt=X acc=-
+RECON H105 gvsUser=X cmt=X acc=-
+RECON H106-PROV gvsUser=- cmt=- acc=-
+RECON S101 gvsUser=X cmt=X acc=-
+RECON S105 gvsUser=X cmt=X acc=-
+RECON S106-PROV gvsUser=- cmt=- acc=-
+RECON S206 gvsUser=X cmt=X acc=-
+RECON N101 gvsUser=X cmt=X acc=-
+RECON N105 gvsUser=X cmt=X acc=-
+RECON N106-PROV gvsUser=- cmt=- acc=-
+RECON G101 gvsUser=X cmt=X acc=-
+RECON G105 gvsUser=X cmt=X acc=-
+RECON P103 gvsUser=- cmt=X acc=-     <- P103 no CMT mas AUSENTE no GVS
+RECON P105 gvsUser=X cmt=X acc=-
+RECON EXTRA cmt P101                 <- P101 no CMT, fora da canonica
+RECON EXTRA gvsUser P101             <- P101 no GVS, fora da canonica
+RECON EXTRA acc GrupoQ Costa Rica C101   <- sociedades Account existentes: 3
+RECON EXTRA acc GrupoQ Costa Rica C105
+RECON EXTRA acc GrupoQ Nicaragua N105
+Account.BrandName__c AUSENTE
+UserSoc null=46                      <- 46 usuarios ativos sem Sociedad__c
+UserSoc C101=2                       <- 2 usuarios com C101 (total 48 ativos)
+FLOW ERRO FlowDefinitionView does not support queryMore(); precisa LIMIT (Fase 8 pendente de re-exec)
+
+Notas de leitura:
+- acc=- para todos porque o Name do Account de sociedade nao e o codigo puro
+  (ex.: "GrupoQ Costa Rica C101"); o codigo aparece embutido no nome.
+- GVS(User) ativos = 13 (12 canonicos + P101); falta P103 e os 4 -PROV.
+- CMT = 14 (13 canonicos + P101); faltam os 4 -PROV.
