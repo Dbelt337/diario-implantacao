@@ -59,7 +59,8 @@ Data load sugerido (exemplo BP): `sf data upsert bulk -o <alias> -s BusinessProf
 
 | Passo | Achado | Ação | Mecanismo |
 |---|---|---|---|
-| 4.1 | A-07 | Definir objeto canônico de território (recomendação: ServiceTerritory, é o formal do Modelo B) e popular espelhando os dealers. | Decisão + data load |
+| 4.1 | A-07 | **Adotar Branch Management** (BranchUnit + BranchUnitBusinessMember + Record Association Builder) como modelo organizacional/visibilidade — permite 2 Branch Units (veículos/repuestos) por concessionária. Manter ServiceTerritory só para Automotive Scheduler. Ver `A-07_branch_management.md`. | Configuração + data load |
+| 4.1b | A-07 | Criar **Record Type de Account "Concesionaria"** e aplicá-lo aos dealers; usar como discriminador de nível (hoje só há BusinessAccount/PersonAccount). | Metadado (Record Type) |
 | 4.2 | A-09 | Construir o Flow que popula `Account.BrandName__c` a partir da fonte de marca (definir: BusinessBrand relacionada? campo?). | Metadado (Flow) |
 | 4.3 | A-09 | Após popular, criar/ativar as Sharing Rules por marca sobre `BrandName__c`. | Configuração |
 | 4.4 | A-12 | Conferir a 23ª BusinessBrand contra `Lista de marcas por pais.xlsx`. | Revisão |
@@ -81,9 +82,11 @@ Ambos são reversíveis: sobrescreva com uma linha e os artefatos são reajustad
    `P101` será renomeado/substituído por `P103` em GVS e CMT. **Pendente de confirmação
    com Juan Carlos Mora / origem SAP** antes de aplicar em produção. Se for sociedade
    real, ver Cenário B em `A-05_reconciliacao_sociedades.md`.
-2. **Território canônico = ServiceTerritory.** É o objeto formal do Modelo B
-   (Account + BusinessProfile + ServiceTerritory). BranchUnit é aposentado como espelho.
-   Se a visibilidade de handover (Sec 48) exigir BranchUnit, inverter no passo 4.1.
+2. **Território/organização = Branch Management (revisado).** Após a proposta do Wilmar e a
+   documentação oficial, o modelo canônico de organização/visibilidade passa a ser
+   **BranchUnit + BranchUnitBusinessMember** (2 Branch Units por concessionária: veículos e
+   repuestos). **ServiceTerritory permanece só para agendamento** (Automotive Scheduler), não
+   como espelho de dealer. Detalhes e fontes em `A-07_branch_management.md`.
 
 ## Ordem enxuta para destravar o roteamento (se o tempo é curto)
 1. Deploy dos 2 campos (Bloco 1).

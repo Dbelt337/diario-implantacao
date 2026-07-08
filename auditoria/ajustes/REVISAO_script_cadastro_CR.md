@@ -7,6 +7,11 @@ as IOUs de CR. Termina com DRY RUN (throw), o que faz rollback de todo o DML —
 
 ## CRÍTICO
 
+> **CONFIRMADO (Object Manager):** `BusinessProfile.ExternalReferenceNumber` é **Text(255), Unique
+> Case Insensitive, Indexed**. Logo, códigos repetidos **quebram o insert** — não é hipótese.
+> O script corrigido passou a criar **1 BP por código** (dedup), marcando os dealers que
+> compartilham código como candidatos a Branch Unit (ver `A-07_branch_management.md`).
+
 ### C-1 — `BusinessProfile.ExternalReferenceNumber = Centro SAP` (p[2]) colide (linha 77)
 O script grava a chave SAP com o **Centro** (p[2] = `C011`, `C211`, `C311`, `C817`), não com
 um código único por dealer. No conjunto `dados` isso gera duplicidade massiva:

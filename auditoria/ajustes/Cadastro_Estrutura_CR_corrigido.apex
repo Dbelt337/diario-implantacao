@@ -77,11 +77,10 @@ for (String code : codePorDealers.keySet()) {
     if (ds.size() > 1) { temColisao = true; System.debug('   COLISAO no batch: '+code+' -> '+ds); }
     if (bpExtExistente.containsKey(code)) { temColisao = true; System.debug('   COLISAO vs BP existente: '+code); }
 }
-if (temColisao && extUnique) {
-    throw new IllegalArgumentException('ABORT: ExternalReferenceNumber e unique/idLookup e ha codigos repetidos '+
-        '(ver COLISAO acima). Resolva antes: mescle os dealers, escolha outro almacen, ou reveja o campo.');
-}
-if (temColisao) System.debug('   (colisoes existem mas o campo NAO e unique - insert prossegue; roteamento nao distingue dealer pelo codigo)');
+// ExternalReferenceNumber e unique (confirmado no Object Manager: Text 255 Unique Case Insensitive).
+// Portanto nao abortamos: criamos 1 BP por codigo (bloco 3) e os dealers que compartilham codigo
+// ficam como CANDIDATOS A BRANCH UNIT (mesma concessionaria, linhas de negocio distintas - A-07).
+if (temColisao) System.debug('   -> dealers acima compartilham codigo: 1 BP por codigo; os demais = candidatos a Branch Unit.');
 
 // ===== 1. ACCOUNTS =====
 List<Account> accCriar = new List<Account>();
@@ -109,19 +108,24 @@ System.debug('2. Locations a criar: ' + locCriar.size());
 if (!locCriar.isEmpty()) insert locCriar;
 for (SObject l : Database.query('SELECT Id, Name FROM Location')) { String nm=(String)l.get('Name'); if(nm!=null) locPorNome.put(nm,(Id)l.get('Id')); }
 
-// ===== 3. BUSINESSPROFILE (1 por dealer) =====
+// ===== 3. BUSINESSPROFILE (1 por CODIGO SAP - ExternalReferenceNumber e unique) =====
+// Dealers que compartilham o mesmo codigo recebem 1 BP (no 1o Account); os demais ficam como
+// candidatos a Branch Unit (linha de negocio na mesma concessionaria - ver A-07_branch_management.md).
 List<BusinessProfile> bpCriar = new List<BusinessProfile>();
 Set<String> bpNomeFeito = new Set<String>();
+Set<String> codesFeitos = new Set<String>();
 for (String linha : dados) {
     List<String> p = linha.split('\\|');
     String nome=p[1];
-    String code = USA_CENTRO_ALMACEN ? p[3].split(',')[0] : p[2]; // C-1: codigo unico por dealer
+    String code = USA_CENTRO_ALMACEN ? p[3].split(',')[0] : p[2];
     if (bpNomeFeito.contains(nome)) continue;
     bpNomeFeito.add(nome);
     Id accId = accPorNome.get(nome);
-    if (accId!=null && !bpPorAcc.contains(accId)) {
-        bpCriar.add(new BusinessProfile(AccountId=accId, Name='BP-'+nome, ExternalReferenceNumber=code, BusinessPartnerType='Sales Dealer'));
-    }
+    if (accId==null || bpPorAcc.contains(accId)) continue;
+    if (bpExtExistente.containsKey(code)) { System.debug('   BP pulado (codigo '+code+' ja existe em BP): '+nome); continue; }
+    if (codesFeitos.contains(code)) { System.debug('   BP pulado (codigo '+code+' repetido no batch - CANDIDATO A BRANCH UNIT): '+nome); continue; }
+    codesFeitos.add(code);
+    bpCriar.add(new BusinessProfile(AccountId=accId, Name='BP-'+nome, ExternalReferenceNumber=code, BusinessPartnerType='Sales Dealer'));
 }
 System.debug('3. BusinessProfiles a criar: ' + bpCriar.size());
 for (BusinessProfile bp : bpCriar) System.debug('   + '+bp.Name+' extref='+bp.ExternalReferenceNumber);
