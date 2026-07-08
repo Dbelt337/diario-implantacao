@@ -169,13 +169,21 @@ if (alT!=null) {
 // ===== 5. IOUs CR: arvore societaria + vinculo Account (acesso dinamico - A-1) =====
 Map<String,Schema.SObjectField> iouF = InternalOrganizationUnit.SObjectType.getDescribe().fields.getMap();
 Boolean hasCode = iouF.containsKey('organizationcode');
-Boolean hasParent = iouF.containsKey('parentorganizationid');
 Boolean hasAcc = iouF.containsKey('accountid');
+// detecta dinamicamente o campo de parent (auto-referencia da IOU) - label "Parent Organization"
+String parentFld = null;
+for (Schema.SObjectField f : iouF.values()) {
+    Schema.DescribeFieldResult d=f.getDescribe();
+    if (d.getType()==Schema.DisplayType.REFERENCE) for (Schema.SObjectType t : d.getReferenceTo())
+        if (t.getDescribe().getName()=='InternalOrganizationUnit' && parentFld==null) parentFld=d.getName();
+}
+Boolean hasParent = parentFld!=null;
+System.debug('5. IOU campos: OrganizationCode='+hasCode+' AccountId='+hasAcc+' parentFld='+parentFld);
 if (!hasCode) {
     System.debug('5. PULADO: InternalOrganizationUnit sem campo OrganizationCode. Rode o describe de IOU e ajuste os nomes.');
 } else {
     Map<String,SObject> iouPorCod = new Map<String,SObject>();
-    for (SObject i : Database.query('SELECT Id, OrganizationCode'+(hasAcc?', AccountId':'')+(hasParent?', ParentOrganizationId':'')+' FROM InternalOrganizationUnit')) {
+    for (SObject i : Database.query('SELECT Id, OrganizationCode'+(hasAcc?', AccountId':'')+(hasParent?(', '+parentFld):'')+' FROM InternalOrganizationUnit')) {
         Object oc=i.get('OrganizationCode'); if(oc!=null) iouPorCod.put((String)oc, i);
     }
     List<SObject> iouUpd = new List<SObject>();
@@ -195,7 +203,7 @@ if (!hasCode) {
         if (iouPorCod.containsKey(cod) && iouPorCod.containsKey(iouParent.get(cod))) {
             SObject i = iouPorCod.get(cod);
             Id parentId = (Id)iouPorCod.get(iouParent.get(cod)).get('Id');
-            if ((Id)i.get('ParentOrganizationId')!=parentId) { i.put('ParentOrganizationId',parentId); if(!iouUpd.contains(i)) iouUpd.add(i); }
+            if ((Id)i.get(parentFld)!=parentId) { i.put(parentFld,parentId); if(!iouUpd.contains(i)) iouUpd.add(i); }
         }
     }
     System.debug('5. IOUs CR a ajustar (Account+Parent): ' + iouUpd.size());
