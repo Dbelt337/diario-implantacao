@@ -1,4 +1,7 @@
-AccountId,BusinessPartnerType,ExternalReferenceNumber,BusinessPartnerCode,BusinessPartnerRegisteredName
+AccountId,Name,BusinessOperatingName,BusinessPartnerCode,BusinessPartnerRegisteredName,ExternalReferenceNumber,BusinessPartnerType,ServiceType,BusinessTaxIdentifier,Region,ServiceTerritoryId
 # NAO EXECUTADO. Achado A-01. 1 linha por dealer sem BP (saida WL> A01_DEALER_SEM_BP do discovery).
-# ExternalReferenceNumber = codigo SAP do dealer (idLookup, unico). BusinessPartnerType deve ser 'Sales Dealer'.
-# Ex.: 001XXXXXXXXXXXXXXX,Sales Dealer,SAP12345,DLR-001,Nome do Dealer
+# Pre-condicoes: permission set Automotive Foundation; valores de picklist Region definidos em Object Manager.
+# ExternalReferenceNumber = codigo SAP do dealer (chave do dealerCode lookup). BusinessPartnerType = 'Sales Dealer'.
+# ServiceType e multipicklist: separar por ; (ex.: Sales;Spare Parts Sales). ServiceTerritoryId opcional (obrig. se Automotive Scheduler).
+# CONFIRMAR os API names com describe_businessprofile.apex antes de carregar.
+# Ex.: 001XXXXXXXXXXXXXXX,BP-00045,Dealer 001,DLR-001,Razao Social Ltda,SAP12345,Sales Dealer,Sales;Spare Parts Sales,TAX-9988,Panama,

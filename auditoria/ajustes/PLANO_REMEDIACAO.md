@@ -45,7 +45,7 @@ Ordem importa: hierarquia antes de BP, BP antes de validar roteamento.
 | Passo | Achado | Ação | Artefato | Bloqueia roteamento? |
 |---|---|---|---|---|
 | 3.1 | A-03 | Popular `ParentId`: País→Holding, Sociedade→País, Dealer→Sociedade. Corrigir o 1 Account de profundidade >4. | `A-03_account_parentid_TEMPLATE.csv` | Sim (deriva de sociedade) |
-| 3.2 | A-01 | Criar BusinessProfile `Sales Dealer` para os 17 dealers sem BP, com `ExternalReferenceNumber`=SAP, `BusinessPartnerType`='Sales Dealer', `AccountId` correto. | `A-01_bp_salesdealer_TEMPLATE.csv` | **Sim (P0)** |
+| 3.2 | A-01 | Criar BusinessProfile `Sales Dealer` para os 17 dealers sem BP (ver `A-01_business_profiles.md`). Pré-cond.: permission set **Automotive Foundation**; picklist **Region** definida em Object Manager. Confirmar API names com `describe_businessprofile.apex`. Upsert por `ExternalReferenceNumber`. | `A-01_bp_salesdealer_TEMPLATE.csv` | **Sim (P0)** |
 | 3.3 | A-02 | Classificar o BP com `BusinessPartnerType` nulo. | (via discovery) | **Sim (P0)** |
 | 3.4 | A-04 | Vincular as 15 IOUs a seus Accounts de sociedade; conciliar 19→17 (mesclar/remover excedentes e definir granularidade oficial = sociedade). | `A-04_iou_accountid_TEMPLATE.csv` | Não (afeta Repuestos) |
 | 3.5 | A-11 | Backfill de `User.Sociedad__c` e `User.SucursalBP__c` nos usuários de teste. | `A-11_user_sociedad_TEMPLATE.csv` | Parcial |
@@ -73,11 +73,17 @@ Data load sugerido (exemplo BP): `sf data upsert bulk -o <alias> -s BusinessProf
 
 ---
 
-## Duas decisões que preciso de você para fechar os artefatos finais
-1. **P101**: é erro de digitação de **P103** (então renomeamos e removemos P101), ou é uma **sociedade real** de Panamá que deveria entrar na lista canônica?
-2. **Território canônico**: seguimos com **ServiceTerritory** (formal do Modelo B) e aposentamos BranchUnit, ou o inverso?
+## Premissas adotadas (default, reversíveis) — confirmar quando possível
+Para não bloquear a promoção ao próximo ambiente, o plano assume dois defaults.
+Ambos são reversíveis: sobrescreva com uma linha e os artefatos são reajustados.
 
-Respondidas essas duas, consolido os artefatos definitivos (GVS/CMT e o de território) sem ambiguidade.
+1. **P101 = erro de digitação de P103 (Cenário A).** Panamá canônico é {P103, P105};
+   `P101` será renomeado/substituído por `P103` em GVS e CMT. **Pendente de confirmação
+   com Juan Carlos Mora / origem SAP** antes de aplicar em produção. Se for sociedade
+   real, ver Cenário B em `A-05_reconciliacao_sociedades.md`.
+2. **Território canônico = ServiceTerritory.** É o objeto formal do Modelo B
+   (Account + BusinessProfile + ServiceTerritory). BranchUnit é aposentado como espelho.
+   Se a visibilidade de handover (Sec 48) exigir BranchUnit, inverter no passo 4.1.
 
 ## Ordem enxuta para destravar o roteamento (se o tempo é curto)
 1. Deploy dos 2 campos (Bloco 1).

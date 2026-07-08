@@ -13,6 +13,8 @@
 ## Decisão necessária
 **P101 é erro de digitação de P103, ou é uma sociedade real de Panamá?**
 
+> **Default adotado: Cenário A** (reversível, pendente de confirmação com Juan Carlos Mora / SAP).
+
 ### Cenário A — P101 é erro de P103 (mais provável dada a canônica PA = {P103, P105})
 - GVS: renomear/substituir `P101` por `P103` (ou desativar P101 e ativar P103).
 - CMT: renomear o registro `P101` para `P103` (ajustar DeveloperName/valores).
