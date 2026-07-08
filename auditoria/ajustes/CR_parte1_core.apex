@@ -10,9 +10,9 @@ for(String x:D){List<String> p=x.split('\\|');if(tt.contains(p[1]))continue;tt.a
 System.debug('1.Accounts:'+aC.size());if(!aC.isEmpty())insert aC;
 for(Account a:aC)aN.put(a.Name,a.Id);
 List<BusinessProfile> bC=new List<BusinessProfile>();Set<String> bn=new Set<String>();Set<String> cf=new Set<String>();
-for(String x:D){List<String> p=x.split('\\|');String nm=p[1];String c=p[2];if(bn.contains(nm))continue;bn.add(nm);Id ai=aN.get(nm);if(ai==null||bA.contains(ai))continue;if(bE.contains(c)){System.debug('BPskip-existe '+c+' '+nm);continue;}if(cf.contains(c)){System.debug('BPskip-BranchUnit '+c+' '+nm);continue;}cf.add(c);bC.add(new BusinessProfile(AccountId=ai,Name='BP-'+nm,ExternalReferenceNumber=c,BusinessPartnerType='Sales Dealer'));}
+for(String x:D){List<String> p=x.split('\\|');String nm=p[1];String c=p[2];if(bn.contains(nm))continue;bn.add(nm);Id ai=aN.get(nm);if(ai==null||bA.contains(ai))continue;if(bE.contains(c)){System.debug('BPskip-existe '+c+' '+nm);continue;}if(cf.contains(c)){System.debug('BPskip-BranchUnit '+c+' '+nm);continue;}cf.add(c);bC.add(new BusinessProfile(AccountId=ai,ExternalReferenceNumber=c,BusinessPartnerType='Sales Dealer'));}
 System.debug('3.BP:'+bC.size());
-for(BusinessProfile b:bC)System.debug('  +'+b.Name+' '+b.ExternalReferenceNumber);
+for(BusinessProfile b:bC)System.debug('  +'+b.ExternalReferenceNumber);
 if(!bC.isEmpty())insert bC;
 Map<String,Schema.SObjectField> iomap=InternalOrganizationUnit.SObjectType.getDescribe().fields.getMap();
 String pf=null;for(Schema.SObjectField f:iomap.values()){Schema.DescribeFieldResult d=f.getDescribe();if(d.getType()==Schema.DisplayType.REFERENCE)for(Schema.SObjectType t:d.getReferenceTo())if(t.getDescribe().getName()=='InternalOrganizationUnit'&&pf==null)pf=d.getName();}

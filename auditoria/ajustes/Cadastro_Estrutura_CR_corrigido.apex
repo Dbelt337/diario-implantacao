@@ -125,10 +125,10 @@ for (String linha : dados) {
     if (bpExtExistente.containsKey(code)) { System.debug('   BP pulado (codigo '+code+' ja existe em BP): '+nome); continue; }
     if (codesFeitos.contains(code)) { System.debug('   BP pulado (codigo '+code+' repetido no batch - CANDIDATO A BRANCH UNIT): '+nome); continue; }
     codesFeitos.add(code);
-    bpCriar.add(new BusinessProfile(AccountId=accId, Name='BP-'+nome, ExternalReferenceNumber=code, BusinessPartnerType='Sales Dealer'));
+    bpCriar.add(new BusinessProfile(AccountId=accId, ExternalReferenceNumber=code, BusinessPartnerType='Sales Dealer'));
 }
 System.debug('3. BusinessProfiles a criar: ' + bpCriar.size());
-for (BusinessProfile bp : bpCriar) System.debug('   + '+bp.Name+' extref='+bp.ExternalReferenceNumber);
+for (BusinessProfile bp : bpCriar) System.debug('   + extref='+bp.ExternalReferenceNumber);
 if (!bpCriar.isEmpty()) insert bpCriar;
 
 // ===== 4. ASSOCIATEDLOCATION (N:N dealer<->almacen) =====
