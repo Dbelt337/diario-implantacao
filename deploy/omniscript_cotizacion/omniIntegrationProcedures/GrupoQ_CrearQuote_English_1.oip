@@ -41,7 +41,7 @@
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Claves planas en la raiz.</description>
+		<description>Datos base de la Quote (claves planas).</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -61,15 +61,18 @@
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>quoteAccountId solo si 001.</description>
+		<description>001: datos de la Opp minima (AccountId SI es grabable en Opportunity).</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
-		<name>PrepAccount</name>
+		<name>PrepOppData</name>
 		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
 		<propertySetConfig>{
   "elementValueMap": {
-    "quoteAccountId": "%ContextId%"
+    "oppName": "=CONCAT(\"Cotizacion mostrador \",TEXT(TODAY()))",
+    "oppAccountId": "%ContextId%",
+    "oppStage": "Prospecting",
+    "oppCloseDate": "=TODAY()+30"
   },
   "isActive": true,
   "id": "",
@@ -79,11 +82,66 @@
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>quoteOpportunityId solo si 006.</description>
+		<description>001: crea la Opp minima via DROppInsert -&gt; oppResult.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
-		<name>PrepOpportunity</name>
+		<name>CrearOpp</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "sendOnlyAdditionalInput": false,
+  "returnFullDataJSON": false,
+  "elementValueMap": {},
+  "failOnStepError": false,
+  "responseFormat": "",
+  "isActive": true,
+  "returnOnlyFailureResponse": false,
+  "responseJSONPath": "",
+  "actionMessage": "",
+  "additionalOutput": {},
+  "failureConditionalFormula": "",
+  "failureResponse": {},
+  "id": "",
+  "additionalInput": {},
+  "bundle": "DROppInsert",
+  "sendJSONNode": "",
+  "dataRaptor Input Parameters": [],
+  "returnOnlyAdditionalOutput": false,
+  "loopList": "",
+  "chainOnStep": false,
+  "ignoreCache": false,
+  "responseJSONNode": "oppResult",
+  "executionConditionalFormula": "LEFT(%ContextId%,3)==\"001\"",
+  "sendJSONPath": "",
+  "restOptions": {}
+}</propertySetConfig>
+		<sequenceNumber>4.0</sequenceNumber>
+		<type>DataRaptor Post Action</type>
+	</omniProcessElements>
+	<omniProcessElements>
+		<description>001: quoteOpportunityId = Opp recien creada.</description>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>SetOppFromNew</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "elementValueMap": {
+    "quoteOpportunityId": "%CrearOpp:Opportunity_1:Id%"
+  },
+  "isActive": true,
+  "id": "",
+  "executionConditionalFormula": "LEFT(%ContextId%,3)==\"001\""
+}</propertySetConfig>
+		<sequenceNumber>5.0</sequenceNumber>
+		<type>Set Values</type>
+	</omniProcessElements>
+	<omniProcessElements>
+		<description>006: quoteOpportunityId = ContextId.</description>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>SetOppFromCtx</name>
 		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
 		<propertySetConfig>{
   "elementValueMap": {
@@ -93,11 +151,11 @@
   "id": "",
   "executionConditionalFormula": "LEFT(%ContextId%,3)==\"006\""
 }</propertySetConfig>
-		<sequenceNumber>4.0</sequenceNumber>
+		<sequenceNumber>6.0</sequenceNumber>
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>DR lee claves planas del data JSON completo.</description>
+		<description>Crea la Quote con OpportunityId (AccountId lo deriva Salesforce).</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -126,11 +184,11 @@
   "chainOnStep": false,
   "ignoreCache": false,
   "responseJSONNode": "quoteResult",
-  "executionConditionalFormula": "NOT(ISBLANK(%ContextId%))",
+  "executionConditionalFormula": "NOT(ISBLANK(%quoteOpportunityId%))",
   "sendJSONPath": "",
   "restOptions": {}
 }</propertySetConfig>
-		<sequenceNumber>5.0</sequenceNumber>
+		<sequenceNumber>7.0</sequenceNumber>
 		<type>DataRaptor Post Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -159,7 +217,8 @@
     "success": true,
     "status": "success",
     "quoteId": "%CrearQuote:Quote_1:Id%",
-    "quoteName": "%quoteName%"
+    "quoteName": "%quoteName%",
+    "oppId": "%quoteOpportunityId%"
   },
   "sendJSONPath": "",
   "failureConditionalFormula": "",
@@ -168,7 +227,7 @@
   "bundle": "",
   "sendJSONNode": ""
 }</propertySetConfig>
-		<sequenceNumber>6.0</sequenceNumber>
+		<sequenceNumber>8.0</sequenceNumber>
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -196,7 +255,7 @@
   "additionalOutput": {
     "success": false,
     "status": "error",
-    "message": "%quoteResult:error%"
+    "message": "Quote: %quoteResult:error% / Opp: %oppResult:error%"
   },
   "sendJSONPath": "",
   "failureConditionalFormula": "",
@@ -205,7 +264,7 @@
   "bundle": "",
   "sendJSONNode": ""
 }</propertySetConfig>
-		<sequenceNumber>7.0</sequenceNumber>
+		<sequenceNumber>9.0</sequenceNumber>
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessKey>GrupoQ_CrearQuote</omniProcessKey>
