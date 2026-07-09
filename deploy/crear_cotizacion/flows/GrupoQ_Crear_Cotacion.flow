@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>HU-014 v1: desde una Cuenta, crea una Cotizacion (Quote) nativa ligada a la cuenta, en estado Borrador. Requiere Quotes Settings > Create Quotes Without a Related Opportunity = ON (ya habilitado en el org).</description>
+    <interviewLabel>GrupoQ Crear Cotizacion {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>GrupoQ Crear Cotizacion</label>
+    <processType>Flow</processType>
+    <status>Active</status>
+
+    <start>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Create_Quote</targetReference>
+        </connector>
+    </start>
+
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+
+    <formulas>
+        <name>fQuoteName</name>
+        <dataType>String</dataType>
+        <expression>"Cotizacion " + TEXT({!$Flow.CurrentDate})</expression>
+    </formulas>
+    <formulas>
+        <name>fExpiration</name>
+        <dataType>Date</dataType>
+        <expression>{!$Flow.CurrentDate} + 30</expression>
+    </formulas>
+
+    <recordCreates>
+        <name>Create_Quote</name>
+        <label>Create Quote</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <connector>
+            <targetReference>Scr_Done</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Scr_Error</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Name</field>
+            <value>
+                <elementReference>fQuoteName</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>AccountId</field>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value>
+                <stringValue>Draft</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ExpirationDate</field>
+            <value>
+                <elementReference>fExpiration</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Quote</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+
+    <screens>
+        <name>Scr_Done</name>
+        <label>Cotizacion creada</label>
+        <locationX>176</locationX>
+        <locationY>254</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Msg_Done</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;Cotizacion creada&lt;/b&gt; para esta cuenta, en estado Borrador (Draft).&lt;/p&gt;&lt;p&gt;Aparece en la lista relacionada de Cotizaciones de la cuenta.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    <screens>
+        <name>Scr_Error</name>
+        <label>No se pudo crear</label>
+        <locationX>440</locationX>
+        <locationY>254</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Msg_Error</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;No se pudo crear la cotizacion.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Detalle: {!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+</Flow>
