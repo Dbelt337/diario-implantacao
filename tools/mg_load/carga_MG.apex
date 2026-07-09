@@ -16,9 +16,9 @@ Set<String> RETER = new Set<String>{         // 6 excecoes ja determinadas (reti
 
 // ---- Parser CSV aware de aspas ----
 List<List<String>> rows = new List<List<String>>();
-String like = '%' + FILE_TITLE + '%';
+String titleLike = '%' + FILE_TITLE + '%';
 List<ContentVersion> cvs = [SELECT VersionData FROM ContentVersion
-    WHERE IsLatest = true AND (Title LIKE :like OR PathOnClient LIKE :like)
+    WHERE IsLatest = true AND (Title LIKE :titleLike OR PathOnClient LIKE :titleLike)
     ORDER BY CreatedDate DESC LIMIT 1];
 if (cvs.isEmpty()){
     System.debug('ARQUIVO NAO ENCONTRADO para "'+FILE_TITLE+'". Liste os titulos com: '

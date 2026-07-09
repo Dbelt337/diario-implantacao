@@ -8,9 +8,9 @@
 Boolean DRY_RUN   = true;                 // false = grava
 String  FILE_TITLE= 'contas_MG_415';      // trecho do nome do arquivo nos Files
 
-String like = '%' + FILE_TITLE + '%';
+String titleLike = '%' + FILE_TITLE + '%';
 List<ContentVersion> cvs = [SELECT VersionData FROM ContentVersion
-    WHERE IsLatest = true AND (Title LIKE :like OR PathOnClient LIKE :like)
+    WHERE IsLatest = true AND (Title LIKE :titleLike OR PathOnClient LIKE :titleLike)
     ORDER BY CreatedDate DESC LIMIT 1];
 if (cvs.isEmpty()){ System.debug('ARQUIVO NAO ENCONTRADO para "'+FILE_TITLE+'"'); return; }
 
