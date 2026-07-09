@@ -1,28 +1,28 @@
 import { LightningElement, api } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 
 /**
- * Quick Action (lightning__RecordAction) que abre el OmniScript GrupoQ/CrearCotizacion
- * en un modal sobre la Cuenta (Persona Natural o Business) o la Oportunidad.
+ * Quick Action HEADLESS (lightning__RecordAction, actionType Action): al hacer clic,
+ * navega a la featurePage del OmniScript GrupoQ/CrearCotizacion en pagina completa,
+ * pasando el recordId como omniscript__recordId (la plataforma lo entrega como ContextId).
  *
- * IMPORTANTE (mismo patron que leadListaNegraAction): el OmniScript se renderiza SOLO
- * cuando recordId ya esta poblado (get ready). Sin ese gate, el OmniScript inicializa
- * antes de que el framework inyecte recordId y el prefill sube con ContextId vacio.
- *
- * El OmniScript resuelve el contexto por el prefijo del Id (001 Cuenta / 006 Oportunidad),
- * asi que basta ContextId = recordId. El mismo wrapper sirve para ambos objetos.
+ * Sin modal y sin embed: cero race de prefill. Sirve para Account y Opportunity
+ * (el OmniScript resuelve 001/006 por el prefijo del Id).
  */
-export default class CrearCotizacionAction extends LightningElement {
+export default class CrearCotizacionAction extends NavigationMixin(LightningElement) {
     @api recordId;
 
-    // Renderiza el OmniScript solo con recordId presente (evita ContextId vacio).
-    get ready() {
-        return !!this.recordId;
-    }
-
-    // Seed del Data JSON del OmniScript: la Integration Procedure Action usa %ContextId%.
-    get prefill() {
-        return {
-            ContextId: this.recordId
-        };
+    @api invoke() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__webPage',
+            attributes: {
+                url:
+                    '/lightning/page/omnistudio/omniscript' +
+                    '?omniscript__type=GrupoQ' +
+                    '&omniscript__subType=CrearCotizacion' +
+                    '&omniscript__language=English' +
+                    '&omniscript__recordId=' + this.recordId
+            }
+        });
     }
 }

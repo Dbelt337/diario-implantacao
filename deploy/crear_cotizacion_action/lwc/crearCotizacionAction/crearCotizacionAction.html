@@ -1,14 +1,3 @@
 <template>
-    <!--
-      Renderiza el OmniScript SOLO cuando recordId ya esta poblado (mismo patron que
-      leadListaNegraAction): sin el gate, el prefill sube con ContextId vacio.
-    -->
-    <template if:true={ready}>
-        <lightning-omnistudio-omniscript
-            type="GrupoQ"
-            sub-type="CrearCotizacion"
-            language="English"
-            prefill={prefill}>
-        </lightning-omnistudio-omniscript>
-    </template>
+    <!-- Headless quick action: no renderiza UI; invoke() navega al OmniScript. -->
 </template>
