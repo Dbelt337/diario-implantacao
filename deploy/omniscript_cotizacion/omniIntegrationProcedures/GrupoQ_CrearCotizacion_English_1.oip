@@ -42,30 +42,64 @@
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Arma el node quote y detecta 001/006.</description>
+		<description>Name/Status/ExpirationDate + objTipo.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
-		<name>Prep</name>
+		<name>PrepBase</name>
 		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
 		<propertySetConfig>{
   "elementValueMap": {
     "objTipo": "=LEFT(%ContextId%,3)",
     "quote:Name": "=CONCAT(\"Cotizacion \",TEXT(TODAY()))",
     "quote:Status": "Draft",
-    "quote:ExpirationDate": "=TODAY()+30",
-    "quote:AccountId": "=IF(LEFT(%ContextId%,3)==\"001\",%ContextId%,\"\")",
-    "quote:OpportunityId": "=IF(LEFT(%ContextId%,3)==\"006\",%ContextId%,\"\")"
+    "quote:ExpirationDate": "=TODAY()+30"
   },
   "isActive": true,
   "id": "",
-  "executionConditionalFormula": ""
+  "executionConditionalFormula": "NOT(ISBLANK(%ContextId%))"
 }</propertySetConfig>
 		<sequenceNumber>2.0</sequenceNumber>
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Inserta la Quote via DataRaptor DRQuoteInsert.</description>
+		<description>AccountId solo si contexto 001.</description>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>PrepAccount</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "elementValueMap": {
+    "quote:AccountId": "%ContextId%"
+  },
+  "isActive": true,
+  "id": "",
+  "executionConditionalFormula": "LEFT(%ContextId%,3)==\"001\""
+}</propertySetConfig>
+		<sequenceNumber>3.0</sequenceNumber>
+		<type>Set Values</type>
+	</omniProcessElements>
+	<omniProcessElements>
+		<description>OpportunityId solo si contexto 006.</description>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>PrepOpportunity</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "elementValueMap": {
+    "quote:OpportunityId": "%ContextId%"
+  },
+  "isActive": true,
+  "id": "",
+  "executionConditionalFormula": "LEFT(%ContextId%,3)==\"006\""
+}</propertySetConfig>
+		<sequenceNumber>4.0</sequenceNumber>
+		<type>Set Values</type>
+	</omniProcessElements>
+	<omniProcessElements>
+		<description>Inserta Quote via DRQuoteInsert.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -103,7 +137,7 @@
   "sendJSONPath": "",
   "restOptions": {}
 }</propertySetConfig>
-		<sequenceNumber>3.0</sequenceNumber>
+		<sequenceNumber>5.0</sequenceNumber>
 		<type>DataRaptor Post Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -141,7 +175,7 @@
   "bundle": "",
   "sendJSONNode": ""
 }</propertySetConfig>
-		<sequenceNumber>4.0</sequenceNumber>
+		<sequenceNumber>6.0</sequenceNumber>
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -178,7 +212,7 @@
   "bundle": "",
   "sendJSONNode": ""
 }</propertySetConfig>
-		<sequenceNumber>5.0</sequenceNumber>
+		<sequenceNumber>7.0</sequenceNumber>
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessKey>GrupoQ_CrearCotizacion</omniProcessKey>
