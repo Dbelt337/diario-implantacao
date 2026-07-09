@@ -71,24 +71,48 @@
 		<type>Integration Procedure Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
+		<description>Auto-navega a la Quote creada (Record view). Solo si hay quoteId.</description>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>AbrirCotizacion</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "label": "AbrirCotizacion",
+  "targetType": "Record",
+  "targetId": "%resultado:quoteId%",
+  "targetAction": "view",
+  "targetName": "Quote",
+  "objectApiName": "Quote",
+  "targetParams": "",
+  "replace": false,
+  "isActive": true,
+  "id": "",
+  "executionConditionalFormula": "%resultado:quoteId% != \"\""
+}</propertySetConfig>
+		<sequenceNumber>2.0</sequenceNumber>
+		<type>Navigate Action</type>
+	</omniProcessElements>
+	<omniProcessElements>
+		<description>Fallback de error: solo se muestra si no hubo quoteId.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
 		<name>PasoResultado</name>
 		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
 		<propertySetConfig>{
-  "label": "Cotizacion creada",
-  "instructions": "Cotizacion creada: %resultado:quoteName% (Id %resultado:quoteId%). Estado Borrador, ligada al registro. Aparece en la lista relacionada de Cotizaciones.",
+  "label": "Resultado",
+  "instructions": "No se pudo crear la cotizacion. Detalle: %resultado:message%",
   "showSaveBtn": false,
   "showNextLabel": "",
   "showPreviousLabel": "",
   "isActive": true,
   "id": "",
-  "executionConditionalFormula": "",
+  "executionConditionalFormula": "%resultado:quoteId% == \"\"",
   "previousWidth": "0",
   "nextWidth": "0"
 }</propertySetConfig>
-		<sequenceNumber>2.0</sequenceNumber>
+		<sequenceNumber>3.0</sequenceNumber>
 		<type>Step</type>
 	</omniProcessElements>
 	<omniProcessType>OmniScript</omniProcessType>
@@ -145,6 +169,6 @@
 }</propertySetConfig>
 	<subType>CrearCotizacion</subType>
 	<type>GrupoQ</type>
-	<uniqueName>GrupoQ_CrearCotizacion_English_1</uniqueName>
-	<versionNumber>1.0</versionNumber>
+	<uniqueName>GrupoQ_CrearCotizacion_English_2</uniqueName>
+	<versionNumber>2.0</versionNumber>
 </OmniScript>
