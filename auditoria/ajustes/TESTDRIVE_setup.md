@@ -1,5 +1,21 @@
 # Test drive — o que a IP padrão precisa (para "criar certo")
 
+> **BLOQUEIO ATUAL DIAGNOSTICADO (debug da IP GetTimeSlots):** os dados já existem
+> (ServiceTerritoryId/ServiceResourceId/WorkTypeGroupId vieram preenchidos). O que falha é o
+> callout `callout:AUTOSCHEDULER/services/data/v56.0/scheduling/getAppointmentSlots` (HTTP 400):
+> *"the named credential AUTOSCHEDULER might not exist"*. É **configuração**, não dado/Apex.
+>
+> ## Correção — Named Credential `AUTOSCHEDULER` (self-callout à própria org)
+> 1. Setup → **External Credential** (modelo novo): Auth Protocol OAuth 2.0 (Auth Provider apontando
+>    para a própria org) ou o fluxo permitido pela segurança (JWT/Client Credentials); Principal = Named Principal.
+> 2. Setup → **Named Credential** com **Developer Name = AUTOSCHEDULER** (tem que casar com `callout:AUTOSCHEDULER`);
+>    **URL = a própria My Domain** `https://grupoq--devsales.sandbox.my.salesforce.com`; vincular ao External Credential;
+>    Generate Authorization Header = ativo.
+> 3. **Permissão**: permission set com **External Credential Principal Access** para esse External Credential,
+>    atribuído ao usuário que roda o fluxo; usuário com licença/perm de **Salesforce Scheduler** (getAppointmentSlots).
+> 4. Confirmar **Automotive/Salesforce Scheduler habilitado** na org.
+> 5. Re-executar a IP `GetTimeSlots` — o callout deve retornar slots.
+
 As IPs OOTB `AutomotiveScheduler/ScheduleTestDrive` e `GetTimeSlots` chamam a API padrão do
 **Salesforce Scheduler `getAppointmentSlots`** (passo `FindAppointmentTimeSlots` / Http Action).
 Essa API só retorna horários se estes objetos existirem e estiverem ligados. Faltando um, o
