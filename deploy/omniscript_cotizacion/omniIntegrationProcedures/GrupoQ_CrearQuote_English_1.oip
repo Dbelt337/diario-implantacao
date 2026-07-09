@@ -41,48 +41,6 @@
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>001: lee la cuenta (metodo de contacto preferido -&gt; cuenta:pref).</description>
-		<isActive>true</isActive>
-		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
-		<level>0.0</level>
-		<name>GetCuenta</name>
-		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
-		<propertySetConfig>{
-  "sendOnlyAdditionalInput": false,
-  "returnFullDataJSON": false,
-  "elementValueMap": {},
-  "failOnStepError": false,
-  "responseFormat": "",
-  "isActive": true,
-  "returnOnlyFailureResponse": false,
-  "responseJSONPath": "",
-  "actionMessage": "",
-  "additionalOutput": {},
-  "failureConditionalFormula": "",
-  "failureResponse": {},
-  "id": "",
-  "additionalInput": {},
-  "bundle": "DRAccountPrefGet",
-  "sendJSONNode": "",
-  "dataRaptor Input Parameters": [
-    {
-      "inputParam": "accountId",
-      "element": "ContextId"
-    }
-  ],
-  "returnOnlyAdditionalOutput": false,
-  "loopList": "",
-  "chainOnStep": false,
-  "ignoreCache": false,
-  "responseJSONNode": "cuenta",
-  "executionConditionalFormula": "LEFT(%ContextId%,3)==\"001\"",
-  "sendJSONPath": "",
-  "restOptions": {}
-}</propertySetConfig>
-		<sequenceNumber>2.0</sequenceNumber>
-		<type>DataRaptor Extract Action</type>
-	</omniProcessElements>
-	<omniProcessElements>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -98,11 +56,11 @@
   "id": "",
   "executionConditionalFormula": "NOT(ISBLANK(%ContextId%))"
 }</propertySetConfig>
-		<sequenceNumber>3.0</sequenceNumber>
+		<sequenceNumber>2.0</sequenceNumber>
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>oppPrefered = pref de la cuenta o 'Correo' por defecto.</description>
+		<description>001: Opp minima; oppPrefered default 'Correo' (valor validado contra la VR).</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -114,13 +72,13 @@
     "oppAccountId": "%ContextId%",
     "oppStage": "Prospecting",
     "oppCloseDate": "=TODAY()+30",
-    "oppPrefered": "=IF(ISBLANK(%cuenta:pref%), \"Correo\", %cuenta:pref%)"
+    "oppPrefered": "Correo"
   },
   "isActive": true,
   "id": "",
   "executionConditionalFormula": "LEFT(%ContextId%,3)==\"001\""
 }</propertySetConfig>
-		<sequenceNumber>4.0</sequenceNumber>
+		<sequenceNumber>3.0</sequenceNumber>
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -156,7 +114,7 @@
   "sendJSONPath": "",
   "restOptions": {}
 }</propertySetConfig>
-		<sequenceNumber>5.0</sequenceNumber>
+		<sequenceNumber>4.0</sequenceNumber>
 		<type>DataRaptor Post Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -173,7 +131,7 @@
   "id": "",
   "executionConditionalFormula": "LEFT(%ContextId%,3)==\"001\""
 }</propertySetConfig>
-		<sequenceNumber>6.0</sequenceNumber>
+		<sequenceNumber>5.0</sequenceNumber>
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -190,7 +148,7 @@
   "id": "",
   "executionConditionalFormula": "LEFT(%ContextId%,3)==\"006\""
 }</propertySetConfig>
-		<sequenceNumber>7.0</sequenceNumber>
+		<sequenceNumber>6.0</sequenceNumber>
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -226,7 +184,7 @@
   "sendJSONPath": "",
   "restOptions": {}
 }</propertySetConfig>
-		<sequenceNumber>8.0</sequenceNumber>
+		<sequenceNumber>7.0</sequenceNumber>
 		<type>DataRaptor Post Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -265,7 +223,7 @@
   "bundle": "",
   "sendJSONNode": ""
 }</propertySetConfig>
-		<sequenceNumber>9.0</sequenceNumber>
+		<sequenceNumber>8.0</sequenceNumber>
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
@@ -302,7 +260,7 @@
   "bundle": "",
   "sendJSONNode": ""
 }</propertySetConfig>
-		<sequenceNumber>10.0</sequenceNumber>
+		<sequenceNumber>9.0</sequenceNumber>
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessKey>GrupoQ_CrearQuote</omniProcessKey>
