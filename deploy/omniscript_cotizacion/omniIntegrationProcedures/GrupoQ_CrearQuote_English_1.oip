@@ -125,7 +125,7 @@
 		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
 		<propertySetConfig>{
   "elementValueMap": {
-    "quoteOpportunityId": "%CrearOpp:Opportunity_1:Id%"
+    "quoteOpportunityId": "=IF(ISBLANK(%oppResult:Opportunity_1:Id%), %CrearOpp:Opportunity_1:Id%, %oppResult:Opportunity_1:Id%)"
   },
   "isActive": true,
   "id": "",
@@ -212,7 +212,7 @@
   "additionalOutput": {
     "success": true,
     "status": "success",
-    "quoteId": "%CrearQuote:Quote_1:Id%",
+    "quoteId": "=IF(ISBLANK(%quoteResult:Quote_1:Id%), %CrearQuote:Quote_1:Id%, %quoteResult:Quote_1:Id%)",
     "quoteName": "%quoteName%",
     "oppId": "%quoteOpportunityId%"
   },
