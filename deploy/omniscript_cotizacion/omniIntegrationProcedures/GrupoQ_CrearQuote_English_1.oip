@@ -42,7 +42,6 @@
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Name/Status/ExpirationDate + objTipo.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -63,7 +62,7 @@
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>AccountId solo si contexto 001.</description>
+		<description>AccountId solo si 001.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -81,7 +80,7 @@
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>OpportunityId solo si contexto 006.</description>
+		<description>OpportunityId solo si 006.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -99,7 +98,7 @@
 		<type>Set Values</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Inserta Quote via DRQuoteInsert.</description>
+		<description>Inserta Quote via DRQuoteInsert -&gt; node quoteResult.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -141,6 +140,7 @@
 		<type>DataRaptor Post Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
+		<description>quoteResult:error == OK (patron LeadUpsert).</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -160,7 +160,7 @@
   "ignoreCache": false,
   "responseJSONPath": "",
   "responseJSONNode": "",
-  "executionConditionalFormula": "%CrearQuote:Quote_1:Id% != \"\"",
+  "executionConditionalFormula": "%quoteResult:error% == \"OK\"",
   "actionMessage": "",
   "additionalOutput": {
     "success": true,
@@ -179,6 +179,7 @@
 		<type>Response Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
+		<description>quoteResult:error != OK.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -198,12 +199,12 @@
   "ignoreCache": false,
   "responseJSONPath": "",
   "responseJSONNode": "",
-  "executionConditionalFormula": "NOT(ISBLANK(%ContextId%)) &amp;&amp; %CrearQuote:Quote_1:Id% == \"\"",
+  "executionConditionalFormula": "%quoteResult:error% != \"OK\"",
   "actionMessage": "",
   "additionalOutput": {
     "success": false,
     "status": "error",
-    "message": "No se pudo crear la cotizacion. Verifique Quotes habilitado y, para el path Cuenta, 'Create Quotes Without a Related Opportunity' activo."
+    "message": "%quoteResult:error%"
   },
   "sendJSONPath": "",
   "failureConditionalFormula": "",

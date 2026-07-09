@@ -32,7 +32,7 @@
 		<type>Step</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Llama al IP GrupoQ/CrearQuote (sin Apex).</description>
+		<description>Llama al IP GrupoQ/CrearQuote. responseJSONPath=IPResult.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -45,7 +45,7 @@
     "ContextId": "%ContextId%"
   },
   "returnOnlyAdditionalOutput": false,
-  "responseJSONPath": "",
+  "responseJSONPath": "IPResult",
   "responseJSONNode": "resultado",
   "useFutureMethod": false,
   "useQueueable": false,
@@ -71,7 +71,7 @@
 		<type>Integration Procedure Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Auto-navega a la Quote creada (Record view). Solo si hay quoteId.</description>
+		<description>Auto-navega a la Quote creada.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -94,7 +94,7 @@
 		<type>Navigate Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Fallback de error: solo se muestra si no hubo quoteId.</description>
+		<description>Fallback de error.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>

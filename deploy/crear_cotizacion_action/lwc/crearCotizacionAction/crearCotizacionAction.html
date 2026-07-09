@@ -1,12 +1,14 @@
 <template>
     <!--
-      lightning-omnistudio-omniscript: componente base del OmniStudio Standard Runtime.
-      Abre GrupoQ/CrearCotizacion/English en el modal, con ContextId precargado.
+      Renderiza el OmniScript SOLO cuando recordId ya esta poblado (mismo patron que
+      leadListaNegraAction): sin el gate, el prefill sube con ContextId vacio.
     -->
-    <lightning-omnistudio-omniscript
-        type="GrupoQ"
-        sub-type="CrearCotizacion"
-        language="English"
-        prefill={prefill}>
-    </lightning-omnistudio-omniscript>
+    <template if:true={ready}>
+        <lightning-omnistudio-omniscript
+            type="GrupoQ"
+            sub-type="CrearCotizacion"
+            language="English"
+            prefill={prefill}>
+        </lightning-omnistudio-omniscript>
+    </template>
 </template>
