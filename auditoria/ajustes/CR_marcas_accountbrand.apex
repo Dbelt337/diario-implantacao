@@ -1,3 +1,5 @@
+// DESCONTINUADO: AccountBrand tem AccountId UNIQUE (1 marca por conta) - nao suporta dealer
+// multi-marca. Erro DUPLICATE_VALUE ao inserir 2a marca. Usar BranchUnit (ver MODELO_NATIVO...).
 // Marca x Sociedade em objeto NATIVO AccountBrand (SEM custom object). DRY RUN no fim.
 // 1 AccountBrand por (Account de sociedade x marca). Name = marca. Idempotente por Account+Name.
 Schema.SObjectType abt=Schema.getGlobalDescribe().get('AccountBrand');

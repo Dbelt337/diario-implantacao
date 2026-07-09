@@ -4,6 +4,11 @@ Cliente não pode criar objeto custom. Toda a modelagem usa **objetos nativos do
 Esta nota substitui a abordagem de junção custom (`Marca_Sociedad__c` fica **descontinuada**).
 
 ## 1. Marca × dealer/sociedade → objeto nativo `AccountBrand`
+> **CORREÇÃO (validado na org):** `AccountBrand` tem **AccountId UNIQUE** — só 1 marca por
+> conta (erro `DUPLICATE_VALUE` ao inserir a 2ª). Portanto **NÃO serve** para dealer multi-marca.
+> O caminho nativo multi-marca é **BranchUnit** (Branch Management). Rode `describe_branch.apex`
+> para confirmar o lookup BranchUnit→BusinessBrand. Alternativa: multipicklist `Marcas__c` na sociedade.
+
 `AccountBrand` é o objeto padrão que representa "os detalhes de marca de um Partner Account" e é o
 mecanismo nativo para registrar **quais marcas um dealer vende/representa** (Salesforce docs). Um
 Account com várias marcas = **vários registros AccountBrand**.
