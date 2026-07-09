@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OmniDataTransform xmlns="http://soap.sforce.com/2006/04/metadata">
+	<active>true</active>
+	<assignmentRulesUsed>false</assignmentRulesUsed>
+	<deletedOnSuccess>false</deletedOnSuccess>
+	<errorIgnored>false</errorIgnored>
+	<fieldLevelSecurityEnabled>true</fieldLevelSecurityEnabled>
+	<inputType>JSON</inputType>
+	<isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+	<name>DROppInsert</name>
+	<nullInputsIncludedInOutput>false</nullInputsIncludedInOutput>
+	<omniDataTransformItem>
+		<disabled>false</disabled>
+		<filterGroup>0.0</filterGroup>
+		<globalKey>2105eccf-85a0-5f19-8ad6-5701abfb3168</globalKey>
+		<inputFieldName>oppName</inputFieldName>
+		<inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+		<linkedObjectSequence>0.0</linkedObjectSequence>
+		<name>DROppInsert</name>
+		<outputCreationSequence>1.0</outputCreationSequence>
+		<outputFieldName>Name</outputFieldName>
+		<outputObjectName>Opportunity</outputObjectName>
+		<requiredForUpsert>false</requiredForUpsert>
+		<transformValuesMappings>{ }</transformValuesMappings>
+		<upsertKey>false</upsertKey>
+	</omniDataTransformItem>
+	<omniDataTransformItem>
+		<disabled>false</disabled>
+		<filterGroup>0.0</filterGroup>
+		<globalKey>7762d2ac-3eef-5db6-8991-ce015b0e2195</globalKey>
+		<inputFieldName>oppAccountId</inputFieldName>
+		<inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+		<linkedObjectSequence>0.0</linkedObjectSequence>
+		<name>DROppInsert</name>
+		<outputCreationSequence>1.0</outputCreationSequence>
+		<outputFieldName>AccountId</outputFieldName>
+		<outputObjectName>Opportunity</outputObjectName>
+		<requiredForUpsert>false</requiredForUpsert>
+		<transformValuesMappings>{ }</transformValuesMappings>
+		<upsertKey>false</upsertKey>
+	</omniDataTransformItem>
+	<omniDataTransformItem>
+		<disabled>false</disabled>
+		<filterGroup>0.0</filterGroup>
+		<globalKey>7efc773d-e111-53da-a290-d5b17567c99b</globalKey>
+		<inputFieldName>oppStage</inputFieldName>
+		<inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+		<linkedObjectSequence>0.0</linkedObjectSequence>
+		<name>DROppInsert</name>
+		<outputCreationSequence>1.0</outputCreationSequence>
+		<outputFieldName>StageName</outputFieldName>
+		<outputObjectName>Opportunity</outputObjectName>
+		<requiredForUpsert>false</requiredForUpsert>
+		<transformValuesMappings>{ }</transformValuesMappings>
+		<upsertKey>false</upsertKey>
+	</omniDataTransformItem>
+	<omniDataTransformItem>
+		<disabled>false</disabled>
+		<filterGroup>0.0</filterGroup>
+		<globalKey>e880ceaf-ab2f-54f1-957f-5cfeab3fd94f</globalKey>
+		<inputFieldName>oppCloseDate</inputFieldName>
+		<inputObjectQuerySequence>0.0</inputObjectQuerySequence>
+		<linkedObjectSequence>0.0</linkedObjectSequence>
+		<name>DROppInsert</name>
+		<outputCreationSequence>1.0</outputCreationSequence>
+		<outputFieldName>CloseDate</outputFieldName>
+		<outputObjectName>Opportunity</outputObjectName>
+		<requiredForUpsert>false</requiredForUpsert>
+		<transformValuesMappings>{ }</transformValuesMappings>
+		<upsertKey>false</upsertKey>
+	</omniDataTransformItem>
+	<outputType>SObject</outputType>
+	<previewJsonData>{
+  "oppName": "Cotizacion mostrador 2026-07-09",
+  "oppAccountId": "001WK00002Pz9jlYAB",
+  "oppStage": "Prospecting",
+  "oppCloseDate": "2026-08-08"
+}</previewJsonData>
+	<processSuperBulk>false</processSuperBulk>
+	<responseCacheTtlMinutes>0.0</responseCacheTtlMinutes>
+	<rollbackOnError>false</rollbackOnError>
+	<sourceObjectDefault>false</sourceObjectDefault>
+	<synchronousProcessThreshold>0.0</synchronousProcessThreshold>
+	<type>Load</type>
+	<uniqueName>DROppInsert_1</uniqueName>
+	<versionNumber>1.0</versionNumber>
+	<xmlDeclarationRemoved>false</xmlDeclarationRemoved>
+</OmniDataTransform>
