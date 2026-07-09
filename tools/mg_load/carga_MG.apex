@@ -6,7 +6,7 @@
 
 // ---- Config ----
 Boolean DRY_RUN   = true;                    // false = grava (DML)
-String  FILE_TITLE= 'contas_MG_415';         // Title do ContentVersion enviado
+String  FILE_TITLE= 'contas_MG_415';         // trecho do Title/nome do arquivo enviado (busca por LIKE)
 Integer WIN_START = 0;                       // janela [start,end) sobre linhas de dados
 Integer WIN_END   = 150;                     // rode 0-150, 150-300, 300-415
 Id      RT_LEGAL  = '012V2000002CjppIAC';    // RecordType LegalEntity_B2B
@@ -16,8 +16,16 @@ Set<String> RETER = new Set<String>{         // 6 excecoes ja determinadas (reti
 
 // ---- Parser CSV aware de aspas ----
 List<List<String>> rows = new List<List<String>>();
-ContentVersion cv = [SELECT VersionData FROM ContentVersion
-    WHERE Title = :FILE_TITLE ORDER BY CreatedDate DESC LIMIT 1];
+String like = '%' + FILE_TITLE + '%';
+List<ContentVersion> cvs = [SELECT VersionData FROM ContentVersion
+    WHERE IsLatest = true AND (Title LIKE :like OR PathOnClient LIKE :like)
+    ORDER BY CreatedDate DESC LIMIT 1];
+if (cvs.isEmpty()){
+    System.debug('ARQUIVO NAO ENCONTRADO para "'+FILE_TITLE+'". Liste os titulos com: '
+        +'SELECT Title, PathOnClient FROM ContentVersion WHERE IsLatest=true ORDER BY CreatedDate DESC');
+    return;
+}
+ContentVersion cv = cvs[0];
 for (String ln : cv.VersionData.toString().split('\n')) {
     if (String.isBlank(ln.trim())) continue;
     List<String> f = new List<String>(); String cur=''; Boolean q=false;
