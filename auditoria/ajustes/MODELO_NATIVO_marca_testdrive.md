@@ -64,3 +64,23 @@ vincular via `BusinessProfile.ServiceTerritoryId`. É o próximo script (mesmo p
 
 > Páginas salesforce.com não puderam ser baixadas nesta sessão (403 no egresso); síntese a partir
 > das referências de objeto e resultados de busca acima. API names de Scheduler a confirmar via describe.
+
+## 4. BranchUnit — describe confirmado (org)
+Campos: `Name`(obrig), `AccountId`->Account, `BranchCode`(ex.: C011), `Type`(picklist),
+`IsActive`, `ParentBranchUnitId`->BranchUnit, `ServiceTerritoryId`->ServiceTerritory,
+`LocationId`->Location, `OperatingHoursId`->OperatingHours, `OperationalState`, `BranchManagerId`->Banker.
+`BranchUnitBusinessMember`: BranchUnitId + BusinessUnitMemberId(Banker,User). `BranchUnitRelatedRecord`:
+RelatedRecordId polimórfico (Account/Case/Contact/Lead/…), **sem BusinessBrand**.
+
+**Conclusão (validado):** nenhum objeto nativo do AC liga dealer↔BusinessBrand em N:N
+(AccountBrand é 1:1; BranchUnit e RelatedRecord não têm campo de marca).
+
+### Decisão de marca (dado o cenário)
+- **Marca** = campo **multipicklist `Marcas__c`** (valores = as 23 BusinessBrands) na **sociedade**
+  (Account ou IOU). É um CAMPO (não objeto), multi-marca, e exportável para SAP
+  (`SELECT ..., Marcas__c FROM ...`). Grão = sociedade (bate com a planilha).
+- **BranchUnit** = unidade operacional do dealer por centro/línea (BranchCode=centro SAP). Ótimo
+  encaixe nativo para: vínculo Account (dealer), Location (almacén) e **ServiceTerritory (test drive)**.
+  Reaproveita o "La Uruca / C011" já criado. Idempotente por BranchCode.
+- **Pendência de decisão do arquiteto:** é possível criar CAMPO custom (não objeto)? Se sim,
+  `Marcas__c` fecha a marca. Se não, a marca fica como dado de referência fora do SF / integração SAP.
