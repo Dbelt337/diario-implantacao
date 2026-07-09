@@ -57,6 +57,20 @@ brandear os sites (cadillac.cr / chevroletcr.com / forlandcr.com) como Digital E
 Efeito colateral positivo: como o SAP passa a ser por franquia (BranchUnit), some a colisão de
 `ExternalReferenceNumber` — cada linha (Autos/Forland/Repuestos) tem seu código sem duplicar o rooftop.
 
+## 4b. Confirmado na org (describe_brands)
+- **BusinessBrand = 23 marcas**: Arcfox, Cadillac, Chery, Chevrolet, Chrysler, Fiat, Ford,
+  Forland, GWM, Haval, Honda, Hyundai, Isuzu, Jeep, Mazda, Nissan, Peugeot, Poer, Porsche,
+  Ram, Rowor, TVS, Vento. Catálogo completo (Chevrolet/Cadillac/Forland presentes).
+- **BusinessBrand.ParentId -> BusinessBrand** (auto-hierarquia). **Não tem lookup para Account**
+  → BusinessBrand sozinho **não** modela marca×sucursal; precisa de junção (BranchUnit ou custom).
+  A auto-hierarquia serve p/ agrupar por OEM (ex.: GWM → Haval/Poer; Stellantis → Jeep/Ram/Fiat).
+- **AccountBrand PRESENTE** (logo `AccountBrand: PRESENTE` no runtime; a linha "AUSENTE" é só o
+  eco do código). Refs: `AccountId -> Account`, `LogoId -> ContentAsset`. Ou seja, Digital
+  Experiences/licença community **está ligada** → AccountBrand disponível se quisermos branding
+  de site (1 identidade de marca por conta + logo).
+- **BusinessBrandShare** presente (sharing). Nenhum objeto de junção marca↔dealer padrão
+  (BusinessBrandAssociation etc.) existe → a junção precisa ser **BranchUnit** ou **custom**.
+
 ## 5. A confirmar na org (antes de construir)
 - `describe_branch.apex` — campos/lookups de BranchUnit (tem lookup para BusinessBrand? para Account?).
 - `describe_brands.apex` — BusinessBrand: parent/lookups; AccountBrand presente (licença)?.
