@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NAO EXECUTADO. Objeto de juncao Marca x Sociedade (grao sociedade, conforme planilha). -->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <label>Marca x Sociedade</label>
+    <pluralLabel>Marcas x Sociedades</pluralLabel>
+    <nameField>
+        <displayFormat>MS-{0000}</displayFormat>
+        <label>Codigo Registro</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <sharingModel>ReadWrite</sharingModel>
+    <enableReports>true</enableReports>
+</CustomObject>

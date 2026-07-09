@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Se lookup para BusinessBrand nao for permitido na org, troque type/referenceTo por Text(80) e grave o nome. -->
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Marca__c</fullName>
+    <label>Marca</label>
+    <type>Lookup</type>
+    <referenceTo>BusinessBrand</referenceTo>
+    <relationshipLabel>Sociedades</relationshipLabel>
+    <relationshipName>Sociedades_Marca</relationshipName>
+    <required>true</required>
+    <deleteConstraint>Restrict</deleteConstraint>
+</CustomField>
