@@ -1,0 +1,10 @@
+# Dados do cliente e artefatos gerados — NAO versionar (contem CNPJs, emails, nomes)
+contas_MG_415_limpo.csv
+*.csv
+accounts.json
+users.json
+query_accounts.soql
+query_users.soql
+saida/
+saida_demo/
+__pycache__/
