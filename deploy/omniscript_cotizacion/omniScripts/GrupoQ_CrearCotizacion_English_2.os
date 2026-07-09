@@ -32,7 +32,6 @@
 		<type>Step</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Llama al IP GrupoQ/CrearQuote. responseJSONPath=IPResult.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
@@ -71,21 +70,21 @@
 		<type>Integration Procedure Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Auto-navega a la Quote creada.</description>
+		<description>Vuelve al registro de origen; la cotizacion queda en la related list.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
-		<name>AbrirCotizacion</name>
+		<name>VolverALaCuenta</name>
 		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
 		<propertySetConfig>{
-  "label": "AbrirCotizacion",
+  "label": "VolverALaCuenta",
   "targetType": "Record",
-  "targetId": "%resultado:quoteId%",
+  "targetId": "%ContextId%",
   "targetAction": "view",
-  "targetName": "Quote",
-  "objectApiName": "Quote",
+  "targetName": "",
+  "objectApiName": "",
   "targetParams": "",
-  "replace": false,
+  "replace": true,
   "isActive": true,
   "id": "",
   "executionConditionalFormula": "%resultado:quoteId% != \"\""
@@ -94,7 +93,7 @@
 		<type>Navigate Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Fallback de error.</description>
+		<description>Solo en error.</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>

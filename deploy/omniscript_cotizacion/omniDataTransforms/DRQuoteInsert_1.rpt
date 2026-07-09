@@ -12,8 +12,8 @@
 	<omniDataTransformItem>
 		<disabled>false</disabled>
 		<filterGroup>0.0</filterGroup>
-		<globalKey>0dd77448-b83b-5a3d-b03e-f2311f737a79</globalKey>
-		<inputFieldName>quote:Name</inputFieldName>
+		<globalKey>8a42d7b9-5a9c-5937-b27a-57a9d6651320</globalKey>
+		<inputFieldName>quoteName</inputFieldName>
 		<inputObjectQuerySequence>0.0</inputObjectQuerySequence>
 		<linkedObjectSequence>0.0</linkedObjectSequence>
 		<name>DRQuoteInsert</name>
@@ -27,8 +27,8 @@
 	<omniDataTransformItem>
 		<disabled>false</disabled>
 		<filterGroup>0.0</filterGroup>
-		<globalKey>66635315-926f-5a8b-8415-3d8d8444fe06</globalKey>
-		<inputFieldName>quote:Status</inputFieldName>
+		<globalKey>9ffffbfa-5d18-5d1f-afb1-c099538d98ca</globalKey>
+		<inputFieldName>quoteStatus</inputFieldName>
 		<inputObjectQuerySequence>0.0</inputObjectQuerySequence>
 		<linkedObjectSequence>0.0</linkedObjectSequence>
 		<name>DRQuoteInsert</name>
@@ -42,8 +42,8 @@
 	<omniDataTransformItem>
 		<disabled>false</disabled>
 		<filterGroup>0.0</filterGroup>
-		<globalKey>22b882cc-9335-5c7e-84c3-dcddd4a5296b</globalKey>
-		<inputFieldName>quote:ExpirationDate</inputFieldName>
+		<globalKey>0b97dc27-4776-5851-8c86-f3bd74ee436a</globalKey>
+		<inputFieldName>quoteExpiration</inputFieldName>
 		<inputObjectQuerySequence>0.0</inputObjectQuerySequence>
 		<linkedObjectSequence>0.0</linkedObjectSequence>
 		<name>DRQuoteInsert</name>
@@ -57,8 +57,8 @@
 	<omniDataTransformItem>
 		<disabled>false</disabled>
 		<filterGroup>0.0</filterGroup>
-		<globalKey>3b843742-9951-5868-b334-9332cfba10b7</globalKey>
-		<inputFieldName>quote:AccountId</inputFieldName>
+		<globalKey>cd793dde-57d7-5f65-8d9f-c95619a1453f</globalKey>
+		<inputFieldName>quoteAccountId</inputFieldName>
 		<inputObjectQuerySequence>0.0</inputObjectQuerySequence>
 		<linkedObjectSequence>0.0</linkedObjectSequence>
 		<name>DRQuoteInsert</name>
@@ -72,8 +72,8 @@
 	<omniDataTransformItem>
 		<disabled>false</disabled>
 		<filterGroup>0.0</filterGroup>
-		<globalKey>4eb01e7e-bd4b-563a-9571-6d7655a83439</globalKey>
-		<inputFieldName>quote:OpportunityId</inputFieldName>
+		<globalKey>6f8fbbc1-955b-5f1d-b7b8-6ed59daf193c</globalKey>
+		<inputFieldName>quoteOpportunityId</inputFieldName>
 		<inputObjectQuerySequence>0.0</inputObjectQuerySequence>
 		<linkedObjectSequence>0.0</linkedObjectSequence>
 		<name>DRQuoteInsert</name>
@@ -86,12 +86,10 @@
 	</omniDataTransformItem>
 	<outputType>SObject</outputType>
 	<previewJsonData>{
-  "quote": {
-    "Name": "Cotizacion 2026-07-09",
-    "Status": "Draft",
-    "ExpirationDate": "2026-08-08",
-    "AccountId": "001000000000000AAA"
-  }
+  "quoteName": "Cotizacion 2026-07-09",
+  "quoteStatus": "Draft",
+  "quoteExpiration": "2026-08-08",
+  "quoteAccountId": "001000000000000AAA"
 }</previewJsonData>
 	<processSuperBulk>false</processSuperBulk>
 	<responseCacheTtlMinutes>0.0</responseCacheTtlMinutes>
