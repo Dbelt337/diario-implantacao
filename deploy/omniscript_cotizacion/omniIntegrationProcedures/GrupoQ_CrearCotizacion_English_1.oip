@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OmniIntegrationProcedure xmlns="http://soap.sforce.com/2006/04/metadata">
+	<customJavaScript>{"ContextId":""}</customJavaScript>
+	<elementTypeComponentMapping>{"ElementTypeToHTMLTemplateList":[]}</elementTypeComponentMapping>
+	<isActive>true</isActive>
+	<isIntegProcdSignatureAvl>false</isIntegProcdSignatureAvl>
+	<isIntegrationProcedure>true</isIntegrationProcedure>
+	<isManagedUsingStdDesigner>true</isManagedUsingStdDesigner>
+	<isMetadataCacheDisabled>false</isMetadataCacheDisabled>
+	<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+	<isTestProcedure>false</isTestProcedure>
+	<isWebCompEnabled>false</isWebCompEnabled>
+	<language>English</language>
+	<name>CrearCotizacion</name>
+	<omniProcessElements>
+		<description>Corta si no llega ContextId.</description>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>ReturnIfNoContext</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "returnFullDataJSON": false,
+  "returnOnlyAdditionalOutput": true,
+  "elementValueMap": {},
+  "responseFormat": "",
+  "isActive": true,
+  "responseJSONPath": "",
+  "responseJSONNode": "",
+  "executionConditionalFormula": "ISBLANK(%ContextId%)",
+  "additionalOutput": {
+    "success": false,
+    "status": "error",
+    "message": "Falta ContextId (Id de Cuenta u Oportunidad)."
+  },
+  "sendJSONPath": "",
+  "id": "",
+  "restOptions": {},
+  "sendJSONNode": ""
+}</propertySetConfig>
+		<sequenceNumber>1.0</sequenceNumber>
+		<type>Response Action</type>
+	</omniProcessElements>
+	<omniProcessElements>
+		<description>Arma el node quote y detecta 001/006.</description>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>Prep</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "elementValueMap": {
+    "objTipo": "=LEFT(%ContextId%,3)",
+    "quote:Name": "=CONCAT(\"Cotizacion \",TEXT(TODAY()))",
+    "quote:Status": "Draft",
+    "quote:ExpirationDate": "=TODAY()+30",
+    "quote:AccountId": "=IF(LEFT(%ContextId%,3)==\"001\",%ContextId%,\"\")",
+    "quote:OpportunityId": "=IF(LEFT(%ContextId%,3)==\"006\",%ContextId%,\"\")"
+  },
+  "isActive": true,
+  "id": "",
+  "executionConditionalFormula": ""
+}</propertySetConfig>
+		<sequenceNumber>2.0</sequenceNumber>
+		<type>Set Values</type>
+	</omniProcessElements>
+	<omniProcessElements>
+		<description>Inserta la Quote via DataRaptor DRQuoteInsert.</description>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>CrearQuote</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "sendOnlyAdditionalInput": false,
+  "returnFullDataJSON": false,
+  "elementValueMap": {},
+  "failOnStepError": false,
+  "responseFormat": "",
+  "isActive": true,
+  "returnOnlyFailureResponse": false,
+  "responseJSONPath": "",
+  "actionMessage": "",
+  "additionalOutput": {},
+  "failureConditionalFormula": "",
+  "failureResponse": {},
+  "id": "",
+  "additionalInput": {},
+  "bundle": "DRQuoteInsert",
+  "sendJSONNode": "",
+  "dataRaptor Input Parameters": [
+    {
+      "inputParam": "quote",
+      "element": "quote"
+    }
+  ],
+  "returnOnlyAdditionalOutput": false,
+  "loopList": "",
+  "chainOnStep": false,
+  "ignoreCache": false,
+  "responseJSONNode": "quoteResult",
+  "executionConditionalFormula": "NOT(ISBLANK(%ContextId%))",
+  "sendJSONPath": "",
+  "restOptions": {}
+}</propertySetConfig>
+		<sequenceNumber>3.0</sequenceNumber>
+		<type>DataRaptor Post Action</type>
+	</omniProcessElements>
+	<omniProcessElements>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>RespSuccess</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "sendOnlyAdditionalInput": false,
+  "returnFullDataJSON": false,
+  "returnOnlyAdditionalOutput": true,
+  "elementValueMap": {},
+  "failOnStepError": false,
+  "responseFormat": "",
+  "internalNotes": "",
+  "isActive": true,
+  "chainOnStep": false,
+  "returnOnlyFailureResponse": false,
+  "ignoreCache": false,
+  "responseJSONPath": "",
+  "responseJSONNode": "",
+  "executionConditionalFormula": "%CrearQuote:Quote_1:Id% != \"\"",
+  "actionMessage": "",
+  "additionalOutput": {
+    "success": true,
+    "status": "success",
+    "quoteId": "%CrearQuote:Quote_1:Id%",
+    "quoteName": "%quote:Name%"
+  },
+  "sendJSONPath": "",
+  "failureConditionalFormula": "",
+  "id": "",
+  "restOptions": {},
+  "bundle": "",
+  "sendJSONNode": ""
+}</propertySetConfig>
+		<sequenceNumber>4.0</sequenceNumber>
+		<type>Response Action</type>
+	</omniProcessElements>
+	<omniProcessElements>
+		<isActive>true</isActive>
+		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
+		<level>0.0</level>
+		<name>RespError</name>
+		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
+		<propertySetConfig>{
+  "sendOnlyAdditionalInput": false,
+  "returnFullDataJSON": false,
+  "returnOnlyAdditionalOutput": true,
+  "elementValueMap": {},
+  "failOnStepError": false,
+  "responseFormat": "",
+  "internalNotes": "",
+  "isActive": true,
+  "chainOnStep": false,
+  "returnOnlyFailureResponse": false,
+  "ignoreCache": false,
+  "responseJSONPath": "",
+  "responseJSONNode": "",
+  "executionConditionalFormula": "NOT(ISBLANK(%ContextId%)) &amp;&amp; %CrearQuote:Quote_1:Id% == \"\"",
+  "actionMessage": "",
+  "additionalOutput": {
+    "success": false,
+    "status": "error",
+    "message": "No se pudo crear la cotizacion. Verifique Quotes habilitado y, para el path Cuenta, 'Create Quotes Without a Related Opportunity' activo."
+  },
+  "sendJSONPath": "",
+  "failureConditionalFormula": "",
+  "id": "",
+  "restOptions": {},
+  "bundle": "",
+  "sendJSONNode": ""
+}</propertySetConfig>
+		<sequenceNumber>5.0</sequenceNumber>
+		<type>Response Action</type>
+	</omniProcessElements>
+	<omniProcessKey>GrupoQ_CrearCotizacion</omniProcessKey>
+	<omniProcessType>Integration Procedure</omniProcessType>
+	<propertySetConfig>{"transientValues":{}}</propertySetConfig>
+	<subType>CrearCotizacion</subType>
+	<type>GrupoQ</type>
+	<uniqueName>GrupoQ_CrearCotizacion_English_1</uniqueName>
+	<versionNumber>1.0</versionNumber>
+</OmniIntegrationProcedure>

@@ -32,15 +32,29 @@
 		<type>Step</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Crea la Quote nativa via Apex (Persona/Business/Oportunidad).</description>
+		<description>Llama al IP GrupoQ_CrearCotizacion (sin Apex).</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
 		<name>CrearQuote</name>
 		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
 		<propertySetConfig>{
-  "remoteClass": "GrupoQ_CrearCotizacion",
-  "remoteMethod": "crearCotizacion",
+  "integrationProcedureKey": "GrupoQ_CrearCotizacion",
+  "sendOnlyAdditionalInput": true,
+  "additionalInput": {
+    "ContextId": "%ContextId%"
+  },
+  "returnOnlyAdditionalOutput": false,
+  "responseJSONPath": "",
+  "responseJSONNode": "resultado",
+  "useFutureMethod": false,
+  "useQueueable": false,
+  "useContinuation": false,
+  "failOnStepError": true,
+  "chainOnStep": false,
+  "isActive": true,
+  "id": "",
+  "executionConditionalFormula": "",
   "remoteTimeout": 30000,
   "remoteOptions": {
     "useFuture": false,
@@ -48,21 +62,13 @@
     "preTransformBundle": "",
     "postTransformBundle": ""
   },
-  "sendOnlyExtraPayload": true,
   "extraPayload": {
     "ContextId": "%ContextId%"
   },
-  "responseJSONPath": "",
-  "responseJSONNode": "resultado",
-  "useContinuation": false,
-  "failOnStepError": true,
-  "chainOnStep": false,
-  "isActive": true,
-  "id": "",
-  "executionConditionalFormula": ""
+  "sendOnlyExtraPayload": true
 }</propertySetConfig>
 		<sequenceNumber>1.0</sequenceNumber>
-		<type>Remote Action</type>
+		<type>Integration Procedure Action</type>
 	</omniProcessElements>
 	<omniProcessElements>
 		<isActive>true</isActive>
