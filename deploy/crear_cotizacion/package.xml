@@ -6,6 +6,7 @@
     </types>
     <types>
         <members>Account.Crear_Cotizacion</members>
+        <members>Opportunity.Crear_Cotizacion</members>
         <name>QuickAction</name>
     </types>
     <version>62.0</version>
