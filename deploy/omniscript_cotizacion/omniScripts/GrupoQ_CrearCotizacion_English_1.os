@@ -32,14 +32,14 @@
 		<type>Step</type>
 	</omniProcessElements>
 	<omniProcessElements>
-		<description>Llama al IP GrupoQ_CrearCotizacion (sin Apex).</description>
+		<description>Llama al IP GrupoQ/CrearQuote (sin Apex).</description>
 		<isActive>true</isActive>
 		<isOmniScriptEmbeddable>false</isOmniScriptEmbeddable>
 		<level>0.0</level>
 		<name>CrearQuote</name>
 		<omniProcessVersionNumber>0.0</omniProcessVersionNumber>
 		<propertySetConfig>{
-  "integrationProcedureKey": "GrupoQ_CrearCotizacion",
+  "integrationProcedureKey": "GrupoQ_CrearQuote",
   "sendOnlyAdditionalInput": true,
   "additionalInput": {
     "ContextId": "%ContextId%"

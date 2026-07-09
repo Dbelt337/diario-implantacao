@@ -11,7 +11,7 @@
 	<isTestProcedure>false</isTestProcedure>
 	<isWebCompEnabled>false</isWebCompEnabled>
 	<language>English</language>
-	<name>CrearCotizacion</name>
+	<name>CrearQuote</name>
 	<omniProcessElements>
 		<description>Corta si no llega ContextId.</description>
 		<isActive>true</isActive>
@@ -215,11 +215,11 @@
 		<sequenceNumber>7.0</sequenceNumber>
 		<type>Response Action</type>
 	</omniProcessElements>
-	<omniProcessKey>GrupoQ_CrearCotizacion</omniProcessKey>
+	<omniProcessKey>GrupoQ_CrearQuote</omniProcessKey>
 	<omniProcessType>Integration Procedure</omniProcessType>
 	<propertySetConfig>{"transientValues":{}}</propertySetConfig>
-	<subType>CrearCotizacion</subType>
+	<subType>CrearQuote</subType>
 	<type>GrupoQ</type>
-	<uniqueName>GrupoQ_CrearCotizacion_English_1</uniqueName>
+	<uniqueName>GrupoQ_CrearQuote_English_1</uniqueName>
 	<versionNumber>1.0</versionNumber>
 </OmniIntegrationProcedure>
