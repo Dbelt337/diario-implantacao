@@ -23,3 +23,11 @@ A mesma Uruca aparece no QRM como C101/C011/1200 (autos), C105/C311/1200 (Active
 SELECT Id, Name, IsActive, ParentTerritory.Name, OperatingHours.Name FROM ServiceTerritory ORDER BY Name
 ```
 Se o cadastro feito seguiu o QRM (596 linhas / grão SAP), está no grão errado para o hand-off — corrigir para a rede física antes de criar grupos.
+
+## Alinhamento com a integração (payload dos canais digitais)
+O contrato de entrada de leads já usa o mnemônico da sucursal no `preferredSellers.dealerCode`: `C101-URUCA-HYUNDAI` = sociedad + **mnemônico da sucursal** + marca. O código canônico `<PAIS>_<MNEMONICO>` desta tabela usa o MESMO mnemônico do segmento central do dealerCode (URUCA → CR_URUCA). Regra: ao cadastrar novas sucursales, o mnemônico deve coincidir com o usado no dealerCode da integração.
+
+## Quem preenche ChannelCode (decisão)
+- `Lead.ChannelCode__c`: a integração dos canais digitais (payload `channelCode`, ex. WEB_MARCA). Lead criado manualmente por vendedor: fica em branco (= não originado por canal digital; não se inventa proveniência).
+- `Opportunity.ChannelCode__c`: Lead Conversion Mapping nativo na conversão. Nenhum usuário ou flow escreve nele.
+- Opp criada sem Lead (mostrador): em branco — correto.
