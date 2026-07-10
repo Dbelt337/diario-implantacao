@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>BranchCode__c</fullName>
+        <label>Sucursal</label>
+        <length>20</length>
+        <type>Text</type>
+        <description>HU-009 (all countries): canonical branch code of the in-person activity (see sucursales_canonicas: e.g. SV_AUTOSUR). CONTRACT of the sharing flow: public group GRP_Sucursal_[code]. Filled by the digital advisor when scheduling; for Test Drive filled by the mirror flow from the ServiceTerritory.</description>
+        <required>false</required>
+    </fields>
+    <fields>
+        <fullName>VisitStatus__c</fullName>
+        <label>Estado de la Visita</label>
+        <type>Picklist</type>
+        <description>HU-009 (all countries): operational state of the visit (Event-only activities; Test Drive is governed by the Scheduler Appointment).</description>
+        <required>false</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value><fullName>Pendiente</fullName><default>true</default><label>Pendiente</label></value>
+                <value><fullName>Atendida</fullName><default>false</default><label>Atendida</label></value>
+                <value><fullName>No Show</fullName><default>false</default><label>No Show</label></value>
+                <value><fullName>Cancelada</fullName><default>false</default><label>Cancelada</label></value>
+                <value><fullName>Reprogramada</fullName><default>false</default><label>Reprogramada</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ServiceAppointmentId__c</fullName>
+        <label>ServiceAppointment Id (espejo TD)</label>
+        <length>18</length>
+        <type>Text</type>
+        <externalId>true</externalId>
+        <unique>false</unique>
+        <description>HU-009 (all countries): Id of the ServiceAppointment that originated the mirror Event of a Test Drive. Match key of the one-way sync flow (prevents duplicates on reschedules).</description>
+        <required>false</required>
+    </fields>
+</CustomObject>
