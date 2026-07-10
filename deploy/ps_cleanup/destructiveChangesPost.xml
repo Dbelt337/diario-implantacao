@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>cases_Permisssion_Set</members>
+        <members>HU010_Campos_SLA_Lead</members>
+        <members>Lead_Country_Access</members>
+        <members>GQ_Lead_Repuestos_FLS</members>
+        <name>PermissionSet</name>
+    </types>
+</Package>
