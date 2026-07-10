@@ -6,26 +6,11 @@
         <label>Web de Marca</label>
     </customValue>
     <customValue>
-        <fullName>MOSTRADOR</fullName>
-        <default>false</default>
-        <label>Mostrador (Presencial)</label>
-    </customValue>
-    <customValue>
-        <fullName>TELEFONO</fullName>
-        <default>false</default>
-        <label>Teléfono</label>
-    </customValue>
-    <customValue>
-        <fullName>REFERIDO</fullName>
-        <default>false</default>
-        <label>Referido</label>
-    </customValue>
-    <customValue>
         <fullName>CONTACT_CENTER</fullName>
         <default>false</default>
         <label>Contact Center</label>
     </customValue>
-    <description>Canonical catalog of lead origination channel codes (HU-009 traceability). Single source shared by Lead.ChannelCode__c and Opportunity.ChannelCode__c (restricted picklists). API integrations must send exactly these codes; new channels enter ONLY by adding a value here (governance gate). WEB_MARCA is the code confirmed in the digital-channels API contract; the remaining starter values are the in-person/vendor set pending business confirmation.</description>
+    <description>Canonical catalog of lead origination channel codes (HU-009 traceability). Single source shared by Lead.ChannelCode__c and Opportunity.ChannelCode__c (restricted picklists). API integrations must send exactly these codes; new channels enter ONLY by adding a value here (governance gate). WEB_MARCA is the code confirmed in the digital-channels API contract; manual/in-person origination is handled by the NATIVE LeadSource picklist (already customized), never by this field.</description>
     <masterLabel>ChannelCode</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>

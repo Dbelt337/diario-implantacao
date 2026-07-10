@@ -27,7 +27,10 @@ Se o cadastro feito seguiu o QRM (596 linhas / grão SAP), está no grão errado
 ## Alinhamento com a integração (payload dos canais digitais)
 O contrato de entrada de leads já usa o mnemônico da sucursal no `preferredSellers.dealerCode`: `C101-URUCA-HYUNDAI` = sociedad + **mnemônico da sucursal** + marca. O código canônico `<PAIS>_<MNEMONICO>` desta tabela usa o MESMO mnemônico do segmento central do dealerCode (URUCA → CR_URUCA). Regra: ao cadastrar novas sucursales, o mnemônico deve coincidir com o usado no dealerCode da integração.
 
-## Quem preenche ChannelCode (decisão)
-- `Lead.ChannelCode__c`: a integração dos canais digitais (payload `channelCode`, ex. WEB_MARCA). Lead criado manualmente por vendedor: fica em branco (= não originado por canal digital; não se inventa proveniência).
-- `Opportunity.ChannelCode__c`: Lead Conversion Mapping nativo na conversão. Nenhum usuário ou flow escreve nele.
-- Opp criada sem Lead (mostrador): em branco — correto.
+## Quem preenche ChannelCode (decisão — revisada com LeadSource)
+Dois campos, dois públicos, sem sobreposição:
+- **LeadSource (nativo, já customizado: Publicidad/Facebook/Instagram/Tiktok/Página web...)**: origem comercial, preenchido pelo VENDEDOR na criação manual. Copia sozinho para Opportunity.LeadSource na conversão (nativo dos dois lados, sem mapping).
+- `Lead.ChannelCode__c` (picklist restrita ao GVS `ChannelCode` — catálogo em `canales_canonicos.csv`): código técnico do canal, preenchido SOMENTE por sistema (payload `channelCode`, ex. WEB_MARCA). Vendedor não toca; em branco na criação manual. API com código fora do catálogo é rejeitada (restricted picklist).
+- `Opportunity.ChannelCode__c` (mesmo GVS): Lead Conversion Mapping nativo na conversão. Nenhum usuário ou flow escreve nele.
+- Opp criada sem Lead (mostrador): ChannelCode em branco — correto.
+- Regra de plataforma aprendida: picklist só amarra em Global Value Set na CRIAÇÃO do campo — conversão de Text exige recriar o campo (destructiveChangesPre + create).

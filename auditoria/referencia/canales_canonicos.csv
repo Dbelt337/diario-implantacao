@@ -1,6 +1,3 @@
 codigo;label;origem;status
 WEB_MARCA;Web de Marca;API canais digitais (payload channelCode);confirmado no contrato da API
-MOSTRADOR;Mostrador (Presencial);vendedor (criacao manual);proposta - confirmar com negocio
-TELEFONO;Teléfono;vendedor (criacao manual);proposta - confirmar com negocio
-REFERIDO;Referido;vendedor (criacao manual);proposta - confirmar com negocio
-CONTACT_CENTER;Contact Center;automacao/CTI do contact center;proposta - confirmar com negocio
+CONTACT_CENTER;Contact Center;automacao/CTI do contact center;proposta - confirmar com middleware
