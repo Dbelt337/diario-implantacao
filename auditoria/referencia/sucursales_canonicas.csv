@@ -1,0 +1,37 @@
+codigo;pais;nombre;ventas;repuestos;taller;bodega;tipo;bodega_principal;grupo_publico
+CR_TRIGAL;CR;Trigal;;;X;X;1S;;
+CR_URUCA;CR;Uruca;X;;X;X;2S;;GRP_Sucursal_CR_URUCA
+CR_LASBRISAS;CR;Las Brisas;;X;;X;1S;X;
+CR_AUTOPITS;CR;Autopits (17 puntos - red, no sucursal);;X;;X;2S;;
+GT_ZONA10;GT;19 Calle Zona 10;;X;X;X;2S;;
+GT_ZONA9;GT;19C Zona 9;X;X;X;X;3S;;GRP_Sucursal_GT_ZONA9
+GT_AGUILARBATRES;GT;Aguilar Batres;;X;X;X;2S;X;
+GT_CAES1;GT;CAES1;X;X;X;X;3S;;GRP_Sucursal_GT_CAES1
+GT_CAES2;GT;CAES2;X;X;X;X;3S;;GRP_Sucursal_GT_CAES2
+GT_MAJADAS;GT;Majadas;X;X;X;X;3S;;GRP_Sucursal_GT_MAJADAS
+GT_REFORMA;GT;Reforma;X;X;X;X;3S;;GRP_Sucursal_GT_REFORMA
+GT_ROOSEVELT;GT;Roosevelt;X;X;X;X;3S;;GRP_Sucursal_GT_ROOSEVELT
+GT_VISTARES;GT;Vistares;;X;X;X;2S;;
+GT_XELA;GT;Xela;X;X;X;X;3S;;GRP_Sucursal_GT_XELA
+GT_ZACAPA;GT;Zacapa;X;X;X;X;3S;;GRP_Sucursal_GT_ZACAPA
+HN_CHOLUTECA;HN;Choluteca;X;X;X;X;3S;;GRP_Sucursal_HN_CHOLUTECA
+HN_LACEIBA;HN;La Ceiba;X;X;X;X;3S;;GRP_Sucursal_HN_LACEIBA
+HN_SPS;HN;San Pedro Sula;X;X;X;X;3S;;GRP_Sucursal_HN_SPS
+HN_TEGUCIGALPA;HN;Tegucigalpa;X;X;X;X;3S;X;GRP_Sucursal_HN_TEGUCIGALPA
+NI_MANAGUA;NI;Managua;X;X;X;X;3S;X;GRP_Sucursal_NI_MANAGUA
+NI_CHINANDEGA;NI;Chinandega;X;X;X;X;3S;;GRP_Sucursal_NI_CHINANDEGA
+NI_ALTAMIRA;NI;Altamira;;X;X;X;2S;;
+NI_BATAHOLA;NI;Batahola;;;X;X;1S;;
+NI_METROCENTRO;NI;Metrocentro;;;X;X;1S;;
+NI_BOLONIA;NI;Bolonia;;X;X;X;2S;;
+NI_SANJUDAS;NI;San Judas (solo bodega);;;;X;;X;
+PA_CALLE50;PA;Calle50;X;X;X;X;3S;;GRP_Sucursal_PA_CALLE50
+PA_DAVID;PA;David;X;X;X;X;3S;;GRP_Sucursal_PA_DAVID
+PA_TM1;PA;TM1;X;X;X;X;3S;;GRP_Sucursal_PA_TM1
+PA_TM2;PA;TM2;X;X;X;X;3S;;GRP_Sucursal_PA_TM2
+PA_MANANITAS;PA;Las Mañanitas (solo bodega);;;;X;;X;
+SV_AUTOSUR;SV;Autopista Sur;X;X;X;X;3S;X;GRP_Sucursal_SV_AUTOSUR
+SV_PROCERES;SV;Los Proceres;X;;X;X;2S;;GRP_Sucursal_SV_PROCERES
+SV_SANMIGUEL;SV;San Miguel;X;X;X;X;3S;;GRP_Sucursal_SV_SANMIGUEL
+SV_SANTAELENA;SV;Santa Elena;X;X;X;X;3S;X;GRP_Sucursal_SV_SANTAELENA
+SV_PEDREGAL;SV;Pedregal (solo bodega);;;;X;;X;
