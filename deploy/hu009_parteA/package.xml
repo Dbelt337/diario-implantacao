@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Opportunity.ChannelCode__c</members>
+        <members>Opportunity.AsesorDigitalOriginador__c</members>
+        <members>Opportunity.FechaHandOff__c</members>
+        <members>Opportunity.EstadoHandOff__c</members>
+        <members>Event.Sucursal__c</members>
+        <members>Event.EstadoVisita__c</members>
+        <members>Event.SA_Id__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>PS_Base_Sales_GrupoQ</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>63.0</version>
+</Package>
