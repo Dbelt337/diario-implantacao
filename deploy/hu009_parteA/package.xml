@@ -5,9 +5,9 @@
         <members>Opportunity.AsesorDigitalOriginador__c</members>
         <members>Opportunity.FechaHandOff__c</members>
         <members>Opportunity.EstadoHandOff__c</members>
-        <members>Event.Sucursal__c</members>
-        <members>Event.EstadoVisita__c</members>
-        <members>Event.SA_Id__c</members>
+        <members>Activity.Sucursal__c</members>
+        <members>Activity.EstadoVisita__c</members>
+        <members>Activity.SA_Id__c</members>
         <name>CustomField</name>
     </types>
     <types>
