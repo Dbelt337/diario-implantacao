@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>ChannelCode__c</fullName>
+        <label>Canal Originador (Código de Canal)</label>
+        <type>Picklist</type>
+        <description>All countries: channel that originated the lead. Filled at creation by the originating system (API payload channelCode) or picked by the seller on manual creation. Restricted to the ChannelCode global value set - the canonical channel catalog. Never inferred afterwards by automation.</description>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>ChannelCode</valueSetName>
+        </valueSet>
+    </fields>
+</CustomObject>
