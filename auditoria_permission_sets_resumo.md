@@ -11,7 +11,15 @@
 | **Locais (custom do projeto)** | **26** | analisados 1 a 1 (CSV) |
 | Grupos (PSG) | 22, todos de produto | nenhum grupo local existe |
 
-## 🗑️ Candidatas a eliminar (4)
+## 🗑️ Candidatas a eliminar — ESTADO FINAL (decisões de 10/07)
+| PS | Decisão | Estado |
+|---|---|---|
+| `HU010_Campos_SLA_Lead` | eliminar | ✅ **ELIMINADA** (campos absorvidos em PS_Lead_SLA_Fields) |
+| `Lead_Country_Access` | eliminar | ✅ **ELIMINADA** (campo absorvido em PS_Base_Sales_GrupoQ) |
+| `cases_Permisssion_Set` | **MANTER como está** — decisão do arquiteto: não foi criada pelo time (herança do org pooled); não se mexe no que não tem dono no projeto | 🔒 mantida |
+| `GQ_Lead_Repuestos_FLS` | pendente — campos JÁ absorvidos em VendedorRepuestos (redundância ativa até deletar); requer remover assignment do Santiago antes | ⏳ pendente |
+
+### Análise original (4 candidatas)
 | PS | Motivo | Ação antes de apagar |
 |---|---|---|
 | `cases_Permisssion_Set` | Herança do org pooled (dez/2025, Juan Juarez/Pooled Org Admin — fora do projeto), typo no nome, 1 userPerm solta | nenhuma |
