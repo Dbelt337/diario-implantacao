@@ -73,13 +73,8 @@
             <label>Sí</label>
         </rules>
     </decisions>
-    <description>GQ.AUT.HU009.B v1: al agendar (o completar la sucursal de) una actividad presencial ligada a una Oportunidad, comparte la Opp con el grupo publico de la sucursal (GRP_Sucursal_[codigo], codigo = Event.Sucursal__c segun tabla canonica), acceso Read, RowCause Manual — el share Manual se elimina NATIVAMENTE al cambiar el Owner (Recibir Cliente), que es la limpieza automatica pedida por el refinamiento. Ademas estampa AsesorDigitalOriginador__c (Owner actual, solo la primera vez, inmutable despues) y pone EstadoHandOff__c = Pendiente Recepcion. Grupo inexistente => Task de log y sigue (el estado operativo es real aunque falte el grupo). FechaHandOff__c NO se toca aqui: la pone Recibir Cliente (Parte C).</description>
+    <description>GQ.AUT.HU009.B v2: al agendar (o completar la sucursal de) una actividad presencial ligada a una Oportunidad, comparte la Opp con el grupo publico de la sucursal (GRP_Sucursal_[codigo], codigo = Event.Sucursal__c segun tabla canonica), acceso Read, RowCause Manual — el share Manual se elimina NATIVAMENTE al cambiar el Owner (Recibir Cliente), que es la limpieza automatica pedida por el refinamiento. Ademas estampa AsesorDigitalOriginador__c (Owner actual, solo la primera vez, inmutable despues) y pone EstadoHandOff__c = Pendiente Recepcion. Grupo inexistente => Task de log y sigue. FechaHandOff__c NO se toca aqui: la pone Recibir Cliente (Parte C). NOTA TECNICA v2: las formulas de $Record NO resuelven campos custom de actividad (entidad Activity) en flows de Event — por eso la entrada usa filtros simples (StartsWith 006) y el nombre del grupo se arma con text template, no formula.</description>
     <environments>Default</environments>
-    <formulas>
-        <name>GroupDevName</name>
-        <dataType>String</dataType>
-        <expression>"GRP_Sucursal_" &amp; {!$Record.Sucursal__c}</expression>
-    </formulas>
     <interviewLabel>Evt_AS_ShareHandOff {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Evt_AS_ShareHandOff</label>
     <processMetadataValues>
@@ -297,14 +292,30 @@
             <targetReference>Get_Opp</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
-        <filterFormula>AND(
-  NOT(ISBLANK({!$Record.Sucursal__c})),
-  LEFT({!$Record.WhatId}, 3) = "006"
-)</filterFormula>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Sucursal__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>WhatId</field>
+            <operator>StartsWith</operator>
+            <value>
+                <stringValue>006</stringValue>
+            </value>
+        </filters>
         <object>Event</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
+    <textTemplates>
+        <name>GroupDevName</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>GRP_Sucursal_{!$Record.Sucursal__c}</text>
+    </textTemplates>
     <triggerOrder>10</triggerOrder>
 </Flow>
