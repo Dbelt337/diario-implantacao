@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>63.0</apiVersion>
-    <description>GQ.AUT.US025.H2.ADM v2: before-save de Opportunity (banda 10) que estampa el RecordType por linea en el CREATE (conversion, SFCC, manual, API; sin segundo save). DERIVACION v2 - la linea es del NEGOCIO, no del vendedor (un vendedor puede vender mas de un tipo/marca): 1) Account.Industry = Autos/Motos/Frotas -&gt; RT directo (GQOpportunitiesAutos/Motos/Flotas; en conversion Account.Industry recibe Lead.Industry nativamente); 2) Account.Industry = Repuestos/PA -&gt; SALE SIN ESTAMPAR (D-REP-01); 3) Industry vacio -&gt; fallback TipoAutoQueVende__c del OWNER (Motos-&gt;Motos, sino Autos); 4) default GQOpportunitiesAutos. Marca no participa (RT por linea). PENDIENTE MARCADO: brazo Venta_Mayorista por criterio B2B-revendedor (campo-criterio sin confirmar). RT no encontrado -&gt; no-op. Desactivar Lead_AS_EstampaRTOpp tras validar.</description>
+    <description>GQ.AUT.US025.H2.ADM v3: before-save de Opportunity (banda 10) que estampa el RecordType por linea en el CREATE (conversion, SFCC, manual, API; sin segundo save). La linea es del NEGOCIO: Account.Industry = Autos/Motos/Frotas -&gt; GQOpportunitiesAutos/Motos/Flotas (en conversion Account.Industry recibe Lead.Industry nativamente); Repuestos/PA -&gt; SALE SIN ESTAMPAR (D-REP-01); Industry vacio u otro -&gt; default GQOpportunitiesAutos. Marca no participa (RT por linea). PENDIENTES MARCADOS: brazo Venta_Mayorista (criterio B2B-revendedor sin confirmar) y fallback por TipoAutoQueVende__c del owner (el deploy rechaza el campo pese a existir en FieldDefinition - misterio a resolver en org; reintroducir via Flow Builder UI si se desea). RT no encontrado -&gt; no-op. Desactivar Lead_AS_EstampaRTOpp tras validar.</description>
     <environments>Default</environments>
     <formulas>
         <name>Linea</name>
@@ -17,9 +17,7 @@
   &quot;Frotas&quot;, &quot;GQOpportunitiesFlotas&quot;,
   &quot;Repuestos&quot;, &quot;&quot;,
   &quot;PA&quot;, &quot;&quot;,
-  IF(TEXT({!Get_Owner.TipoAutoQueVende__c}) = &quot;Motos&quot;,
-     &quot;GQOpportunitiesMotos&quot;,
-     &quot;GQOpportunitiesAutos&quot;))</expression>
+  &quot;GQOpportunitiesAutos&quot;)</expression>
     </formulas>
     <interviewLabel>Opp_BS_EstampaRT {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Opp_BS_EstampaRT</label>
@@ -94,29 +92,6 @@
         </rules>
     </decisions>
     <recordLookups>
-        <name>Get_Owner</name>
-        <label>Obtener owner (TipoAutoQueVende)</label>
-        <locationX>176</locationX>
-        <locationY>168</locationY>
-        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Linea_Gestionada</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>$Record.OwnerId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>User</object>
-        <queriedFields>Id</queriedFields>
-        <queriedFields>TipoAutoQueVende__c</queriedFields>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>Get_RecordType</name>
         <label>Obtener RecordType destino</label>
         <locationX>176</locationX>
@@ -149,7 +124,7 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Owner</targetReference>
+            <targetReference>Linea_Gestionada</targetReference>
         </connector>
         <object>Opportunity</object>
         <recordTriggerType>Create</recordTriggerType>
