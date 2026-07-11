@@ -2,7 +2,6 @@
 
 **Org:** DevSales · **Data:** 11/07/2026 · **Flow sob teste:** `Event_AfterSave_ShareBranchHandOff` (ativo)
 **Antes de começar (pré-requisitos):**
-- [ ] Lead Conversion Mapping: `Lead.ChannelCode__c → Opportunity.ChannelCode__c`
 - [ ] `BranchCode__c` e `VisitStatus__c` no layout do Event; os 4 campos no layout da Opportunity
 - [ ] **Owner** marcado no Set History Tracking da Opportunity
 - [ ] Pelo menos 1 usuária de teste no grupo `GRP_Sucursal_SV_AUTOSUR` (a "Recepcionista"), que **não** tenha acesso prévio à Opp de teste (não pode ser admin, não pode ser a Owner, sem View All)
@@ -58,19 +57,18 @@ SELECT UserOrGroup.Name, OpportunityAccessLevel, RowCause FROM OpportunityShare 
 2. Editar o Event e preencher `BranchCode__c = SV_AUTOSUR`.
    **Esperado:** flow dispara agora — share + estampa como no T1 (gatilho é "passou a atender o critério").
 
-## T8 — Governança do ChannelCode (picklist restrita)
-1. No Inspector (data-import ou criação manual), tentar criar um Lead com `ChannelCode__c = 'LIXO_QUALQUER'`.
-   **Esperado:** erro `INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST` — o catálogo bloqueia código inventado.
-2. Criar o Lead com `ChannelCode__c = 'WEB_MARCA'` (+ LeadSource = Facebook, Industry = Autos, campos obrigatórios).
-   **Esperado:** cria normal.
+## T8 — Origem pelo LeadSource (decisão final: sem ChannelCode)
+1. Criar um Lead manual escolhendo `Lead Source = Facebook` (+ Industry = Autos, obrigatórios).
+   **Esperado:** salva normal; vendedor escolhe de lista, nunca digita origem.
+2. *(Registro para o go-live da integração: middleware mapeará o `channelCode` do payload para um valor do LeadSource — ex. WEB_MARCA → "Página web de la marca". Validation rule de catálogo para criações via API fica como pendência da integração.)*
 
-## T9 — Conversão carrega o canal
-1. Converter o Lead do T8.2.
+## T9 — Conversão carrega a origem nativamente
+1. Converter o Lead do T8.
 2. Na Opp convertida:
 ```sql
-SELECT ChannelCode__c, LeadSource FROM Opportunity WHERE Id = '<ID_OPP_CONVERTIDA>'
+SELECT LeadSource, RecordType.DeveloperName, StageName FROM Opportunity WHERE Id = '<ID_OPP_CONVERTIDA>'
 ```
-   **Esperado:** `ChannelCode__c = WEB_MARCA` (via conversion mapping) e `LeadSource = Facebook` (nativo). *(Bônus: confirma também o RT estampado pelo Opp_BS_EstampaRT do US-025.)*
+   **Esperado:** `LeadSource = Facebook` (cópia nativa, sem mapping). *(Bônus: RecordType `GQOpportunitiesAutos` estampado pelo Opp_BS_EstampaRT do US-025.)*
 
 ## T10 — Rastro de auditoria
 1. Na Opp do T1/T3, abrir o related list **Opportunity Field History**.
@@ -88,8 +86,8 @@ SELECT ChannelCode__c, LeadSource FROM Opportunity WHERE Id = '<ID_OPP_CONVERTID
 | T5 grupo inexistente → log | | |
 | T6 atividade não-Opp | | |
 | T7 update tardio | | |
-| T8 picklist restrita | | |
-| T9 conversão canal | | |
+| T8 origem via LeadSource | | |
+| T9 conversão LeadSource nativa | | |
 | T10 field history | | |
 
 **Critério de aceite da Parte B:** T1, T2, T3 e T4 verdes (os demais são robustez/governança). Qualquer vermelho: copiar o erro/estado e me mandar.

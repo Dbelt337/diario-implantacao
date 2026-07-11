@@ -117,11 +117,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Opportunity.ChannelCode__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Opportunity.OriginatingDigitalAdvisor__c</field>
         <readable>true</readable>
     </fieldPermissions>

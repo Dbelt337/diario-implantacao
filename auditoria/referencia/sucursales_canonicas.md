@@ -27,10 +27,10 @@ Se o cadastro feito seguiu o QRM (596 linhas / grão SAP), está no grão errado
 ## Alinhamento com a integração (payload dos canais digitais)
 O contrato de entrada de leads já usa o mnemônico da sucursal no `preferredSellers.dealerCode`: `C101-URUCA-HYUNDAI` = sociedad + **mnemônico da sucursal** + marca. O código canônico `<PAIS>_<MNEMONICO>` desta tabela usa o MESMO mnemônico do segmento central do dealerCode (URUCA → CR_URUCA). Regra: ao cadastrar novas sucursales, o mnemônico deve coincidir com o usado no dealerCode da integração.
 
-## Quem preenche ChannelCode (decisão — revisada com LeadSource)
-Dois campos, dois públicos, sem sobreposição:
-- **LeadSource (nativo, já customizado: Publicidad/Facebook/Instagram/Tiktok/Página web...)**: origem comercial, preenchido pelo VENDEDOR na criação manual. Copia sozinho para Opportunity.LeadSource na conversão (nativo dos dois lados, sem mapping).
-- `Lead.ChannelCode__c` (picklist restrita ao GVS `ChannelCode` — catálogo em `canales_canonicos.csv`): código técnico do canal, preenchido SOMENTE por sistema (payload `channelCode`, ex. WEB_MARCA). Vendedor não toca; em branco na criação manual. API com código fora do catálogo é rejeitada (restricted picklist).
-- `Opportunity.ChannelCode__c` (mesmo GVS): Lead Conversion Mapping nativo na conversão. Nenhum usuário ou flow escreve nele.
-- Opp criada sem Lead (mostrador): ChannelCode em branco — correto.
-- Regra de plataforma aprendida: picklist só amarra em Global Value Set na CRIAÇÃO do campo — conversão de Text exige recriar o campo (destructiveChangesPre + create).
+## Origem do lead (decisão FINAL 11/07 — LeadSource único)
+`ChannelCode__c` foi **eliminado** (Lead e Opportunity, decisão do arquiteto): o campo nativo **LeadSource** é a única fonte de origem.
+- Vendedor (criação manual): escolhe o LeadSource na tela (Publicidad/Facebook/Instagram/Tiktok/Página web GrupoQ/Página web de la marca/...).
+- Sistemas (API): o middleware mapeia o `channelCode` do payload para um valor do LeadSource (ex. WEB_MARCA → "Página web de la marca"). O catálogo canônico É a lista de valores do LeadSource.
+- Conversão: LeadSource copia para Opportunity.LeadSource NATIVAMENTE — zero mapping manual.
+- Trade-off aceito: picklist standard não é restringível — API pode gravar string fora da lista. Pendência para o go-live da integração: validation rule no Lead restringindo LeadSource ao catálogo em criações via API.
+- O GVS `ChannelCode` ficou órfão → remover (destructive).
