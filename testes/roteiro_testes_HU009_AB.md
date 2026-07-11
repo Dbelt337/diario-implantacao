@@ -79,11 +79,11 @@ SELECT LeadSource, RecordType.DeveloperName, StageName FROM Opportunity WHERE Id
 ## Registro de resultados
 | Teste | OK? | Observação |
 |---|---|---|
-| T1 share + estampa | | |
-| T2 visibilidade recepcionista | | |
-| T3 cleanup nativo | | |
-| T4 imutabilidade asesor | | |
-| T5 grupo inexistente → log | | |
+| T1 share + estampa | ✅ | share Sucursal Uruca (CR)/Read/Manual criado |
+| T2 visibilidade recepcionista | ⏳ | condicionado ao OWD Private (conferir Sharing Settings) |
+| T3 cleanup nativo | ✅ | Owner→Santiago: share sumiu sozinho |
+| T4 imutabilidade asesor | ✅ | debug entrou no braço "already stamped" |
+| T5 grupo inexistente → log | ✅ | Task "branch group missing" (foi o diagnóstico do T1) |
 | T6 atividade não-Opp | | |
 | T7 update tardio | | |
 | T8 origem via LeadSource | | |
@@ -91,3 +91,8 @@ SELECT LeadSource, RecordType.DeveloperName, StageName FROM Opportunity WHERE Id
 | T10 field history | | |
 
 **Critério de aceite da Parte B:** T1, T2, T3 e T4 verdes (os demais são robustez/governança). Qualquer vermelho: copiar o erro/estado e me mandar.
+
+
+---
+## Parte C — Recibir Cliente (validada 11/07)
+Quick action + screen flow `Opportunity_Screen_ReceiveCustomer` (System Mode Without Sharing): executada na Opp de teste → Owner transferido, `HandOffStatus=Recibido`, `HandOffDate=2026-07-11T01:14:48Z`. Pendente: teste do Escenario 10 (Opp sem Event) e visita marcada Atendida.
