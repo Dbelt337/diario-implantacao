@@ -4,35 +4,20 @@
         <fullName>BranchCode__c</fullName>
         <label>Sucursal</label>
         <type>Picklist</type>
-        <description>HU-009 (all countries): canonical branch of the in-person activity (VENTAS branches only, see sucursales_canonicas). API value = canonical code, matching the public group GRP_Sucursal_[code] - the sharing flow contract. Advisor PICKS the branch (restricted picklist, no typing); for Test Drive the mirror flow sets it from the ServiceTerritory. New branch = new value here + new public group (governance gate).</description>
+        <description>HU-009 (pilot: Costa Rica): canonical sales branch of the in-person activity (C101 network per QRM registry). API value = canonical code, matching the public group GRP_Sucursal_[code] - the sharing flow contract. Advisor PICKS the branch; for Test Drive the mirror flow sets it from the ServiceTerritory. New branch/country = new value here + new public group (governance gate).</description>
         <required>false</required>
         <valueSet>
             <restricted>true</restricted>
             <valueSetDefinition>
                 <sorted>false</sorted>
         <value><fullName>CR_URUCA</fullName><default>false</default><label>Uruca (CR)</label></value>
-        <value><fullName>GT_ZONA9</fullName><default>false</default><label>19C Zona 9 (GT)</label></value>
-        <value><fullName>GT_CAES1</fullName><default>false</default><label>CAES1 (GT)</label></value>
-        <value><fullName>GT_CAES2</fullName><default>false</default><label>CAES2 (GT)</label></value>
-        <value><fullName>GT_MAJADAS</fullName><default>false</default><label>Majadas (GT)</label></value>
-        <value><fullName>GT_REFORMA</fullName><default>false</default><label>Reforma (GT)</label></value>
-        <value><fullName>GT_ROOSEVELT</fullName><default>false</default><label>Roosevelt (GT)</label></value>
-        <value><fullName>GT_XELA</fullName><default>false</default><label>Xela (GT)</label></value>
-        <value><fullName>GT_ZACAPA</fullName><default>false</default><label>Zacapa (GT)</label></value>
-        <value><fullName>HN_CHOLUTECA</fullName><default>false</default><label>Choluteca (HN)</label></value>
-        <value><fullName>HN_LACEIBA</fullName><default>false</default><label>La Ceiba (HN)</label></value>
-        <value><fullName>HN_SPS</fullName><default>false</default><label>San Pedro Sula (HN)</label></value>
-        <value><fullName>HN_TEGUCIGALPA</fullName><default>false</default><label>Tegucigalpa (HN)</label></value>
-        <value><fullName>NI_MANAGUA</fullName><default>false</default><label>Managua (NI)</label></value>
-        <value><fullName>NI_CHINANDEGA</fullName><default>false</default><label>Chinandega (NI)</label></value>
-        <value><fullName>PA_CALLE50</fullName><default>false</default><label>Calle50 (PA)</label></value>
-        <value><fullName>PA_DAVID</fullName><default>false</default><label>David (PA)</label></value>
-        <value><fullName>PA_TM1</fullName><default>false</default><label>TM1 (PA)</label></value>
-        <value><fullName>PA_TM2</fullName><default>false</default><label>TM2 (PA)</label></value>
-        <value><fullName>SV_AUTOSUR</fullName><default>false</default><label>Autopista Sur (SV)</label></value>
-        <value><fullName>SV_PROCERES</fullName><default>false</default><label>Los Proceres (SV)</label></value>
-        <value><fullName>SV_SANMIGUEL</fullName><default>false</default><label>San Miguel (SV)</label></value>
-        <value><fullName>SV_SANTAELENA</fullName><default>false</default><label>Santa Elena (SV)</label></value>
+        <value><fullName>CR_LIBERIA</fullName><default>false</default><label>Liberia (CR)</label></value>
+        <value><fullName>CR_SANCARLOS</fullName><default>false</default><label>San Carlos (CR)</label></value>
+        <value><fullName>CR_LINDORA</fullName><default>false</default><label>Lindora (CR)</label></value>
+        <value><fullName>CR_AYARCO</fullName><default>false</default><label>Ayarco (CR)</label></value>
+        <value><fullName>CR_SANTAANA</fullName><default>false</default><label>Santa Ana (CR)</label></value>
+        <value><fullName>CR_GUAPILES</fullName><default>false</default><label>Guápiles (CR)</label></value>
+        <value><fullName>CR_PEREZZELEDON</fullName><default>false</default><label>Pérez Zeledón (CR)</label></value>
             </valueSetDefinition>
         </valueSet>
     </fields>

@@ -34,3 +34,6 @@ O contrato de entrada de leads já usa o mnemônico da sucursal no `preferredSel
 - Conversão: LeadSource copia para Opportunity.LeadSource NATIVAMENTE — zero mapping manual.
 - Trade-off aceito: picklist standard não é restringível — API pode gravar string fora da lista. Pendência para o go-live da integração: validation rule no Lead restringindo LeadSource ao catálogo em criações via API.
 - O GVS `ChannelCode` ficou órfão → remover (destructive).
+
+## Escopo CR (decisão 11/07 — piloto atende só Costa Rica)
+A planilha física subestima CR (só Uruca com VENTAS); o registro QRM mostra a rede de vendas real da C101. **Fonte para CR = QRM**: 8 sucursales de ventas — CR_URUCA, CR_LIBERIA, CR_SANCARLOS, CR_LINDORA, CR_AYARCO, CR_SANTAANA, CR_GUAPILES, CR_PEREZZELEDON (mnemônicos = segmento do dealerCode, ex. C101-URUCA-HYUNDAI). "Uruca Usados" e "Uruca Flotas" são CANAIS dentro do prédio da Uruca — não são sucursales separadas (grão físico). A picklist Event.BranchCode__c e os grupos GRP_Sucursal_* cobrem só esses 8 até o rollout dos demais países; os 2 grupos SV do piloto original ficam criados para o futuro.
