@@ -37,3 +37,6 @@ O contrato de entrada de leads já usa o mnemônico da sucursal no `preferredSel
 
 ## Escopo CR (decisão 11/07 — piloto atende só Costa Rica)
 A planilha física subestima CR (só Uruca com VENTAS); o registro QRM mostra a rede de vendas real da C101. **Fonte para CR = QRM**: 8 sucursales de ventas — CR_URUCA, CR_LIBERIA, CR_SANCARLOS, CR_LINDORA, CR_AYARCO, CR_SANTAANA, CR_GUAPILES, CR_PEREZZELEDON (mnemônicos = segmento do dealerCode, ex. C101-URUCA-HYUNDAI). "Uruca Usados" e "Uruca Flotas" são CANAIS dentro do prédio da Uruca — não são sucursales separadas (grão físico). A picklist Event.BranchCode__c e os grupos GRP_Sucursal_* cobrem só esses 8 até o rollout dos demais países; os 2 grupos SV do piloto original ficam criados para o futuro.
+
+## Achado OWD (11/07)
+Opportunity OWD interno na DevSales = **Public Read Only** → o share da Parte B é redundante NESTA sandbox (todos leem tudo); T2 passa trivialmente. O desenho da HU-009 pressupõe **Private** (produção). Decisão: NÃO mudar o OWD na sandbox compartilhada; validar T2 na org QA/UAT com OWD espelhando produção. O flow já está correto para Private.

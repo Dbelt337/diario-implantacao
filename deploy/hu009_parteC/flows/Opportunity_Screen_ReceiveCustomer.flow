@@ -26,7 +26,7 @@
             <label>Yes</label>
         </rules>
     </decisions>
-    <description>GQ.AUT.HU009.C v1: Recibir Cliente. Screen flow (quick action on Opportunity) run by the Recepcionista/Host when the customer physically arrives: picks the in-person advisor, the flow changes the Opportunity Owner, stamps HandOffDate and HandOffStatus=Recibido, and marks the pending visit Event as Atendida (if one exists - a spontaneous walk-in has none, Escenario 10). Runs in SYSTEM MODE WITHOUT SHARING on purpose: covers Escenario 10 (no prior share exists for a walk-in) and lets the recepcionista transfer ownership without Transfer Records permission. The native deletion of the Manual share on Owner change is the automatic access cleanup (Parte B contract). OriginatingDigitalAdvisor__c is NOT touched (immutable, commission traceability).</description>
+    <description>GQ.AUT.HU009.C v1.1: Recibir Cliente. Screen flow (quick action on Opportunity) run by the Recepcionista/Host when the customer physically arrives: picks the in-person advisor, the flow changes the Opportunity Owner, stamps HandOffDate and HandOffStatus=Recibido, and marks the pending visit Event as Atendida (if one exists - a spontaneous walk-in has none, Escenario 10). Runs in SYSTEM MODE WITHOUT SHARING on purpose: covers Escenario 10 (no prior share exists for a walk-in) and lets the recepcionista transfer ownership without Transfer Records permission. The native deletion of the Manual share on Owner change is the automatic access cleanup (Parte B contract). OriginatingDigitalAdvisor__c is NOT touched (immutable, commission traceability).</description>
     <environments>Default</environments>
     <interviewLabel>Recibir Cliente {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Recibir Cliente</label>
@@ -194,7 +194,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>DoneText</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;Cliente recibido.&lt;/b&gt; La oportunidad fue transferida al asesor presencial, el hand-off quedó registrado (fecha y estado Recibido) y la visita pendiente fue marcada como Atendida.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;b&gt;Cliente recibido.&lt;/b&gt; La oportunidad fue transferida al asesor presencial y el hand-off quedó registrado (fecha y estado Recibido). Si existía una visita pendiente, quedó marcada como Atendida.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
