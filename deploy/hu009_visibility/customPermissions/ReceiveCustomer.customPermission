@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>HU-009: gate for the Recibir Cliente hand-off action. Holders see the quick action (Dynamic Actions visibility rule) and can run the screen flow. Assign via PS_Branch_Reception to branch receptionists/hosts and sales managers only.</description>
+    <label>Receive Customer (Hand-Off)</label>
+</CustomPermission>
