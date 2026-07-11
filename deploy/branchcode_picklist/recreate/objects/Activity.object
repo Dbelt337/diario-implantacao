@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>BranchCode__c</fullName>
+        <label>Sucursal</label>
+        <type>Picklist</type>
+        <description>HU-009 (pilot: Costa Rica): canonical sales branch of the in-person activity (C101 network per QRM registry). API value = canonical code, matching the public group GRP_Sucursal_[code] - the sharing flow contract. Advisor PICKS the branch; for Test Drive the mirror flow sets it from the ServiceTerritory. New branch/country = new value here + new public group (governance gate).</description>
+        <required>false</required>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+        <value><fullName>CR_URUCA</fullName><default>false</default><label>Uruca (CR)</label></value>
+        <value><fullName>CR_LIBERIA</fullName><default>false</default><label>Liberia (CR)</label></value>
+        <value><fullName>CR_SANCARLOS</fullName><default>false</default><label>San Carlos (CR)</label></value>
+        <value><fullName>CR_LINDORA</fullName><default>false</default><label>Lindora (CR)</label></value>
+        <value><fullName>CR_AYARCO</fullName><default>false</default><label>Ayarco (CR)</label></value>
+        <value><fullName>CR_SANTAANA</fullName><default>false</default><label>Santa Ana (CR)</label></value>
+        <value><fullName>CR_GUAPILES</fullName><default>false</default><label>Guápiles (CR)</label></value>
+        <value><fullName>CR_PEREZZELEDON</fullName><default>false</default><label>Pérez Zeledón (CR)</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+</CustomObject>
