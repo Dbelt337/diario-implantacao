@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>PS Branch Reception (Recibir Cliente)</label>
+    <description>HU-009 persona: Recepcionista/Host y Gerente de Ventas. Gate ReceiveCustomer + ejecucion del flow Recibir Cliente + lectura de campos de hand-off. La visibilidad de Opps viene del grupo GRP_Sucursal_[code].</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>ReceiveCustomer</name>
+    </customPermissions>
+    <flowAccesses>
+        <enabled>true</enabled>
+        <flow>Opportunity_Screen_ReceiveCustomer</flow>
+    </flowAccesses>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Opportunity.HandOffStatus__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Opportunity.HandOffDate__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Opportunity.OriginatingDigitalAdvisor__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Activity.BranchCode__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Activity.VisitStatus__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+</PermissionSet>
