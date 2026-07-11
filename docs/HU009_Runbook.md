@@ -20,6 +20,7 @@ Um único zip com o estado final (sem destructive — para org limpa/QA/UAT):
 | 8 | `PS_Base_Sales_GrupoQ` (FLS dos 6 campos) ⚠️ | PermissionSet |
 | 9 | `PS_Branch_Reception` (gate + flowAccess + FLS) | PermissionSet |
 | 10 | `Admin` (FLS dos campos) | Profile |
+| 11 | `EventSubject` (assuntos padrão: Visita al Showroom, Test Drive, Avalúo/Trade-In, Entrega de Vehículo, Firma de Documentos + os 5 standard) | StandardValueSet ⚠️ |
 
 **Opções do Workbench:** Single Package ✅ · Check Only ☐ · Rollback on Error ✅ (sem destructive, pode ser atômico) · Ignore Warnings desnecessário.
 
@@ -27,6 +28,7 @@ Um único zip com o estado final (sem destructive — para org limpa/QA/UAT):
 - **PS_Base_Sales_GrupoQ é full-replace**: o arquivo carrega o estado da DevSales. Se o PS da org destino divergiu, fazer retrieve lá antes e mesclar o FLS dos 6 campos, em vez de sobrescrever cego.
 - Grupos vão vazios (membro é dado, não metadado).
 - Pré-requisito de org destino: **OWD de Opportunity = Private** para o sharing ter efeito real (na DevSales é Public Read Only — registrado como limitação).
+- **StandardValueSet substitui a lista inteira**: antes de promover, conferir os valores atuais de EventSubject na org destino (Object Manager → Event → Subject) e mesclar no arquivo se houver valores locais que não estejam nele.
 - NÃO levar: nada de ChannelCode (eliminado — origem é LeadSource nativo), campos em espanhol (extintos), GVS `ChannelCode__gvs` (órfão, pendente de delete até na DevSales).
 
 ---
@@ -38,7 +40,7 @@ Um único zip com o estado final (sem destructive — para org limpa/QA/UAT):
 | C1 | **Owner** marcado no Set History Tracking | Object Manager → Opportunity → Fields → Set History Tracking | ⏳ conferir |
 | C2 | Campos no **page layout da Opportunity** (`Asesor Digital Originador`, `Fecha de Hand-Off`, `Estado Hand-Off` — sugestão: seção "Hand-Off Digital") | Object Manager → Opportunity → Page Layouts | ✅ |
 | C3 | `Sucursal` + `Estado de la Visita` no **page layout do Event** | Object Manager → Event → Page Layouts | ✅ |
-| C4 | `Sucursal` no **layout da Global Action "New Event"** (o compositor da aba Activity usa layout próprio) | Setup → Global Actions → New Event → Layout | ⏳ |
+| C4 | `Sucursal` (+ `Estado de la Visita`) no **layout da Global Action "New Event"** — o compositor da aba Activity usa layout próprio; F5 depois de salvar | Setup → Global Actions → New Event → Layout | ⏳ |
 | C5 | Action **Recibir Cliente** na record page da Opportunity via **Dynamic Actions** com visibility rule `$Permission.ReceiveCustomer = true` | Lightning App Builder → Highlights Panel → Upgrade to Dynamic Actions | ⏳ (hoje está no layout clássico, visível a todos) |
 | C6 | **Atribuir `PS_Branch_Reception`** a recepcionistas/hosts + gerentes de ventas do piloto | Permission Sets → Manage Assignments | ⏳ |
 | C7 | **Membros nos grupos** `GRP_Sucursal_CR_*` (recepcionistas de cada sucursal) | Setup → Public Groups | ⏳ |
@@ -66,6 +68,7 @@ Sem C6+C7 o botão não aparece para a recepção e a sucursal não recebe o sha
 | V1 | **Gate do botão**: usuário SEM `PS_Branch_Reception` não vê "Recibir Cliente"; COM o PS, vê e executa | após C5+C6, Login As |
 | V2 | **Visita Atendida**: Recibir Cliente numa Opp COM Event pendente → `VisitStatus = Atendida` | criar Event antes |
 | V3 | **List view** mostra só as visitas pendentes da sucursal | após C8 |
+| V4 | **Assuntos padrão**: dropdown do Subject no New Event mostra "Visita al Showroom", "Test Drive" etc. | após deploy do SVS |
 | T6 | Event em Account (não-Opp) → flow ignora | 1 min |
 | T8/T9 | LeadSource escolhido no Lead manual → copia nativo para a Opp na conversão | 2 min |
 | T10 | Field history mostra mudanças de `Estado Hand-Off` e Owner com autor/data | após C1 |

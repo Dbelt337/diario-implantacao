@@ -45,5 +45,9 @@
         <members>Admin</members>
         <name>Profile</name>
     </types>
+    <types>
+        <members>EventSubject</members>
+        <name>StandardValueSet</name>
+    </types>
     <version>63.0</version>
 </Package>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue><fullName>Call</fullName><default>false</default><label>Call</label></standardValue>
+    <standardValue><fullName>Email</fullName><default>false</default><label>Email</label></standardValue>
+    <standardValue><fullName>Meeting</fullName><default>false</default><label>Meeting</label></standardValue>
+    <standardValue><fullName>Send Letter/Quote</fullName><default>false</default><label>Send Letter/Quote</label></standardValue>
+    <standardValue><fullName>Other</fullName><default>false</default><label>Other</label></standardValue>
+    <standardValue><fullName>Visita al Showroom</fullName><default>false</default><label>Visita al Showroom</label></standardValue>
+    <standardValue><fullName>Test Drive</fullName><default>false</default><label>Test Drive</label></standardValue>
+    <standardValue><fullName>Avalúo / Trade-In</fullName><default>false</default><label>Avalúo / Trade-In</label></standardValue>
+    <standardValue><fullName>Entrega de Vehículo</fullName><default>false</default><label>Entrega de Vehículo</label></standardValue>
+    <standardValue><fullName>Firma de Documentos</fullName><default>false</default><label>Firma de Documentos</label></standardValue>
+</StandardValueSet>
