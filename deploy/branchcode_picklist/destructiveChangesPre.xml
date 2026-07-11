@@ -4,13 +4,5 @@
         <members>Activity.BranchCode__c</members>
         <name>CustomField</name>
     </types>
-    <types>
-        <members>PS_Base_Sales_GrupoQ</members>
-        <name>PermissionSet</name>
-    </types>
-    <types>
-        <members>Admin</members>
-        <name>Profile</name>
-    </types>
     <version>63.0</version>
 </Package>
