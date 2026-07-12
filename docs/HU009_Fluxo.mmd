@@ -1,0 +1,56 @@
+flowchart TD
+    subgraph DIGITAL["🧑‍💻 Asesor Digital (Owner da Opp)"]
+        A["Trabaja la Oportunidad<br/>(lead convertido ou direta)"]
+        B["Cliente quer visita presencial:<br/>cria <b>Event</b> 'Visita al Showroom'<br/>com <b>Sucursal</b> (picklist ex.: Uruca CR)"]
+        A --> B
+    end
+
+    subgraph AUTO["⚙️ Flow: Event_AfterSave_ShareBranchHandOff (automático)"]
+        C{"Event ligado a<br/>uma Opportunity?"}
+        D{"Grupo GRP_Sucursal_[código]<br/>existe?"}
+        E["Cria <b>OpportunityShare</b><br/>Read · RowCause Manual<br/>para o grupo da sucursal"]
+        F["📝 Task de log na Opp<br/>'branch group missing'"]
+        G["Estampa (só 1ª vez):<br/><b>Asesor Digital Originador</b> = Owner<br/>(imutável — comissão)"]
+        H["<b>Estado Hand-Off</b> =<br/>Pendiente Recepción"]
+        C -- "Sim" --> D
+        C -- "Não (ex.: Event de Account)" --> Z1(["fim, nada acontece"])
+        D -- "Sim" --> E --> G
+        D -- "Não" --> F --> G
+        G --> H
+    end
+
+    subgraph SUCURSAL["🏢 Recepcionista / Host da sucursal"]
+        I["Vê a visita na <b>list view</b><br/>'Visitas pendientes — mi sucursal'<br/>e a Opp compartilhada (OWD Private)"]
+        J["🚗 Cliente chega à sucursal"]
+        K["Botão <b>Recibir Cliente</b><br/>(visível só com Custom Permission<br/>ReceiveCustomer)"]
+        L["Escolhe o<br/><b>asesor presencial</b>"]
+        I --> J --> K --> L
+    end
+
+    subgraph RECIBIR["⚙️ Flow: Recibir Cliente (System Mode Without Sharing)"]
+        M["<b>Owner</b> = asesor presencial<br/><b>Fecha Hand-Off</b> = agora<br/><b>Estado</b> = Recibido"]
+        N{"Havia visita<br/>pendente?"}
+        O["Event → <b>Atendida</b>"]
+        P(["✅ Confirmação na tela"])
+        M --> N
+        N -- "Sim" --> O --> P
+        N -- "Não (walk-in)" --> P
+    end
+
+    Q["🧹 <b>Plataforma (nativo):</b><br/>troca de Owner apaga o<br/>share Manual sozinha —<br/>sucursal perde o acesso temporário"]
+    R["🧑‍🔧 Asesor presencial segue a venda<br/>(cotização, test drive, cierre)<br/>Asesor digital fica rastreado<br/>para comissão"]
+
+    B --> C
+    H --> I
+    L --> M
+    M -.-> Q
+    P --> R
+
+    W["🚶 Walk-in / Escenario 10:<br/>cliente aparece SEM agendamento"] -. "sem Event, sem share prévio<br/>(por isso System Mode)" .-> K
+
+    style AUTO fill:#eef4fb,stroke:#5b8def
+    style RECIBIR fill:#eef4fb,stroke:#5b8def
+    style DIGITAL fill:#f6f0fa,stroke:#9a6fb8
+    style SUCURSAL fill:#f0f8f1,stroke:#5aa66b
+    style Q fill:#fff7e6,stroke:#d9a441
+    style W fill:#fdf0f0,stroke:#c97a7a
