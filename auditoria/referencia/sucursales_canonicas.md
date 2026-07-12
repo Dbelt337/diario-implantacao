@@ -40,3 +40,10 @@ A planilha física subestima CR (só Uruca com VENTAS); o registro QRM mostra a 
 
 ## Achado OWD (11/07)
 Opportunity OWD interno na DevSales = **Public Read Only** → o share da Parte B é redundante NESTA sandbox (todos leem tudo); T2 passa trivialmente. O desenho da HU-009 pressupõe **Private** (produção). Decisão: NÃO mudar o OWD na sandbox compartilhada; validar T2 na org QA/UAT com OWD espelhando produção. O flow já está correto para Private.
+
+## Role hierarchy DevSales (levantada 11/07) — implicações
+A hierarquia v16 JÁ EXISTE na DevSales: Holding → CEO → GQ_Ventas → GQ_Ger_Regional_CA → {GQ_Dir_Marca_Regional → Ger_Marca×6 + GQ_Dir_Ventas_Online → Ger_VentasOnline×6 → AVO×6} + GQ_Ger_Pais_CR → 7 sucursales (Ger_Suc/Op/Sup_PDV) + ramo Usados (Ger/Op/Valuador).
+- **CR = 7 sucursales nas roles, não 8**: "Santa Ana Comercial" e "Lindora" compartilham centro/almacén C011/1210 (QRM) — mesmo ponto físico. Ação pendente (confirmar com negócio): desativar valor `CR_SANTAANA` da picklist BranchCode e apagar `GRP_Sucursal_CR_SANTAANA`. Canonical CR passa a 7.
+- Role lixo a remover: `dbeltCuentapersonalCliente` (teste, pendurada no CEO).
+- QA está no modelo antigo (Asesor GQ {país} etc.) — migração = deploy additive da árvore GQ_* (metadado Role, gerável do export DevSales) + re-role dos usuários.
+- Mnemônicos: roles usam CamelCase (LaUruca); grupos usam UPPER (URUCA) — namespaces distintos, padronizar no rollout dos demais países.
