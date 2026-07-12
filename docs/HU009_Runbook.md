@@ -48,6 +48,18 @@ Um único zip com o estado final (sem destructive — para org limpa/QA/UAT):
 
 Sem C6+C7 o botão não aparece para a recepção e a sucursal não recebe o share — são os dois passos que "ligam" o processo.
 
+### Visibilidade do botão × perfis do blueprint (decisão 11/07)
+O blueprint aprovado (AC_*) **não tem perfil de Recepcionista** — recepção é FUNÇÃO, não família: perfil base `AC_Vend_Veh` + `PS_Branch_Reception` por cima (mesmo padrão do InvoiceCasualCustomer/HU-014). A visibility rule é `$Permission.ReceiveCustomer` — independente de perfil.
+
+| Perfil | Vê o botão | Como |
+|---|---|---|
+| Recepcionista/Host (base AC_Vend_Veh) | ✅ | PS_Branch_Reception |
+| AC_Ger_Suc (respaldo do refinamento) | ✅ | PS_Branch_Reception |
+| AC_Admin | ✅ | atribuir o PS (suporte) |
+| Demais (AC_Vend_Veh sem PS, AC_Ger_Ven, AC_BDC_Ag, AC_Vend_Rep, AC_Sup_Rep, AC_Fleet, AC_Exec_Serv, AC_Calidad) | ❌ | — |
+
+Auditoria de "quem recebe cliente": `SELECT Assignee.Name, Assignee.Profile.Name FROM PermissionSetAssignment WHERE PermissionSet.Name = 'PS_Branch_Reception'`
+
 ---
 
 ## 3. TESTES
