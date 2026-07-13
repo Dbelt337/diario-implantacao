@@ -1,0 +1,40 @@
+UserName,Colaborador,Perfil (planilha),Puesto,Role (DeveloperName v16),Status
+raraya@grupoq.com.uat,Rodolfo Araya,AC_Ger_Ven,Director Comercial,GQ_Ger_Regional_CA,PROPOSTO
+hwills@grupoq.com.uat,Harvey Wills,AC_Ger_Ven,Director Comercial,GQ_Ger_Regional_CA,PROPOSTO
+jorge.molina@grupoactivemotors.com.uat,Jorge Camilo,AC_Ger_Ven,Gerente Comercial Motos,GQ_Ger_Marca_CR,PROPOSTO
+jbonilla@grupoq.com.uat,Johana Bonilla,AC_BDC_Ag,Gerente Online,GQ_Ger_VentasOnline_CR,PROPOSTO (confirmar sociedad=CR)
+susegura@grupoq.com.uat,Susana Segura,AC_BDC_Ag,Gerente Online,GQ_Ger_VentasOnline_CR,PROPOSTO (confirmar sociedad=CR)
+alexis.mayorga@grupoactivemotors.com.uat,Alexis Mayorga,AC_BDC_Ag,Gerente Online Motos,GQ_Ger_VentasOnline_CR,PROPOSTO
+nicole.mora@grupoactivemotors.com.uat,Nicole de los Angeles Mora,AC_BDC_Ag,Asesor Online,GQ_AVO_CR,PROPOSTO
+anlopez@grupoq.com.uat,Ana Nohemy Lopez,AC_BDC_Ag,Asesor Online,GQ_AVO_CR,PROPOSTO (confirmar sociedad=CR)
+mmoraga@grupoq.com.uat,Marcela Moraga,AC_BDC_Ag,Asesor Online,GQ_AVO_CR,PROPOSTO (confirmar sociedad=CR)
+arios@grupoq.com.uat,Allison Rios,AC_BDC_Ag,Asesor Online,GQ_AVO_CR,PROPOSTO (confirmar sociedad=CR)
+keyla.espinoza@grupoactivemotors.com.uat,Keyla Espinoza,AC_BDC_Ag,Asesor Online Motos,GQ_AVO_CR,PROPOSTO
+roberto.flores@grupoactivemotors.com.uat,Roberto Flores,AC_BDC_Ag,Asesor de Ventas Motos,GQ_Op_<sucursal>,BLOQUEADO (falta sucursal; perfil deveria ser AC_Vend_Veh)
+harriola@grupoq.com.uat,Hector Arriola,AC_Admin,Gestion de procesos,(sem role),ADMIN - role dispensavel
+emalfaro@grupoq.com.uat,Emmanuel Alfaro,AC_Admin,Coordinador Cnales Digitales,(sem role),ADMIN - role dispensavel
+cmulato@grupoq.com.uat,Marcela Mulato,AC_Admin,IT,(sem role),ADMIN - role dispensavel
+juanmora@grupoq.com.uat,Juan Carlos Mora,AC_Admin,IT,(sem role),ADMIN - role dispensavel
+mbetancourth@grupoq.com.uat,Marcela Betancourt,AC_BDC_Ag,Gerente de mercadeo,(fora da frente Vendas),AGUARDA item 8 do checklist
+marcastro@grupoq.com.uat,Marco Castro,AC_BDC_Ag,Gerente de mercadeo,(fora da frente Vendas),AGUARDA item 8
+vmurillo@grupoq.com.uat,Viviana Murillo,AC_BDC_Ag,Gerente de repuestos,(fora da frente Vendas),AGUARDA item 8
+shernandez@grupoq.com.uat,Isabella Hernández,AC_BDC_Ag,Gerente de repuestos,(fora da frente Vendas),AGUARDA item 8
+jrenderos@grupoq.com.uat,Juan Renderos,AC_BDC_Ag,Jefe de ventas repuestos,(fora da frente Vendas),AGUARDA item 8
+jdorodea@grupoq.com.uat,Josué Dorodea,AC_BDC_Ag,Enc. ventas repuestos contact center,(fora da frente Vendas),AGUARDA item 8
+mvillalobosm@grupoq.com.uat,Mariana Villalobos,AC_BDC_Ag,Enc. ventas PA contact center,(fora da frente Vendas),DUPLICADO + aguarda item 8
+eledezma@grupoq.com.uat,Efraín Ledezma,AC_BDC_Ag,Jefe contact center regional,(fora da frente Vendas),DUPLICADO + aguarda item 8
+andgarcia@grupoq.com.uat,Andrea García,AC_BDC_Ag,Jefe de Inteligencia comercial,(fora da frente Vendas),AGUARDA item 8
+juangonzalez@grupoq.com.uat,Juan Diego González,AC_BDC_Ag,Vendedor call center PA y repuestos,(fora da frente Vendas),AGUARDA item 8
+fedrodriguez@grupoq.com.uat,Federico Rodríguez,AC_BDC_Ag,Coordinador de cuentas claves,(fora da frente Vendas),AGUARDA item 8
+smadrigal@grupoq.com.uat,Stephanie Madrigal,AC_BDC_Ag,Jefe de mercadeo PA,(fora da frente Vendas),AGUARDA item 8
+nochaves@grupoq.com.uat,Norman Chavez,AC_BDC_Ag,Jefe de mercadeo PA,(fora da frente Vendas),AGUARDA item 8
+luismora@grupoq.com.uat,Luis Diego Mora,AC_BDC_Ag,Jefe de mercadeo repuestos,(fora da frente Vendas),AGUARDA item 8
+anacramirez@grupoq.com.uat,Ana Carolina Ramírez,AC_BDC_Ag,Jefe de mercadeo repuestos,(fora da frente Vendas),AGUARDA item 8
+cmerlos@pcomercial.com.uat,César Merlos,AC_BDC_Ag,Externo - agencia publicidad,(fora da frente Vendas),EXTERNO + aguarda item 8
+wtenorio_outsourcing@grupoq.com.uat,Wilfredo Tenorio,AC_BDC_Ag,Contact Center,(fora da frente Vendas),AGUARDA item 8
+xdiaz_outsourcing@grupoq.com.uat,Xenia Diaz,AC_BDC_Ag,Contact Center,(fora da frente Vendas),AGUARDA item 8
+eledezma@grupoq.com.uat,Efrain Ledezma Sosa,?,Gerente Contact Center,(fora da frente Vendas),DUPLICADO (mesmo username) + perfil ?
+mvillalobosm@grupoq.com.uat,Mariana Villalobos Mora,?,Supervisora Contact Center,(fora da frente Vendas),DUPLICADO (mesmo username) + perfil ?
+psafiano@grupoq.com.uat,Paola Safiano,?,Mercadeo,(fora da frente Vendas),PERFIL ? + aguarda item 8
+semarroquin@grupoq.com.uat,Sergio Marroquin,?,Mercadeo,(fora da frente Vendas),PERFIL ? + aguarda item 8
+milmunoz@grupoq.com.uat,Milton Muñoz,?,CRM,(fora da frente Vendas),PERFIL ? + aguarda item 8
