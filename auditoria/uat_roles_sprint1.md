@@ -30,3 +30,6 @@
 2. **ProfileIds misturam orgs**: `00eWK...` (UAT) e `00eao...` (outra org). Importar pela **API Name do perfil**, nunca pelos Ids da planilha.
 3. **Coluna sociedad vazia** (Carmen/Vanessa devem): para os @grupoq.com não dá para afirmar país; assumi CR (fase 1) — confirmar antes do insert. @grupoactivemotors = Active Motors CR, esses são seguros.
 4. Item 2 do checklist também pede **ManagerId** implícito na cadeia de aprovação — a planilha não traz gerente de ninguém.
+
+## Planilha melhorada (13/07)
+Versão insert-ready gerada em `provisioning/Usuarios_UAT_Sprint1_Aprovisionamiento_v3.xlsx` (abas: Leia-me, Usuarios com Role/Sociedad/Manager/locale, Mapa Puesto-Role da matriz v14, Checklist com 2 itens novos: duplicados de username e ManagerId). Perfis corrigidos: Alexis Mayorga → AC_Ger_Ven, Roberto Flores → AC_Vend_Veh. Divergência a alinhar: matriz v14 lista ~20 sucursales CR (Trigal, Cartago, etc.) vs 7 na árvore v16 deployada.
