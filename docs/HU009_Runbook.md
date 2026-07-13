@@ -27,7 +27,7 @@ Um único zip com o estado final (sem destructive — para org limpa/QA/UAT):
 **⚠️ Cuidados na promoção:**
 - **PS_Base_Sales_GrupoQ é full-replace**: o arquivo carrega o estado da DevSales. Se o PS da org destino divergiu, fazer retrieve lá antes e mesclar o FLS dos 6 campos, em vez de sobrescrever cego.
 - Grupos vão vazios (membro é dado, não metadado).
-- Pré-requisito de org destino: **OWD de Opportunity = Private** para o sharing ter efeito real (na DevSales é Public Read Only — registrado como limitação).
+- Pré-requisito de org destino: **OWD de Opportunity = Private** para o sharing ter efeito real. ✅ APLICADO na DevSales em 11/07 (Lead Private + Opportunity Private; Account mantido Public Read/Write por decisão — apertar para Read Only quando o negócio referendar). QA pendente: Lead ainda ReadWriteTransfer.
 - **StandardValueSet substitui a lista inteira**: antes de promover, conferir os valores atuais de EventSubject na org destino (Object Manager → Event → Subject) e mesclar no arquivo se houver valores locais que não estejam nele.
 - NÃO levar: nada de ChannelCode (eliminado — origem é LeadSource nativo), campos em espanhol (extintos), GVS `ChannelCode__gvs` (órfão, pendente de delete até na DevSales).
 
@@ -88,7 +88,7 @@ Auditoria de "quem recebe cliente": `SELECT Assignee.Name, Assignee.Profile.Name
 ### 🔜 Somente em QA/UAT (OWD Private)
 | # | Cenário |
 |---|---|
-| T2 | Recepcionista (apenas membro do grupo, sem outros acessos) **não vê** a Opp antes do agendamento → **vê** após o share → **perde acesso** após o Recibir Cliente. Na DevSales é intestável (OWD Public Read Only: todos leem tudo). |
+| T2 | Recepcionista (apenas membro do grupo, sem outros acessos) **não vê** a Opp antes do agendamento → **vê** após o share → **perde acesso** após o Recibir Cliente. ✅ TESTÁVEL NA DEVSALES desde 11/07 (OWD virado para Private). |
 | REG | Regressão do ciclo completo com perfis reais de recepcionista/gerente |
 
 ---

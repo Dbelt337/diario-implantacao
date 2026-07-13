@@ -47,3 +47,9 @@ A hierarquia v16 JÁ EXISTE na DevSales: Holding → CEO → GQ_Ventas → GQ_Ge
 - Role lixo a remover: `dbeltCuentapersonalCliente` (teste, pendurada no CEO).
 - QA está no modelo antigo (Asesor GQ {país} etc.) — migração = deploy additive da árvore GQ_* (metadado Role, gerável do export DevSales) + re-role dos usuários.
 - Mnemônicos: roles usam CamelCase (LaUruca); grupos usam UPPER (URUCA) — namespaces distintos, padronizar no rollout dos demais países.
+
+## Modelo de visibilidade fase 1 CR (aplicado 11/07)
+- OWD DevSales: Lead Private ✅ · Opportunity Private ✅ · Account Public Read/Write (decisão pendente de apertar p/ Read Only). QA: Opportunity/Account Private ✅, Lead ReadWriteTransfer ❌ (virar Private).
+- Roles v16: QA fase 1 CR encaixada (6 AVOs → GQ_AVO_CR, 2 sup → GQ_Ger_VentasOnline_CR). Roles velhas AsesorGQ_CR/SupervisorGQ_CR vazias = faxina futura.
+- PS_Api com View/Modify All em humano (Vitor Sandy) nas DUAS orgs → remover assignment (igual decisão da auditoria de PSs DevSales).
+- Prova do modelo: teste triplo (asesor não vê peer / gerente vê time / outro país não vê nada) — executar pós-recálculo em ambas.
