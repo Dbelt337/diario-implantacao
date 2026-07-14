@@ -1,32 +1,39 @@
-# Resumo Executivo — Catálogo de Precios & Pedidos Automáticos (DevSales) · 14/07/2026
+# Entrega — Catálogo de Productos y Precios (DevSales) · 14/07/2026
+**Arquiteto:** Diego Beltrão · **Escopo desta entrega: CATÁLOGO.** (Descontos = próxima fase. Fluxos de pedido: fora de escopo, ver nota final.)
 
-## O que existe agora na org (números — ATUALIZADO após carga completa 14/07 noite)
-- **2 catálogos de preço (pricebooks):** Standard (lista) e **C101 Costa Rica** (comercial). Modelo: 1 pricebook por sociedad (C105 motos preparado).
-- **223 produtos — o catálogo de vendas REAL da Costa Rica**: 113 Hyundai + 55 Chevrolet + 45 Isuzu + 10 Cadillac (fontes oficiais: Carga Masiva QRM + ReportesPreciovehiculo, só versões ativas), todos com Business Brand associada e ProductCode canônico (OCN + año).
-- **446 entradas de preço**: 223 no Standard + 223 no C101 com os precios de negócio reais (Precio Mínimo Asesor, Exonerado, Exonerado Mínimo, Gastos, Cashback) — carregados por pipeline programático com validação de integridade (21 spot-checks), **zero célula digitada à mão**.
-- **7 campos novos de precio na PricebookEntry** (Currency 16,2 / checkbox / data), com **field history ligado** — toda alteração de preço fica auditada (quem, quando, de → para). Acesso controlado pelo permission set `PS_Precios_Catalogo`.
-- **2 automações de pedido (flows)**: ao **ganhar** uma oportunidade com cotização sincronizada e aceita, o **pedido (Order) nasce sozinho** em Draft com as linhas copiadas; quando o SAP devolve a **factura** (via integração), o pedido **ativa sozinho** e o vendedor recebe notificação. Exclusão única: RT Mayorista. Falhas nunca quebram a venda — viram Task para o dono.
+## O que foi construído
 
-## Decisões de arquitetura do dia (governança)
-1. **Não criar objeto novo**: o objeto "Solicitud Cambio Precios" foi criado e **removido no mesmo dia** por decisão; a auditoria de cambios de precio é feita pelo **field history nativo** da PricebookEntry (a plataforma aceitou — validado por deploy).
-2. **Não criar campo custom quando existe nativo**: `Make__c` descartado — o Automotive Cloud já tem `MakeName` no produto (mesma regra que já tinha matado o ChannelCode em favor do LeadSource).
-3. **Moeda**: org multicurrency com **CRC** única ativa (fase 1 = CR). A amostra entrou em CRC com valores nominais — para a carga real, a lista de moedas por país decide (valores reais em CRC ou ativar USD antes, se CR precifica em dólar).
+**1. O modelo de catálogo — 100% sobre o standard da plataforma.**
+Cada versão vendível de veículo é um **Produto** Salesforce, identificado pelo **código oficial do QRM/SAP (OCN + año)** — a mesma chave que a fábrica e o cotizador usam — e associado à sua **marca** pelo cadastro nativo de Business Brands do Automotive Cloud (23 marcas já registradas). Nenhum objeto novo e nenhum campo custom onde a plataforma já oferece o nativo — essa é a regra de governança adotada e aplicada.
 
-## Como será a carga real vinda do SAP (desenho)
-**Fluxo em 4 ondas, sempre nesta ordem e sempre idempotente (upsert por chave, nunca insert cego):**
-1. **Product2** ← material master SAP: chave `ProductCode` (definir um **External Id** dedicado, ex. `SAP_MaterialCode__c`, para o Mule fazer upsert); marca no campo nativo `MakeName`; Family por línea (Autos/Motos/Repuestos).
-2. **PricebookEntry no Standard** (preço de lista) — pré-requisito da plataforma.
-3. **PricebookEntry na lista da sociedad** (C101 CR; depois C105 motos, e as demais sociedades no rollout) com os precios de negócio (PMV, Exonerado, Gastos, Cashback, Vigencia).
-4. **VehicleDefinition/Vehicle** (estoque físico por VIN, para test drive e reserva de unidad) — pendente do describe do objeto na org.
-**Canal:** MuleSoft (mesma malha das integrações L34/L73 de pedidos/facturas) gravando via API com o usuário de integração (PS_Api); a carga demo de hoje validou o caminho manual (Inspector) e o modelo de dados.
-**Pendências para essa carga:** extrato de materiais do SAP (planilha modelo), decisão do External Id, decisão de moeda por país, e volume/frequência (full diário vs delta).
+**2. O modelo de preços — uma lista por sociedad, preços de negócio auditados.**
+Duas listas de preços ativas: a **Standard** (preço de lista, exigência da plataforma) e a **C101 Costa Rica** (lista comercial). A estrutura já está preparada para o rollout: uma lista por sociedad (C105 motos pronta para ativar) e, no futuro, por país/moeda. Na lista comercial, cada versão carrega os **7 preços de negócio** que hoje vivem no QRM: Precio de Lista, Precio Mínimo Asesor, Precio Exonerado, Precio Exonerado Mínimo, Gastos, Monto de Cashback e Aplica Cashback — com acesso controlado por permission set.
 
-## Validado hoje em DevSales
-- Deploy dos campos + history + permission set + motores: **verde** (20/20 e pacotes subsequentes).
-- Carga demo: 6 produtos + 12 preços **ok** — o preço de lista aparece automaticamente ao cotizar.
-- Roteiro E2E pronto (`testes/roteiro_e2e_motores_pedido.md`): cotizar Accent 2025 a 28.900 → ganhar → pedido automático → factura SAP → pedido ativo + notificação. Execução em andamento.
+**3. Auditoria nativa — o controle que a planilha nunca deu.**
+Toda alteração de qualquer preço fica registrada automaticamente (**quem mudou, quando, valor anterior → novo**) pelo field history da plataforma. Isso substitui com vantagem o rastro de "solicitud/autoriza" que hoje vive dentro do QRM e elimina a necessidade de objetos ou planilhas de controle.
 
-## Próximos passos
-1. Executar o E2E dos motores (roteiro pronto) e registrar evidências.
-2. Cockpit de venta (OmniScript guiado): esqueleto do pai desenhado; aguarda export do CrearCotizacion (molde) + 4 queries de investigação.
-3. Alinhar com o negócio: moeda por país na carga real, External Id do material, e a planilha modelo do catálogo SAP.
+**4. A carga — o catálogo real da Costa Rica, completo, sem digitação.**
+- **223 versões ativas** de 4 marcas: 113 Hyundai, 55 Chevrolet, 45 Isuzu, 10 Cadillac.
+- **446 registros de preço** (lista + comercial), extraídos das **fontes oficiais** (Carga Masiva do QRM e Reporte de Precios CR).
+- Carga executada por **pipeline programático com validação de integridade** — zero células digitadas à mão, zero preço no produto errado.
+- Verificação final contra a fonte: amostras conferidas dígito a dígito com a planilha oficial do QRM.
+
+**5. O contrato da integração ficou pronto de graça.**
+O de-para **QRM → Salesforce validou 1:1**: as colunas da Carga Masiva do QRM correspondem exatamente aos campos implantados. O processo manual desta carga É a especificação do que o MuleSoft automatizará — planilha deixa de ser ferramenta de operação e passa a ser apenas legado de migração.
+
+## O que o negócio ganha já
+- Vendedor cotiza e o **preço certo aparece sozinho** — qualquer uma das 223 versões, do Grand i10 ao Escalade.
+- **Preço tem dono e trilha**: mudou, ficou registrado.
+- Base pronta para a fase de **Descontos**: os pisos por alçada (Precio Mínimo Asesor / Gerente de Venta / Gerente de Marca) já foram mapeados das fontes QRM, e a regra de aprovação vigente está documentada (preço novo ou redução → requer visto bueno; aumento → não requer).
+
+## Decisões de governança registradas
+1. **Não criar objeto custom quando o processo cabe no standard** (objeto de solicitud descartado; auditoria = history nativo).
+2. **Não criar campo custom quando existe nativo** (marca = Business Brand/MakeName nativos).
+3. **Moeda**: org com CRC ativa; as fontes indicam que CR precifica em USD — decisão pendente de negócio antes da carga de produção (ativar USD e recarregar, ou operar em CRC).
+4. Data de fim do cashback: campo a definir na fase de descontos/promos.
+
+## Nota de escopo — fluxos
+Dois fluxos de automação de pedido foram construídos sob especificação anterior e **estão fora do escopo desta entrega**. Recomendação: mantê-los **desativados** até a fase de pedidos (desativação em 2 cliques; pacote de remoção também disponível). Nada do catálogo depende deles.
+
+## Próxima fase proposta: DESCONTOS
+Matriz de descontos por alçada alimentada pelos pisos já carregados (PMV/Exonerado por versão) + aprovação eletrônica espelhando a regra do QRM — mesma engine para desconto na venda e para cambio de precio no catálogo.
