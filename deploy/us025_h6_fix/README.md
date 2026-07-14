@@ -1,5 +1,11 @@
 # US-025 H6 — Fix v2 dos flows de desconto (DevSales)
 
+> **DEPLOYADO em DevSales — 2026-07-14 22:13 UTC** (Workbench, success: true;
+> `Opp_AS_EvaluarDescuento` id 301WK00002S88osYAB, `Opp_RT_Discount_Approval` id 301WK00002S88otYAB).
+> ⚠️ Aviso (Info) do deploy: o **Automated Process User não tem e-mail válido** — a orquestração
+> não envia e-mails dos steps até corrigir em Setup → Process Automation Settings. Os work items
+> no Work Guide e a custom notification funcionam mesmo assim.
+
 **Origem:** auditoria de 2026-07-14 (`auditoria_us025_report.md`) sobre os retrieves
 `metadata_40.zip`/`metadata_41.zip` (idênticos). Corrige a falha intermitente relatada
 pelo Santiago ("às vezes envia e às vezes não").
