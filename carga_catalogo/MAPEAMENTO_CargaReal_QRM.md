@@ -33,5 +33,5 @@ QRM/SAP (dono do preço hoje) → extrato tipo "Carga Masiva" → Mule → upser
 ## Pendências nomeadas
 - CARGA-01: decidir campo p/ Fecha Final Cashback.
 - CARGA-02: ativar USD + recarregar demo em USD (ou aceitar CRC até a carga real).
-- CARGA-03: External Id definitivo (`SAP_MaterialCode__c`? ou ProductCode basta enquanto manual).
+- ~~CARGA-03~~ ✅ DECIDIDO 14/07: chave de integração = **`StockKeepingUnit` (Product SKU, standard)** carregando o código de material SAP; `ProductCode` segue como identidade comercial (OCN+año). Zero campo custom. Nota: Product Class fica **Simple** (grão versão=produto); **Bundle** reservado para os Paquetes SVC (fase servicontratos — é aí que a aba Bundle Components passa a ser usada); Variation Parent/Variation NÃO usados (espec mora no VehicleDefinition).
 - CARGA-04: tiers Gerente Venta/Marca → matriz de desconto (com Santiago/D-APR-02).
