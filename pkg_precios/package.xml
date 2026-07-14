@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Solicitud_Cambio_Precios__c</members>
+        <members>PricebookEntry</members>
+        <members>Product2</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Solicitud_Cambio_Precios__c.Estado__c</members>
+        <members>Solicitud_Cambio_Precios__c.Marca__c</members>
+        <members>Solicitud_Cambio_Precios__c.Sociedad__c</members>
+        <members>Solicitud_Cambio_Precios__c.Tipo__c</members>
+        <members>Solicitud_Cambio_Precios__c.Comentario__c</members>
+        <members>PricebookEntry.PrecioMinimoAsesor__c</members>
+        <members>PricebookEntry.PrecioExonerado__c</members>
+        <members>PricebookEntry.PrecioExoneradoMinimo__c</members>
+        <members>PricebookEntry.Gastos__c</members>
+        <members>PricebookEntry.MontoCashback__c</members>
+        <members>PricebookEntry.AplicaCashback__c</members>
+        <members>PricebookEntry.VigenciaDesde__c</members>
+        <members>PricebookEntry.Solicitud__c</members>
+        <members>Product2.Make__c</members>
+        <members>Product2.Version__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>PS_Precios_Catalogo</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>63.0</version>
+</Package>
