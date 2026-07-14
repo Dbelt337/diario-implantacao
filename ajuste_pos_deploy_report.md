@@ -65,3 +65,7 @@ Sequência real que funcionou (lição para o diário):
 - TODO-PRECIOS-02: ~~prova do delete~~ ✅ (confirmado pelo arquiteto); resta colar o smoke test.
 - TODO-PRECIOS-03: carga real do catálogo SAP (substitui o fallback; chave ProductCode; decidir external Id definitivo para o Mule). **Moeda (14/07): org tem só CRC ativa (corporativa, taxa 1) — a amostra entrou em CRC com valores nominais de USD (ok p/ demo). Na carga real: lista por país decide — valores reais em CRC, OU ativar USD antes se CR precifica em dólar. CSVs de carga ficaram sem coluna CurrencyIsoCode (herdam a moeda da org).**
 - TODO-PRECIOS-04: onda VehicleDefinition depende do describe (Q3b) — validar campos aceitos.
+
+## Faxina de produtos fake (14/07 — CONCLUÍDA ✅)
+Estado final verificado por query: **2 pricebooks** (Standard + C101) · **6 Product2** (catálogo oficial Hyundai) · 12 PBEs. Removidos: ALPINA 300 CC, Filtro Cadilac, Honda CB 500F/Civic/CR-V 2026, Hyundai Santa Fe (+ suas PBEs, OLIs de teste, o Vehicle "Polo" e o Order de teste 0000000001).
+Lições de plataforma registradas: (1) Product2 não deleta com OLI/QLI/OrderItem/Vehicle apontando — o erro lista os bloqueadores; (2) PBE usada em pedido não deleta ("archived, still visible from orders") — Order precisa morrer primeiro (e Order Activated precisa voltar a Draft antes); (3) esse mesmo mecanismo é o que protege o preço histórico dos pedidos reais em produção.
