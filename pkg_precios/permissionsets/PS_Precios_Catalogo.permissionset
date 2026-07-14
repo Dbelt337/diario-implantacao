@@ -38,43 +38,4 @@
         <editable>true</editable>
         <readable>true</readable>
     </fieldPermissions>
-    <fieldPermissions>
-        <field>PricebookEntry.Solicitud__c</field>
-        <editable>true</editable>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <field>Solicitud_Cambio_Precios__c.Estado__c</field>
-        <editable>true</editable>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <field>Solicitud_Cambio_Precios__c.Marca__c</field>
-        <editable>true</editable>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <field>Solicitud_Cambio_Precios__c.Sociedad__c</field>
-        <editable>true</editable>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <field>Solicitud_Cambio_Precios__c.Tipo__c</field>
-        <editable>true</editable>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <field>Solicitud_Cambio_Precios__c.Comentario__c</field>
-        <editable>true</editable>
-        <readable>true</readable>
-    </fieldPermissions>
-    <objectPermissions>
-        <object>Solicitud_Cambio_Precios__c</object>
-        <allowCreate>true</allowCreate>
-        <allowRead>true</allowRead>
-        <allowEdit>true</allowEdit>
-        <allowDelete>true</allowDelete>
-        <viewAllRecords>false</viewAllRecords>
-        <modifyAllRecords>false</modifyAllRecords>
-    </objectPermissions>
 </PermissionSet>

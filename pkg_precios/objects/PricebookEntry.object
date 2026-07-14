@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <enableHistory>true</enableHistory>
     <fields>
         <fullName>PrecioMinimoAsesor__c</fullName>
         <label>Precio Mínimo Asesor</label>
@@ -7,6 +8,7 @@
         <precision>18</precision>
         <scale>2</scale>
         <required>false</required>
+        <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>PrecioExonerado__c</fullName>
@@ -15,6 +17,7 @@
         <precision>18</precision>
         <scale>2</scale>
         <required>false</required>
+        <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>PrecioExoneradoMinimo__c</fullName>
@@ -23,6 +26,7 @@
         <precision>18</precision>
         <scale>2</scale>
         <required>false</required>
+        <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>Gastos__c</fullName>
@@ -31,6 +35,7 @@
         <precision>18</precision>
         <scale>2</scale>
         <required>false</required>
+        <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>MontoCashback__c</fullName>
@@ -39,27 +44,20 @@
         <precision>18</precision>
         <scale>2</scale>
         <required>false</required>
+        <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>AplicaCashback__c</fullName>
         <label>Aplica Cashback</label>
         <type>Checkbox</type>
         <defaultValue>false</defaultValue>
+        <trackHistory>true</trackHistory>
     </fields>
     <fields>
         <fullName>VigenciaDesde__c</fullName>
         <label>Vigencia Desde</label>
         <type>Date</type>
         <required>false</required>
-    </fields>
-    <fields>
-        <fullName>Solicitud__c</fullName>
-        <label>Solicitud</label>
-        <type>Lookup</type>
-        <referenceTo>Solicitud_Cambio_Precios__c</referenceTo>
-        <relationshipLabel>Pricebook Entries</relationshipLabel>
-        <relationshipName>PricebookEntries</relationshipName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <required>false</required>
+        <trackHistory>true</trackHistory>
     </fields>
 </CustomObject>

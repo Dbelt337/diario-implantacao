@@ -1,4 +1,4 @@
-Name,ProductCode,Family,Make__c,IsActive
+Name,ProductCode,Family,MakeName,IsActive
 Accent Sedan Sport 1.500 cc Gas T/A 2WD,0YS4D661V D D319 2024,Autos,Hyundai,true
 Accent Sedan Sport 1.500 cc Gas T/A 2WD,0YS4D661V D D319 2025,Autos,Hyundai,true
 Accent Sedan Limited 1.500 cc Gas T/A 2WD,0YS4D661V D D394 2024,Autos,Hyundai,true
