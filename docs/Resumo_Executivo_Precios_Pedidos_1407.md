@@ -26,6 +26,19 @@ O de-para **QRM → Salesforce validou 1:1**: as colunas da Carga Masiva do QRM 
 - **Preço tem dono e trilha**: mudou, ficou registrado.
 - Base pronta para a fase de **Descontos**: os pisos por alçada (Precio Mínimo Asesor / Gerente de Venta / Gerente de Marca) já foram mapeados das fontes QRM, e a regra de aprovação vigente está documentada (preço novo ou redução → requer visto bueno; aumento → não requer).
 
+## Fundamentação — modelo oficial do Automotive Cloud, dimensionado para o GrupoQ
+A implementação segue o **Vehicle & Product Data Model do Salesforce Automotive Cloud** (Automotive Cloud Developer Guide) — todos os objetos citados foram verificados por describe na própria org:
+
+| Camada | Objeto/mecanismo oficial | Papel no GrupoQ (6 países · 22 marcas · N sociedades) |
+|---|---|---|
+| **Marca** | `BusinessBrand` (objeto standard do Automotive Cloud, transversal a Sales/Loyalty) | Catálogo corporativo ÚNICO de marcas: as 22 marcas são cadastradas **uma vez** e valem para os 6 países — produto de qualquer país aponta para a mesma marca; relatório regional por marca sai nativo |
+| **Produto/Versão** | `Product2` estendido pelo Automotive Cloud (`BusinessBrandId`, `MakeName`, `ModelName`, `VersionName`, `ManufacturerName` — campos standard) | 1 registro por versão comercial (OCN + año = ProductCode). O MESMO produto vendido em mais de um país continua sendo 1 registro — o que muda por país é o preço, nunca o produto |
+| **Preço** | `Pricebook2`/`PricebookEntry` (pricing standard da plataforma — o Automotive Cloud não o substitui, o adota) | **1 lista comercial por sociedad** (C101, C105, S101, H101...): escala linear para todas as sociedades dos 6 países; os 7 preços de negócio são atributos da ENTRADA (produto×lista), então cada sociedad tem seus valores sem duplicar produto |
+| **Moeda** | Multicurrency da plataforma (`CurrencyIsoCode` por registro) | Cada lista/entrada na moeda do seu país (CRC, USD, GTQ, HNL, NIO, PAB) — a "lista de moedas por país" do GrupoQ vira o cadastro Manage Currencies |
+| **Espec/Estoque físico** | `VehicleDefinition` (espec do modelo/versão, `ProductId` → Product2) e `Vehicle` (unidade com VIN) | Fase futura (test drive/reserva de unidade): a espec técnica referencia o MESMO Product2 do catálogo — sem duplicação entre comercial e físico |
+
+**Por que esse desenho aguenta a escala:** 22 marcas × 6 países × N sociedades não multiplica produto — multiplica **entrada de preço**, que é exatamente o objeto que a plataforma desenhou para escalar (o pricing standard suporta milhões de entradas). Rollout de um país novo = ativar a moeda + criar as listas das sociedades + carregar entradas. Zero metadado novo.
+
 ## Decisões de governança registradas
 1. **Não criar objeto custom quando o processo cabe no standard** (objeto de solicitud descartado; auditoria = history nativo).
 2. **Não criar campo custom quando existe nativo** (marca = Business Brand/MakeName nativos).
