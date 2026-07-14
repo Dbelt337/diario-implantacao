@@ -69,3 +69,6 @@ Sequência real que funcionou (lição para o diário):
 ## Faxina de produtos fake (14/07 — CONCLUÍDA ✅)
 Estado final verificado por query: **2 pricebooks** (Standard + C101) · **6 Product2** (catálogo oficial Hyundai) · 12 PBEs. Removidos: ALPINA 300 CC, Filtro Cadilac, Honda CB 500F/Civic/CR-V 2026, Hyundai Santa Fe (+ suas PBEs, OLIs de teste, o Vehicle "Polo" e o Order de teste 0000000001).
 Lições de plataforma registradas: (1) Product2 não deleta com OLI/QLI/OrderItem/Vehicle apontando — o erro lista os bloqueadores; (2) PBE usada em pedido não deleta ("archived, still visible from orders") — Order precisa morrer primeiro (e Order Activated precisa voltar a Draft antes); (3) esse mesmo mecanismo é o que protege o preço histórico dos pedidos reais em produção.
+
+## CARGA COMPLETA DO CATÁLOGO REAL (14/07 noite — CONCLUÍDA ✅)
+217 produtos novos (Hyundai 107 da Carga Masiva QRM; Chevrolet/Isuzu/Cadillac ativos do Reportes) + 217 PBE Standard + 217 PBE C101 com precios de negócio — todos 217/217 Succeeded. Estado final: **223 produtos · 446 PBEs · 4 marcas**. Técnica: Ids sequenciais base62 com checksum validados por 21 spot-checks contra o resultado real do insert (arquivos em `carga_catalogo/full/`). Pendentes de decisão (não bloqueiam): CARGA-01 (Fecha Final Cashback), CARGA-02 (USD — entradas em CRC nominal).

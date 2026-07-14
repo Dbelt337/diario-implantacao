@@ -1,9 +1,9 @@
 # Resumo Executivo — Catálogo de Precios & Pedidos Automáticos (DevSales) · 14/07/2026
 
-## O que existe agora na org (números)
-- **2 catálogos de preço (pricebooks):** o Standard (obrigatório da plataforma, preço de lista) e **"C101 - Vehículos y Motos (CR)"** — a lista comercial da sociedad C101 Costa Rica. O modelo é **1 pricebook por sociedad/país**, na moeda do país.
-- **6 produtos** (amostra demo Hyundai CR): 5 versões de Accent (2024/2025) + 1 Kona, chave = **ProductCode SAP** (OCN + año).
-- **12 entradas de preço**: 6 no Standard (lista) + 6 no C101 com os **precios de negócio**: Precio Mínimo Asesor, Precio Exonerado, Gastos e Vigencia (01/08/2026).
+## O que existe agora na org (números — ATUALIZADO após carga completa 14/07 noite)
+- **2 catálogos de preço (pricebooks):** Standard (lista) e **C101 Costa Rica** (comercial). Modelo: 1 pricebook por sociedad (C105 motos preparado).
+- **223 produtos — o catálogo de vendas REAL da Costa Rica**: 113 Hyundai + 55 Chevrolet + 45 Isuzu + 10 Cadillac (fontes oficiais: Carga Masiva QRM + ReportesPreciovehiculo, só versões ativas), todos com Business Brand associada e ProductCode canônico (OCN + año).
+- **446 entradas de preço**: 223 no Standard + 223 no C101 com os precios de negócio reais (Precio Mínimo Asesor, Exonerado, Exonerado Mínimo, Gastos, Cashback) — carregados por pipeline programático com validação de integridade (21 spot-checks), **zero célula digitada à mão**.
 - **7 campos novos de precio na PricebookEntry** (Currency 16,2 / checkbox / data), com **field history ligado** — toda alteração de preço fica auditada (quem, quando, de → para). Acesso controlado pelo permission set `PS_Precios_Catalogo`.
 - **2 automações de pedido (flows)**: ao **ganhar** uma oportunidade com cotização sincronizada e aceita, o **pedido (Order) nasce sozinho** em Draft com as linhas copiadas; quando o SAP devolve a **factura** (via integração), o pedido **ativa sozinho** e o vendedor recebe notificação. Exclusão única: RT Mayorista. Falhas nunca quebram a venda — viram Task para o dono.
 
