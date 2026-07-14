@@ -28,8 +28,16 @@ Resultado do deploy 14/07 17:32 (success:true, 20/20, tudo created:true) + prova
 ## 4. Campos do Order (4.1) — JÁ COBERTO
 `SAP_OrderNumber__c`/`SAP_FacturaRef__c`/`SAP_SyncStatus__c` (+`Quote__c`) estão no **`deploy/cockpit_fase1_4/Cockpit_Fase1_4.zip`** com os dois motores — que já incorporam o ADENDO (gate IsWon+quote, exclusão explícita só do Mayorista, sem lista de inclusão). Não gerei pacote duplicado. FLS de integração: adicionar os SAP_* ao `PS_Api` NA UI (PS por pacote é full-replace — cicatriz).
 
+## Execução do delete (14/07 — CONCLUÍDO ✅)
+Sequência real que funcionou (lição para o diário):
+1. Destructive combinado (lookup+objeto na mesma transação) → **gack** (ErrorId 814372279-535264) — não repetir esse formato.
+2. `Remove_Paso1_Campo.zip` → success, lookup deletado (virou `Solicitud_del__c` em Deleted Fields).
+3. **Campo deletado ≠ campo morto**: o `_del` em Deleted Fields AINDA conta como relação e seguiu bloqueando o delete do objeto → **Erase manual** (Object Manager → Pricebook Entry → Deleted Fields → Erase).
+4. Delete do objeto na UI → OK. Arquiteto confirmou: **objeto removido**, veto "não podemos criar objeto novo" cumprido.
+`PS_Precios_Catalogo` permanece válido com o FLS dos 7 campos de precio restantes (referências ao objeto se auto-limparam).
+
 ## 5. TODOs nomeados
-- TODO-PRECIOS-01: destino da auditoria de cambios se PBE recusar history (decisão de negócio/arquitetura).
-- TODO-PRECIOS-02: colar aqui a prova por query do delete e do smoke test.
+- TODO-PRECIOS-01: destino da auditoria de cambios se PBE recusar history (decisão de negócio/arquitetura). **AGORA CRÍTICO** — sem o cabeçalho Solicitud, o history da PBE é o único candidato.
+- TODO-PRECIOS-02: ~~prova do delete~~ ✅ (confirmado pelo arquiteto); resta colar o smoke test.
 - TODO-PRECIOS-03: carga real do catálogo SAP (substitui o fallback; chave ProductCode; decidir external Id definitivo para o Mule).
 - TODO-PRECIOS-04: onda VehicleDefinition depende do describe (Q3b) — validar campos aceitos.
