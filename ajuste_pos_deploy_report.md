@@ -8,8 +8,26 @@ O deploy 20/20 criou `Solicitud_Cambio_Precios__c`, mas a decisão pós-deploy �
 Prova pós-delete: `SELECT QualifiedApiName FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName='PricebookEntry'` → sem `Solicitud__c`; Object Manager sem o objeto.
 **Consequência de desenho:** a auditoria de cambios de precio fica SEM cabeçalho → o history tracking da PBE (Fase 3) deixa de ser opcional e vira o mecanismo governante. Se a plataforma recusar history em PBE, decisão a escalar: viver só com auditoria implícita (SetupAuditTrail não cobre dados) ou usar um objeto EXISTENTE como cabeçalho (Case, p.ex.) — anotado como TODO-PRECIOS-01.
 
-## 1. Auditoria do que caiu (1.1–1.4)
-Resultado do deploy 14/07 17:32 (success:true, 20/20, tudo created:true) + prova por query pendente de colar aqui. Queries prontas no `runbook_workbench.md` Paso 3. Divergências conhecidas (documentadas no `package_report.md`): picklists restritas (D3), Currency 18/2 (D2).
+## 1. Auditoria do que caiu (1.1–1.4) — VERSÃO PÓS-DELETE
+Estado esperado após o delete de 14/07: **7 campos** na PBE (Solicitud__c fora), objeto inexistente.
+
+**A1 — PBE com exatamente os 7 (e sem cadáver):**
+```sql
+SELECT QualifiedApiName, DataType FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName = 'PricebookEntry'
+```
+Esperado: PrecioMinimoAsesor/PrecioExonerado/PrecioExoneradoMinimo/Gastos/MontoCashback (Currency 16,2), AplicaCashback (Checkbox), VigenciaDesde (Date). NÃO deve aparecer `Solicitud__c` nem `Solicitud_del__c` (se `_del` aparecer, o Erase não foi feito).
+
+**A2 — objeto fora:** `SELECT QualifiedApiName FROM EntityDefinition WHERE QualifiedApiName = 'Solicitud_Cambio_Precios__c'` → vazio.
+
+**A3 — Product2:** `SELECT QualifiedApiName FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName = 'Product2'` → contém Make__c e Version__c (Text 80).
+
+**A4 — PS íntegro pós-delete (a exclusão limpa as entradas do objeto sozinha):**
+```sql
+SELECT SobjectType, Field, PermissionsRead, PermissionsEdit FROM FieldPermissions WHERE ParentId IN (SELECT Id FROM PermissionSet WHERE Name = 'PS_Precios_Catalogo')
+```
+Esperado: 7 linhas PricebookEntry r/w; zero linhas de Solicitud_Cambio_Precios__c.
+
+Divergências conhecidas (D2/D3 no `package_report.md`): picklists restritas, Currency 18/2.
 
 ## 2. Pós-deploy operacional — passos Inspector (dados, idempotentes)
 2.1 **Atribuir PS**: Setup → Permission Sets → PS Precios Catalogo → Manage Assignments → seu usuário (skip se já).
