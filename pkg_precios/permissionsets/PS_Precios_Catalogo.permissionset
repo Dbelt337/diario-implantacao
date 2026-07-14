@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
     <label>PS Precios Catalogo</label>
-    <description>Acceso a los campos de precios del catalogo (PricebookEntry) y al objeto Solicitud Cambio Precios. FO-10/precios. FLS via permission set - no tocar profiles.</description>
+    <description>Acceso a los 7 campos de precios del catalogo (PricebookEntry). FO-10/precios. FLS via permission set - no tocar profiles.</description>
     <hasActivationRequired>false</hasActivationRequired>
     <fieldPermissions>
         <field>PricebookEntry.PrecioMinimoAsesor__c</field>
