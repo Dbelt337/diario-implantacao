@@ -48,6 +48,15 @@ Fontes confirmadas no describe (Q6): tudo já existe menos anticipo/financiamien
 - `CockpitDescuento`: grava `DiscountRequested__c`, chama **ação nativa Decision Matrix** do IP sobre `Discount_Rules_GrupoQ` (não existe flow LeadScore para copiar — achado 14/07), dentro do limite grava `DiscountApprovalDecision__c='Auto-Aprobado'`; acima, submete a D-APR-02 (contrato com Santiago — pendência E2) e SAI.
 - `CockpitCierre`: DR Post Quote.Status='Accepted' → DR Post StageName=etapa ganada do sales process do RT (pendência Q11; até lá assumir 'Ganado', funil GQ) → o motor 4.1 faz o resto.
 
+## Leitura do anti-exemplo b2bSalesQuote (regra 5 — 14/07)
+Formato: DataPack vlocity managed (107 packs, 46k refs `%vlocity_namespace%`) → **NÃO serve de molde para o metadado Standard Runtime da nossa org** (E1 continua necessário). O que aproveitamos:
+- **Inventário de elementos** (todos existem no Standard Runtime, exceto Remote Action=Apex, que é proibido mesmo): Conditional Block, Response Action, DR Extract/Post/Transform/Turbo, Set Values, IP Action, Rest Action (só dentro de IP), Loop Block, List Merge, Cache Block. Vocabulário 100% suficiente para o cockpit declarativo.
+- **Padrão Cache Block de token** (`CAB_getToken*` + `IP_callGetToken*`): guardar para a integração GET /disponibilidad-sap do filho Unidad (3.1) — token cacheado, HTTP em IP separada da transação Connect API.
+- **Confirmação do anti-padrão**: 93 Conditional Blocks em cascata, 31 Remote Actions, 13 refs CpqAppHandler — exatamente o que os gates (≤25 elementos, 100% declarativo) existem para impedir.
+
+## Decisão do arquiteto (14/07) — Cotizar
+"Tirar a criação de cotação nativa de dentro do wizard": o filho `CockpitCotizar` NÃO cria quote — **reusa o botão/OS `CrearCotizacion` v2 já construído**; SAP é o dono do preço. Pergunta aberta que muda o motor 4.1: a Quote de SF continua existindo como espelho com QLIs (SyncedQuote)? Se SIM, nada muda (motor copia QLIs→OrderItems). Se a cotização passar a viver SÓ no SAP, o motor precisa de outra fonte de linhas — decidir antes da Fase 2.
+
 ## O que ainda preciso (nada bloqueia o esqueleto, mas destrava os filhos)
 | # | Item | Destrava |
 |---|---|---|
