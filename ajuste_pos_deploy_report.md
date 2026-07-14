@@ -39,11 +39,17 @@ Divergências conhecidas (D2/D3 no `package_report.md`): picklists restritas, Cu
     ExonMin/MontoCashback vazios de propósito (completam na carga real).
 2.4 **Smoke test** (deixar os registros — são a demo): Opp com RT `GQOpportunitiesAutos` + Quote com Pricebook C101 + QLI do Accent Sport 2025 → esperado UnitPrice=28900 e `SELECT Id, UnitPrice, PricebookEntry.PrecioMinimoAsesor__c, PricebookEntry.PrecioExonerado__c, PricebookEntry.Gastos__c, PricebookEntry.VigenciaDesde__c FROM QuoteLineItem WHERE Quote.OpportunityId='<OPP_ID>'` lendo 24900/20100/1500/2026-08-01 por travessia.
 
-## 3. Pacote history PBE — `deploy_history_pbe.zip` (GERADO)
+## 3. Pacote history PBE — DEPLOYADO ✅ (14/07)
+**VEREDITO: a plataforma ACEITOU history na PricebookEntry** — enableHistory + trackHistory nos 7 campos no ar. O field history da PBE é oficialmente a auditoria governante dos cambios de precio (TODO-PRECIOS-01 RESOLVIDO — não precisa de cabeçalho). Consulta da trilha: `SELECT ParentId, Field, OldValue, NewValue, CreatedBy.Name, CreatedDate FROM PricebookEntryHistory ORDER BY CreatedDate DESC`.
+
+### (histórico) Pacote gerado
 `enableHistory` no PricebookEntry + `trackHistory=true` nos **7** campos (Solicitud__c fora — está sendo removido). Dry-run impossível daqui → **rodar com Check Only ✅ primeiro**: se a plataforma recusar history em PBE, o erro literal encerra a dúvida (colar aqui) e vale o TODO-PRECIOS-01; se passar, deploy real.
 ⚠️ Rodar o history SÓ DEPOIS do Remove_Solicitud (o .object do history não traz Solicitud__c — se o lookup ainda existir, ele sobrevive, mas a ordem limpa evita confusão de estado).
 
-## 4. Campos do Order (4.1) — JÁ COBERTO
+## 4. Campos do Order — DEPLOYADO ✅ (14/07, via Cockpit_Fase1_4.zip)
+Campos SAP + Quote__c + motores Opp_AS_GenerarPedido (universal, adendo) e Order_AS_ActivarPorFactura no ar. Pendências manuais: FLS SAP_* no PS_Api (UI) + leitura no PS_Base_Sales_GrupoQ.
+
+### (histórico) Nota original
 `SAP_OrderNumber__c`/`SAP_FacturaRef__c`/`SAP_SyncStatus__c` (+`Quote__c`) estão no **`deploy/cockpit_fase1_4/Cockpit_Fase1_4.zip`** com os dois motores — que já incorporam o ADENDO (gate IsWon+quote, exclusão explícita só do Mayorista, sem lista de inclusão). Não gerei pacote duplicado. FLS de integração: adicionar os SAP_* ao `PS_Api` NA UI (PS por pacote é full-replace — cicatriz).
 
 ## Execução do delete (14/07 — CONCLUÍDO ✅)
@@ -55,7 +61,7 @@ Sequência real que funcionou (lição para o diário):
 `PS_Precios_Catalogo` permanece válido com o FLS dos 7 campos de precio restantes (referências ao objeto se auto-limparam).
 
 ## 5. TODOs nomeados
-- TODO-PRECIOS-01: destino da auditoria de cambios se PBE recusar history (decisão de negócio/arquitetura). **AGORA CRÍTICO** — sem o cabeçalho Solicitud, o history da PBE é o único candidato.
+- ~~TODO-PRECIOS-01~~ ✅ RESOLVIDO 14/07: PBE aceitou history — auditoria governante garantida.
 - TODO-PRECIOS-02: ~~prova do delete~~ ✅ (confirmado pelo arquiteto); resta colar o smoke test.
 - TODO-PRECIOS-03: carga real do catálogo SAP (substitui o fallback; chave ProductCode; decidir external Id definitivo para o Mule).
 - TODO-PRECIOS-04: onda VehicleDefinition depende do describe (Q3b) — validar campos aceitos.
