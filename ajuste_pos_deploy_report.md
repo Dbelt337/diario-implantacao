@@ -63,5 +63,5 @@ Sequência real que funcionou (lição para o diário):
 ## 5. TODOs nomeados
 - ~~TODO-PRECIOS-01~~ ✅ RESOLVIDO 14/07: PBE aceitou history — auditoria governante garantida.
 - TODO-PRECIOS-02: ~~prova do delete~~ ✅ (confirmado pelo arquiteto); resta colar o smoke test.
-- TODO-PRECIOS-03: carga real do catálogo SAP (substitui o fallback; chave ProductCode; decidir external Id definitivo para o Mule).
+- TODO-PRECIOS-03: carga real do catálogo SAP (substitui o fallback; chave ProductCode; decidir external Id definitivo para o Mule). **Moeda (14/07): org tem só CRC ativa (corporativa, taxa 1) — a amostra entrou em CRC com valores nominais de USD (ok p/ demo). Na carga real: lista por país decide — valores reais em CRC, OU ativar USD antes se CR precifica em dólar. CSVs de carga ficaram sem coluna CurrencyIsoCode (herdam a moeda da org).**
 - TODO-PRECIOS-04: onda VehicleDefinition depende do describe (Q3b) — validar campos aceitos.
