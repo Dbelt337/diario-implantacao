@@ -1,0 +1,35 @@
+# Ajuste Pós-Deploy — Precios/Catálogo DevSales (fase 2) · 14/07
+
+**Gate (regra 1):** sem sf CLI/rede Salesforce neste ambiente (403 de política — provado hoje) → describes e escrita de dados viraram passos Inspector para o arquiteto; pacotes saíram como zip (dry-run = Check Only do Workbench). Nada foi deployado daqui (regra 2 respeitada por construção).
+
+## 0. MUDANÇA DE ORDEM SUPERIOR: "não podemos criar objeto novo"
+O deploy 20/20 criou `Solicitud_Cambio_Precios__c`, mas a decisão pós-deploy é REMOVÊ-LO. O delete via UI falhou ("other objects have relationships") porque `PricebookEntry.Solicitud__c` aponta para ele.
+**Solução: `deploy/precios_ajuste/remove_solicitud/Remove_Solicitud.zip`** — destructive dos DOIS (lookup + objeto) numa tacada. Workbench: Single Package ✅ · Check Only ☐ · Rollback ✅ (ambos existem, sem warnings esperados). O `PS_Precios_Catalogo` NÃO bloqueia e se auto-limpa das referências; ele continua valendo pelo FLS dos 7 campos restantes.
+Prova pós-delete: `SELECT QualifiedApiName FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName='PricebookEntry'` → sem `Solicitud__c`; Object Manager sem o objeto.
+**Consequência de desenho:** a auditoria de cambios de precio fica SEM cabeçalho → o history tracking da PBE (Fase 3) deixa de ser opcional e vira o mecanismo governante. Se a plataforma recusar history em PBE, decisão a escalar: viver só com auditoria implícita (SetupAuditTrail não cobre dados) ou usar um objeto EXISTENTE como cabeçalho (Case, p.ex.) — anotado como TODO-PRECIOS-01.
+
+## 1. Auditoria do que caiu (1.1–1.4)
+Resultado do deploy 14/07 17:32 (success:true, 20/20, tudo created:true) + prova por query pendente de colar aqui. Queries prontas no `runbook_workbench.md` Paso 3. Divergências conhecidas (documentadas no `package_report.md`): picklists restritas (D3), Currency 18/2 (D2).
+
+## 2. Pós-deploy operacional — passos Inspector (dados, idempotentes)
+2.1 **Atribuir PS**: Setup → Permission Sets → PS Precios Catalogo → Manage Assignments → seu usuário (skip se já).
+2.2 **Pricebook C101** (query-first): `SELECT Id, Name, IsActive FROM Pricebook2` → se não houver `C101%`, importar `carga_catalogo/1_pricebook2_C101.csv` (Inspector → Data Import → Insert Pricebook2). Confirmar Standard ativo (IsStandard=true, IsActive=true; update se preciso).
+2.3 **Carga da amostra** (fallback 6 filas embutido — a Amostra_Catalogo_HyundaiCR.xlsx não está na sessão). Ordem OBRIGATÓRIA, tudo query-first pela chave lógica ProductCode:
+    a) `2_product2.csv` → Insert Product2. Depois `SELECT Id, ProductCode FROM Product2 WHERE Make__c='Hyundai'` e copiar os Ids.
+    b) `3_vehicledefinition.csv` → preencher `<ID_PRODUCT2>` pela referência de ProductCode e Insert VehicleDefinition. Se o describe do VehicleDefinition exigir campos que não temos (Q3b pendente!), pular a onda b e registrar — não inventar.
+    c) `4_pbe_standard.csv` → preencher `<ID_PRODUCT2>` e `<ID_STANDARD_PB>` (`SELECT Id FROM Pricebook2 WHERE IsStandard=true`) → Insert PricebookEntry. **SÓ DEPOIS** `5_pbe_c101.csv` (preencher `<ID_PB_C101>`) — ordem invertida = STANDARD_PRICE_NOT_DEFINED. Coluna `__ProductCode_referencia` é guia: REMOVER antes do import. Multicurrency confirmado na org → CurrencyIsoCode=USD mantido; se a Standard PB não tiver USD ativa, o insert acusa — ativar a moeda ou trocar para a moeda corporativa.
+    ExonMin/MontoCashback vazios de propósito (completam na carga real).
+2.4 **Smoke test** (deixar os registros — são a demo): Opp com RT `GQOpportunitiesAutos` + Quote com Pricebook C101 + QLI do Accent Sport 2025 → esperado UnitPrice=28900 e `SELECT Id, UnitPrice, PricebookEntry.PrecioMinimoAsesor__c, PricebookEntry.PrecioExonerado__c, PricebookEntry.Gastos__c, PricebookEntry.VigenciaDesde__c FROM QuoteLineItem WHERE Quote.OpportunityId='<OPP_ID>'` lendo 24900/20100/1500/2026-08-01 por travessia.
+
+## 3. Pacote history PBE — `deploy_history_pbe.zip` (GERADO)
+`enableHistory` no PricebookEntry + `trackHistory=true` nos **7** campos (Solicitud__c fora — está sendo removido). Dry-run impossível daqui → **rodar com Check Only ✅ primeiro**: se a plataforma recusar history em PBE, o erro literal encerra a dúvida (colar aqui) e vale o TODO-PRECIOS-01; se passar, deploy real.
+⚠️ Rodar o history SÓ DEPOIS do Remove_Solicitud (o .object do history não traz Solicitud__c — se o lookup ainda existir, ele sobrevive, mas a ordem limpa evita confusão de estado).
+
+## 4. Campos do Order (4.1) — JÁ COBERTO
+`SAP_OrderNumber__c`/`SAP_FacturaRef__c`/`SAP_SyncStatus__c` (+`Quote__c`) estão no **`deploy/cockpit_fase1_4/Cockpit_Fase1_4.zip`** com os dois motores — que já incorporam o ADENDO (gate IsWon+quote, exclusão explícita só do Mayorista, sem lista de inclusão). Não gerei pacote duplicado. FLS de integração: adicionar os SAP_* ao `PS_Api` NA UI (PS por pacote é full-replace — cicatriz).
+
+## 5. TODOs nomeados
+- TODO-PRECIOS-01: destino da auditoria de cambios se PBE recusar history (decisão de negócio/arquitetura).
+- TODO-PRECIOS-02: colar aqui a prova por query do delete e do smoke test.
+- TODO-PRECIOS-03: carga real do catálogo SAP (substitui o fallback; chave ProductCode; decidir external Id definitivo para o Mule).
+- TODO-PRECIOS-04: onda VehicleDefinition depende do describe (Q3b) — validar campos aceitos.

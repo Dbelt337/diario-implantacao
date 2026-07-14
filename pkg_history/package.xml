@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>PricebookEntry</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>PricebookEntry.PrecioMinimoAsesor__c</members>
+        <members>PricebookEntry.PrecioExonerado__c</members>
+        <members>PricebookEntry.PrecioExoneradoMinimo__c</members>
+        <members>PricebookEntry.Gastos__c</members>
+        <members>PricebookEntry.MontoCashback__c</members>
+        <members>PricebookEntry.AplicaCashback__c</members>
+        <members>PricebookEntry.VigenciaDesde__c</members>
+        <name>CustomField</name>
+    </types>
+    <version>63.0</version>
+</Package>
