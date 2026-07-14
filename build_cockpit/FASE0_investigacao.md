@@ -1,5 +1,25 @@
 # Cockpit GQ_VentaVehiculo — FASE 0: investigação obrigatória (regra 4)
 
+## RESULTADOS (14/07 — parciais)
+- **Q1 ✅** RTs Opportunity (todos ativos): `GQOpportunitiesAutos`, `GQOpportunitiesMotos`, `GQOpportunitiesFlotas` (cockpit) · `GQOpportunitiesMayorista`, `GQOpportunitiesRepuestosPA` (fora). Nenhum RT de Quote/Order apareceu (confirmar se a lista acabava ali).
+- **Q2 ✅** DUAS etapas ganhas ativas: `Cerrada ganada` (sort 5) e `Ganado` (sort 15). Funil GQ: Nuevo Interés(7) Sospechoso(8) Prospectando(9) Análisis(10) Negociación(11) Cotización Confirmada(12) Cierre(13) Reserva Confirmada(14) Ganado(15) Perdido(16). Decisão: motor 4.1 dispara por `IsWon` false→true (cobre ambas); Cierre 2.3 grava a etapa do sales process do RT (ver Q11).
+- **Q3 ❌** `VehicleStatus` NÃO existe no Vehicle desta org (spec desatualizada — org vence). Rodar Q3b abaixo.
+- **Q4 ❌** `TriggerObjectOrEventApiName`/`RecordTriggerType` não existem no FlowDefinitionView desta API — usar Q4b.
+- **ProcessDefinition ✅** Únicos approvals ativos: `MDM_Conta_Sensivel` e `AprobacionDatosSensiblesCuenta` (conta sensível). **NÃO existe approval de desconto** → o "approval do H6" da spec 2.2 = D-APR-02 (orquestração que o Santiago está construindo). Alinhar contrato de submissão com ele.
+- Operacional Inspector: UMA query por execução (duas no mesmo box = MALFORMED_QUERY).
+
+## Queries corrigidas / novas
+```sql
+-- Q3b: describe do Vehicle (descobrir o campo real de status)
+SELECT QualifiedApiName, DataType, Label FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName = 'Vehicle'
+-- Q4b: flows ativos (colunas compatíveis)
+SELECT ApiName, Label, ProcessType, TriggerType, IsActive FROM FlowDefinitionView WHERE IsActive = true ORDER BY ProcessType, ApiName
+-- Q11: RT -> sales process (qual etapa "ganada" vale para cada RT)
+SELECT SobjectType, DeveloperName, BusinessProcessId FROM RecordType WHERE SobjectType = 'Opportunity'
+SELECT Id, Name, IsActive FROM BusinessProcess WHERE TableEnumOrId = 'Opportunity'
+```
+Pendentes da lista original: Q5, Q6, Q7, Q8, Q10.
+
 **Status do gate (13/07):** ambiente remoto SEM sf CLI (npm 403 — política de rede) e sem alias DevSales autenticado → build ABORTADO pela regra dura 1. O build só começa com os resultados abaixo (rodar no Salesforce Inspector / Workbench da DevSales, org Id `00DWK000005VFeD` — conferir SEMPRE antes, cicatriz de 10/07).
 
 Cada query alimenta uma decisão da spec. Colar os resultados de volta na conversa.
