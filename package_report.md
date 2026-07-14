@@ -31,8 +31,12 @@ Arquivo PBE contém APENAS `<fields>` (não sobrescreve outras seções — regr
 Nenhum — verificação impossível deste ambiente; delegada ao Paso 0 (ver acima).
 
 ## Resultado do dry-run
-Não executado aqui (gate). Substituto: Workbench **Check Only** antes do deploy real — resultado deve ser colado neste arquivo quando rodar.
+Não executado aqui (gate). Substituto: Workbench **Check Only** antes do deploy real.
 Validação local executada: **parse XML dos 5 arquivos OK** (Fase 3.1 ✅).
+
+## Resultado do DEPLOY (14/07 17:32 UTC) — success: true, 20/20
+Todos os componentes `created: true`: 8 CustomField PricebookEntry (ids 00NWK0000067u2J…u2Q) · 2 CustomField Product2 (Make__c/Version__c — não existiam, colisão zero) · 5 CustomField + CustomObject `Solicitud_Cambio_Precios__c` (01IWK000001pMQw2AM) · PermissionSet `PS_Precios_Catalogo` (0PSWK0000019NzJ4AU).
+⚠️ Critério final continua sendo o Paso 3 (query nos FieldDefinition) — relatório de deploy não é prova (cicatriz Check Only 10/07). Pendências pós-deploy: atribuir o PS, layouts, tab.
 
 ## Divergências / decisões documentadas
 - **D1 — Nome do objeto standard:** spec grafa `PriceBookEntry`; o API name real é `PricebookEntry` — usado o real (não é invenção de nome, é o nome).
