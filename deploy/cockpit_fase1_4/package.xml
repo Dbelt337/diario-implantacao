@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Order.SAP_OrderNumber__c</members>
+        <members>Order.SAP_FacturaRef__c</members>
+        <members>Order.SAP_SyncStatus__c</members>
+        <members>Order.Quote__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>GQ_Order_Activated</members>
+        <name>CustomNotificationType</name>
+    </types>
+    <types>
+        <members>Opp_AS_GenerarPedido</members>
+        <members>Order_AS_ActivarPorFactura</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>Admin</members>
+        <name>Profile</name>
+    </types>
+    <version>63.0</version>
+</Package>

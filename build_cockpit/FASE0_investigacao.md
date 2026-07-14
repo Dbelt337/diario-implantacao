@@ -20,6 +20,18 @@ SELECT Id, Name, IsActive FROM BusinessProcess WHERE TableEnumOrId = 'Opportunit
 ```
 Pendentes da lista original: Q5, Q6, Q7, Q8, Q10.
 
+## RESULTADOS 2ª leva (14/07)
+- **Q7 ✅ STANDARD RUNTIME CONFIRMADO** (`OmniProcess` core). Família existente Type=GrupoQ (English): `CrearCotizacion` OS ativo v2 (**candidato a REUSO no 2.1**), `CrearQuote` IP v1 INATIVO, `CustomerSearch`/`LeadDedup`/`LeadUpsert` IPs ativos, `LeadListaNegra.Check(+UI)`. DRs reusáveis: `DRQuoteInsert`, `DRCreateOpportunity(+LineItem)`, `DRFindPricebook`, `DRTurboExtractPricebookEntry`, `DRProductSearch*`.
+- **Q6 ✅** Opportunity JÁ TEM campos de desconto (Santiago): `DiscountRequested__c` %(3,2), `DiscountApprovalDecision__c` Text40, `DiscountApproverKey__c` Text80 + `Brand__c`, `CompanyCode__c` (Sociedad), `Pais__c` (formula), HU-009 ✅. SEM campos de anticipo/financiamiento (flags do IP viram stub). Quote 100% standard. Order: só 2 formulas custom; **NÃO existe QuoteId standard → criado `Quote__c` (divergência org vs spec)**.
+- **Flows** (lista veio filtrada por "Lead" — Q4b completa ainda pendente): **não existe flow LeadScore** → padrão runDecisionMatrix não tem fonte; decisão: o Descuento usa a **ação nativa Decision Matrix do Integration Procedure**.
+- **Q8 ✅** Opps de teste compartilham pricebook `01sao000003jPrlAAE`, algumas com 1 OLI (produtos de teste existem — E2E mínimo viável). Opps de teste SEM RecordType (atenção nos testes do motor: setar RT).
+- **Q10 ✅** CMDT existentes: `Brand_Sociedad_Map__mdt`, `Sociedad_Config__mdt`, `Lead_Routing_Config__mdt`, `Lead_SLA_Config__mdt`, `SensitiveDataApprover__mdt` (padrão chave→aprovador do MDM), Nebula Logger. Flag de stub 3.1: criar `GQ_Cockpit_Config__mdt` ou reusar padrão Sociedad_Config.
+- **Q5 ❌** MALFORMED (2 queries num box) — rodar separadas. **Q3b/Q4b/Q11 pendentes.**
+
+## PACOTE 1 GERADO — `deploy/cockpit_fase1_4/Cockpit_Fase1_4.zip` (Fases 1.1 + 4)
+Order.SAP_OrderNumber__c (Text20 extId) + SAP_FacturaRef__c (Text30) + SAP_SyncStatus__c (picklist restrita Pendiente/Enviado/Confirmado/Error, default Pendiente) + **Quote__c Lookup(Quote)** · CustomNotificationType `GQ_Order_Activated` · Flow `Opp_AS_GenerarPedido` (IsWon false→true + RT Autos/Motos/Flotas + SyncedQuote Accepted → Order Draft + OrderItems deep-copy; bloqueio/falha → Task) · Flow `Order_AS_ActivarPorFactura` (factura vazia→preenchida & Draft → Activated + Confirmado + notificação ao owner da Opp) · Admin.profile FLS.
+Workbench: Single Package ✅ · **Check Only ☐** · Rollback on Error ✅. Pós-deploy manual: FLS leitura dos 4 campos em `PS_Base_Sales_GrupoQ` e **edição de SAP_* em `PS_Api`** (PS é full-replace — fazer na UI, não por pacote cego). Risco anotado: valor `Accepted` do Quote.Status conferir na picklist da org (senão o motor cai sempre no Task "no aceptada").
+
 **Status do gate (13/07):** ambiente remoto SEM sf CLI (npm 403 — política de rede) e sem alias DevSales autenticado → build ABORTADO pela regra dura 1. O build só começa com os resultados abaixo (rodar no Salesforce Inspector / Workbench da DevSales, org Id `00DWK000005VFeD` — conferir SEMPRE antes, cicatriz de 10/07).
 
 Cada query alimenta uma decisão da spec. Colar os resultados de volta na conversa.
