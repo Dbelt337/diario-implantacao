@@ -42,30 +42,20 @@
     </assignments>
     <decisions>
         <name>CheckRecordType</name>
-        <label>RT de venta de vehiculo?</label>
+        <label>Excluir Mayorista (shell sin proceso)</label>
         <locationX>176</locationX>
         <locationY>108</locationY>
-        <defaultConnectorLabel>Otro RT (Mayorista/Repuestos) - fin</defaultConnectorLabel>
+        <defaultConnectorLabel>Mayorista - fin</defaultConnectorLabel>
         <rules>
-            <name>RTVehiculos</name>
-            <conditionLogic>or</conditionLogic>
+            <name>NotMayorista</name>
+            <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue><stringValue>GQOpportunitiesAutos</stringValue></rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue><stringValue>GQOpportunitiesMotos</stringValue></rightValue>
-            </conditions>
-            <conditions>
-                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue><stringValue>GQOpportunitiesFlotas</stringValue></rightValue>
+                <operator>NotEqualTo</operator>
+                <rightValue><stringValue>GQOpportunitiesMayorista</stringValue></rightValue>
             </conditions>
             <connector><targetReference>CheckSyncedQuote</targetReference></connector>
-            <label>Autos / Motos / Flotas</label>
+            <label>Cualquier linea (motor universal)</label>
         </rules>
     </decisions>
     <decisions>
@@ -106,7 +96,7 @@
             <label>Accepted</label>
         </rules>
     </decisions>
-    <description>GQ.AUT.COCKPIT 4.1: motor de pedido. Cuando la Opportunity pasa a ganada (IsWon false-&gt;true; la org tiene DOS etapas ganadas activas — Ganado y Cerrada ganada — por eso el gatillo es IsWon y no el nombre de etapa) y el RT es Autos/Motos/Flotas: valida que exista SyncedQuote en estado Accepted, crea el Order en Draft (SAP_SyncStatus=Pendiente, Quote__c enlazada, pricebook de la Quote) y copia las QuoteLineItems a OrderItems. Cualquier bloqueo o fallo crea una Task al owner en lugar de romper el guardado. El envio a SAP es de la integracion (L34) — este flow NO hace callout.</description>
+    <description>GQ.AUT.COCKPIT 4.1 (adenda 14/07): motor de pedido UNIVERSAL. Cuando la Opportunity pasa a ganada (IsWon false-&gt;true; la org tiene DOS etapas ganadas activas — Ganado y Cerrada ganada — por eso el gatillo es IsWon y no el nombre de etapa): cualquier linea que cierre ganada con quote valida genera pedido — la unica exclusion explicita es el RT GQOpportunitiesMayorista (shell sin proceso). La restriccion Autos/Motos/Flotas vive en la SUPERFICIE (boton del cockpit, 5.1), no en el motor. Gates: SyncedQuote presente y en Accepted; sin quote sincronizada = Task al owner, nunca pedido sin quote. Crea Order Draft (SAP_SyncStatus=Pendiente, Quote__c enlazada, pricebook de la Quote) y copia QuoteLineItems a OrderItems. Fallo de DML = Task con el fault. El envio a SAP es de la integracion (L34) — este flow NO hace callout.</description>
     <environments>Default</environments>
     <interviewLabel>GenerarPedido {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Opp_AS_GenerarPedido</label>
