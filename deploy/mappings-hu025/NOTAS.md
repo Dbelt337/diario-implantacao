@@ -1,5 +1,23 @@
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
+## ÚLTIMA RESSALVA FECHADA (16/07) — chamada manual TINHA target Opportunity
+
+Query: LeadLineItem 0wkWK0000000O5ZYAU → Lead 00QWK00000PBSaT2AX,
+Lead.IsConverted=true, Lead.ConvertedOpportunityId=006WK00000ND5j0YAD.
+Logo, a chamada manual da Transformations API SEMPRE teve Opportunity de
+destino (via ConvertedOpportunityId) — o gack NÃO era artefato de call
+incompleta. Nota: análise paralela (ChatGPT) usou ID digitado errado
+(0wkWK00000005zYAU, 17 chars) e recebeu INVALID_INPUT de tipo — nossos
+testes usaram o ID correto (0wkWK0000000O5ZYAU, 18 chars).
+
+Escala completa de comportamento da API confirmada:
+- ID malformado/tipo errado → INVALID_INPUT (limpo)
+- ID válido + 0 mappings    → INVALID_INPUT "specify a mapping" (limpo)
+- ID válido + mapping válido → UNKNOWN_EXCEPTION (gack)
+Trata toda entrada ruim com erro limpo; só explode ao EXECUTAR. Case airtight.
+
+---
+
 ## FECHAMENTO (16/07/2026, ~00h) — multicurrency-complete TAMBÉM gack
 
 Multicurrency CONFIRMADO na Company Information: "Activate Multiple
