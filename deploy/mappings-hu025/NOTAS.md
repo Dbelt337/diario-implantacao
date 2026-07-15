@@ -1,5 +1,41 @@
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
+## VEREDITO DEFINITIVO (15/07/2026, ~23h50) — BUG DE PLATAFORMA CONFIRMADO POR RESET COMPLETO
+
+Repro minimal determinístico estabelecido:
+- ObjectHierarchyRelationship com ZERO registros (toggle ON) → API retorna
+  INVALID_INPUT limpo ("Specify a mapping ... and try again").
+- Adicionar UM mapping válido → API retorna UNKNOWN_EXCEPTION (gack 918409590).
+  Vale para os registros de março (foreign, keyspace aZ) E para registros
+  recriados NATIVOS nesta org (0kFWK00000002Y52AI / 0kFWK00000002Y62AI).
+
+Portanto a origem/keyspace dos registros é IRRELEVANTE — o motor quebra ao
+executar qualquer mapping válido LeadLineItem→OpportunityLineItem nesta org.
+Erro limpo quando não há o que fazer; crash quando há. Defeito de plataforma.
+
+Ocorrências do gack observadas (todas assinatura 918409590):
+210204039-197303, 246717173-1939784, 814372279-855789, 1102452587-240393,
+246717173-1952457 (e 1236512795-531785 citada em análise paralela).
+
+Reset executado (backup → delete OOB → toggle off/on → recriar nativo):
+- Toggle OFF → API retorna FUNCTIONALITY_NOT_ENABLED (gate funciona).
+- Religar o toggle NÃO re-provisiona os mappings (aprendizado p/ promoção:
+  habilitar o toggle no ambiente destino NÃO cria os ObjectHierarchyRelationship;
+  é preciso deployar os registros — pacote em backup/redeploy-native-mappings.zip).
+- Os OOB de março (LeadItemToOppItemOOBMappings / LeadPrefToOppPrefOOBMappings,
+  0kFaZ...) foram criados por OSF Digital em 25/03 e vieram via refresh de
+  sandbox; NÃO são provisionados pelo toggle.
+
+Estado atual da org: 2 mappings nativos presentes (Y52/Y62), toggle ON.
+Deixar como está — corretos, apenas disparam o bug; funcionarão quando a
+Salesforce corrigir o motor.
+
+PENDÊNCIAS: (1) reativar automações de desconto da Opp (Opp RT Discount
+Approval + Opp_AS_RequestDiscountApproval); (2) abrir case; (3) decidir
+workaround declarativo Lead_AS_CopiaLineItemsOpp para destravar a HU.
+
+---
+
 ## VEREDITO (15/07/2026, ~19h) — BUG DE PLATAFORMA, escalar para Salesforce
 
 Chamada manual da Transformations API no Workbench (REST Explorer), payload
