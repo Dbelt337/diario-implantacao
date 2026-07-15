@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ObjectHierarchyRelationship xmlns="http://soap.sforce.com/2006/04/metadata">
+    <parentObjectMapping>
+        <inputObject>LeadLineItem</inputObject>
+        <outputObject>OpportunityLineItem</outputObject>
+        <!-- PLACEHOLDER: substituir pelos API names reais dos campos custom.
+             inputField  = campo no LeadLineItem
+             outputField = campo correspondente no OpportunityLineItem (precisa existir antes do deploy) -->
+        <mappingFields>
+            <inputField>CAMPO_ORIGEM_1__c</inputField>
+            <outputField>CAMPO_DESTINO_1__c</outputField>
+        </mappingFields>
+        <!-- Descomentar se a org for multicurrency:
+        <mappingFields>
+            <inputField>CurrencyIsoCode</inputField>
+            <outputField>CurrencyIsoCode</outputField>
+        </mappingFields>
+        -->
+    </parentObjectMapping>
+    <outputPntRelationshipFieldName/>
+    <inputObjRecordsGrpFieldName></inputObjRecordsGrpFieldName>
+    <parentRecord/>
+    <mappingType>ParentToParent</mappingType>
+    <usageType>TransformationMapping</usageType>
+</ObjectHierarchyRelationship>
