@@ -38,6 +38,12 @@ desenho já feito — "Opção 1" no histórico deste diário).
    Opportunity DESATIVADAS (Opp RT Discount Approval +
    Opp_AS_RequestDiscountApproval, desativadas por Santiago às 19:10 de
    15/07) — elimina automação da org como causa.
+4. 1102452587-240393 — 4ª chamada, APÓS DELETAR os 2 mappings custom
+   (destructive deploy 22:47Z), org em estado de fábrica: só os OOB
+   LeadItemToOppItemOOBMappings / LeadPrefToOppPrefOOBMappings
+   (IDs 0kFaZ0000016gnBUAQ / 0kFaZ0000016gnCUAQ, provisionados pelo toggle).
+   Elimina a teoria de mapping duplicado como causa do gack. Os mappings
+   custom NÃO devem ser recriados (sem campos custom, OOB basta).
 
 Suspeitos eliminados: toggle, mappings OHR/CurrencyIsoCode, moeda/price
 book/entry CRC, permissões (sysadmin + permset nos 2 usuários), automações
