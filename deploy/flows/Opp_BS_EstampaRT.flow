@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Estampar_RT</name>
+        <label>Estampar RecordType</label>
+        <locationX>176</locationX>
+        <locationY>492</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.RecordTypeId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Get_RecordType.Id</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Linea_Gestionada</name>
+        <label>¿Linea gestionada por este flow?</label>
+        <locationX>176</locationX>
+        <locationY>222</locationY>
+        <defaultConnectorLabel>Repuestos/PA (D-REP-01): salir sin estampar</defaultConnectorLabel>
+        <rules>
+            <name>Si_gestionada</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>RT_DevName</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue></stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_RecordType</targetReference>
+            </connector>
+            <label>Sí</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>RT_Encontrado</name>
+        <label>¿RecordType encontrado?</label>
+        <locationX>176</locationX>
+        <locationY>384</locationY>
+        <defaultConnectorLabel>No encontrado (salir sin estampar)</defaultConnectorLabel>
+        <rules>
+            <name>Si_encontrado</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_RecordType.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Estampar_RT</targetReference>
+            </connector>
+            <label>Sí</label>
+        </rules>
+    </decisions>
+    <description>GQ.AUT.US025.H2.ADM v3: before-save de Opportunity (banda 10) que estampa el RecordType por linea en el CREATE (conversion, SFCC, manual, API; sin segundo save). La linea es del NEGOCIO: Account.Industry = Autos/Motos/Frotas -&gt; GQOpportunitiesAutos/Motos/Flotas (en conversion Account.Industry recibe Lead.Industry nativamente); Repuestos/PA -&gt; SALE SIN ESTAMPAR (D-REP-01); Industry vacio u otro -&gt; default GQOpportunitiesAutos. Marca no participa (RT por linea). PENDIENTES MARCADOS: brazo Venta_Mayorista (criterio B2B-revendedor sin confirmar) y fallback por TipoAutoQueVende__c del owner (el deploy rechaza el campo pese a existir en FieldDefinition - misterio a resolver en org; reintroducir via Flow Builder UI si se desea). RT no encontrado -&gt; no-op. Desactivar Lead_AS_EstampaRTOpp tras validar.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>Linea</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!$Record.Account.Industry})</expression>
+    </formulas>
+    <formulas>
+        <name>RT_DevName</name>
+        <dataType>String</dataType>
+        <expression>CASE({!Linea},
+  &quot;Autos&quot;, &quot;GQOpportunitiesAutos&quot;,
+  &quot;Motos&quot;, &quot;GQOpportunitiesMotos&quot;,
+  &quot;Frotas&quot;, &quot;GQOpportunitiesFlotas&quot;,
+  &quot;Repuestos&quot;, &quot;&quot;,
+  &quot;PA&quot;, &quot;&quot;,
+  &quot;GQOpportunitiesAutos&quot;)</expression>
+    </formulas>
+    <interviewLabel>Opp_BS_EstampaRT {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Opp_BS_EstampaRT</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_RecordType</name>
+        <label>Obtener RecordType destino</label>
+        <locationX>176</locationX>
+        <locationY>276</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>RT_Encontrado</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SobjectType</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Opportunity</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>RT_DevName</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordType</object>
+        <queriedFields>Id</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Linea_Gestionada</targetReference>
+        </connector>
+        <object>Opportunity</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+    <triggerOrder>10</triggerOrder>
+</Flow>
