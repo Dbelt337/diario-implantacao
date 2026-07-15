@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ObjectHierarchyRelationship xmlns="http://soap.sforce.com/2006/04/metadata">
+    <parentObjectMapping>
+        <inputObject>LeadLineItem</inputObject>
+        <outputObject>OpportunityLineItem</outputObject>
+        <mappingFields>
+            <inputField>CurrencyIsoCode</inputField>
+            <outputField>CurrencyIsoCode</outputField>
+        </mappingFields>
+    </parentObjectMapping>
+    <outputPntRelationshipFieldName/>
+    <inputObjRecordsGrpFieldName></inputObjRecordsGrpFieldName>
+    <parentRecord/>
+    <mappingType>ParentToParent</mappingType>
+    <usageType>TransformationMapping</usageType>
+</ObjectHierarchyRelationship>

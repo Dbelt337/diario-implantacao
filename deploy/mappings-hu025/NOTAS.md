@@ -1,6 +1,21 @@
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
-## Decisão final (15/07/2026)
+## ATUALIZAÇÃO (15/07/2026, noite) — pacote ressuscitado por causa de MULTICURRENCY
+
+Teste do Santiago falhou: conversão não copiou line item nem preferred seller,
+com toggle On, massa correta, Opp no Standard Price Book com entry CRC ativa,
+usuário System Administrator. Causa provável identificada NA DOC: em org
+**multicurrency** é preciso deployar o `ObjectHierarchyRelationship` com o
+mapping `CurrencyIsoCode → CurrencyIsoCode` (mesmo sem campos custom).
+Pacote recriado nesta pasta com apenas esse mapping nos dois pares de objetos.
+Deploy: `mappings-hu025-currency.zip` via Workbench (migration → deploy,
+Single Package). Re-testar conversão após deploy.
+
+Descoberta colateral do teste: a Opp convertida recebe o **Standard Price
+Book**, não o book da sociedade (C101). Flow before-save de price book por
+sociedade segue no backlog (ver seção de flows).
+
+## Decisão anterior (15/07/2026, tarde) — SUPERSEDIDA PELA ATUALIZAÇÃO ACIMA
 
 **Solução 100% nativa — sem Apex, sem flow novo e sem pacote de mappings.**
 
