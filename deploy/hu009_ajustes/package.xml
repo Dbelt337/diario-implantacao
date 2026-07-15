@@ -9,5 +9,5 @@
         <members>Event.HU009_Visita_Requiere_Sucursal</members>
         <name>ValidationRule</name>
     </types>
-    <version>63.0</version>
+    <version>65.0</version>
 </Package>
