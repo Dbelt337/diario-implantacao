@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <validationRules>
+        <fullName>HU009_Visita_Requiere_Sucursal</fullName>
+        <active>true</active>
+        <description>GQ.AUT.HU009: un Event vinculado a una Opportunity es una visita del proceso de hand-off y necesita la Sucursal (BranchCode__c) para que el flow comparta la Opp con el grupo de la sucursal. Sin sucursal, la recepción nunca ve la visita. Complementa el "required" en el layout de la Global Action New Event (esta VR cubre creación por calendario/API/otros layouts).</description>
+        <errorConditionFormula>AND(
+  LEFT(WhatId, 3) = &quot;006&quot;,
+  ISBLANK(TEXT(BranchCode__c))
+)</errorConditionFormula>
+        <errorDisplayField>BranchCode__c</errorDisplayField>
+        <errorMessage>Seleccioná la Sucursal de la visita: sin ella la sucursal no ve el hand-off y la recepción no puede recibir al cliente (HU-009).</errorMessage>
+    </validationRules>
+</CustomObject>
