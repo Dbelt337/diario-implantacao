@@ -37,13 +37,13 @@ CUIDADO: deploy de `LeadConvertSettings` substitui o arquivo inteiro —
 aplicar os pares na UI e depois fazer retrieve para versionar aqui, ou
 mesclar com o retrieve atual antes de qualquer deploy.
 
-## Lacuna conhecida (backlog)
+## Lacuna conhecida — DESCARTADA (15/07/2026)
 
 Os campos standard do `LeadLineItem` `PriceType`, `InterestType`,
-`Classification`, `Condition` e `ItemType` **não têm equivalente standard**
-no `OpportunityLineItem` — o mapping default não os carrega e eles se perdem
-na conversão. Se o negócio precisar deles na Opp: criar campos custom no
-`OpportunityLineItem` e aí sim criar o pacote `ObjectHierarchyRelationship`
+`Classification`, `Condition` e `ItemType` não têm equivalente no
+`OpportunityLineItem` e se perdem na conversão. **Decisão: não precisa**
+carregá-los para a Opp. Se o negócio mudar de ideia: criar campos custom no
+`OpportunityLineItem` e criar o pacote `ObjectHierarchyRelationship`
 (modelo no histórico do git deste repo, commit 563f646).
 
 ## Checklist de teste (DevSales)
