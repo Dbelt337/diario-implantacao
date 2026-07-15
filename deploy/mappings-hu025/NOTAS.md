@@ -30,6 +30,22 @@ AÇÃO: abrir case Salesforce com o ErrorId + repro. Enquanto o case corre,
 avaliar workaround declarativo (flow copiando LeadLineItem→OLI na conversão,
 desenho já feito — "Opção 1" no histórico deste diário).
 
+### Ocorrências do gack (todas com assinatura 918409590)
+1. 210204039-197303 — 1ª chamada REST (payload completo)
+2. 246717173-1939784 — 2ª chamada (após permset Partner Lead Management
+   no usuário Diego)
+3. 814372279-855789 — 3ª chamada, COM as automações de desconto da
+   Opportunity DESATIVADAS (Opp RT Discount Approval +
+   Opp_AS_RequestDiscountApproval, desativadas por Santiago às 19:10 de
+   15/07) — elimina automação da org como causa.
+
+Suspeitos eliminados: toggle, mappings OHR/CurrencyIsoCode, moeda/price
+book/entry CRC, permissões (sysadmin + permset nos 2 usuários), automações
+de Opportunity. Achado colateral: "Opp RT Discount Approval" tem fault não
+tratado próprio (Error ID 388533351-685040, logs de 15/07 12:42) — corrigir
+fault path independente deste case. REATIVAR as automações de desconto no
+DevSales após os testes.
+
 ## ATUALIZAÇÃO (15/07/2026, noite) — pacote ressuscitado por causa de MULTICURRENCY
 
 Teste do Santiago falhou: conversão não copiou line item nem preferred seller,
