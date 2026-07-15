@@ -1,5 +1,32 @@
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
+## FECHAMENTO (16/07/2026, ~00h) — multicurrency-complete TAMBÉM gack
+
+Multicurrency CONFIRMADO na Company Information: "Activate Multiple
+Currencies: Checked", Corporate Currency = Costa Rica Colon. Org ID
+00DWK000005VFeD (keyspace WK nativo).
+
+Testado o mapping EXATO que a doc prescreve p/ multicurrency: 2 registros
+nativos (Y52/Y62) com mappingField CurrencyIsoCode->CurrencyIsoCode, sem
+duplicata. API → UNKNOWN_EXCEPTION 814372279-867065 (918409590). Gack.
+
+Matriz final (toggle ON salvo linha 1):
+- Toggle OFF                          → FUNCTIONALITY_NOT_ENABLED (limpo)
+- 0 mappings                          → INVALID_INPUT (limpo)
+- mappings foreign (marco, aZ)        → gack
+- mappings nativos vazios (WK)        → gack
+- mappings nativos + CurrencyIsoCode  → gack  <== doc-complete p/ multicurrency
+
+Conclusao inequivoca: o motor de transformacao gack-eia ao executar QUALQUER
+mapping valido nesta org. Nao e config (toggle, permissoes, automacoes,
+moeda, price book, duplicata, keyspace, multicurrency mapping — todos
+verificados/eliminados). Bug de plataforma. Case.
+
+Estado da org: 2 mappings nativos completos (Y52/Y62 com CurrencyIsoCode),
+toggle ON. Deixar assim — corretos, funcionarao quando SF corrigir o motor.
+
+---
+
 ## VEREDITO DEFINITIVO (15/07/2026, ~23h50) — BUG DE PLATAFORMA CONFIRMADO POR RESET COMPLETO
 
 Repro minimal determinístico estabelecido:
