@@ -46,6 +46,25 @@ tratado próprio (Error ID 388533351-685040, logs de 15/07 12:42) — corrigir
 fault path independente deste case. REATIVAR as automações de desconto no
 DevSales após os testes.
 
+### Prova final (15/07, ~16:30 org time)
+Conversão VÁLIDA via Database.convertLead (lead 00QWK00000PBZgn2AH, owner
+usuário, validações ok, LeadLineItem 0wkWK0000000OGrYAM presente, automações
+da Opp desativadas) criou a Opp 006WK00000NDJ7dYAH SEM nenhum
+OpportunityLineItem/OpportunityPreferredSeller. Hipótese de validation rule
+da Opp descartada (Opp do 1º teste tem PreferredContactMethod/Sociedad/Marca
+preenchidos). CASO ENCERRADO DO NOSSO LADO → case Salesforce aberto com 3
+ErrorIds (assinatura 918409590).
+
+### Aprendizados operacionais dos testes (para o time)
+- Lead em FILA não converte ("Converted objects can only be owned by
+  users") — o roteamento joga leads para fila Leads_CR_Offline; o processo
+  precisa de take-ownership antes da conversão.
+- Validação exige EstimatedPurchaseTime__c + contato para converter.
+- Validation rules da Opp NÃO têm o bypass $Permission.Bypass_Gates_Automacao
+  (as do Lead têm) — padronizar, senão derrubam automações silenciosamente.
+- Workaround da HU-025 enquanto o case corre: flow declarativo
+  Lead_AS_CopiaLineItemsOpp (Get/Loop/Create, sem Apex) — a construir.
+
 ## ATUALIZAÇÃO (15/07/2026, noite) — pacote ressuscitado por causa de MULTICURRENCY
 
 Teste do Santiago falhou: conversão não copiou line item nem preferred seller,
