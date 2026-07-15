@@ -1,5 +1,16 @@
 # HU-009 — Validação dos flows (pré-demo) — 2026-07-14
 
+> **ATUALIZAÇÃO 2026-07-15 00:05 UTC — ajustes DEPLOYADOS (success: true):**
+> VR `HU009_Visita_Requiere_Sucursal` (alerta de Sucursal vazia), Flow B v3.1
+> (P0-2 resolvido: estampa `VisitStatus=Pendiente`) e Recibir Cliente v1.2
+> (P1-3/P1-4 resolvidos: encerra o Event — Atendida + Owner ao asesor presencial —
+> e fault path com tela amigável). Pacote: `deploy/hu009_ajustes/`.
+> O aviso *Info* de System Mode without Sharing no deploy é esperado e intencional
+> (Escenario 10 + transferência sem permissão de Transfer Records; documentado na
+> description do flow). **Pendentes manuais:** P0-1 escopo da list view (All
+> Opportunities), Sucursal required no layout da action, VisitStatus no layout do
+> Event, checklist pré-demo abaixo.
+
 **Fonte:** `metadata_43.zip` — `Event_AfterSave_ShareBranchHandOff` (Parte B, Active, API 63)
 e `Opportunity_Screen_ReceiveCustomer` / "Recibir Cliente" (Parte C, Active, screen flow,
 `SystemModeWithoutSharing`). Análise 100% por XML.
