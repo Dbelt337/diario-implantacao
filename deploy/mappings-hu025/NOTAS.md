@@ -1,5 +1,35 @@
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
+## VEREDITO (15/07/2026, ~19h) — BUG DE PLATAFORMA, escalar para Salesforce
+
+Chamada manual da Transformations API no Workbench (REST Explorer), payload
+completo e válido, retornou **UNKNOWN_EXCEPTION** com ErrorId
+**210204039-197303 (918409590)** — erro interno da plataforma. É a mesma
+falha que ocorre silenciosamente na conversão automática.
+
+Requisição que reproduz (POST /services/data/v65.0/connect/manufacturing/transformations):
+```json
+{
+  "inputObjectIds": ["0wkWK0000000O5ZYAU"],
+  "inputObjectName": "LeadLineItem",
+  "outputObjectName": "OpportunityLineItem",
+  "usageType": "TransformationMapping"
+}
+```
+Observações da investigação via API:
+- `/connect/automotive/transformations` → NOT_FOUND (alias não existe na org)
+- `/connect/manufacturing/transformations` → existe; validação de argumentos
+  funciona (MISSING_ARGUMENT em cadeia); execução quebra com gack.
+
+Config toda verificada e correta antes do veredito: toggle On, mappings
+CurrencyIsoCode deployados (0kFWK00000002WT2AY / 0kFWK00000002WU2AY),
+entry CRC ativa no price book da Opp, usuário sysadmin com permset Partner
+Lead Management, massa de teste confirmada por query.
+
+AÇÃO: abrir case Salesforce com o ErrorId + repro. Enquanto o case corre,
+avaliar workaround declarativo (flow copiando LeadLineItem→OLI na conversão,
+desenho já feito — "Opção 1" no histórico deste diário).
+
 ## ATUALIZAÇÃO (15/07/2026, noite) — pacote ressuscitado por causa de MULTICURRENCY
 
 Teste do Santiago falhou: conversão não copiou line item nem preferred seller,
