@@ -3,7 +3,7 @@
     <validationRules>
         <fullName>HU009_Visita_Requiere_Sucursal</fullName>
         <active>true</active>
-        <description>GQ.AUT.HU009: un Event vinculado a una Opportunity es una visita del proceso de hand-off y necesita la Sucursal (BranchCode__c) para que el flow comparta la Opp con el grupo de la sucursal. Sin sucursal, la recepción nunca ve la visita. Complementa el "required" en el layout de la Global Action New Event (esta VR cubre creación por calendario/API/otros layouts).</description>
+        <description>GQ.AUT.HU009: Event vinculado a Opportunity es una visita del hand-off y requiere Sucursal (BranchCode__c) para compartir la Opp con el grupo de la sucursal. Cubre creación por calendario/API, donde el layout de la action no protege.</description>
         <errorConditionFormula>AND(
   LEFT(WhatId, 3) = &quot;006&quot;,
   ISBLANK(TEXT(BranchCode__c))
