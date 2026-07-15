@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Manifest de RETRIEVE no DevSales (Workbench > migration > Retrieve,
+     colar este arquivo como "unpackaged manifest").
+     Rodar SOMENTE depois de completar o Map Lead Fields (os 5 pares). -->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>LeadLineItem_To_OppLineItem</members>
+        <members>LeadPreferredSeller_To_OppPreferredSeller</members>
+        <name>ObjectHierarchyRelationship</name>
+    </types>
+    <types>
+        <members>Lead_AS_EstampaRTOpp</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>LeadConvertSettings</members>
+        <name>LeadConvertSettings</name>
+    </types>
+    <version>62.0</version>
+</Package>
