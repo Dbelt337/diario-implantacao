@@ -55,6 +55,14 @@ da Opp descartada (Opp do 1º teste tem PreferredContactMethod/Sociedad/Marca
 preenchidos). CASO ENCERRADO DO NOSSO LADO → case Salesforce aberto com 3
 ErrorIds (assinatura 918409590).
 
+### Evidência final — log FINEST da conversão (16:34 org time)
+Conversão completa e válida do lead "Prueba Postman Producto 6" logada em
+FINEST: account/contact criados, validações do Lead e da Opp todas PASSam
+(inclusive Metodo_Preferido — Map Lead Fields FUNCIONANDO), Lead_AS_EstampaRTOpp
+ok, Opp 006WK00000NDJM9 criada — e NENHUM evento de transformação na
+transação: a feature nem é invocada na conversão. Log arquivado para anexar
+ao case (apex07LWK00000PYdRx2AL).
+
 ### Aprendizados operacionais dos testes (para o time)
 - Lead em FILA não converte ("Converted objects can only be owned by
   users") — o roteamento joga leads para fila Leads_CR_Offline; o processo
