@@ -1,0 +1,37 @@
+-- ============================================================
+-- HU-025 — Diagnóstico pós-conversão (produto não aparece na Opp)
+-- Substitua OPP_ID e LEAD_ID pelos ids do teste.
+-- ============================================================
+
+-- 1) A Opp ficou em QUAL price book? (o discriminador principal)
+--    - Pricebook2.Name = "C101 - ..."  -> flow carimbou OK; problema é a transformação/OLI.
+--    - Pricebook2Id null ou "Standard"  -> flow NÃO carimbou (CompanyCode__c não casou, ou flow inativo).
+SELECT Id, Name, CompanyCode__c, Pricebook2Id, Pricebook2.Name,
+       CurrencyIsoCode, StageName, RecordType.DeveloperName
+FROM Opportunity
+WHERE Id = 'OPP_ID';
+
+-- 2) Existe algum OpportunityLineItem? (0 rows = não criou)
+SELECT Id, Product2.Name, Product2Id, PricebookEntryId,
+       Quantity, UnitPrice, TotalPrice, CurrencyIsoCode
+FROM OpportunityLineItem
+WHERE OpportunityId = 'OPP_ID';
+
+-- 3) O LeadLineItem de origem tinha os dados? (produto, qtd, preço, moeda)
+SELECT Id, Name, ProductId, Quantity, UnitPrice, CurrencyIsoCode
+FROM LeadLineItem
+WHERE LeadId = 'LEAD_ID';
+
+-- 4) Confirmar que o flow do price book está ATIVO
+SELECT Id, MasterLabel, Status, ProcessType, TriggerOrder
+FROM Flow
+WHERE Definition.DeveloperName = 'Opp_BS_EstampaPricebook';
+-- (Flow via Tooling API; se o Inspector não achar, ver em Setup > Flows)
+
+-- ============================================================
+-- LEITURA:
+-- Q1 mostra C101 + Q2 vazio  -> price book OK, transformação não gerou OLI
+--                               (mapping/invocação). Próximo: log FINEST da conversão.
+-- Q1 mostra Standard/null    -> flow não carimbou. Ver Q1.CompanyCode__c: casa com
+--                               o prefixo do nome do book? Se não, ajustar o match.
+-- ============================================================
