@@ -6,6 +6,10 @@
         <inputObject>LeadPreferredSeller</inputObject>
         <outputObject>OpportunityPreferredSeller</outputObject>
         <mappingFields>
+            <inputField>Name</inputField>
+            <outputField>Name</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>AccountId</inputField>
             <outputField>AccountId</outputField>
         </mappingFields>
