@@ -1,3 +1,29 @@
+# ✅ MAPPING ENRIQUECIDO — DEPLOY OK (16/07)
+
+Deploy do `conversion-fix.zip` bem-sucedido (id 0kFWK00000002Y52AI). O mapping
+`LeadItemToOppItemOOBMappings` agora carrega os campos reais (nomes conferidos
+no describe, log 07LWK00000PXu9w2AD):
+
+| LeadLineItem (input) | OpportunityLineItem (output) |
+|---|---|
+| `ProductId`          | `Product2Id`                 |
+| `Quantity`           | `Quantity`                   |
+| `UnitPrice`          | `UnitPrice`                  |
+| `CurrencyIsoCode`    | `CurrencyIsoCode`            |
+
+Cuidado registrado: LeadLineItem usa `ProductId` (não `Product2Id`) e NÃO tem
+`Description`. Deploy inicial falhou por isso.
+
+PEÇA 2 pendente — price book por sociedade: a Opp convertida cai no Standard.
+Sociedade = campo `CompanyCode__c` (já no Map Lead Fields). Desenho: flow
+before-save de Opp (Create) que lê `CompanyCode__c` e carimba `Pricebook2Id`
+do book da sociedade (6 books). Decisão pendente: convenção de nome vs
+Custom Metadata `Sociedad_Pricebook__mdt` (recomendado). TESTE útil antes:
+converter um lead com o produto que também existe no Standard/CRC — se o OLI
+aparecer, prova o fix do mapping isolado.
+
+---
+
 # ✅ SUCESSO CONFIRMADO (16/07) — motor da transformação FUNCIONA
 
 Chamada manual da Transformations API criou o OpportunityLineItem
