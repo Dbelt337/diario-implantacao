@@ -1,0 +1,42 @@
+-- ============================================================
+-- HU-025 — Verificação de PricebookEntry para conversão Lead→Opp
+-- Objetivo: provar que o Product2 do LeadLineItem tem PBE ATIVA
+--           no price book C101 E na moeda CRC (org multimoeda).
+-- Rodar no Salesforce Inspector Reloaded ou Workbench.
+-- ============================================================
+
+-- 1) Achar o price book C101 (id + se está ativo)
+SELECT Id, Name, IsActive, IsStandard
+FROM Pricebook2
+WHERE Name LIKE '%C101%';
+
+-- 2) Listar TODAS as PBE ativas do C101 (produto, código, preço, moeda)
+--    É aqui que confirmamos o que realmente existe no catálogo da Costa Rica.
+SELECT Id, Product2.Name, Product2.ProductCode, Product2Id,
+       UnitPrice, CurrencyIsoCode, IsActive, Pricebook2.Name
+FROM PricebookEntry
+WHERE Pricebook2.Name LIKE '%C101%'
+ORDER BY Product2.Name;
+
+-- 3) Ver um produto específico nos DOIS price books (Standard vs C101)
+--    Troque o ProductCode pelo código do produto que você pôs no LeadLineItem.
+--    Mostra em quais books/moedas ele tem entry ativa.
+SELECT Pricebook2.Name, Pricebook2.IsStandard, IsActive,
+       UnitPrice, CurrencyIsoCode
+FROM PricebookEntry
+WHERE Product2.ProductCode = 'COLOQUE_O_CODIGO_AQUI'
+ORDER BY Pricebook2.IsStandard DESC;
+
+-- 4) (Opcional) Ver os LeadLineItems de um lead — qual Product2 estão usando
+--    Troque o Id pelo do lead (ex.: 00QWK00000PBgQX2A1 = lead "Costa").
+SELECT Id, Name, Product2Id, Product2.Name, Product2.ProductCode,
+       Quantity, UnitPrice, CurrencyIsoCode
+FROM LeadLineItem
+WHERE LeadId = '00QWK00000PBgQX2A1';
+
+-- ============================================================
+-- LEITURA DO RESULTADO:
+-- - Query 2/3 traz o produto no C101 com IsActive=true e CurrencyIsoCode=CRC  -> OK, resolve.
+-- - Traz só no Standard, ou no C101 mas em USD, ou IsActive=false             -> é problema de DADO.
+--   Fix: criar/ativar a PricebookEntry do produto no C101 em CRC.
+-- ============================================================
