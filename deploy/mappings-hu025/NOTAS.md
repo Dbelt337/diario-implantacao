@@ -1,21 +1,26 @@
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
-## MECANISMO IDENTIFICADO (16/07) — async via Industries Integration Framework
+## CORREÇÃO (16/07) — async industriesintegrationfwk é RED HERRING
 
-Após a conversão (lead Beltrao → Opp 006WK00000NDQXJ, sem OLI confirmado por
-query), dispara ~9s depois uma transação ASSÍNCRONA rodando
-`industriesintegrationfwk.IntegrationHandler` (Industries Integration
-Framework — log apex07LWK00000PYeeB2AT). Setup → Integration Definitions
-está VAZIO (0 itens) → não é integração custom da equipe → é a PLATAFORMA
-usando o framework. Leitura: o processamento dos filhos na conversão roda
-async pelo Industries Integration Framework e falha dentro do managed package.
+Correção de leitura anterior: o job async industriesintegrationfwk.IntegrationHandler
+(~9s após conversão, log apex07LWK00000PYeeB2AT) NÃO é a transformação.
+A doc oficial mostra que industriesintegrationfwk é o framework do Service
+Process Studio / Data Consumption Framework para CALLOUT a sistemas EXTERNOS
+(MuleSoft/Named Credential), "enquanto o agente espera" — exemplos Fee Reversal
+e Address Update; método central executeCallout(). Requer CRM Plus + Service
+Process Studio. A transformação LeadLineItem→OLI é INTERNA (cria registro),
+não callout externo. Logo esse async é outra coisa (service process/integração
+externa, possivelmente relacionada a MuleSoft/SAP) — red herring para o
+problema dos OLI. NÃO usar no case como "mecanismo da transformação".
 
-Refina "transformação nunca invocada" → "invocada async via industriesintegrationfwk
-e falha lá". Para o case: nomear o mecanismo (async, Industries Integration
-Framework) além do ErrorId 918409590. (Confirmação total exigiria o log async
-completo mostrando o handler processando LeadLineItem/OLI — managed package
-esconde internals; mas ausência de integração custom torna platform-driven a
-explicação mais provável.)
+A transformação continua falhando (provado: manual API gack 918409590; zero
+OLI na conversão; FINEST sem eventos de transformação). O ponto exato da
+falha fica dentro da camada managed do Automotive, que não conseguimos abrir.
+Conclusão inalterada: bug de plataforma. Case + workaround.
+
+Nota separada (backlog): investigar POR QUE um job de Service Process Studio
+(industriesintegrationfwk) dispara na conversão se Integration Definitions
+está vazio — pode ser outro problema/integração à parte.
 
 ---
 
