@@ -29,8 +29,8 @@ quando o contrato sair.
 |---|---|---|---|
 | 1 | Integração catálogo montadora | 🔌 Dependência | MuleSoft Accelerator for SAP (Product/Availability). Sprint 3 sem integração: modelo + catálogo seed + busca sobre cache |
 | 2 | Resolução VIN→peças | ❌/🔌 GAP de dado | Compatibilidade é dado OEM. VIN→VehicleDefinition nativo; VehicleDefinition→peça via tabela de compatibilidade carregada |
-| 3 | Modelo de dados do veículo | ✅ Nativo | **Vehicle + Asset + AssetAccountParticipant**; Asset.VehicleId + participante → Person Account mostra VINs. Falta **carregar** os dados |
-| 4 | Visibilidade cross-sociedade x segurança | ✅ Nativo (padrão) | **Inventário read-only visibilidade ampla** (OWD Public Read) OU query real-time SAP; comercial segue seguro por sociedade |
+| 3 | Modelo de dados do veículo | ✅ Nativo (campos confirmados) | **Vehicle** (VehicleIdentificationNumber=VIN, VehicleRegistrationNumber=Placa) + **Asset** + **Asset Account Participant** (Stakeholder Role=Customer) → identifica cliente e mostra VINs. Falta **carregar** os dados |
+| 4 | Visibilidade cross-sociedade x segurança | ✅ Nativo (padrão) | **Inventário NATIVO: Location + ProductItem + SerializedProduct** (não custom). ProductItem read-only com OWD amplo p/ ver disponibilidade de outras filiais; comercial segue seguro por sociedade. Sync SAP via mapeamento Vehicle Inventory (BOD) |
 | 5 | Determinação do preço | ✅/🔌 | **PA → Price Book nativo**; **Repuestos → callout real-time SAP** (dinâmico). Price Book padrão só p/ PA |
 | 6 | Disponibilidade informativa x transacional | ✅ Confirmado | Identificação = read-only via MuleSoft; validação transacional = real-time no fechamento (decisão Felipe) |
 | 7 | Sincronização e modo degradado | 🔌 Dependência | Cache no SF: materiais/preços de referência/disponibilidade básica (diário) + real-time só no commit. SAP fora → cache com flag e bloqueia só o commit |

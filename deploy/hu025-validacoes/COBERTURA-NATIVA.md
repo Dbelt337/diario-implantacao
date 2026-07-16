@@ -115,3 +115,60 @@ conteúdo destas seções do PDF/doc que você tem:
 3. **Party Relationship Group** — para grupo econômico/holding de frota.
 4. **Vehicle / Vehicle Definition** (campos) — inventário e dados do veículo.
 5. **OmniStudio Standard Runtime** — limitações/pré-reqs, se o PDF trouxer.
+
+---
+
+## Modelagem nativa CONFIRMADA (Object Reference recebido)
+
+**Business Brand** — marca. Campos: Name, Org ID, Parent Brand (hierarquia).
+`Product2.BusinessBrandId` liga produto à marca. Sharing rules permitem
+compartilhar info **por marca**.
+> Uso: "marca de interesse" = **lookup a BusinessBrand** (não campo texto).
+> Cobre tambem "visibilidade por marca" da frota via sharing.
+
+**Business Profile** — dealer/stakeholder (por Account). Campos: Business
+Partner Type (Customer / Financier / Sales Dealer / Service Dealer), Service
+Type (Spare Parts Sales / Sales / Repair & Maintenance / Consultation),
+Business Partner Code, Business Partner Registered Name, Business Operating
+Name, Business Tax Identifier, Region, Service Territory, External Reference
+Number. Picklists extensiveis pelo admin.
+> Uso: classificacao de parceiro/dealer + dados da empresa. B2B/frota/governo
+> pode entrar aqui (estender picklist), evitando FleetSegment__c custom.
+
+**Party Relationship Group** — grupo economico / holding / frota. Account +
+Category, Type, Subtype, Group Size, Group Income, Lifetime Vehicle/Service/
+Accessory Purchase Count e Value. Exemplo OFICIAL e uma frota (Acme). Guided
+workflow "New Group" para montar membros/relacoes.
+> Uso: grupo economico/holding de frota = NATIVO, com lifetime value.
+> Substitui hierarquia custom.
+
+**Vehicle** — VIN e placa. Campos: VehicleIdentificationNumber (**VIN**),
+VehicleRegistrationNumber (**Placa / RegistrationID**), ChassisNumber,
+EngineNumber, ConditionType, CylinderCount, ExteriorColor, StockCode,
+RegistrationRegionCode, VehicleDefinitionId, AssetId.
+> Uso: a busca por VIN / Placa / Nome (tela do Santiago) = **campos nativos**
+> do Vehicle. CylinderCount pode cobrir "cilindrada".
+
+**VehicleDefinition** — modelo/versao, POR PAIS. Campos: BodyType, DoorCount,
+DrivetrainType, EmissionStandard, **EngineCubicCapacity**, FuelType, dimensoes,
+ModelCode, TransmissionType, VehicleClass, VariantName, **GeoCountryId** (pais).
+`VehicleDefinition.Id = Product2.Id`.
+> Uso: catalogo POR PAIS e nativo (GeoCountryId). EngineCubicCapacity pode
+> substituir Cilindrada__c custom (Motos). Confirmar no org.
+
+**Asset + Asset Account Participant** — veiculo <-> cliente. Asset.Product2Id,
+Asset.AccountId; Vehicle.AssetId = Asset.Id. Asset Account Participant: Account +
+Stakeholder Role (Sales Dealer / Customer-Preferred Dealer / Customer /
+Financier) + Asset + Vehicle + Status + datas + Usage Type = Automotive.
+> Uso: ao identificar o cliente, os VINs dele aparecem via Asset Account
+> Participant (Role = Customer). Multiplos stakeholders por veiculo. Confirma
+> HU-030 Q3 com campos exatos.
+
+**Inventario NATIVO — Location + ProductItem + SerializedProduct** (ACHADO):
+- `Location` = filial / centro / armazem.
+- `ProductItem` (Product2Id + LocationId) = **estoque do produto numa localizacao** (quantidade).
+- `SerializedProduct` (Product2Id + ProductItemId + AssetId) = **unidade serializada** (um veiculo especifico em estoque).
+> Uso: "disponibilidade de inventario" tem MODELO NATIVO. Sincronizavel do SAP
+> pelo mapeamento **Vehicle Inventory (BOD)**. Em vez de objeto de inventario
+> 100% custom, usar ProductItem / SerializedProduct. Visibilidade cross-sociedade
+> (HU-030 Q4) = OWD/sharing do ProductItem (read-only amplo).
