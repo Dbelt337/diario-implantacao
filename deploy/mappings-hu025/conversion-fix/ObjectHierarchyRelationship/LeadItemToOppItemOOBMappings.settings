@@ -6,7 +6,7 @@
         <inputObject>LeadLineItem</inputObject>
         <outputObject>OpportunityLineItem</outputObject>
         <mappingFields>
-            <inputField>Product2Id</inputField>
+            <inputField>ProductId</inputField>
             <outputField>Product2Id</outputField>
         </mappingFields>
         <mappingFields>
@@ -16,10 +16,6 @@
         <mappingFields>
             <inputField>UnitPrice</inputField>
             <outputField>UnitPrice</outputField>
-        </mappingFields>
-        <mappingFields>
-            <inputField>Description</inputField>
-            <outputField>Description</outputField>
         </mappingFields>
         <mappingFields>
             <inputField>CurrencyIsoCode</inputField>
