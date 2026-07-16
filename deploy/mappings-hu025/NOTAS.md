@@ -1,5 +1,22 @@
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
+## EVIDÊNCIA CLINCHER (16/07) — FINEST de conversão nova mostra não-invocação
+
+Conversão fresca do lead "Maduro" (00QWK00000PBeTZ) → Opp 006WK00000NDOs8,
+FINEST: account/contact criados, validações Lead+Opp todas PASS,
+Lead_AS_EstampaRTOpp ok — e a transação encerra SEM nenhum evento de
+transformação (nenhum LeadLineItem read, nenhum OpportunityLineItem DML,
+nenhum code unit de transformação). A plataforma NÃO invoca a transformação
+na conversão. Log = apex07LWK00000PYcxK2AT. É a evidência mais forte (caminho
+real, sem chamada manual/target/pricebook envolvidos).
+
+Achado operacional: criação do lead dispara OmniRouting (Lead_TriggerOmniRouting)
+→ cria PendingServiceRouting (0JRWK00000Ff7he) que trava o lead
+(RECORD_IN_USE_BY_WORKFLOW) → conversão imediata falha até o routing liberar.
+Config da org, não bug — mas relevante para o processo (backlog).
+
+---
+
 ## FLANCO PRICE BOOK ELIMINADO (16/07) — 7ª ocorrência
 
 Hipótese: produto em 2 price books ativos (Standard + C101, ambos CRC)
