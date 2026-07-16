@@ -1,3 +1,40 @@
+# ✅✅ HU-025 RESOLVIDA — conversão nativa cria OLI com produto e preço (16/07)
+
+Conversão do lead "Japa" (00QWK00000PBhT32AL) criou o OpportunityLineItem
+00kWK000009T8wHYAS na Opp 006WK00000NDNG6YAP:
+- Produto Tucson Turbo FL Elegant resolvido automaticamente
+- ListPrice 54900 (preço de catálogo, resolvido sozinho do PricebookEntry)
+- Quantity 1, CRC
+SEM flow de price book, SEM Apex. O mecanismo nativo funciona.
+
+O QUE DESTRAVOU (resumo definitivo):
+1. Mapping NÃO pode ter Product2Id (campo derivado do OLI) — a transformação
+   resolve o produto sozinha a partir de LeadLineItem.ProductId + PricebookEntry.
+2. Mapping final = só Quantity + CurrencyIsoCode. (UnitPrice removido para o
+   Sales Price vir automático do catálogo em vez de copiar o preço do lead.)
+3. O produto precisa ter PricebookEntry ativa em CRC no price book da Opp.
+
+PREÇO POR SOCIEDADE — verificado: para o Tucson, Standard e C101 têm o MESMO
+preço (54900). Logo a Opp no Standard traz o preço correto para este produto.
+CAVEAT DE ARQUITETURA: isso só vale enquanto todas as sociedades precificarem
+igual. O modelo "6 books por sociedade" existe para permitir preços diferentes;
+no dia em que C101 != Standard para algum produto, a Opp no Standard traz preço
+ERRADO. Salvaguarda robusta (sem flow novo): dobrar o carimbo de Pricebook2Id
+por CompanyCode__c DENTRO do Opp_BS_EstampaRT já existente. Decisão do negócio:
+se a precificação for uniforme entre sociedades, dispensa; se puder divergir,
+aplicar a salvaguarda.
+
+PENDENTE para fechar 100%:
+- [ ] Deploy do mapping final (Quantity + CurrencyIsoCode) e reconverter →
+      confirmar Sales Price automático = 54900.
+- [ ] Testar o VENDEDOR: LeadPreferredSeller -> OpportunityPreferredSeller
+      (mapping LeadPrefToOppPrefOOBMappings). A Opp de teste veio Preferred
+      Seller (0); precisa um lead COM LeadPreferredSeller para validar a
+      outra metade da HU.
+- [ ] Reativar automações de desconto desativadas nos testes (Santiago).
+
+---
+
 # 🎯 CAUSA RAIZ AMARRADA (16/07) — Product2Id é DERIVADO + Opp no Standard
 
 Dois achados que fecham o caso:
