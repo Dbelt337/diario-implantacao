@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Mirror_Email_Conversion</name>
+        <label>Espelhar Email para Conversao</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.AccountEmailConversion__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Record.Email</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Es_Nuevo</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Set_Deadline</name>
+        <label>Set Deadline</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.SLADeadline__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>deadlineFx</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Stamp_Gestion</name>
+        <label>Stamp Management Date</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.LastGestionDate__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$Flow.CurrentDateTime</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Es_Nuevo</name>
+        <label>Is New</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Verifica_Gestion</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Update</defaultConnectorLabel>
+        <rules>
+            <name>Es_Create</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>esNuevo</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_SLA</targetReference>
+            </connector>
+            <label>Is Create</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Tem_SLA</name>
+        <label>Has SLA</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No SLA</defaultConnectorLabel>
+        <rules>
+            <name>Encontrou</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_SLA.SLAMinutes__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Deadline</targetReference>
+            </connector>
+            <label>Found</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Verifica_Gestion</name>
+        <label>Check Management</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Status unchanged (no action)</defaultConnectorLabel>
+        <rules>
+            <name>Status_Cambio</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>statusCambio</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Stamp_Gestion</targetReference>
+            </connector>
+            <label>Status Changed</label>
+        </rules>
+    </decisions>
+    <description>Lead before-save (create and update). Espelha Lead.Email -&gt; Lead.AccountEmailConversion__c en cada save (campo custom para usar en el Map Lead Fields de conversion, ya que el mapeo nativo solo admite custom-a-custom). Luego: On create, calculates and stamps SLADeadline__c by adding the minutes defined in the Lead_SLA_Config__mdt CMDT (Default_Bandeja record) to the current date/time. On update, refreshes LastGestionDate__c when Status changes.
+Dependency: Lead_SLA_Config__mdt CMDT. Before-save trigger order = 25 (after Lead_BS_DefaultMetodoPreferido = 20).
+Note: if the CMDT read returns no value, the flow does not stamp a deadline and the save proceeds without blocking. No fault path is used because before-save flows cannot run DML/actions and a configuration read failure must not prevent saving the Lead. Applies to all countries (Core model).</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>deadlineFx</name>
+        <dataType>DateTime</dataType>
+        <expression>{!$Flow.CurrentDateTime} + ({!Get_SLA.SLAMinutes__c} / 1440)</expression>
+    </formulas>
+    <formulas>
+        <name>esNuevo</name>
+        <dataType>Boolean</dataType>
+        <expression>ISNEW()</expression>
+    </formulas>
+    <formulas>
+        <name>statusCambio</name>
+        <dataType>Boolean</dataType>
+        <expression>ISCHANGED({!$Record.Status})</expression>
+    </formulas>
+    <interviewLabel>Lead_BS_SetSLADeadline {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_BS_SetSLADeadline</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_SLA</name>
+        <label>Get SLA</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Tem_SLA</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Default_Bandeja</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Lead_SLA_Config__mdt</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Mirror_Email_Conversion</targetReference>
+        </connector>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>25</triggerOrder>
+</Flow>
