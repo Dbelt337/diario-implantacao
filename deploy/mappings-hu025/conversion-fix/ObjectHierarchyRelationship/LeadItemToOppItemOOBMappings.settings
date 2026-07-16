@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ObjectHierarchyRelationship xmlns="http://soap.sforce.com/2006/04/metadata">
+    <mappingType>ParentToParent</mappingType>
+    <masterLabel>LeadItemToOppItemOOBMappings</masterLabel>
+    <parentObjectMapping>
+        <inputObject>LeadLineItem</inputObject>
+        <outputObject>OpportunityLineItem</outputObject>
+        <mappingFields>
+            <inputField>Product2Id</inputField>
+            <outputField>Product2Id</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Quantity</inputField>
+            <outputField>Quantity</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>UnitPrice</inputField>
+            <outputField>UnitPrice</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>Description</inputField>
+            <outputField>Description</outputField>
+        </mappingFields>
+        <mappingFields>
+            <inputField>CurrencyIsoCode</inputField>
+            <outputField>CurrencyIsoCode</outputField>
+        </mappingFields>
+    </parentObjectMapping>
+    <usageType>TransformationMapping</usageType>
+</ObjectHierarchyRelationship>

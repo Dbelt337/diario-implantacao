@@ -1,3 +1,60 @@
+# ✅ SUCESSO CONFIRMADO (16/07) — motor da transformação FUNCIONA
+
+Chamada manual da Transformations API criou o OpportunityLineItem
+`00kWK000009T8WT` (isSuccess: true, status: Success, errorReason: NULL).
+Payload que funcionou:
+```json
+{
+  "inputObjectIds": ["0wkWK0000000O5ZYAU"],
+  "inputObjectName": "LeadLineItem",
+  "usageType": "TransformationMapping",
+  "outputObjectName": "OpportunityLineItem",
+  "outputObjectDefaultValues": {
+    "OpportunityLineItem": {
+      "OpportunityId": "006WK00000ND5j0YAD",
+      "CurrencyIsoCode": "CRC",
+      "Quantity": 1,
+      "TotalPrice": 26900
+    }
+  }
+}
+```
+Prova definitiva: NUNCA foi bug de plataforma. Todos os vereditos anteriores
+de "bug de plataforma" (mantidos abaixo como registro do processo) estão
+INCORRETOS. O que faltava era o parâmetro `outputObjectDefaultValues` — que
+carrega OpportunityId (target), CurrencyIsoCode (obrigatório em org
+multimoeda) e os campos obrigatórios do OLI (Quantity, TotalPrice). A
+insistência em voltar à doc oficial do Automotive foi o que destravou.
+
+## CAUSA RAIZ da conversão (zero OLI) e o FIX
+
+O mapping `LeadItemToOppItemOOBMappings` (ObjectHierarchyRelationship) só
+carregava `CurrencyIsoCode`. Não carregava Product2Id, Quantity nem UnitPrice.
+Na conversão nativa, a plataforma fornece o OpportunityId (target), mas os
+demais campos obrigatórios do OLI precisam VIR DO MAPPING — e não vinham.
+Resultado: a transformação não conseguia montar um OLI válido → zero OLI.
+
+FIX preparado em `conversion-fix/` — enriquece o mapping com os campos:
+Product2Id, Quantity, UnitPrice, Description (+ CurrencyIsoCode que já havia).
+Deploy: `conversion-fix/conversion-fix.zip` (atualiza o registro existente
+LeadItemToOppItemOOBMappings, não cria novo).
+
+### Passos de validação após o deploy
+1. Deploy do `conversion-fix.zip`.
+2. Criar lead novo, adicionar 1 LeadLineItem com Product2 + Quantity + UnitPrice.
+3. Aguardar o OmniRouting liberar o lead (PendingServiceRouting) — senão dá
+   RECORD_IN_USE_BY_WORKFLOW.
+4. Converter o lead.
+5. Verificar OpportunityLineItem na oportunidade gerada.
+6. Se AINDA vier zero OLI mesmo com o mapping completo → hipótese seguinte:
+   a conversão nativa não está invocando a transformação (wiring), e aí o
+   caminho é o workaround em Flow `Lead_AS_CopiaLineItemsOpp` chamando a
+   Transformations API — que agora está PROVADO que funciona.
+7. Reativar as automações de desconto (Opp RT Discount Approval +
+   Opp_AS_RequestDiscountApproval) que o Santiago desativou nos testes.
+
+---
+
 # ⚠️ REVIRAVOLTA (16/07) — NÃO É BUG DE PLATAFORMA; payload incompleto
 
 A doc oficial do Automotive (Transformations) mostra o parâmetro
