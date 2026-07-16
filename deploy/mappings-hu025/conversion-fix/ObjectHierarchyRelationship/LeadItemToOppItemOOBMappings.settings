@@ -10,10 +10,6 @@
             <outputField>Quantity</outputField>
         </mappingFields>
         <mappingFields>
-            <inputField>UnitPrice</inputField>
-            <outputField>UnitPrice</outputField>
-        </mappingFields>
-        <mappingFields>
             <inputField>CurrencyIsoCode</inputField>
             <outputField>CurrencyIsoCode</outputField>
         </mappingFields>
