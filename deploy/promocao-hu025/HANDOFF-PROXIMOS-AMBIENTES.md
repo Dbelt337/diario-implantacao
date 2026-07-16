@@ -72,8 +72,8 @@ Componentes (nomes reais confirmados no org), no `package.xml` desta pasta:
 
 | Tipo | Membro | O que é |
 |---|---|---|
-| ObjectHierarchyRelationship | `LeadItemToOppItemOOBMappings` | Mapping LeadLineItem→OLI. **Conteúdo final: `Quantity` + `UnitPrice` + `CurrencyIsoCode`.** |
-| ObjectHierarchyRelationship | `LeadPrefToOppPrefOOBMappings` | Mapping LeadPreferredSeller→OppPreferredSeller (vendedor). |
+| ObjectHierarchyRelationship | `LeadItemToOppItemOOBMappings` | Mapping LeadLineItem→OLI (produto). **Conteúdo final: `Quantity` + `UnitPrice` + `CurrencyIsoCode`.** |
+| ObjectHierarchyRelationship | `LeadPrefToOppPrefOOBMappings` | Mapping LeadPreferredSeller→OppPreferredSeller (vendedor). **Conteúdo final: `Name` + `AccountId` + `AccountRole` + `ContactId` + `CurrencyIsoCode`.** |
 | Flow | `Lead_AS_EstampaRTOpp` | Carimba RecordType/etapa na Opp convertida. |
 | LeadConvertSettings | `LeadConvertSettings` | Pares custom do Map Lead Fields. |
 
@@ -86,7 +86,21 @@ Componentes (nomes reais confirmados no org), no `package.xml` desta pasta:
   construir o OLI (sem ele → 0 OLI, comprovado). O Sales Price do OLI carrega o
   `UnitPrice` do LeadLineItem. O **List Price** (catálogo) já resolve sozinho do
   PricebookEntry, independente disso.
-- Mapping final = **`Quantity` + `UnitPrice` + `CurrencyIsoCode`**.
+- Mapping do produto final = **`Quantity` + `UnitPrice` + `CurrencyIsoCode`**.
+
+### Por que o mapping do vendedor tem esses campos (crítico entender)
+- `OpportunityPreferredSeller.Name` é **OBRIGATÓRIO** — sem ele a transformação
+  não cria o registro (erro `MISSING_ARGUMENT {OpportunityPreferredSeller=[Name]}`).
+  Por isso `Name → Name` é indispensável.
+- `AccountId` é o **vendedor/dealer** (o registro só faz sentido com ele).
+- `AccountRole`, `ContactId`, `CurrencyIsoCode` completam.
+- Mapping do vendedor final = **`Name` + `AccountId` + `AccountRole` +
+  `ContactId` + `CurrencyIsoCode`**.
+- **Diagnóstico geral:** a conversão nativa engole erros em silêncio. Para achar
+  o campo que falta, use o REST Explorer chamando a Transformations API direto
+  (`POST /connect/manufacturing/transformations`) — ela devolve o erro exato
+  (`MISSING_ARGUMENT` / `INVALID_INPUT`). Foi assim que achamos `Product2Id`
+  (derivado, não mapear) e `Name` (obrigatório).
 
 ---
 

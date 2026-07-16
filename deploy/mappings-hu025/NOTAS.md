@@ -1,3 +1,30 @@
+# ✅✅✅ HU-025 COMPLETA (16/07) — produto E vendedor na conversão
+
+Conversão nativa agora cria as duas metades:
+- Products (OpportunityLineItem) — do LeadLineItem.
+- Preferred Seller (OpportunityPreferredSeller) — do LeadPreferredSeller. TESTADO OK.
+
+MAPPINGS FINAIS (ObjectHierarchyRelationship, TransformationMapping):
+- LeadItemToOppItemOOBMappings (produto): Quantity + UnitPrice + CurrencyIsoCode.
+  (Product2Id NÃO — é derivado; UnitPrice obrigatório senão 0 OLI.)
+- LeadPrefToOppPrefOOBMappings (vendedor): Name + AccountId + AccountRole +
+  ContactId + CurrencyIsoCode. (Name é OBRIGATÓRIO — MISSING_ARGUMENT sem ele.)
+
+MÉTODO QUE DESTRAVOU CADA CAMPO: REST Explorer chamando
+POST /connect/manufacturing/transformations devolve o erro exato que a
+conversão engole (INVALID_INPUT p/ derivado, MISSING_ARGUMENT p/ obrigatório).
+
+O QUE SUBIR PARA OS PRÓXIMOS AMBIENTES: ver
+deploy/promocao-hu025/HANDOFF-PROXIMOS-AMBIENTES.md (atualizado) e package.xml.
+
+Pendências residuais (não bloqueiam a HU):
+- Price book por sociedade: hoje Opp nasce no Standard; preços batem, funciona.
+  Salvaguarda no Opp_BS_EstampaRT se preços divergirem (decisão de negócio).
+- Reativar automações de desconto (Santiago já ia reativar:
+  Opp_AL_SetDiscountStatus, Opp_AS_EvaluarDescuento, Opp_RT_Discount_Approval).
+
+---
+
 # ⚠️ CORREÇÃO (16/07) — UnitPrice é OBRIGATÓRIO no mapping
 
 Tirar o UnitPrice do mapping QUEBROU a conversão (0 OLI). A transformação exige
