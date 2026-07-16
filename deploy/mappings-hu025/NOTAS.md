@@ -1,5 +1,24 @@
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
+## MECANISMO IDENTIFICADO (16/07) — async via Industries Integration Framework
+
+Após a conversão (lead Beltrao → Opp 006WK00000NDQXJ, sem OLI confirmado por
+query), dispara ~9s depois uma transação ASSÍNCRONA rodando
+`industriesintegrationfwk.IntegrationHandler` (Industries Integration
+Framework — log apex07LWK00000PYeeB2AT). Setup → Integration Definitions
+está VAZIO (0 itens) → não é integração custom da equipe → é a PLATAFORMA
+usando o framework. Leitura: o processamento dos filhos na conversão roda
+async pelo Industries Integration Framework e falha dentro do managed package.
+
+Refina "transformação nunca invocada" → "invocada async via industriesintegrationfwk
+e falha lá". Para o case: nomear o mecanismo (async, Industries Integration
+Framework) além do ErrorId 918409590. (Confirmação total exigiria o log async
+completo mostrando o handler processando LeadLineItem/OLI — managed package
+esconde internals; mas ausência de integração custom torna platform-driven a
+explicação mais provável.)
+
+---
+
 ## EVIDÊNCIA CLINCHER (16/07) — FINEST de conversão nova mostra não-invocação
 
 Conversão fresca do lead "Maduro" (00QWK00000PBeTZ) → Opp 006WK00000NDOs8,
