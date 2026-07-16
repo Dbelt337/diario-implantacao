@@ -1,3 +1,30 @@
+# ⚠️ REVIRAVOLTA (16/07) — NÃO É BUG DE PLATAFORMA; payload incompleto
+
+A doc oficial do Automotive (Transformations) mostra o parâmetro
+`outputObjectDefaultValues` que faltava em TODOS os nossos testes manuais:
+```json
+"outputObjectDefaultValues": {
+  "OpportunityLineItem": { "OpportunityId": "...", "CurrencyIsoCode": "CRC" }
+}
+```
+Com ele, a API PAROU de dar UNKNOWN_EXCEPTION e passou a dar erro limpo:
+MISSING_ARGUMENT "{OpportunityLineItem=[Quantity]}". Ou seja, o gack o dia
+todo era payload incompleto (sem target Opp + moeda + campos obrigatórios do
+OLI), NÃO bug de plataforma. Os vereditos anteriores de "bug de plataforma"
+estão INCORRETOS — mantidos abaixo como registro do processo.
+
+CAUSA RAIZ provável: o mapping ObjectHierarchyRelationship está quase vazio
+(só CurrencyIsoCode). Não carrega os campos obrigatórios do OLI
+(Product/PricebookEntry, Quantity, UnitPrice) do LeadLineItem. Por isso a
+conversão real também falha em silêncio (zero OLI). FIX: adicionar mappingFields
+dos campos obrigatórios ao ObjectHierarchyRelationship (ProductId, Quantity,
+UnitPrice) para a transformação carregá-los na conversão.
+
+Iterando o payload manual (add Quantity, depois UnitPrice/PricebookEntry se
+pedir) para provar o motor. Depois: corrigir os mappings e re-testar a conversão.
+
+---
+
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
 ## CORREÇÃO (16/07) — async industriesintegrationfwk é RED HERRING
