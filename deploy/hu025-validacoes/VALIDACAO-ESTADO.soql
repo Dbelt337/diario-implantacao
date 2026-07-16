@@ -1,0 +1,58 @@
+-- ============================================================
+-- HU-025/030 — Validação do estado atual do catálogo (Inspector/Workbench)
+-- Rodar uma query por vez. Se uma query ERRAR com "sObject type ... is not
+-- supported", significa que a FEATURE/objeto NÃO está habilitado no org.
+-- ============================================================
+
+-- 1) PRODUTOS
+SELECT COUNT() FROM Product2;
+SELECT COUNT() FROM Product2 WHERE IsActive = true;
+-- amostra: marca e família preenchidas?
+SELECT Id, Name, ProductCode, Family, IsActive, BusinessBrandId
+FROM Product2 ORDER BY CreatedDate DESC LIMIT 20;
+
+-- 2) MARCAS (Business Brand — nativo AC)
+SELECT COUNT() FROM BusinessBrand;
+SELECT Id, Name FROM BusinessBrand ORDER BY Name;
+
+-- 3) CATÁLOGO NATIVO (Product Catalog / Category / Attribute)
+--    Se ERRAR = feature de catálogo não habilitada -> ponto da rubrica #4.
+SELECT COUNT() FROM ProductCatalog;
+SELECT Id, Name FROM ProductCatalog;
+SELECT COUNT() FROM ProductCategory;
+SELECT Id, Name, CatalogId FROM ProductCategory ORDER BY Name;
+SELECT COUNT() FROM ProductCategoryProduct;
+
+-- 4) VEÍCULO (definição e unidade)
+SELECT COUNT() FROM VehicleDefinition;
+SELECT Id, Name, GeoCountryId FROM VehicleDefinition ORDER BY CreatedDate DESC LIMIT 20;
+SELECT COUNT() FROM Vehicle;
+SELECT Id, Name, VehicleIdentificationNumber, VehicleRegistrationNumber,
+       VehicleDefinitionId, ConditionType FROM Vehicle ORDER BY CreatedDate DESC LIMIT 20;
+
+-- 5) PRICE BOOKS (eixo comercial)
+SELECT Id, Name, IsActive, IsStandard FROM Pricebook2 ORDER BY IsStandard DESC, Name;
+SELECT COUNT() FROM PricebookEntry;
+-- entradas por price book + moeda
+SELECT Pricebook2.Name, CurrencyIsoCode, COUNT(Id) qtd
+FROM PricebookEntry WHERE IsActive = true
+GROUP BY Pricebook2.Name, CurrencyIsoCode ORDER BY Pricebook2.Name;
+
+-- 6) INVENTÁRIO NATIVO (Location / ProductItem / SerializedProduct)
+--    Se ERRAR = feature de inventário não habilitada.
+SELECT COUNT() FROM Location;
+SELECT COUNT() FROM ProductItem;
+SELECT COUNT() FROM SerializedProduct;
+
+-- 7) OBJETOS AC de parceiro/frota (devem existir se AC habilitado)
+SELECT COUNT() FROM BusinessProfile;
+SELECT COUNT() FROM PartyRelationshipGroup;
+SELECT COUNT() FROM AssetAccountParticipant;
+
+-- ============================================================
+-- LEITURA:
+-- - Product2 > 0 e Price Books ok  -> catálogo v1 existe (confirmado).
+-- - ProductCatalog/Category ERRAM  -> habilitar Product Management (rubrica #4).
+-- - VehicleDefinition/Vehicle = 0  -> falta CARREGAR (é o objetivo agora).
+-- - ProductItem/Location existem   -> inventário nativo disponível p/ estoque.
+-- ============================================================
