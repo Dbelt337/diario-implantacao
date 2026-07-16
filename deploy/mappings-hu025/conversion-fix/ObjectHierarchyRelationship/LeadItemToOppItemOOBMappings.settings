@@ -6,10 +6,6 @@
         <inputObject>LeadLineItem</inputObject>
         <outputObject>OpportunityLineItem</outputObject>
         <mappingFields>
-            <inputField>ProductId</inputField>
-            <outputField>Product2Id</outputField>
-        </mappingFields>
-        <mappingFields>
             <inputField>Quantity</inputField>
             <outputField>Quantity</outputField>
         </mappingFields>

@@ -1,3 +1,33 @@
+# 🎯 CAUSA RAIZ AMARRADA (16/07) — Product2Id é DERIVADO + Opp no Standard
+
+Dois achados que fecham o caso:
+
+1. REST Explorer deu **INVALID_INPUT**: "field mappings ... invalid or derived
+   mappings. {LeadLineItem=[Product2Id]}". `OpportunityLineItem.Product2Id` é
+   campo DERIVADO (vem do PricebookEntryId) — NÃO pode ser mapeado. Eu quebrei
+   o mapping ao adicioná-lo. Quem resolve o PRODUTO é a própria transformação
+   OOB, a partir de LeadLineItem.ProductId + o PricebookEntry do price book DA OPP.
+   FIX: mapping sem Product2Id. Fica só Quantity, UnitPrice, CurrencyIsoCode
+   (todos aceitos pela API; não-derivados).
+
+2. Query pós-conversão (Opp 006WK00000NDQSeYAP): CompanyCode__c=C101, mas
+   **Pricebook2.Name = "Standard Price Book"** e 0 OLI. Ou seja: a Opp convertida
+   NÃO nasce sem book — nasce com **Standard**. No Standard o produto não tem
+   entry CRC → transformação não resolve → 0 OLI. Precisa nascer no C101.
+
+BUG do flow Opp_BS_EstampaPricebook (corrigido): a condição era "carimba só se
+Pricebook2Id vazio". Como a conversão já põe Standard, nunca disparava. Nova
+condição: carimba sempre que CompanyCode__c preenchido (no create é seguro
+sobrescrever o Standard — ainda não há OLI). LeadLineItem de origem estava OK
+(ProductId 01tWK00000G1C4XYAV, Qty 1, UnitPrice 1, CRC).
+
+DESENHO FINAL (caminho nativo escolhido pelo usuário):
+- Mapping OOB sem Product2Id (só Quantity/UnitPrice/CurrencyIsoCode).
+- Flow before-save carimba Pricebook2Id = book da sociedade (por CompanyCode__c).
+- Conversão nativa resolve produto+preço sozinha com a Opp já no C101.
+
+---
+
 # ✅ MAPPING ENRIQUECIDO — DEPLOY OK (16/07)
 
 Deploy do `conversion-fix.zip` bem-sucedido (id 0kFWK00000002Y52AI). O mapping
