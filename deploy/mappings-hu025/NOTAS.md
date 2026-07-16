@@ -1,5 +1,23 @@
 # HU-025 — Conversão de Lead com Line Items e Preferred Sellers (Automotive Cloud)
 
+## FLANCO PRICE BOOK ELIMINADO (16/07) — 7ª ocorrência
+
+Hipótese: produto em 2 price books ativos (Standard + C101, ambos CRC)
+causaria ambiguidade na resolução do PricebookEntry → gack. Testado:
+desativada a entry do C101 (01uWK000008Y4B3YAK), deixando só a do Standard
+(que casa com o Pricebook2 da Opp 006WK00000ND5j0YAD). API → UNKNOWN_EXCEPTION
+65233853-724444 (918409590). Gack persiste com 1 só price book ativo.
+Price books ELIMINADOS. (Entry do C101 reativada após o teste.)
+
+Variáveis testadas e eliminadas (lista completa): toggle, permissões (2
+usuários), automações da Opp, moeda, mapping multicurrency (CurrencyIsoCode),
+mappings duplicados, keyspace estrangeiro, registros nativos, target
+Opportunity (lead convertido), ambiguidade de price book. O gack é invariante
+a TUDO exceto a existência de um mapping válido para executar. Bug de
+plataforma, exaustivamente comprovado. 7 ErrorIds, assinatura 918409590.
+
+---
+
 ## ÚLTIMA RESSALVA FECHADA (16/07) — chamada manual TINHA target Opportunity
 
 Query: LeadLineItem 0wkWK0000000O5ZYAU → Lead 00QWK00000PBSaT2AX,
