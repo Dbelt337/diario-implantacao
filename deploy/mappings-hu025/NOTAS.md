@@ -1,3 +1,14 @@
+# ⚠️ CORREÇÃO (16/07) — UnitPrice é OBRIGATÓRIO no mapping
+
+Tirar o UnitPrice do mapping QUEBROU a conversão (0 OLI). A transformação exige
+um preço para montar o OLI (mesma exigência da API manual: Quantity + TotalPrice).
+Revertido para Quantity + UnitPrice + CurrencyIsoCode (versão que cria o OLI).
+Consequência: o Sales Price carrega o UnitPrice do lead; o preço "automático"
+de catálogo aparece no List Price (resolvido do PricebookEntry), não no Sales
+Price. "Preço automático removendo UnitPrice" NÃO é viável.
+
+---
+
 # ✅✅ HU-025 RESOLVIDA — conversão nativa cria OLI com produto e preço (16/07)
 
 Conversão do lead "Japa" (00QWK00000PBhT32AL) criou o OpportunityLineItem

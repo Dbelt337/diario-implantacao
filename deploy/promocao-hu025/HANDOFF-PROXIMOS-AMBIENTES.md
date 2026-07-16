@@ -72,7 +72,7 @@ Componentes (nomes reais confirmados no org), no `package.xml` desta pasta:
 
 | Tipo | Membro | O que é |
 |---|---|---|
-| ObjectHierarchyRelationship | `LeadItemToOppItemOOBMappings` | Mapping LeadLineItem→OLI. **Conteúdo final: só `Quantity` + `CurrencyIsoCode`.** |
+| ObjectHierarchyRelationship | `LeadItemToOppItemOOBMappings` | Mapping LeadLineItem→OLI. **Conteúdo final: `Quantity` + `UnitPrice` + `CurrencyIsoCode`.** |
 | ObjectHierarchyRelationship | `LeadPrefToOppPrefOOBMappings` | Mapping LeadPreferredSeller→OppPreferredSeller (vendedor). |
 | Flow | `Lead_AS_EstampaRTOpp` | Carimba RecordType/etapa na Opp convertida. |
 | LeadConvertSettings | `LeadConvertSettings` | Pares custom do Map Lead Fields. |
@@ -82,10 +82,11 @@ Componentes (nomes reais confirmados no org), no `package.xml` desta pasta:
   mapeado (dá `INVALID_INPUT`). Quem resolve o produto é a **própria
   transformação**, a partir do `LeadLineItem.ProductId` + o PricebookEntry do
   price book da Opp. **Não adicionar Product2Id.**
-- `UnitPrice` foi **removido** de propósito: sem ele, o Sales Price do OLI
-  assume o **preço de catálogo** (ListPrice do PricebookEntry) automaticamente,
-  em vez de copiar o preço digitado no lead.
-- Mapping final = **apenas `Quantity` e `CurrencyIsoCode`**.
+- `UnitPrice` é **obrigatório** no mapping: a transformação exige um preço para
+  construir o OLI (sem ele → 0 OLI, comprovado). O Sales Price do OLI carrega o
+  `UnitPrice` do LeadLineItem. O **List Price** (catálogo) já resolve sozinho do
+  PricebookEntry, independente disso.
+- Mapping final = **`Quantity` + `UnitPrice` + `CurrencyIsoCode`**.
 
 ---
 
