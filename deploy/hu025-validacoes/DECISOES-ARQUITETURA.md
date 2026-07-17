@@ -194,3 +194,37 @@ Timeline sobre Opportunity.
 **Veredito:** ✅ Nativo (Sales Cloud Activities + Outlook Integration). EAC
 opcional. Bidirecional Task/call = GAP a validar. Licença Outlook Integration é
 free; EAC pode exigir Sales/Service Cloud Einstein — confirmar.
+
+---
+
+## HU Avalúos — Agendamento e gestão de avaliações (Autos, trade-in)
+
+**Requisito:** agendar/gerir avaliações (avaliadores internos e externos),
+autoatendimento, observações (multas/gravames/processos), filial diferente da Opp.
+
+**Stack NATIVO — Salesforce/Automotive Scheduler (mesmo padrão do Test Drive):**
+| Requisito | Recurso nativo | Doc |
+|---|---|---|
+| Avaliação (agendamento) | **Service Appointment** + **Work Type** "Avalúo" | Manage Appointments (Scheduler) |
+| Avaliador interno | **Service Resource** (ligado a User) | Assign Service Territories |
+| Filial | **Service Territory** | Set Up Service Territories |
+| Disponibilidade | **Operating Hours** + Scheduling Policy — NATIVA, **não SAP** | Work Types & Territories |
+| Autoatendimento | **Experience Cloud / site** + Scheduler REST APIs | Scheduler REST |
+| Observações (multas/gravames/processos) | Campos na Service Appointment + **Notes**, ligados à Opp | — |
+| Avaliação em outra filial | Service Appointment em outra **Service Territory** + **Opportunity Team** (Owner mantido) | (padrão Test Drive) |
+
+**Avaliador EXTERNO sem acesso ao SF (rubrica #4 — não assumir):**
+- **Não** vira Service Resource (exigiria User/licença). Modelar como
+  **Conta/Contato fornecedor**; registrar o Service Appointment (rastreabilidade)
+  + **notificar por Flow (e-mail/WhatsApp via Messaging)** + histórico na Opp.
+  Mesmo padrão da HU-039 (ator fora do SF).
+- Só vira **Service Resource** se precisarem **gerir a agenda do externo** no SF
+  (aí precisa User/licença) — decisão a validar.
+- **Não há objeto nativo de "avaliador externo"** no Automotive Cloud — Scheduler
+  + notificação cobre.
+
+**Dependências (rubrica):** Experience Cloud (autoatendimento) e User/licença
+(externo como Service Resource) — confirmar. Disponibilidade NÃO depende de SAP.
+
+**Veredito:** ✅ Nativo (Salesforce Scheduler). Externo = registrar+notificar
+(vendor Contact), não Service Resource por padrão. Observações = campos + Notes.
