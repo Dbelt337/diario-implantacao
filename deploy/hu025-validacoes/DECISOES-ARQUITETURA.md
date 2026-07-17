@@ -50,3 +50,40 @@ quando o contrato sair.
   (status básico) + validação real-time no fechamento. Reusar aceleradores Mule.
 - **Preço por sociedade/país:** ✅ Price Book por sociedade (multimoeda). C101
   Costa Rica montado; futuros HN/GT/SV mesma lógica.
+
+---
+
+## US-015 — Gestão de contas B2B (Repuestos/PA) — H2 Vinculação de Frota
+
+**Requisito:** ver na conta B2B do cliente os VINs da frota dele (colunas VIN,
+modelo, estado, último odômetro), **sem colidir** com a conta de quem vendeu a
+unidade.
+
+**CORREÇÃO DE PREMISSA (rubrica #4 — escopo/decisão sobre campo inexistente):**
+O D-B2B-01 mandava usar `Vehicle.RelatedAccountId` (citando Object Reference
+l.397). **Describe no org (log 07LWK00000PdMFI2A3) provou: `Vehicle` NÃO tem
+`RelatedAccountId` NEM `AccountId`.** O Vehicle liga a Account só via Asset
+(`Vehicle.AssetId` → `Asset.AccountId`). Logo o D-B2B-01, como escrito, **não é
+implementável**. A decisão estava marcada RESOLVIDA sobre um campo que não existe.
+
+**COBERTURA NATIVA CORRETA — `AssetAccountParticipant`** (Automotive Cloud):
+- Objeto feito para relacionar **múltiplos stakeholders** a um asset/veículo, com
+  **papel** (Stakeholder Role: Customer / Sales Dealer / Customer-Preferred
+  Dealer / Financier), Status e datas de vigência. Tem lookup **direto ao
+  Vehicle**.
+- Frota do cliente = AAP **Role=Customer** ligando a **conta B2B** ao **Vehicle**.
+- Quem vendeu = AAP **Role=Sales Dealer**. Zero colisão — resolve por design o
+  que o RelatedAccountId tentava.
+- **Related list na conta** = "Asset Account Participants" filtrada Role=Customer;
+  colunas VIN/modelo/estado/odômetro vêm do Vehicle (lookup no AAP).
+- Visualização opcional: **Actionable Relationship Center** (nativo) para o grafo
+  de stakeholders do veículo.
+
+**Descartado:** `Fleet_Owner_Account__c` custom (rubrica #2) — o AAP nativo cobre
+com papel + histórico, sem campo novo.
+
+**Verdito:** ✅ Nativo (AssetAccountParticipant). Ação: corrigir D-B2B-01 e o
+roteiro E2E (H5) de `Vehicle.RelatedAccountId` para `AssetAccountParticipant`.
+
+Doc oficial: Create Asset Account Participants in Automotive Cloud —
+https://help.salesforce.com/s/articleView?id=sf.auto_create_asset_account_participants.htm
