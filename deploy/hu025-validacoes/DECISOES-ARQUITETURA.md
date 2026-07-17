@@ -150,3 +150,47 @@ all-busy, respeito à cita, sucursal sem host. Manter como perguntas ao cliente.
 
 **Veredito:** ✅ Nativo (Omni-Channel + Salesforce Scheduler), 🔌 dependência de
 licença Service Cloud. Ponto aberto: modo de gestão do estado (agente vs host).
+
+---
+
+## HU-027 / US-042… — Seguimento comercial e gestão de atividades (Auto/Motos/Rep&PA)
+
+**Estado:** FIT, native-first, **sem objeto custom**. Task/Event/Notes/Activity
+Timeline sobre Opportunity.
+
+**EAC vs Standard — DECISÃO:**
+- **Standard Task/Event/Notes + Activity Timeline = SISTEMA DE REGISTRO oficial.**
+  É o repositório de trazabilidade/reporting e o que permite automação e gating.
+- **Einstein Activity Capture = OPCIONAL e complementar** — só auto-captura de
+  eventos de calendário (e e-mails) para VISIBILIDADE. **NÃO é o repositório
+  oficial** (o próprio doc crava isso).
+- Motivo técnico: itens do EAC ficam em armazenamento externo (AWS), **não** como
+  Task/Event → não entram nos reports padrão de Activity, sem trigger/Flow, com
+  limite de retenção. Por isso o **gating de Rep&PA Online** ("só avança se tarefas
+  obrigatórias completas") **exige Task standard**, não EAC.
+- Recomendação: **construir em standard; EAC só como add-on passivo** se GrupoQ
+  decidir (licença/validação). Não basear a HU no EAC.
+
+**Config de atividades (planilha):**
+- Llamada (Log a Call): Documentación, Cita, Financiamiento, Negociación.
+- Tarea (Task): Enviar Cotización, Presupuesto, Recontacto, Confirmar visita.
+- Evento (Event): Prueba de manejo, Avalúo, Visita a sucursal, Entrega de
+  vehículos, Invitación BTL, Firma documentos, Visita de campo.
+- Campos = os de caixa do Salesforce. Type (categoria) + Subject (subvalores).
+
+**Respostas nativas às perguntas abertas do doc:**
+- "Calendário no SF sem EAC?" → **Lightning Calendar** nativo (Events) + Activity
+  Timeline (Tasks/Calls/Notes). Atividades visíveis mesmo sem EAC.
+- "Relatório de atividades por sucursal?" → **Reports padrão de Activities**
+  (Task/Event) agrupados por assessor/sucursal.
+- "Contempla WhatsApp/Correos?" → E-mail = **EmailMessage** no timeline;
+  **WhatsApp = Messaging Session** (Digital Engagement, licença já confirmada).
+- **Sincronização bidirecional de Task/llamadas = 🔌 GAP** (sem nativo; Lightning
+  Sync/Salesforce for Outlook descontinuados). Exigiria Graph API/integração.
+  Não assumir (rubrica #4).
+- Mostrador: permitir **criar Opportunity** quando o cliente não compra na hora
+  (fluxo gerido) além do transacional Conta/Contato→Quote→Order. Nativo.
+
+**Veredito:** ✅ Nativo (Sales Cloud Activities + Outlook Integration). EAC
+opcional. Bidirecional Task/call = GAP a validar. Licença Outlook Integration é
+free; EAC pode exigir Sales/Service Cloud Einstein — confirmar.
