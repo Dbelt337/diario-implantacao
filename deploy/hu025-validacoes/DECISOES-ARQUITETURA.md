@@ -235,3 +235,16 @@ GAP sem Experience Cloud.
 
 **Veredito:** ✅ Nativo (Salesforce Scheduler). Externo = registrar+notificar
 (vendor Contact), não Service Resource por padrão. Observações = campos + Notes.
+
+**Registro do RESULTADO da avaliação (valor, observações finais):**
+- Resultado vive no **Service Appointment** (campos custom: valor do avalúo,
+  observações finais, condição, multas/gravames). Avaliador interno preenche ao
+  concluir (Status=Completed); externo → assessor interno registra.
+- **Propagação para a Opportunity:** SA↔Opp NÃO é master-detail → sem roll-up
+  nativo. Native path = **Flow record-triggered na Service Appointment**
+  (Status=Completed) carimba valor/observações na Opportunity. É o "atualiza
+  automaticamente" (declarativo, sem código).
+- Bônus: se o veículo de troca for um registro **Vehicle**, o mesmo Flow pode
+  atualizar `AverageMarketValue`/`MarketPrice` (campos nativos de mercado).
+- Histórico: cada Service Appointment guarda seu resultado → related list de
+  avaliações na Opp para rastreabilidade (re-avaliações).
