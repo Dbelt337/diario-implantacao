@@ -248,3 +248,27 @@ GAP sem Experience Cloud.
   atualizar `AverageMarketValue`/`MarketPrice` (campos nativos de mercado).
 - Histórico: cada Service Appointment guarda seu resultado → related list de
   avaliações na Opp para rastreabilidade (re-avaliações).
+
+**⚠️ CORREÇÃO native-first (rubrica #2) — usar a família NATIVA Appraisal:**
+Melisa (GrupoQ) apontou que o Automotive Cloud tem o data model **"Vehicle and
+Asset Appraisals"**: `Appraisal`, `AppraisalItem`, `AppraisalItemAddon`,
+`AppraisalItemProviderVal`, `AppraisalAdjustment`. Minha recomendação anterior
+(resultado em CAMPOS CUSTOM no Service Appointment) estava ERRADA por não usar o
+nativo apropriado. Desenho correto:
+- **Service Appointment (Scheduler)** = só o AGENDAMENTO (quando/onde/quem —
+  Service Resource, Territory, Operating Hours).
+- **Appraisal (+ Item + ProviderVal + Adjustment)** = a AVALIAÇÃO/RESULTADO:
+  - `FinalAppraisalValue` **calculado nativamente** (não campo manual).
+  - `AppraisalItemProviderVal` = valorações do provedor / **PRU de referência**
+    (se PRU vem de tabela mestre GQ-CA-01-157, a provider val referencia/guarda).
+  - `AppraisalAdjustment` = **cada dedução do avaliador e exceção do gerente,
+    rastreada uma a uma** — é a rastreabilidade que se perderia com campos custom.
+- Link: Appraisal relacionada à Opportunity/Vehicle/Asset. Flow pode carimbar o
+  FinalAppraisalValue na Opp, mas a **fonte da verdade é a Appraisal nativa**.
+
+**NÃO eliminar a família Appraisal** — é o modelo nativo de avaliação e entrega a
+rastreabilidade (adjustments/provider vals/valor calculado). Corrige o registro
+anterior de "campos custom no Service Appointment".
+
+Doc oficial: Vehicle and Asset Appraisals (Data Model) —
+https://developer.salesforce.com/docs/platform/data-models/guide/vehicle-and-asset-appraisals.html
