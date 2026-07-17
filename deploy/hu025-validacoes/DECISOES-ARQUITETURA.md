@@ -103,3 +103,50 @@ https://help.salesforce.com/s/articleView?id=sf.auto_create_asset_account_partic
    do lookup Vehicle (ex.: Vehicle.VehicleIdentificationNumber, ConditionType,
    modelo via VehicleDefinition, odômetro) e exibir na related list.
    Zero objeto/campo custom de modelo — só fórmulas de exibição.
+
+---
+
+## HU-013 / US-017 — Disponibilidade e atribuição de assessores de showroom (Autos/Motos)
+
+**Requisito:** libro de piso (bitácora), estado do assessor em tempo real
+(ativo/ocupado/ausente), atribuição do walk-in a assessor disponível pela
+recepção/host, com override manual. FIT (Annex fila 15).
+
+**Stack NATIVO (native-first):**
+| Requisito | Recurso nativo | Doc |
+|---|---|---|
+| Estado tempo real (ativo/ocupado/ausente) | **Omni-Channel Presence Statuses** (Online/Busy/Away) | Set Up Presence Statuses |
+| Atribuição por presença + capacidade | **Omni-Channel Presence-Based Routing** + Presence Configuration (Capacity) | Routing Model Options |
+| Ordem de turno (round-robin/carga) | **Routing Model** (Least Active / Most Available) | Routing Model Options |
+| Libro de piso (walk-in roteável) | **Service Channel** sobre **Lead** ou objeto custom "Visita_Showroom" | Route Work with Omni-Channel |
+| Fila quando todos ocupados | **Omni-Channel Queue** | Omni-Channel |
+| Host supervisiona / reatribui | **Omni-Channel Supervisor** + reassign | Omni Supervisor |
+| Tempos de espera / tráfego | timestamps de AgentWork/PendingServiceRouting + relatórios | — |
+| Notificação ao assessor | Omni widget + **Custom Notification** (App/Mobile) / Email via Flow | Notification Builder |
+| Cliente com CITA | **Salesforce Scheduler** (respeita assessor agendado) + Scheduler↔Omni utilization | Enable Scheduler & Omni-Channel |
+
+**CAVEAT-CHAVE (rubrica #4) — quem seta o estado do assessor:**
+Omni-Channel Presence é **auto-gerido pelo agente logado num console** (o
+assessor seta Available/Busy). Em showroom, o assessor está no salão, talvez só
+com mobile. Então validar com GrupoQ o MODO de operação:
+- **Agente self via console** → Presence Status **nativo** (sem `Advisor_Status__c`).
+- **Host gerencia um board** (assessor não fica em console) → aí um
+  `Advisor_Status__c` + board custom (FlexCard/OmniScript Standard Runtime) pode
+  se justificar, PORÉM o roteamento Omni-Channel ainda usa Presence — ou vira
+  atribuição manual pelo host. **Definir isso decide se o campo custom entra.**
+
+**Descartar por ora:** `Advisor_Status__c` custom como premissa fixa — só se o
+modo "host-board" for confirmado. Native-first = Presence Status.
+
+**Libro de piso:** não há objeto nativo "floor log". Decisão: rotear **Lead**
+(walk-in = prospect) OU objeto custom leve **Visita_Showroom__c** se precisarem
+bitácora própria (tráfego/tempos). Avaliar reuso de Lead antes de criar objeto.
+
+**Dependência (rubrica):** Omni-Channel exige **licença Service Cloud** — o
+próprio Annex flaga (caveat fila 272). Confirmar entitlement + registrar a base.
+
+**A validar (já no doc):** capacidade por assessor, ordem de turno, comportamento
+all-busy, respeito à cita, sucursal sem host. Manter como perguntas ao cliente.
+
+**Veredito:** ✅ Nativo (Omni-Channel + Salesforce Scheduler), 🔌 dependência de
+licença Service Cloud. Ponto aberto: modo de gestão do estado (agente vs host).
