@@ -87,3 +87,19 @@ roteiro E2E (H5) de `Vehicle.RelatedAccountId` para `AssetAccountParticipant`.
 
 Doc oficial: Create Asset Account Participants in Automotive Cloud —
 https://help.salesforce.com/s/articleView?id=sf.auto_create_asset_account_participants.htm
+
+**Campos do AAP confirmados no org (describe 07LWK00000PdPI22AN):**
+`AccountId`→Account, `VehicleId`→Vehicle, `AssetId`→Asset, `StakeholderRole`
+(picklist), `EffectiveStartDate`/`EffectiveEndDate`, `IsActive`, `UsageType`,
+`CurrencyIsoCode`, `Name`. Confirma lookup DIRETO Conta↔Vehicle + papel + vigência.
+
+**Passos de implementação (H2):**
+1. Relacionar frota = criar AssetAccountParticipant: `AccountId`=conta B2B do
+   cliente, `VehicleId`=veículo, `StakeholderRole`=Customer, `IsActive`=true,
+   `EffectiveStartDate`. Vendedor = outro AAP com Role=Sales Dealer (sem colisão).
+2. Related list na conta B2B = adicionar "Asset Account Participants" na página
+   (Dynamic Forms/layout), filtrada por Role=Customer.
+3. Colunas VIN/modelo/estado/odômetro = criar **formula fields no AAP** puxando
+   do lookup Vehicle (ex.: Vehicle.VehicleIdentificationNumber, ConditionType,
+   modelo via VehicleDefinition, odômetro) e exibir na related list.
+   Zero objeto/campo custom de modelo — só fórmulas de exibição.
