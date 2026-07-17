@@ -209,7 +209,7 @@ autoatendimento, observações (multas/gravames/processos), filial diferente da 
 | Avaliador interno | **Service Resource** (ligado a User) | Assign Service Territories |
 | Filial | **Service Territory** | Set Up Service Territories |
 | Disponibilidade | **Operating Hours** + Scheduling Policy — NATIVA, **não SAP** | Work Types & Territories |
-| Autoatendimento | **Experience Cloud / site** + Scheduler REST APIs | Scheduler REST |
+| Autoatendimento (cliente agenda sozinho) | ❌ SEM Experience Cloud não é nativo → **agendamento assistido** (recepção/assessor agenda no Scheduler) OU site próprio via **Scheduler REST APIs** (dev/integração) | Scheduler REST |
 | Observações (multas/gravames/processos) | Campos na Service Appointment + **Notes**, ligados à Opp | — |
 | Avaliação em outra filial | Service Appointment em outra **Service Territory** + **Opportunity Team** (Owner mantido) | (padrão Test Drive) |
 
@@ -223,8 +223,15 @@ autoatendimento, observações (multas/gravames/processos), filial diferente da 
 - **Não há objeto nativo de "avaliador externo"** no Automotive Cloud — Scheduler
   + notificação cobre.
 
-**Dependências (rubrica):** Experience Cloud (autoatendimento) e User/licença
-(externo como Service Resource) — confirmar. Disponibilidade NÃO depende de SAP.
+**GrupoQ NÃO tem Experience Cloud (confirmado):** autoatendimento do cliente
+online **não é nativo**. Native path = **agendamento assistido** (recepção/
+assessor agenda em nome do cliente no Scheduler — cobre o essencial). Self-service
+real (cliente agenda sozinho) = site próprio + **Scheduler REST APIs** (dev/
+integração) OU adquirir Experience Cloud → marcar como GAP/dependência, não nativo.
+
+**Dependências (rubrica):** User/licença (externo como Service Resource, só se
+gerir agenda dele). Disponibilidade NÃO depende de SAP. Autoatendimento online =
+GAP sem Experience Cloud.
 
 **Veredito:** ✅ Nativo (Salesforce Scheduler). Externo = registrar+notificar
 (vendor Contact), não Service Resource por padrão. Observações = campos + Notes.
