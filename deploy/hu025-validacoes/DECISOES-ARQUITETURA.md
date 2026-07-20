@@ -352,3 +352,40 @@ do OmniStudio. A lógica da IP está correta e o RT flui até o insert.
    `SELECT Id, RecordTypeId, RecordType.DeveloperName FROM Lead ORDER BY CreatedDate DESC LIMIT 1`,
    testando businessLine de Repuestos, Motos e Flotas (cobrir os 4 RTs).
 Só marcar pronto pra produção quando (1) e (2) passarem com o usuário de integração.
+
+---
+
+## Lead Routing — Fix do re-roteamento (bounce) no update (Marcelo/Davi)
+
+**Sintoma:** criar Lead → distribui a um usuário; atualizar Lead → volta pra
+fila → redistribui. Não é "assim mesmo".
+
+**Arquitetura real (2 estágios — NÃO é conflito):**
+- `Lead_Routing_GrupoQ` (Assignment Rule, ativa) → atribui a **FILAS** por
+  Industry/Sociedad (9 entradas). Estágio 1.
+- `Lead_TriggerOmniRouting` (record-triggered CreateAndUpdate) → chama
+  `LeadRouting_OmniFlow` (Active = **V8**) → Omni tira da fila e roteia pro
+  **agente** (afinidade vendedor preferido / skills / presença). Estágio 2.
+- Correção de registro anterior: eu havia dito "dois mecanismos brigando, escolha
+  um". Com as regras atribuindo a FILAS, é um 2-estágios válido.
+
+**Causa do bounce:** o gatilho re-invoca o Omni sempre que um campo de critério
+(Brand__c, CompanyCode__c, Industry) muda no update; `routeWork` recria a
+solicitação e puxa o Lead de volta pra fila. Sem trava de "já atribuído".
+
+**Fix (nativo, sem campo custom):** Decision `Deve_Rotear` no início do caminho
+assíncrono — **só rotear se `OwnerId` começa com `00G` (Fila)** (fórmula
+`fOwnerEsFila = BEGINS($Record.OwnerId,"00G")`). Owner `005` (vendedor) → não
+roteia. Arquivo: `deploy/lead-routing-fix/`.
+
+**Decisão de negócio confirmada:** Lead criado na UI que fica com o criador
+(owner = usuário) → **mantém com o criador** (Omni não roteia). "Estar numa fila"
+é o sinal de que precisa de roteamento.
+
+**Regra reutilizável:** roteamento Omni por record-triggered flow deve travar em
+`OwnerId` = Fila (00G) pra nunca re-rotear Lead já atribuído a um agente.
+
+**Pendências:** (1) simplificar — o gatilho recalcula a própria fila (5) que não
+bate com as 9 das Assignment Rules → consolidar o mapa num lugar só; (2) confirmar
+que updates via API/DataRaptor não re-rodam Assignment Rules (assignmentRulesUsed
+só no create).
