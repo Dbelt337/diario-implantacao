@@ -23,9 +23,9 @@ Appraisal p/ resultado, PRU como dado mestre).
 | AppraisalType | Picklist | N | Trade-in |
 | Data efetiva / validade | Date | N | |
 | **FinalAppraisalValue** | Currency | N (RO) | valor tasado final — **confirmar se é FORMULA no describe** |
-| Account (cliente) | Lookup(Account) | N | |
-| Vínculo com Opportunity | Lookup | N | **confirmar se é direto ou via Vehicle/Asset** |
-| Vehicle / Asset | Lookup | N | o veículo usado |
+| **Parent (registro pai)** | Lookup **polimórfico** | N | **CONFIRMADO no ERD:** UM entre **Opportunity, Account, Lead, Case ou Financial Account** |
+| Contact | Lookup(Contact) | N | contato relacionado |
+| Appraiser / User | Lookup(User) | N | usuário (avaliador) |
 | CurrencyIsoCode | Currency | N | CRC |
 | Owner | Lookup(User) | N | |
 | **Tem multas/esquelas** | Checkbox+texto | **C** | indicador legal (doc HU-036) |
@@ -37,7 +37,7 @@ Appraisal p/ resultado, PRU como dado mestre).
 | Campo | Tipo | N/C | Observação |
 |---|---|---|---|
 | Appraisal | Master/Lookup | N | pai |
-| Vehicle / VehicleDefinition | Lookup | N | marca/modelo/ano |
+| **Subject (Vehicle OU Asset)** | Lookup **polimórfico** | N | **CONFIRMADO no ERD:** o item aponta para um **Vehicle** OU um **Asset** |
 | VIN, Placa, KM, Cor, Condição | vários | N | do Vehicle / item |
 | Valor base | Currency | N | |
 | **TotalAdjustmentValue** | Currency | N (RO) | **acumula todos os AppraisalAdjustment do item (rollup nativo)** |
@@ -123,7 +123,15 @@ Comentários nativos (as notas do assessor de piso).
 ## 3. Pontos a confirmar antes de construir (não deixar como fato)
 1. **Como o `FinalAppraisalValue` é calculado** — formula nativa vs regra/rollup
    configurável (rodar describe; olhar flag `[FORMULA]`).
-2. **Vínculo Appraisal ↔ Opportunity** — lookup direto ou via Vehicle/Asset.
+2. ~~Vínculo Appraisal ↔ Opportunity~~ **RESOLVIDO no ERD oficial: o pai do
+   Appraisal é um lookup POLIMÓRFICO — UM entre Opportunity, Account, Lead, Case
+   ou Financial Account (+ lookups Contact e User).** Para o GrupoQ: parent =
+   Opportunity (venda) ou Account (cliente). O AppraisalItem aponta para Vehicle
+   OU Asset (também polimórfico).
+5. **AppraisalAdjustment** não aparece neste recorte do ERD (que mostra Item,
+   ProviderVal e Addon). O campo `AppraisalItem.TotalAdjustmentValue` confirma
+   que os adjustments existem e rolam para o item — **confirmar no describe** se
+   AppraisalAdjustment é filho de AppraisalItem nesta versão.
 3. **Campos custom mínimos** a criar no Appraisal: multas, gravames, judiciais,
    motivo de rejeição (o resto é nativo).
 4. **PRU** — objeto mestre (custom até integração OEM) referenciado por
