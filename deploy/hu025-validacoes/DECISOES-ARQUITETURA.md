@@ -272,3 +272,55 @@ anterior de "campos custom no Service Appointment".
 
 Doc oficial: Vehicle and Asset Appraisals (Data Model) —
 https://developer.salesforce.com/docs/platform/data-models/guide/vehicle-and-asset-appraisals.html
+
+---
+
+## OmniStudio — Derivar RecordType do Lead por DeveloperName numa Integration Procedure (Davi)
+
+**Contexto:** IP `GrupoQ_LeadUpsert` (Standard Runtime) cria o Lead a partir do
+web-to-lead. A linha de negócio chega em `lead.businessLine` (Autos, Motos,
+Repuestos/PA, Flotas) e a IP precisa derivar o `RecordTypeId` do Lead antes do
+insert. Sintoma reportado: RecordType salvava **branco**.
+
+**Desenho da IP (correto, mantém):**
+1. `RecordFormula` (Set Values) monta `developerName` = `CONCAT("GQLeads",
+   IF(OR(businessLine="Repuestos",businessLine="PA"),"RepuestosPA",businessLine))`,
+   `defaultName="GQLeadsAutos"`, `sObject="Lead"`.
+2. `GetLeadRecordType` (DR Extract `DRExtractRecordTypeFromName`) — busca o
+   RecordType por `developerName` + `sObject`, devolve node **`id`**.
+3. `GetAutosRecordType` (mesmo DR) — só roda se `ISBLANK(GetLeadRecordType:id)`
+   (fallback Autos).
+4. `SetRecordType` (Set Values) — `id = IF(ISBLANK(GetLeadRecordType:id),
+   GetAutosRecordType:id, GetLeadRecordType:id)`.
+5. `InsertLead` (DR Post `DRLeadInsertMapper`) — manda `RecordTypeId =
+   SetRecordType:id`; o Data Mapper mapeia input `RecordTypeId` (raiz) → output
+   `Lead.RecordTypeId`.
+
+**Pega-ratões (checar NESTA ordem quando RecordType sai branco):**
+1. **Node de saída do DR Extract tem que se chamar exatamente `id`** (minúsculo,
+   raiz). A IP lê `%GetLeadRecordType:id%`. Se o Extract devolve `Id`/`RecordTypeId`
+   ou aninhado, a referência sai vazia → SetRecordType branco.
+2. **DeveloperNames têm que bater com o que a fórmula monta.** Confirmados na org:
+   `GQLeadsAutos` (012...n8DZYAY), `GQLeadsMotos` (n8FBYAY), `GQLeadsFlotas`
+   (n8GnYAI), `GQLeadsRepuestosPA` (n8IPYAY) — todos `SobjectType=Lead`.
+3. **O RT tem que ser do objeto certo** (`SobjectType='Lead'`) — o filtro do
+   Extract precisa ter `SobjectType = sObject`. RT de outro objeto num Lead é
+   descartado sem erro no save.
+4. **⚠️ CAUSA RAIZ DESTE CASO — atribuição de Record Type no Profile.** O Id
+   chegava no insert (provado no preview do Data Mapper: output `Lead_1` com
+   `RecordTypeId=012...n8IPYAY` e `UpsertSuccess:true`) mas salvava branco porque
+   **o usuário que roda a IP não tinha o RT `GQLeadsRepuestosPA` atribuído**.
+   Salesforce **ignora silenciosamente** um RecordTypeId que o Profile do running
+   user não tem e cai no default. Autos funcionava (profile tinha), RepuestosPA não.
+
+**Correção (padrão para produção):** Permission Set `GQ_Lead_RecordTypes` com os
+**4** Record Types de Lead habilitados, atribuído (a) ao usuário de teste e (b) ao
+**usuário automático do web-to-lead** (Integration User / guest do site). Sem isso,
+leads de Repuestos/Motos/Flotas entram sempre com RT errado, mesmo com a IP correta.
+**Não desligar o "Field Level Security" do Data Mapper** para "resolver" — mascara
+o problema; a correção é a atribuição de RT.
+
+**Regra reutilizável:** sempre que uma automação (IP/Flow/Apex) setar `RecordTypeId`
+por um usuário não-admin, garantir que TODOS os RTs possíveis estejam atribuídos ao
+running user (Profile ou Permission Set). RecordType assignment **não** é FLS — não
+adianta CRUD/FLS, é permissão separada.
