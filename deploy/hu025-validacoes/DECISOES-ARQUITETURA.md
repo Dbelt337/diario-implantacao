@@ -339,3 +339,16 @@ se o RT aparece no seletor.
 (a) qual profile; (b) profile tem os 4 RTs OU o PS `GQ_Lead_RecordTypes`;
 (c) teste real (businessLine Repuestos/Motos/Flotas) salvou o RT correto. Só marcar
 pronto quando os três estiverem ✅ para o usuário de integração real.
+
+**STATUS: RESOLVIDO (23/06)** — Davi confirmou funcionamento após acertar o
+Record Type. Validado com o **user dele (System Administrator)** e **no preview**
+do OmniStudio. A lógica da IP está correta e o RT flui até o insert.
+
+**Pendências de GO-LIVE (não testadas ainda — validação foi só admin+preview):**
+1. Rodar com o **usuário de integração real** (o que dispara o `GrupoQ_LeadUpsert`
+   no web-to-lead), não o admin. Esse user NÃO herda RTs → precisa do Permission
+   Set `GQ_Lead_RecordTypes` (os 4 RTs de Lead) atribuído.
+2. Conferir o **Lead salvo no banco** (não só o preview) com
+   `SELECT Id, RecordTypeId, RecordType.DeveloperName FROM Lead ORDER BY CreatedDate DESC LIMIT 1`,
+   testando businessLine de Repuestos, Motos e Flotas (cobrir os 4 RTs).
+Só marcar pronto pra produção quando (1) e (2) passarem com o usuário de integração.
