@@ -324,3 +324,18 @@ o problema; a correção é a atribuição de RT.
 por um usuário não-admin, garantir que TODOS os RTs possíveis estejam atribuídos ao
 running user (Profile ou Permission Set). RecordType assignment **não** é FLS — não
 adianta CRUD/FLS, é permissão separada.
+
+**Nuance "admin" (validar ANTES de atribuir):** "usuário é admin" só garante
+acesso a **todos** os Record Types se for o profile-padrão **System Administrator**.
+Profile admin **customizado/clonado** NÃO herda RTs automaticamente → cai no mesmo
+drop silencioso. Teste discriminador rápido: criar Lead na UI como o usuário e ver
+se o RT aparece no seletor.
+- Aparece → usuário tem o RT; se ainda salvar branco, a causa é outra
+  (before-save Flow/trigger/assignment sobrescrevendo) → conferir por **Debug Log**.
+- Não aparece → profile sem o RT → aplicar Permission Set `GQ_Lead_RecordTypes`.
+
+**Regra de go-live:** teste como admin NÃO prova produção. Para cada usuário real
+(não-admin) e para o **usuário de integração** que dispara a IP, validar ANTES:
+(a) qual profile; (b) profile tem os 4 RTs OU o PS `GQ_Lead_RecordTypes`;
+(c) teste real (businessLine Repuestos/Motos/Flotas) salvou o RT correto. Só marcar
+pronto quando os três estiverem ✅ para o usuário de integração real.
