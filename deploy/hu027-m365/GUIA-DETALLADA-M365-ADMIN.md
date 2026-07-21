@@ -53,27 +53,38 @@ Tasks**.
 
 ---
 
-## ACCIÓN 2 — Conexión de EAC por Microsoft Graph + consentimiento
+## ACCIÓN 2 — Conexión de EAC por Microsoft Graph (User-Level OAuth 2.0)
 
-**Lado Salesforce (Santiago):**
-1. **Setup → (buscar) "Einstein Activity Capture" → Settings** (o el nombre de la
-   configuración activa) → revisar el **método de conexión**.
-2. Si la conexión está en **EWS** (síntoma del §Contexto), hacer el **upgrade a
-   Microsoft Graph** (confirmar botón/enlace exacto en el doc oficial). Desde
-   **Spring '26**, las conexiones nuevas de M365 usan Graph por defecto; las
-   anteriores requieren upgrade manual.
-3. Con autenticación **User-Level**, el usuario piloto verá un **banner para
-   reconectar** su cuenta Microsoft → reconecta.
+> Confirmado en doc oficial: la conexión **User-Level OAuth 2.0** a Microsoft 365
+> **usa Microsoft Graph** (su pre-requisito es que el Azure admin conceda acceso
+> org-wide a la Graph API). Es decir, elegir "Microsoft 365 + User-Level OAuth 2.0"
+> **es** ir por Graph — no hay que tocar EWS.
 
-**Lado M365 (admin):**
-4. Durante el flujo de conexión (o en Entra ID → Enterprise applications → la app
-   **"Salesforce" / "Einstein Activity Capture"**) → **Grant admin consent** de los
-   permisos de **Microsoft Graph** (lectura de correo/calendario según la app).
-   Requiere rol Global / Cloud App / Application Admin. Consentimiento **org-wide**
-   (una sola vez, sin consentimiento por usuario).
+**Pre-requisito (admin M365 de Grupo Q):** conceder **acceso y permisos org-wide
+de la Microsoft Graph API** a la app de Salesforce (ver doc "App ID for Microsoft
+Graph Authentication" para el/los App ID exactos a consentir en Entra ID). El
+admin debe tener rol **Global Admin / Cloud Application Admin / Application Admin**.
 
-**Verificación:** **Check User Health Status** muestra conexión **Active** vía
-**Graph** y la **versión de Exchange se determina** (sin la advertencia de EWS).
+**Lado Salesforce (Santiago) — permiso necesario: Customize Application o Modify All Data:**
+1. **Setup → Quick Find → "Einstein Activity Capture" → Settings.**
+2. Si es primera configuración, el flujo guía los pasos. **Si ya está configurado
+   y hay que cambiar el método de autenticación (p. ej. está en EWS) → hay que
+   RESETEAR Einstein Activity Capture** (no es un simple toggle). [Existe además una
+   ruta de "Upgrade to Microsoft Graph" para conexiones elegibles — confirmar en el
+   doc #2 cuál aplica a esta org antes de resetear.]
+3. Seleccionar **Microsoft 365** como app de correo/calendario.
+4. Seleccionar **User-Level OAuth 2.0** como método de autenticación.
+5. Completar los pasos restantes: crear una **configuración** y **agregar usuarios**.
+6. Salesforce le pide a cada usuario **conectar su cuenta Microsoft 365**. Hasta que
+   lo hagan, **no pueden enviar correos en Lightning Experience**. El usuario piloto
+   conecta/reconecta su cuenta.
+
+**Lado M365 (admin):** al conectar, se otorga el **consentimiento org-wide de los
+permisos de Microsoft Graph** a la app de Salesforce (una sola vez). Requiere el rol
+indicado arriba.
+
+**Verificación:** **Check User Health Status** muestra conexión **Active** y la
+**versión de Exchange se determina** (sin la advertencia de EWS).
 
 ---
 
