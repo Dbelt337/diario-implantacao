@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Remove os roles criados fora do desenho aprovado (Matriz v14):
+   - GQ_Sup_PDV_CR_* (P1.1 — Supervisor não é nó da hierarquia; aprovação por User.ManagerId)
+   - GQ_Valuador_CR  (P3.1 — Tasador não acessa Salesforce)
+  Pré-requisito: o role NÃO pode ter usuários atribuídos nem roles filhos.
+  Na QA não há usuários (confirmado por Wilmar). Em Prod, reatribuir antes.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>GQ_Sup_PDV_CR_Ayarco</members>
+        <members>GQ_Sup_PDV_CR_Guapiles</members>
+        <members>GQ_Sup_PDV_CR_LaUruca</members>
+        <members>GQ_Sup_PDV_CR_Liberia</members>
+        <members>GQ_Sup_PDV_CR_Lindora</members>
+        <members>GQ_Sup_PDV_CR_PerezZeledon</members>
+        <members>GQ_Sup_PDV_CR_SanCarlos</members>
+        <members>GQ_Valuador_CR</members>
+        <name>Role</name>
+    </types>
+    <version>66.0</version>
+</Package>
