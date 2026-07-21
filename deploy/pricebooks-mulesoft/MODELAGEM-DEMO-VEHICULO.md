@@ -78,3 +78,45 @@ a operação usa hoje para bloquear a unidade fisicamente (isso define A vs B).
 - Automotive Cloud — Vehicle object (fields): developer.salesforce.com Automotive Cloud.
 - Manage Vehicle Inventory / Location-ProductItem-SerializedProduct.
 - Automotive Cloud Data Model.
+
+---
+
+## ATUALIZAÇÃO — modelo DEFINITIVO (describe + doc oficial)
+
+### Valores nativos confirmados na org
+- **`SerializedProduct.AllocationStatus`** = `Allocated` | `Deallocated` →
+  **mecanismo NATIVO de bloqueio.** Demo/exposição = **Allocated**; ao liberar
+  para venda = **Deallocated**. (+ `ProductItem.QuantityAllocated` / `QuantityAvailable`.)
+- `SerializedProduct.Status` = Available | Sent | Consumed | Damaged | Lost.
+- `Vehicle.Status` = "En ubicación de concesionario | En servicio | En reparación |
+  En fabricación" (é **onde** está — não o bloqueio).
+- `Vehicle.ConditionType` = Nuevo | Antiguo | Chatarra (**sem "Demo"**). Um demo
+  vendido vira **Antiguo** (Used) para efeito de preço.
+- `Asset.Status` = Purchased | Shipped | Installed | Registered | Obsolete.
+
+### Modelo definitivo (native-first)
+- **Bloqueio = `SerializedProduct.AllocationStatus = Allocated`** (nativo). Sai do
+  `QuantityAvailable`; regra de cotação no SF não deixa cotar unidade Allocated.
+- **Motivo do bloqueio = 1 campo custom `UsageType__c`** (Demo / Exhibition /
+  Loaner / TestDrive) — **não há valor nativo "Demo"**. É o único custom e é
+  justificado (native-first: bloqueio é nativo; só o "porquê" é custom).
+- **Location** de showroom guarda a unidade; **Vehicle Inventory Search** (nativo,
+  via DPE + Vehicle Searchable Field) e **Vehicle Transfer** (nativo) para achar e
+  mover unidades entre locations.
+- Ao vender o demo: `AllocationStatus = Deallocated`, `ConditionType = Antiguo`,
+  Opportunity para o VIN, preço de demo/usado.
+
+### Responsabilidade — refinada com o mecanismo nativo
+- **SAP** = master da **quantidade física** (`QuantityOnHand`), recepção, baixa na
+  venda, faturamento.
+- **Salesforce** = **reserva/bloqueio comercial** via `AllocationStatus=Allocated`
+  + `UsageType__c=Demo` (a designação demo é decisão comercial/da sucursal), uso
+  (test drive/exposição via Scheduler), cotação e venda. A regra de cotação bloqueia
+  unidades Allocated.
+- **MuleSoft** = sincroniza `QuantityOnHand` do SAP; **callout real-time no
+  fechamento** confirma disponibilidade antes de fechar.
+- **Ponto a alinhar:** como o bloqueio nativo (`AllocationStatus`) é um campo do
+  Salesforce, o natural é o **Salesforce ser dono da alocação demo** (Padrão B com
+  o mecanismo nativo), mantendo o SAP como dono da quantidade física. Se o SAP
+  também precisa saber do bloqueio, MuleSoft informa. Confirmar com o cliente se a
+  reserva demo pode viver só no Salesforce ou precisa refletir no SAP.
