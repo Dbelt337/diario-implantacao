@@ -1,9 +1,19 @@
 # Estrutura do Catálogo — GrupoQ (5 linhas de negócio)
 
 Linhas: **Autos Novos**, **Autos Usados**, **Motos**, **Frotas**, **Repuestos e PA**.
-Native-first, fundamentado nos objetos nativos de catálogo do Automotive Cloud
-(Product Catalog, Product Category, Product, Product Attribute / Attribute Set,
-Vehicle Definition) — ver docs no fim.
+Native-first, fundamentado nos objetos nativos de catálogo do Automotive Cloud.
+
+> ⚠️ **RESTRIÇÃO CONFIRMADA (Diego, 2026-07-21): GrupoQ usa o CATÁLOGO STANDARD e
+> NÃO tem EPC (Enterprise Product Catalog).** Impacto na modelagem:
+> - **NÃO usar o framework de atributos EPC** (Product Attribute / Attribute Set /
+>   AttributeDefinition / ProductClassification) — não está disponível sem EPC.
+> - **Specs de veículo → campos nativos do `VehicleDefinition`** (Automotive Cloud,
+>   NÃO é EPC): `EngineCubicCapacity` (cilindrada), etc.
+> - **Atributos de peças/não-veículo → campos custom no `Product2`** (sem EPC não há
+>   framework nativo de atributos).
+> - **Categorização:** confirmar no org se `ProductCategory`/`ProductCatalog` estão
+>   disponíveis na edição; se não, usar `Product2.Family` por linha.
+> - **Preço → Price Book standard** (disponível; não muda).
 
 ## Princípio central: DOIS EIXOS (não misturar)
 
