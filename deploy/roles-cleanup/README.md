@@ -22,12 +22,28 @@ WHERE UserRole.DeveloperName LIKE 'GQ_Sup_PDV_CR_%' OR UserRole.DeveloperName = 
 sf project deploy start --manifest package.xml --post-destructive-changes destructiveChanges.xml -o <org>
 ```
 
-## Ordem de promoção
-QA (agora, sem usuários) → Prod (após reatribuir usuários, se houver) → demais orgs.
+## Cenário real: drift promovido DEV → INT → UAT
+Os roles errados estão no **source** e foram promovidos por vários ambientes.
+Ordem obrigatória:
 
-## Evitar recorrência
-Se estes roles existirem como `.role` no repositório de metadata, **remover de lá**
-também — senão um deploy futuro os recria (foi a origem do drift).
+### PASSO 1 (crítico) — consertar o SOURCE
+Remover os `.role` (`GQ_Sup_PDV_CR_*`, `GQ_Valuador_CR`) do **repositório/branch
+que alimenta as promoções**. Se não, a próxima promoção **recria** os roles.
+(É o repo do pipeline de deploy, NÃO este diário.)
+
+### PASSO 2 — limpar cada ambiente (destructiveChanges)
+Rodar o mesmo `destructiveChanges.xml` em **cada env que já recebeu** — DEV, INT,
+UAT (e QA/Prod se aplicável). Em CADA um, antes:
+```sql
+SELECT Id, Name, UserRole.DeveloperName FROM User
+WHERE UserRole.DeveloperName LIKE 'GQ_Sup_PDV_CR_%' OR UserRole.DeveloperName = 'GQ_Valuador_CR'
+```
+- 0 usuários → deploy direto.
+- >0 usuários (⚠️ provável em **UAT** — gente testando) → reatribuir + `User.ManagerId`
+  ANTES (o deploy destrutivo falha se o role tiver usuário).
+
+### Ordem sugerida
+SOURCE → DEV → INT → UAT → (QA/Prod). Fazer em todos pra não sobrar divergência.
 
 ## Notas
 - Roles são folha (sem filhos) → deletáveis.
