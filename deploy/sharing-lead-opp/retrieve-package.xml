@@ -1,27 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Retrieve do estado atual de compartilhamento (Lead/Opportunity) para análise.
+  Retrieve do estado atual de segurança/compartilhamento (Lead/Opportunity).
+  Ordem da análise: PERFIS -> ROLES -> OWD -> decidir se precisa de sharing.
   Uso (Workbench: Migration > Retrieve, ou sf):
     sf project retrieve start -x deploy/sharing-lead-opp/retrieve-package.xml -o <org>
-  Depois manda o zip resultante que eu analiso roles + OWD + sharing rules.
+  Depois manda o zip que eu analiso.
 -->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <!-- Toda a hierarquia de papéis -->
+    <!-- 1) PERFIS: CRUD + View All/Modify All em Lead/Opp (quem ignora sharing) -->
+    <types>
+        <members>*</members>
+        <name>Profile</name>
+    </types>
+    <!-- Permission Sets podem conceder View All/Modify All por fora do perfil -->
+    <types>
+        <members>*</members>
+        <name>PermissionSet</name>
+    </types>
+    <!-- 2) ROLES: a hierarquia inteira -->
     <types>
         <members>*</members>
         <name>Role</name>
     </types>
-    <!-- Sharing rules existentes de Lead e Opportunity (criteria + owner) -->
-    <types>
-        <members>Lead</members>
-        <members>Opportunity</members>
-        <name>SharingRules</name>
-    </types>
-    <!-- OWD vem no metadata do objeto (sharingModel / externalSharingModel) -->
+    <!-- 3) OWD + object perms vêm no metadata do objeto (sharingModel) -->
     <types>
         <members>Lead</members>
         <members>Opportunity</members>
         <name>CustomObject</name>
+    </types>
+    <!-- 4) Sharing rules existentes (pra não duplicar) -->
+    <types>
+        <members>Lead</members>
+        <members>Opportunity</members>
+        <name>SharingRules</name>
     </types>
     <!-- Filas (donas de leads não atribuídos) -->
     <types>
