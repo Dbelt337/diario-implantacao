@@ -1,132 +1,147 @@
 # HU-027 — Guía técnica detallada: Integración Microsoft 365 ↔ Salesforce
 
 Para el **administrador de Microsoft 365 de Grupo Q** + Santiago (Salesforce).
-Enfoque **nativo** (features estándar de Salesforce, sin desarrollo custom, sin
-OmniStudio) y **Microsoft Graph** (no EWS). Alcance HU-027: **add-in de Outlook**
-(ver registros SF + registro manual) + **sync de eventos** vía **Einstein Activity
-Capture (EAC)**. NO es espejado total de buzones.
-
-> Nota de fundamentación: HU-027 no involucra objetos de Automotive Cloud ni
-> OmniStudio — son features de productividad de Sales Cloud. Las fuentes oficiales
-> son Salesforce Help (EAC / Outlook Integration) y Microsoft Learn (EWS / Entra).
-> [Rótulos de UI marcados con (confirmar) se cerrarán con los docs oficiales.]
+Enfoque **nativo** (features estándar, sin desarrollo custom ni OmniStudio) y
+**Microsoft Graph** (no EWS). Alcance HU-027: **add-in de Outlook** (ver registros
+SF + registro manual) + **sync de eventos** vía **Einstein Activity Capture (EAC)**.
+NO es espejado total de buzones. Fundamentación: Salesforce Help (EAC / Outlook
+Integration) + Microsoft Learn. Rótulos confirmados con docs oficiales.
 
 ## Contexto del bloqueo (por qué falla hoy)
-1. **Add-in en blanco:** el add-in usa **Nested App Authentication (NAA)**. Si el
-   tenant M365 no dio **consentimiento OAuth** a la app de Salesforce, el token
-   silencioso falla → panel de Sign In en blanco.
-2. **EAC no sincroniza:** "Check User Health Status" muestra Active pero
-   *"Can't determine version of Microsoft Exchange"* → la conexión está intentando
-   **EWS**, y el tenant lo tiene **restringido/bloqueado**. Microsoft desactiva EWS
-   por defecto el **1/oct/2026**. Solución correcta: **conectar por Microsoft
-   Graph**, no desbloquear EWS.
-3. **PoC en tenant OSF (osf.digital):** las políticas de OSF bloquean ambas
-   integraciones. La validación real debe hacerse con un **buzón piloto del tenant
-   de Grupo Q**.
+1. **Add-in en blanco:** el add-in usa autenticación que requiere **consentimiento
+   OAuth del tenant M365** a la app de Salesforce. Sin ese consentimiento, la
+   ventana de Sign In queda en blanco.
+2. **EAC no sincroniza:** "Check User Health Status" muestra Active pero *"Can't
+   determine version of Microsoft Exchange"* → la conexión intenta **EWS** y el
+   tenant lo tiene restringido. Microsoft **retira EWS el 1/oct/2026** (retiro total
+   abril/2027) y **Microsoft Graph lo reemplaza**. Solución: **ir por Graph**.
+   Desde **Spring '26**, EAC con Microsoft 365 se autentica automáticamente por
+   Graph; configs anteriores deben **actualizarse a Graph antes de agosto/2026**.
+3. **PoC en tenant OSF (osf.digital):** políticas de OSF bloquean ambas
+   integraciones. Validar con un **buzón piloto del tenant de Grupo Q**.
 
 ---
 
-## ACCIÓN 1 — Consentimiento del add-in de Outlook (NAA)
+## ACCIÓN 1 — Consentimiento del add-in de Outlook (desbloquea la ventana en blanco)
 
-**Quién:** admin M365 de Grupo Q (rol Global Admin / Cloud Application Admin /
-Application Administrator).
+**Lado Salesforce (Santiago) — ya hecho, referencia:** add-in "Salesforce"
+instalado desde **Microsoft AppSource** y configurado en **Setup → Set Up the
+Integration with Outlook**.
 
-**Opción A — Admin Consent URL (recomendada):**
-1. Santiago la obtiene en Salesforce: **Setup → (buscar) "Outlook Integration and
-   Sync" → sección "Give Users the Integration in Outlook" → "Admin Consent URL
-   (For Your Office 365 Admin)"** → copiar el enlace.
-2. El admin M365, **con sesión iniciada como admin**, abre esa URL en el navegador.
-3. Microsoft muestra la pantalla de consentimiento con los permisos que pide la app
-   de Salesforce → **Accept** (marcar "Consent on behalf of your organization" si
-   aparece) → consentimiento **a nivel de toda la organización**.
+**Lado M365 (admin de Grupo Q):** otorgar el **consentimiento de administrador**
+a la app de Salesforce en el tenant. El consentimiento **User-Level de EAC+Inbox**
+(Acción 2) cubre también la autenticación Inbox del add-in. Si tras ese consent el
+panel de registros del add-in aún queda en blanco, otorgar consent a la app del
+add-in en **Entra ID → Identity → Applications → Enterprise applications** →
+buscar **"Salesforce"** → **Security → Permissions → "Grant admin consent for
+Grupo Q"**.
 
-**Opción B — Entra ID directamente:**
-- **entra.microsoft.com → Identity → Applications → Enterprise applications** →
-  buscar la app **"Salesforce"** (la del add-in) → **Security → Permissions →
-  "Grant admin consent for [Grupo Q]"**.
-- (Alternativa user-consent: **Enterprise applications → Consent and permissions →
-  User consent settings** → permitir que los usuarios consientan apps.)
+**Uso (usuario):** en Outlook (web / 2016 / Mac 2016 / 2013), seleccionar un correo
+o evento → botón **Salesforce** → iniciar sesión en Salesforce → aparecen los
+registros relacionados.
 
-**Verificación:** el piloto abre el add-in en Outlook → el panel de Salesforce
-autentica **sin quedar en blanco** y muestra las pestañas **Compose / Related /
-Tasks**.
+**Verificación:** el add-in autentica **sin quedar en blanco** y muestra
+**Compose / Related / Tasks**.
 
 ---
 
-## ACCIÓN 2 — Conexión de EAC por Microsoft Graph (User-Level OAuth 2.0)
+## ACCIÓN 2 — EAC por Microsoft Graph (User-Level OAuth 2.0) ★ acción central
 
-> Confirmado en doc oficial: la conexión **User-Level OAuth 2.0** a Microsoft 365
-> **usa Microsoft Graph** (su pre-requisito es que el Azure admin conceda acceso
-> org-wide a la Graph API). Es decir, elegir "Microsoft 365 + User-Level OAuth 2.0"
-> **es** ir por Graph — no hay que tocar EWS.
+> **User-Level OAuth 2.0 hacia Microsoft 365 = Microsoft Graph.** No hay que tocar
+> EWS. Elegir Microsoft 365 + User-Level OAuth 2.0 ya es ir por Graph.
 
-**Pre-requisito (admin M365 de Grupo Q):** conceder **acceso y permisos org-wide
-de la Microsoft Graph API** a la app de Salesforce (ver doc "App ID for Microsoft
-Graph Authentication" para el/los App ID exactos a consentir en Entra ID). El
-admin debe tener rol **Global Admin / Cloud Application Admin / Application Admin**.
+### 2.1 Pre-requisito — consentimiento org-wide de la Graph API (admin M365)
+El admin de Grupo Q (rol **Global Admin / Cloud Application Admin / Application
+Admin**) abre el **Admin Consent URL** del nivel **User-Level (EAC e Inbox)** y
+otorga el consentimiento a nivel de toda la organización (automatiza los scopes,
+evita que cada usuario autorice manualmente):
 
-**Lado Salesforce (Santiago) — permiso necesario: Customize Application o Modify All Data:**
+```
+https://login.microsoftonline.com/common/adminconsent?client_id=e535e657-0666-4ad5-940a-c3cf6296a541
+```
+
+Scopes/permissions que se conceden (User-Level, delegados):
+`Calendars.ReadWrite · Contacts.ReadWrite · Mail.Read · Mail.Send · User.Read ·
+openid · profile · email · offline_access`
+
+(App IDs oficiales por nivel — por si se opta por otro método:
+Application-Level `cbcb7087-72b9-4977-8dd7-aa803a5da602` ·
+RBAC `da3cd6f0-d438-40a4-8524-4cc3569a23b6` ·
+User-Level `e535e657-0666-4ad5-940a-c3cf6296a541`.)
+
+### 2.2 Lado Salesforce (Santiago) — permiso: Customize Application o Modify All Data
 1. **Setup → Quick Find → "Einstein Activity Capture" → Settings.**
-2. Si es primera configuración, el flujo guía los pasos. **Si ya está configurado
-   y hay que cambiar el método de autenticación (p. ej. está en EWS) → hay que
-   RESETEAR Einstein Activity Capture** (no es un simple toggle). [Existe además una
-   ruta de "Upgrade to Microsoft Graph" para conexiones elegibles — confirmar en el
-   doc #2 cuál aplica a esta org antes de resetear.]
-3. Seleccionar **Microsoft 365** como app de correo/calendario.
-4. Seleccionar **User-Level OAuth 2.0** como método de autenticación.
-5. Completar los pasos restantes: crear una **configuración** y **agregar usuarios**.
-6. Salesforce le pide a cada usuario **conectar su cuenta Microsoft 365**. Hasta que
-   lo hagan, **no pueden enviar correos en Lightning Experience**. El usuario piloto
-   conecta/reconecta su cuenta.
+2. **Config nueva** (post-Spring '26): el flujo guía y usa **Graph** automáticamente.
+   **Config existente en EWS:** hacer el **Upgrade a Microsoft Graph**. (Para
+   *cambiar el método de autenticación* de una config existente puede requerirse
+   **reset de EAC**; el *upgrade a Graph* es la ruta específica para pasar de EWS a
+   Graph sin reconfigurar todo — usar el upgrade si la org es elegible.)
+3. Método: **Microsoft 365** + **User-Level OAuth 2.0**.
+4. Al hacer upgrade User-Level, cada usuario recibe un **banner para reconectar** su
+   cuenta Microsoft. **La sync sigue por EWS hasta que cada usuario reconecta**;
+   tras reconectar, esa conexión pasa a **Graph**. Hasta conectar, el usuario **no
+   puede enviar correos en Lightning Experience**.
 
-**Lado M365 (admin):** al conectar, se otorga el **consentimiento org-wide de los
-permisos de Microsoft Graph** a la app de Salesforce (una sola vez). Requiere el rol
-indicado arriba.
+**Alternativa para escala — Application-Level OAuth:** acceso org-wide aprobado por
+el admin, **sin reconexión individual** (Salesforce usa Client Credential flow con
+un certificado en su vault gestionado). Trade-off: acceso más amplio a los buzones.
+Admin Consent URL: `...adminconsent?client_id=cbcb7087-72b9-4977-8dd7-aa803a5da602`.
+Decidir User-Level vs Application-Level con seguridad de Grupo Q.
 
-**Verificación:** **Check User Health Status** muestra conexión **Active** y la
-**versión de Exchange se determina** (sin la advertencia de EWS).
-
----
-
-## ACCIÓN 3 — Desbloqueos de red / Conditional Access / IPs
-
-**Quién:** admin M365 / equipo de seguridad de Grupo Q.
-1. **Conditional Access (Entra ID → Protection → Conditional Access):** verificar
-   que ninguna política **bloquee** la app de Salesforce / EAC (p. ej. políticas
-   por app, o MFA que un servicio no pueda cumplir). Si aplica, **excluir** la app
-   de Salesforce EAC de esa política.
-2. **Políticas de Exchange Online:** confirmar que el buzón del piloto no tenga
-   restringido el acceso de aplicaciones.
-3. **Allowlist de IPs:** si el tenant/firewall filtra por IP, agregar los **rangos
-   de IP publicados por Salesforce para EAC** (Santiago los obtiene en el asistente
-   de EAC → **"See required IP addresses"**).
+**Verificación:** **Check User Health Status** → conexión **Active** y **versión de
+Exchange determinada** (sin la advertencia de EWS).
 
 ---
 
-## ACCIÓN 4 — Distribución del add-in (opcional, para todos los usuarios)
+## ACCIÓN 3 — Red / allowlist (para Microsoft Graph)
 
-**M365 admin center (admin.microsoft.com) → Settings → Integrated apps →
-"Get apps"** → buscar **"Salesforce"** → **Deploy** → asignar a usuarios/grupos.
-(Alternativa: cada usuario lo instala desde **Microsoft AppSource**.)
+Como vamos por **Graph**, permitir en **outbound** los **webhooks de Microsoft
+Graph** (para que Microsoft 365 envíe push notifications a Salesforce):
+
+| Instancia SF | Webhook Microsoft Graph (outbound) |
+|---|---|
+| Fuera de Europa | `apiq-ms-gph-webhook-c01.apiq.sfdc-lywfpd.svc.sfdcfc.net` · `apiq-ms-gph-webhook-c02.apiq.sfdc-lywfpd.svc.sfdcfc.net` |
+| En Europa | `apiq-ms-gph-webhook-c01.apiq.sfdc-yzvdd4.svc.sfdcfc.net` |
+
+- **Los IPs inbound de EWS NO aplican** al ir por Graph (eran para exponer el
+  Exchange server; con Graph la conexión es Salesforce → nube de Microsoft).
+- Permitir además los **IPs/dominios generales de Salesforce** (ver "Salesforce IP
+  Addresses and Domains to Allow").
+- **Confirmar la región de la instancia Salesforce de Grupo Q** (Europa o no) para
+  elegir el webhook correcto.
+- Revisar **Conditional Access** (Entra ID): que ninguna política bloquee la app de
+  Salesforce/EAC.
+
+---
+
+## ACCIÓN 4 — Distribución del add-in (opcional, todos los usuarios)
+**M365 admin center (admin.microsoft.com) → Settings → Integrated apps → Get apps**
+→ buscar **"Salesforce"** → **Deploy** → asignar a usuarios/grupos. (Alternativa:
+cada usuario lo instala desde Microsoft AppSource.)
 
 ---
 
 ## NO hacer
-- ❌ **No habilitar EWS.** Se desactiva por defecto el 1/oct/2026 (retiro total
-  abril/2027). Ir directo por **Microsoft Graph**. (Puente EWS solo si es
-  imprescindible para una prueba puntual, coordinado con Santiago.)
+- ❌ **No habilitar EWS.** Se desactiva por defecto el 1/oct/2026. Ir por Graph.
+
+## Deadlines
+- **Agosto 2026:** completar el upgrade a Microsoft Graph (Salesforce) — antes del
+  bloqueo de Microsoft.
+- **1 oct 2026:** EWS desactivado por defecto. **Abril 2027:** retiro total.
+- Impacto: si hubiera **Lightning Sync** con EWS, migrar a EAC + Graph antes de
+  agosto/2026. (EAC/Inbox: actualizar uno a Graph actualiza el otro.)
 
 ## Resultado esperado al cerrar
 1. Add-in de Outlook autentica y muestra registros de Salesforce. ✅
 2. Un evento creado en Outlook aparece en Salesforce (Calendar + Activity Timeline)
-   en pocos minutos. ✅
+   en minutos. ✅
 3. Health Status **Active** vía **Microsoft Graph**, versión de Exchange
    determinada. ✅
 
-## Docs oficiales base (a confirmar rótulos exactos)
-- Salesforce Help — Connect EAC to Microsoft Office 365 (User-Level / Microsoft Graph).
-- Salesforce Help — Give Users the Outlook Integration / Admin Consent URL.
-- Salesforce Help — Einstein Activity Capture required IP addresses.
-- Microsoft Learn — Grant tenant-wide admin consent to an application.
+## Fuentes oficiales (confirmadas)
+- Salesforce Help — Connect EAC to Microsoft 365 (User-Level Authentication).
+- Salesforce Help — Microsoft Graph API in EAC / App ID for Microsoft Graph
+  Authentication / Upgrade to Microsoft Graph.
+- Salesforce Help — Network Connection (IPs/webhooks EAC).
+- Salesforce Help — Outlook Integration / Give Outlook Access to Salesforce.
 - Microsoft Learn — Deprecation of EWS in Exchange Online.
-- Microsoft Learn — Deploy add-ins in the Integrated Apps portal.
