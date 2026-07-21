@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Sharing Rules de OPPORTUNITY por Sociedad.
+  OWD = Private; a hierarquia já dá a visão bottom-up. Estas regras dão a
+  visibilidade LATERAL (time da sociedade vê as opps daquela sociedade).
+
+  ⚠️ CONFIRMAR O CAMPO DE SOCIEDAD NA OPPORTUNITY:
+     O Lead tem CompanyCode__c. A Opportunity tem o MESMO campo? (mapeado na
+     conversão?) Se sim, mantém CompanyCode__c abaixo. Se o campo tiver outro
+     nome, troca. Se a Opp NÃO tiver campo de sociedade, usar a variante
+     OWNER-BASED (comentada no fim) em vez de criteria-based.
+
+  AJUSTAR ANTES DE DEPLOYAR:
+   - <group>Ventas_C101</group> -> API name real do grupo/role da sociedade.
+   - <accessLevel>Read</accessLevel> -> Read ou Edit.
+-->
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Opp_Share_C101</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Opps de C101 visíveis ao time de C101.</description>
+        <label>Opp Share C101</label>
+        <sharedTo>
+            <group>Ventas_C101</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>CompanyCode__c</field>
+            <operation>equals</operation>
+            <value>C101</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Opp_Share_C105</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Opps de C105 visíveis ao time de C105.</description>
+        <label>Opp Share C105</label>
+        <sharedTo>
+            <group>Ventas_C105</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>CompanyCode__c</field>
+            <operation>equals</operation>
+            <value>C105</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Opp_Share_N101</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Opps de N101 (motos) visíveis ao time de N101.</description>
+        <label>Opp Share N101</label>
+        <sharedTo>
+            <group>Ventas_N101</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>CompanyCode__c</field>
+            <operation>equals</operation>
+            <value>N101</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Opp_Share_N105</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Opps de N105 (motos) visíveis ao time de N105.</description>
+        <label>Opp Share N105</label>
+        <sharedTo>
+            <group>Ventas_N105</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>CompanyCode__c</field>
+            <operation>equals</operation>
+            <value>N105</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <!--
+      VARIANTE OWNER-BASED (usar se a Opp NÃO tem campo de sociedade):
+      compartilha as opps CUJO DONO pertence à role da sociedade com o grupo dela.
+      <sharingOwnerRules>
+          <fullName>Opp_Owner_C101</fullName>
+          <accessLevel>Read</accessLevel>
+          <label>Opp Owner C101</label>
+          <sharedTo><group>Ventas_C101</group></sharedTo>
+          <sharedFrom><roleAndSubordinates>Ventas_C101_Role</roleAndSubordinates></sharedFrom>
+      </sharingOwnerRules>
+    -->
+</SharingRules>

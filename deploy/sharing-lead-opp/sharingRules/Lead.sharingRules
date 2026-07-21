@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Sharing Rules de LEAD por Sociedad (criteria-based em CompanyCode__c).
+  Cada regra compartilha os leads de uma sociedade com o Public Group daquela
+  sociedade. OWD = Private; a hierarquia já dá a visão bottom-up.
+
+  AJUSTAR ANTES DE DEPLOYAR:
+   - <group>Ventas_C101</group>  -> API name real do Public Group/Role da sociedade.
+       (pode ser <role>, <roleAndSubordinates>, <group> — trocar a tag conforme o alvo)
+   - <accessLevel>Read</accessLevel> -> Read (só ver) ou Edit (ver e editar).
+   - Se alguma sociedade não precisa de visibilidade lateral, apagar a regra dela.
+-->
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Lead_Share_C101</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Leads de C101 visíveis ao time de C101.</description>
+        <label>Lead Share C101</label>
+        <sharedTo>
+            <group>Ventas_C101</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>CompanyCode__c</field>
+            <operation>equals</operation>
+            <value>C101</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Share_C105</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Leads de C105 visíveis ao time de C105.</description>
+        <label>Lead Share C105</label>
+        <sharedTo>
+            <group>Ventas_C105</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>CompanyCode__c</field>
+            <operation>equals</operation>
+            <value>C105</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Share_N101</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Leads de N101 (motos) visíveis ao time de N101.</description>
+        <label>Lead Share N101</label>
+        <sharedTo>
+            <group>Ventas_N101</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>CompanyCode__c</field>
+            <operation>equals</operation>
+            <value>N101</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Share_N105</fullName>
+        <accessLevel>Read</accessLevel>
+        <description>Leads de N105 (motos) visíveis ao time de N105.</description>
+        <label>Lead Share N105</label>
+        <sharedTo>
+            <group>Ventas_N105</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>CompanyCode__c</field>
+            <operation>equals</operation>
+            <value>N105</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+</SharingRules>

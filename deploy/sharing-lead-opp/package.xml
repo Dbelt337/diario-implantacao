@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Deploy das Sharing Rules de Lead e Opportunity.
+    sf project deploy start -x deploy/sharing-lead-opp/package.xml -o <org>
+  (ou Workbench > Migration > Deploy com o zip contendo package.xml + sharingRules/)
+  Ajustar os <group>/<accessLevel> nos .sharingRules ANTES de deployar.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Lead</members>
+        <members>Opportunity</members>
+        <name>SharingRules</name>
+    </types>
+    <version>66.0</version>
+</Package>
