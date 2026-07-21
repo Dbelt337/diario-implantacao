@@ -120,3 +120,25 @@ a operação usa hoje para bloquear a unidade fisicamente (isso define A vs B).
   o mecanismo nativo), mantendo o SAP como dono da quantidade física. Se o SAP
   também precisa saber do bloqueio, MuleSoft informa. Confirmar com o cliente se a
   reserva demo pode viver só no Salesforce ou precisa refletir no SAP.
+
+---
+
+## CORREÇÃO FINAL — SEM campo custom (describe completo)
+
+Rodado o describe COMPLETO (85 campos do Vehicle, 19 do SerializedProduct): **não
+existe campo nativo de uso/finalidade** (o mais próximo, `Classification`, é texto
+livre de classe do veículo). Portanto o `UsageType__c` **NÃO é necessário**.
+
+**Modelo definitivo 100% nativo (zero custom):**
+- **Bloqueio:** `SerializedProduct.AllocationStatus = Allocated` (nativo).
+- **Marcar demo/exposição:** adicionar o valor **"En demostración"** (ou
+  "En exhibición") ao **picklist nativo `Vehicle.Status`** — que já contém os
+  estados do veículo (En ubicación de concesionario / En servicio / En reparación /
+  En fabricación) e é editável. Adicionar valor = extensão de campo standard, não é
+  campo custom.
+- Ao vender: `AllocationStatus = Deallocated`, `Vehicle.Status` volta para "En
+  ubicación de concesionario", `ConditionType = Antiguo`, Opportunity no VIN.
+
+A confirmar apenas: se o picklist `Vehicle.Status` aceita adicionar valor (standard
+picklist extensível — provável, dado que já foi localizado). Sem isso, nenhum
+campo custom é criado.
