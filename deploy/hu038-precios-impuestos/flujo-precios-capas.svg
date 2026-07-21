@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="760" viewBox="0 0 960 760" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="960" height="760" fill="#ffffff"/>
+  <text x="480" y="40" text-anchor="middle" font-size="22" font-weight="700" fill="#1F3864">Flujo de precios por capas — DATO / REGLA / CALCULO LEGAL</text>
+  <text x="480" y="66" text-anchor="middle" font-size="13" fill="#666">Version afinada del diagrama de Melisa (con la dimension Cliente). Salesforce cotiza (referencia); SAP factura (definitivo).</text>
+
+  <!-- Column headers -->
+  <text x="200" y="110" text-anchor="middle" font-size="15" font-weight="700" fill="#385723">DATO · por vehiculo (se CARGA)</text>
+  <text x="740" y="110" text-anchor="middle" font-size="15" font-weight="700" fill="#5B3F9E">REGLA · por pais + cliente (se DEFINE)</text>
+
+  <!-- PricebookEntry box -->
+  <rect x="40" y="130" width="320" height="120" rx="12" fill="#E2EFDA" stroke="#70AD47" stroke-width="2"/>
+  <text x="200" y="162" text-anchor="middle" font-size="16" font-weight="700" fill="#385723">PricebookEntry (por sociedad)</text>
+  <text x="200" y="188" text-anchor="middle" font-size="12.5" fill="#385723">Precio lista · Gastos__c · Precio minimo</text>
+  <text x="200" y="208" text-anchor="middle" font-size="12.5" fill="#385723">Precio exonerado · Cashback</text>
+  <text x="200" y="230" text-anchor="middle" font-size="12" fill="#548235">cargado de SAP / QRM · un valor por vehiculo</text>
+
+  <!-- Decision Matrix box -->
+  <rect x="580" y="130" width="340" height="120" rx="12" fill="#E7E0F5" stroke="#7C5FC4" stroke-width="2"/>
+  <text x="750" y="158" text-anchor="middle" font-size="16" font-weight="700" fill="#4A2E8F">Decision Matrix (BRE)</text>
+  <text x="750" y="184" text-anchor="middle" font-size="12.5" fill="#4A2E8F">Pais + Sociedad + Propulsion + <tspan font-weight="700">Cliente</tspan> -> tasa</text>
+  <text x="750" y="204" text-anchor="middle" font-size="12.5" fill="#4A2E8F">13% CR · 4% electrico · exoneracion por cliente</text>
+  <text x="750" y="230" text-anchor="middle" font-size="12" fill="#6A4FB0">la tasa (%) es REGLA, no se guarda en el PBE</text>
+
+  <!-- arrows to cotizacion -->
+  <path d="M200 250 L200 300 L430 300 L430 330" fill="none" stroke="#8C8C8C" stroke-width="2.5" marker-end="url(#a)"/>
+  <path d="M750 250 L750 300 L530 300 L530 330" fill="none" stroke="#8C8C8C" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- Cotizacion -->
+  <rect x="300" y="335" width="360" height="110" rx="12" fill="#C6E0B4" stroke="#548235" stroke-width="2"/>
+  <text x="480" y="367" text-anchor="middle" font-size="17" font-weight="700" fill="#385723">COTIZACION (Salesforce)</text>
+  <text x="480" y="392" text-anchor="middle" font-size="12.5" fill="#385723">precio de lista + gastos</text>
+  <text x="480" y="412" text-anchor="middle" font-size="12.5" fill="#385723">impuesto de REFERENCIA (tasa x base)</text>
+  <text x="480" y="432" text-anchor="middle" font-size="12" fill="#548235">descuentos dentro del minimo · aprobacion nativa</text>
+
+  <path d="M480 445 L480 485" fill="none" stroke="#8C8C8C" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- Pedido -->
+  <rect x="330" y="490" width="300" height="70" rx="12" fill="#C6E0B4" stroke="#548235" stroke-width="2"/>
+  <text x="480" y="522" text-anchor="middle" font-size="16" font-weight="700" fill="#385723">PEDIDO</text>
+  <text x="480" y="546" text-anchor="middle" font-size="12.5" fill="#385723">el precio viaja a SAP (MuleSoft)</text>
+
+  <path d="M480 560 L480 600" fill="none" stroke="#8C8C8C" stroke-width="2.5" marker-end="url(#a)"/>
+
+  <!-- SAP -->
+  <rect x="250" y="605" width="460" height="100" rx="12" fill="#EDEDED" stroke="#808080" stroke-width="2"/>
+  <text x="480" y="637" text-anchor="middle" font-size="17" font-weight="700" fill="#3F3F3F">SAP — AUTORIDAD FISCAL</text>
+  <text x="480" y="662" text-anchor="middle" font-size="12.5" fill="#3F3F3F">calcula el impuesto DEFINITIVO y factura</text>
+  <text x="480" y="684" text-anchor="middle" font-size="12.5" fill="#3F3F3F">IPM se aplica segun el precio enviado por el CRM</text>
+
+  <!-- reconciliation arrow back -->
+  <path d="M710 655 L820 655 L820 400 L662 400" fill="none" stroke="#B0B0B0" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#a2)"/>
+  <text x="828" y="530" font-size="11" fill="#909090" transform="rotate(90 828 530)">reconciliacion: precio definitivo</text>
+
+  <!-- footer principle -->
+  <rect x="40" y="722" width="880" height="30" rx="8" fill="none" stroke="#BFBFBF" stroke-width="1.3" stroke-dasharray="5 4"/>
+  <text x="480" y="742" text-anchor="middle" font-size="13" font-weight="600" fill="#444">valor por vehiculo -> PricebookEntry   ·   regla por pais + cliente -> Decision Matrix   ·   calculo legal -> SAP</text>
+
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto"><path d="M0 0 L8 5 L0 10 z" fill="#8C8C8C"/></marker>
+    <marker id="a2" markerWidth="10" markerHeight="10" refX="7" refY="5" orient="auto"><path d="M0 0 L8 5 L0 10 z" fill="#B0B0B0"/></marker>
+  </defs>
+</svg>
