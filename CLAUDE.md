@@ -9,6 +9,13 @@
   cruzando contra a arquitetura travada (deploy/arquitetura-ventas/
   GUIA-LWC-APEX-VENTAS.xlsx). Uma versão única e alinhada — sem solução
   diferente nem Excel complementar depois no refinamento.
+- A GUIA (deploy/arquitetura-ventas/GUIA-LWC-APEX-VENTAS.xlsx) é O guia
+  oficial do projeto daqui para frente (decisão do Diego, 22/07). Toda HU
+  nova passa pelo processo de admissão da aba "Cómo encajar una HU"
+  (7 passos: resguardos -> flujo -> modelo -> fronteiras -> tarefas ->
+  registro -> parecer) e entra na aba "Mapa de HUs". Decisão nova = guia +
+  memória atualizadas no MESMO dia. Fonte da verdade = repositório (cópias
+  baixadas envelhecem — Diego já circulou versão velha 2x).
 
 ## Guardas de licenciamento e arquitetura (não esquecer em NENHUMA HU)
 - GrupoQ NÃO tem CPQ, Revenue Cloud nem EPC. HU que assumir esses produtos
