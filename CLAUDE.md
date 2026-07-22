@@ -28,9 +28,14 @@
   OmniStudio 27.131; Automotive Foundation 2.130; Inventory Search and
   Transfer 2.130. Rebate Management e Price Protection licenciados (2.130) —
   munição para HUs de descontos, sem mudar o travado.
-- Case EXCLUÍDO das HUs de Repuestos por decisão do cliente (HU-039):
-  solicitudes em objeto custom + Record Types + Queues + Duplicate Rules
-  nativas. Nenhuma HU futura propõe Case sem validar.
+- Case EXCLUÍDO das HUs de Repuestos por decisão do cliente. RESTRIÇÃO
+  adicional (22/07): NÃO criar objeto custom novo. Solicitud de material
+  (HU-039) = Product2 com Record Type "Solicitud de Material" (IsActive
+  false), campos custom no Product2, duplicados via Flow before-save
+  (Product2 não suporta Duplicate Rules), Files, Follow, list views por
+  Record Type (Product2 não tem Owner/Queue). Retorno da integração grava
+  o MATNR no MESMO registro e ativa (guarda anti-duplicado com o sync).
+  Plano B se o GrupoQ pedir filas formais: reabrir Case com RT dedicado.
 - HU-039: criação/extensão de material = serviço NOVO no contrato MuleSoft
   (escrita de dado mestre no SAP; SF solicita, SAP executa e devolve MATNR).
 - Arquitetura de vendas travada (híbrido): LWC+Apex SÓ em UI e integração;
