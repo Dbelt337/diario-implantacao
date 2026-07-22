@@ -38,6 +38,13 @@
   Plano B se o GrupoQ pedir filas formais: reabrir Case com RT dedicado.
 - HU-039: criação/extensão de material = serviço NOVO no contrato MuleSoft
   (escrita de dado mestre no SAP; SF solicita, SAP executa e devolve MATNR).
+- Ciclo do pedido (22/07): SAP NÃO fatura de imediato. Estados: Borrador ->
+  Enviado a SAP -> Confirmado SAP (nº pedido) -> Facturado (nº fatura) ->
+  só então assetização (gatilho = Facturado, nunca a ativação). Retorno de
+  faturamento é inbound (Mule atualiza o pedido). Cancelamento: antes de
+  enviar = cancela no SF; enviado sem faturar = solicitação via Mule, SAP
+  anula e confirma, unidade liberada; já faturado = NÃO é cancelamento, é
+  devolução com nota de crédito no SAP + Reduction Order standard no SF.
 - Arquitetura de vendas travada (híbrido): LWC+Apex SÓ em UI e integração;
   consulta síncrona SAP via Continuation (MuleSoft POST /api/v1/
   prices-and-inventory); assetização nativa (Asset + Vehicle +
