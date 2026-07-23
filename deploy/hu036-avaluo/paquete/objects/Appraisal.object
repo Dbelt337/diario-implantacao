@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
-        <fullName>Multas_Esquelas__c</fullName>
+        <fullName>TrafficFines__c</fullName>
         <label>Multas (esquelas)</label>
+        <description>All countries. Legal verification indicator for the used-vehicle trade-in appraisal: records whether the appraised vehicle has outstanding traffic fines (esquelas). Captured by the sales advisor before the appraisal can be accepted. Values are maintained by the business.</description>
         <type>Picklist</type>
         <required>false</required>
         <trackHistory>true</trackHistory>
@@ -29,8 +30,9 @@
         </valueSet>
     </fields>
     <fields>
-        <fullName>Gravamenes__c</fullName>
+        <fullName>Liens__c</fullName>
         <label>Gravámenes</label>
+        <description>All countries. Legal verification indicator for the used-vehicle trade-in appraisal: records whether the appraised vehicle has liens or encumbrances registered against it. Captured by the sales advisor before the appraisal can be accepted. Values are maintained by the business.</description>
         <type>Picklist</type>
         <required>false</required>
         <trackHistory>true</trackHistory>
@@ -57,8 +59,9 @@
         </valueSet>
     </fields>
     <fields>
-        <fullName>Procesos_Judiciales__c</fullName>
+        <fullName>LegalProceedings__c</fullName>
         <label>Procesos judiciales</label>
+        <description>All countries. Legal verification indicator for the used-vehicle trade-in appraisal: records whether the appraised vehicle is involved in judicial proceedings. Captured by the sales advisor before the appraisal can be accepted. Values are maintained by the business.</description>
         <type>Picklist</type>
         <required>false</required>
         <trackHistory>true</trackHistory>
@@ -85,8 +88,9 @@
         </valueSet>
     </fields>
     <fields>
-        <fullName>Motivo_Rechazo__c</fullName>
+        <fullName>RejectionReason__c</fullName>
         <label>Motivo de rechazo</label>
+        <description>All countries. Reason selected when the customer rejects the appraised trade-in value (appraisal Status = Rechazado). Feeds rejection reporting for the used-vehicle business. Value list is defined by the business per environment; unrestricted so admins can extend it without a deployment.</description>
         <type>Picklist</type>
         <required>false</required>
         <trackHistory>true</trackHistory>

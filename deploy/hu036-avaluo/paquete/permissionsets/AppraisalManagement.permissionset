@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label>GQ Avalúo - Familia Appraisal</label>
-    <description>HU-036. Acceso a la familia Appraisal (avalúo de vehículo usado / trade-in) y a los campos de observaciones legales. Asignar a: asesor de ventas, valuador, gerente de usados.</description>
+    <label>Gestión de Avalúos</label>
+    <description>All countries. Grants access to the Appraisal object family (used-vehicle trade-in appraisal) and to the legal verification fields on Appraisal. Assign to: sales advisor, appraiser, used-vehicle manager. Requires Read on Opportunity (platform dependency of the Appraisal object).</description>
     <hasActivationRequired>false</hasActivationRequired>
     <objectPermissions>
         <object>Opportunity</object>
@@ -58,22 +58,22 @@
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
     <fieldPermissions>
-        <field>Appraisal.Multas_Esquelas__c</field>
+        <field>Appraisal.TrafficFines__c</field>
         <readable>true</readable>
         <editable>true</editable>
     </fieldPermissions>
     <fieldPermissions>
-        <field>Appraisal.Gravamenes__c</field>
+        <field>Appraisal.Liens__c</field>
         <readable>true</readable>
         <editable>true</editable>
     </fieldPermissions>
     <fieldPermissions>
-        <field>Appraisal.Procesos_Judiciales__c</field>
+        <field>Appraisal.LegalProceedings__c</field>
         <readable>true</readable>
         <editable>true</editable>
     </fieldPermissions>
     <fieldPermissions>
-        <field>Appraisal.Motivo_Rechazo__c</field>
+        <field>Appraisal.RejectionReason__c</field>
         <readable>true</readable>
         <editable>true</editable>
     </fieldPermissions>

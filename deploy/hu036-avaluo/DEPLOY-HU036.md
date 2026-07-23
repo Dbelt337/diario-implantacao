@@ -9,20 +9,20 @@ configuración no viajan en deploys — es el comportamiento normal de la plataf
 
 | Componente | Tipo de metadato | Estado |
 |---|---|---|
-| Campos custom en Appraisal: Multas_Esquelas__c, Gravamenes__c, Procesos_Judiciales__c, Motivo_Rechazo__c | CustomField | **DESPLEGADO en DEV 23/07** (paquete v2, deploy success:true) |
+| Campos custom en Appraisal: TrafficFines__c, Liens__c, LegalProceedings__c, RejectionReason__c (labels en español; API en inglés por la GRPQM Naming Convention) | CustomField | **EN PAQUETE v3** (reemplazan a los 4 nombres antiguos en español, eliminados vía destructiveChangesPost) |
 | Field History Tracking de los campos custom | CustomField (trackHistory=true) | **DESPLEGADO en DEV 23/07** (embebido; el org aceptó trackHistory — history del objeto ya habilitado) |
 | Field History Tracking de campos estándar (Appraisal.Status; AppraisalItem.InitialValue) | Configuración por ambiente | Runbook 2.4b (Set History Tracking en Object Manager) |
-| Permission Set GQ_Avaluo_Appraisal (Read Opportunity + familia Appraisal + 4 campos) | PermissionSet | **DESPLEGADO en DEV 23/07** (Id DEV: 0PSWK000001BerB4AS) |
+| Permission Set AppraisalManagement "Gestión de Avalúos" (Read Opportunity + familia Appraisal + 4 campos) | PermissionSet | **EN PAQUETE v3** (reemplaza a GQ_Avaluo_Appraisal — quitar la asignación del PS viejo ANTES del deploy) |
 | Lightning Record Page del Appraisal | FlexiPage | Pendiente |
 | Acción "Request an Appraisal" en Opportunity (layout) | QuickAction + Layout | Pendiente |
 | Flow: notificación al proveedor externo | Flow | Pendiente |
-| Flow: búsqueda del PRU -> ProviderVal + InitialValue | Flow | Pendiente |
+| Flow: Appraisal Item After Handler (búsqueda del PRU -> ProviderVal + InitialValue) | Flow | **EN PAQUETE v3** (se despliega como Draft; revisar y activar en Flow Builder) |
 | Flow: cierre del avalúo (Aceptado -> Opportunity) + ramo de rechazo | Flow | Pendiente |
 | Decision Matrix PRU_ValorReferencia (definición) | DecisionMatrixDefinition (+ Version) | Pendiente |
 ### 1.1 Cómo desplegar el paquete (Workbench — cualquier ambiente)
 1. https://workbench.developerforce.com > Environment: Sandbox > API 63.0 > login
    con el usuario admin del ambiente.
-2. Menú migration > Deploy > Choose File: `HU036_paquete_v2.zip`.
+2. Menú migration > Deploy > Choose File: `HU036_paquete_v3.zip` (incluye destructiveChangesPost.xml — en Workbench el zip lo aplica automaticamente).
 3. Marcar **Single Package** y **Rollback On Error**. Next > Deploy.
 4. Verificar en Object Manager > Appraisal que los 4 campos existen y en
    Permission Sets que "GQ Avalúo - Familia Appraisal" existe.
@@ -76,7 +76,7 @@ en cada ambiente se crean nuevos.
       Vehicle — una sola taxonomía). Verificado 23/07: ConditionType ACEPTA
       valores propios (0 valores, seccion New habilitada) — sin mapeo forzado
       a Best/Better/Good.
-- [ ] Motivo_Rechazo__c: agregar los valores reales del INSUMO Grupo Q
+- [ ] RejectionReason__c: agregar los valores reales del INSUMO Grupo Q
       (el paquete lo entrega solo con "Otro").
 
 ### 2.4b Field History de campos estándar (por ambiente)
@@ -103,6 +103,13 @@ en cada ambiente se crean nuevos.
 
 ## 3. Orden de despliegue
 1. Runbook 2.1 (features/moneda) -> 2. Paquete de metadatos -> 3. Runbook 2.2-2.6.
+
+## 3.1 Naming (GRPQM Naming Conventions — Diego Braz, 23/07)
+Todo metadato de este paquete sigue la convencion oficial: API names en INGLES,
+PascalCase sin underscores, labels en espanol, Description obligatoria con
+paises + proposito de negocio. Los 4 campos originales en espanol
+(Multas_Esquelas__c, Gravamenes__c, Procesos_Judiciales__c, Motivo_Rechazo__c)
+y el PS GQ_Avaluo_Appraisal se eliminan en el mismo deploy (destructive post).
 
 ## 4. Trazabilidad
 Todo componente de este paquete pertenece a la HU-036 (regla del proyecto:

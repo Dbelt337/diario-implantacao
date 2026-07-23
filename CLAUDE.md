@@ -58,3 +58,15 @@
   AssetContactParticipant via Flow); Record Types separam Venta Vehículo
   x Contraventa Repuestos. Decisão LWC vs OmniStudio em validação com a
   Salesforce (e-mail chefe -> Felipe Pajón) — não cravar antes do aval.
+
+## Naming conventions oficiais (GRPQM - Diego Braz, 23/07/2026)
+- TODO metadato: API name em INGLES, PascalCase, SEM underscores (remover os
+  que o Salesforce insere); labels traduzidos ao espanhol; Description
+  obrigatoria (paises + proposito de negocio). Nunca criar metadato em espanhol.
+- Nomes representam conceitos globais de negocio - sem referencia a pais,
+  projeto ou cloud no nome. Flows record-triggered: "<Object> Before/After
+  Handler". Apex: sufixos Cont/Ext/Util/Test/Batch/Sched/WS.
+- Correcao aplicada na HU-036 (paquete v3): Multas_Esquelas__c/Gravamenes__c/
+  Procesos_Judiciales__c/Motivo_Rechazo__c -> TrafficFines__c/Liens__c/
+  LegalProceedings__c/RejectionReason__c; PS GQ_Avaluo_Appraisal ->
+  AppraisalManagement ("Gestion de Avaluos").

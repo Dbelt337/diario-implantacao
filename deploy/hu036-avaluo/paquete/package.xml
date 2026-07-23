@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>Appraisal.Multas_Esquelas__c</members>
-        <members>Appraisal.Gravamenes__c</members>
-        <members>Appraisal.Procesos_Judiciales__c</members>
-        <members>Appraisal.Motivo_Rechazo__c</members>
+        <members>Appraisal.TrafficFines__c</members>
+        <members>Appraisal.Liens__c</members>
+        <members>Appraisal.LegalProceedings__c</members>
+        <members>Appraisal.RejectionReason__c</members>
         <name>CustomField</name>
     </types>
     <types>
-        <members>GQ_Avaluo_Appraisal</members>
+        <members>AppraisalManagement</members>
         <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>AppraisalItemAfterHandler</members>
+        <name>Flow</name>
     </types>
     <version>63.0</version>
 </Package>
