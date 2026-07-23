@@ -142,3 +142,28 @@ Comentários nativos (as notas do assessor de piso).
 - Scheduler REST APIs / Portal de autogestão = fase futura.
 - Integração de preço/estoque (SAP) não participa da agenda nem do valor de
   referência do avalúo.
+
+---
+
+## CONFIRMACOES OFICIAIS — Object Reference do Appraisal (23/07, conteudo enviado pelo Diego)
+
+- **FinalAppraisalValue e CALCULADO** (= TotalItemFinalValue + TotalAdjustmentValue,
+  ambos tambem calculados). Confirmada a regra "o valuador nao digita o valor final".
+- **ReferenceRecordId** (parent) polimorfico oficial: Account, Case, Lead ou
+  **Opportunity** (GrupoQ usa Opportunity). Relationship Name: ReferenceRecord.
+- **PurposeType** picklist RESTRITO: Sale | **Trade-In** (usar Trade-In; nao ha como
+  adicionar valores). **UsageType** = Automotive.
+- **AppraisedById** polimorfico: **User** (valuador interno) ou **Contact** (valuador
+  externo) — ancora nativa para o modelo de provedor externo (Contact da Cuenta).
+- **Status** e picklist NAO restrito — os estados do fluxo (agendado/realizado/
+  aceito/recusado) podem ser definidos; gatilho dos Flows de fechamento.
+- **ValidityEndDate** nativo — vigencia do avaluo sem campo custom.
+- **AppraisalHistory** disponivel — rastreio nativo de campos.
+- Regra de acesso oficial: **"Automotive and Appraisal Management must be enabled"**
+  (API v63.0+). E o T01.
+- Decision Matrices (doc oficial): versoes com start/end date + rank — a atualizacao
+  trimestral/mensal do PRU e uma versao nova com vigencia; consider Grouped Matrix
+  com Pais como group key e ranges numericos para faixas de ano.
+
+**Pendente de confirmacao de campos:** AppraisalItem e AppraisalItemProviderVal
+(paginas do Object Reference ainda nao enviadas; ou rodar o describe T02).
