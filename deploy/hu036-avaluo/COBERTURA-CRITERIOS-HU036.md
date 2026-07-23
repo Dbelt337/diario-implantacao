@@ -6,15 +6,15 @@ INSUMO (bloqueado por dato del Grupo Q) · OTRA FRENTE (dependencia externa).
 
 | # | Criterio de aceptación | Estado | Evidencia / pendiente |
 |---|---|---|---|
-| 1 | Agendamiento con Scheduler (SA, Work Type Avalúo, SR, ST, OH), patrón Test Drive | LISTO PARA PROBAR | Work Type 08qWK..., territory reusado, STWT, recurso de prueba. Falta crear un Service Appointment de prueba desde la Opportunity |
-| 2 | Disponibilidad en Scheduler; SAP no participa | PROBADO (por diseño) | No existe integración de agenda; se confirma en la prueba del criterio 1 |
+| 1 | Agendamiento con Scheduler (SA, Work Type Avalúo, SR, ST, OH), patrón Test Drive | PROBADO 23/07 | SA-0032: Work Type Avalúo, Parent Record = Opportunity, Status Scheduled, Owner de la Opp sin cambio |
+| 2 | Disponibilidad en Scheduler; SAP no participa | PROBADO 23/07 | Confirmado en la prueba de SA-0032 (agenda 100% Scheduler) |
 | 3 | Sin Experience Cloud; asesor agenda; solicitud online genera Lead | PARCIAL / OTRA FRENTE | Agendamiento por asesor: criterio 1. Web-to-Lead (GQ-CA-01-179) pertenece a la frente digital/leads — coordinar |
 | 4 | Valuadores internos = User + Service Resource, sin SAP | PROBADO (con recurso de prueba) | Recurso real por sucursal = INSUMO (nombres + horarios) |
 | 5 | Proveedor externo = Cuenta/Contacto + notificación automática vía Flow | EN CONSTRUCCION (v5, Flow 2) | Flow con placeholder; empresa/contacto/texto del aviso = INSUMO |
 | 6 | Resultado en familia nativa Appraisal relacionada a la Opportunity | PROBADO 23/07 | APL-000000002 con ReferenceRecord = Opportunity |
 | 7 | FinalAppraisalValue calculado nativamente (no se digita) | PROBADO 23/07 | Final Value CRC 14.500 calculado por formula (updateable=false) |
 | 8 | PRU registrado en AppraisalItemProviderVal, tabla maestra por país | PROBADO 23/07 (estructura) | AIP-000000001 creado por el Flow; matriz con columna Pais. Carga REAL = INSUMO (archivo PRU + moneda + unico/por condicion) |
-| 9 | Deducciones/excepciones = AppraisalAdjustment con traza, sin aprobación | LISTO PARA PROBAR | Objeto nativo activo; sembrar Adjustment.Type (Deducción/Excepción) y probar un ajuste negativo (recalculo del FinalValue) |
+| 9 | Deducciones/excepciones = AppraisalAdjustment con traza, sin aprobación | PROBADO 23/07 | Ajuste Deducción CRC -500 en APL-000000002 con CreatedBy (traza nativa); recalculo del FinalAppraisalValue a 14.000 verificado en el header |
 | 10 | Indicadores legales como campos custom + notas en Appraisal.Comment | LISTO PARA PROBAR | 4 campos desplegados (paquete v4, naming GRPQM). Exponer en la Lightning Page (v5) y probar |
 | 11 | Al finalizar, Flow actualiza automáticamente la Opportunity | EN CONSTRUCCION (v5, Flow 3) | Decisión de modelado pendiente: campo destino del trade-in en Opportunity/Quote |
 | 12 | Otra sucursal: ST correspondiente, Owner no cambia, Opportunity Team | LISTO PARA PROBAR (diseño) | Owner inmutable es comportamiento estándar; prueba completa requiere un segundo territory (o el de otra sucursal real) |
@@ -23,8 +23,8 @@ INSUMO (bloqueado por dato del Grupo Q) · OTRA FRENTE (dependencia externa).
 | 15 | Avalúo y resultado visibles en el 360 del prospecto | PARCIAL | Related lists nativas ya visibles; formalizar Lightning Record Page (v5) |
 
 ## Lectura rápida
-- PROBADOS hoy: 6, 7, 8 (estructura), 2 (por diseño) — el corazón nativo de la HU.
-- LISTOS PARA PROBAR (config de minutos): 1, 4, 9, 10, 12.
+- PROBADOS: 1, 2, 6, 7, 8 (estructura), 9 — agendamiento + corazón nativo + ajustes.
+- LISTOS PARA PROBAR: 4 (con recurso real), 10 (campos legales en la página), 12 (segundo territory).
 - EN CONSTRUCCION (paquete v5): 5, 11, 13 (lado SF), 14, 15 (página).
 - INSUMO Grupo Q: PRU real (archivo/moneda/condicion), escala de condición
   (obligatoria — bloquea el alta del item), motivos de rechazo, valuadores,
