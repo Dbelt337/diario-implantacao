@@ -5,6 +5,7 @@
         <members>Appraisal.Liens__c</members>
         <members>Appraisal.LegalProceedings__c</members>
         <members>Appraisal.RejectionReason__c</members>
+        <members>Opportunity.TradeInValue__c</members>
         <name>CustomField</name>
     </types>
     <types>
@@ -15,6 +16,10 @@
         <members>AppraisalItemAfterHandler</members>
         <members>AppraisalAfterHandler</members>
         <name>Flow</name>
+    </types>
+    <types>
+        <members>Appraisal.RejectionReasonRequired</members>
+        <name>ValidationRule</name>
     </types>
     <version>63.0</version>
 </Package>

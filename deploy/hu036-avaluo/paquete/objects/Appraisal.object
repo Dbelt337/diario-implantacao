@@ -106,4 +106,12 @@
             </valueSetDefinition>
         </valueSet>
     </fields>
+    <validationRules>
+        <fullName>RejectionReasonRequired</fullName>
+        <active>true</active>
+        <description>All countries. When the appraisal is rejected by the customer, the rejection reason is mandatory for reporting and follow-up (used-vehicle trade-in user story, rejection scenario).</description>
+        <errorConditionFormula>AND(ISPICKVAL(Status, "Rechazado"), ISBLANK(TEXT(RejectionReason__c)))</errorConditionFormula>
+        <errorDisplayField>RejectionReason__c</errorDisplayField>
+        <errorMessage>Seleccione el motivo de rechazo antes de marcar el avalúo como Rechazado.</errorMessage>
+    </validationRules>
 </CustomObject>

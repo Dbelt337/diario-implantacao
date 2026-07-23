@@ -58,6 +58,11 @@
         <modifyAllRecords>false</modifyAllRecords>
     </objectPermissions>
     <fieldPermissions>
+        <field>Opportunity.TradeInValue__c</field>
+        <readable>true</readable>
+        <editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
         <field>Appraisal.TrafficFines__c</field>
         <readable>true</readable>
         <editable>true</editable>
