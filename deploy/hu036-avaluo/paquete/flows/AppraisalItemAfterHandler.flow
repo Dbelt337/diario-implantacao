@@ -6,7 +6,7 @@
         <locationX>176</locationX>
         <locationY>287</locationY>
         <actionName>PRU_Valor_Referencia</actionName>
-        <actionType>decisionMatrixAction</actionType>
+        <actionType>runDecisionMatrix</actionType>
         <connector>
             <targetReference>ReferenceValueFound</targetReference>
         </connector>
