@@ -52,6 +52,10 @@ en cada ambiente se crean nuevos.
 - Appraisal.UsageType obligatorio (valor: Automotive) — ya documentado.
 - AppraisalItem.Usage (kilometraje) OBLIGATORIO en la creacion + su
   UsageUnitOfMeasureId (registro "Kilómetros"). Considerar en layouts y cargas.
+- AppraisalItem.ConditionType OBLIGATORIO en la creacion — la escala de
+  condicion del INSUMO Grupo Q es imprescindible (el campo bloquea el alta).
+  DEV 23/07: escala PROVISORIA sembrada: Bueno | Promedio | Malo (reemplazar
+  con la escala real del insumo).
 - Appraisal.PurposeType obligatorio y el picklist vino vacio (sembrar Trade-In).
 
 ### 2.2 Unidad de medida
