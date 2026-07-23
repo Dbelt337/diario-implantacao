@@ -67,13 +67,15 @@ en cada ambiente se crean nuevos.
       valuadores reales al llegar el insumo; no desplegar el recurso de prueba.
 
 ### 2.4 Valores de picklist (por ambiente, vía Object Manager)
-- [ ] Appraisal.PurposeType: Trade-In
-- [ ] Appraisal.Status: Agendado | Realizado | Aceptado | Rechazado
+- [x] Appraisal.PurposeType: Trade-In (nativo restrito, ya venia de fabrica)
+- [x] DEV 23/07: Appraisal.Status: Agendado | Realizado | Aceptado | Rechazado
 - [ ] AppraisalAdjustment.Type: Deducción | Excepción
 - [ ] AppraisalItemProviderVal.ProviderName: PRU
 - [ ] AppraisalItem.ConditionType / MakeName / ModelName / ModelYear / Trim /
       ExteriorColor: valores del INSUMO Grupo Q (alinear con los picklists de
-      Vehicle — una sola taxonomía).
+      Vehicle — una sola taxonomía). Verificado 23/07: ConditionType ACEPTA
+      valores propios (0 valores, seccion New habilitada) — sin mapeo forzado
+      a Best/Better/Good.
 - [ ] Motivo_Rechazo__c: agregar los valores reales del INSUMO Grupo Q
       (el paquete lo entrega solo con "Otro").
 
