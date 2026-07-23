@@ -167,3 +167,31 @@ Comentários nativos (as notas do assessor de piso).
 
 **Pendente de confirmacao de campos:** AppraisalItem e AppraisalItemProviderVal
 (paginas do Object Reference ainda nao enviadas; ou rodar o describe T02).
+
+## AppraisalItem — Object Reference oficial (23/07): a ficha e quase toda nativa
+
+| Dado da ficha (HU-036 V2) | Campo NATIVO do AppraisalItem |
+|---|---|
+| VIN | IdentificationNumber |
+| Placa | LicensePlateNumber |
+| Quilometragem | **Usage (double) + UsageUnitOfMeasureId** (criar registro UnitOfMeasure "Kilometros") |
+| Cor | ExteriorColor (picklist) |
+| Marca / Modelo / Ano / Versao | MakeName / ModelName / ModelYear / Trim (picklists) |
+| Condicao | ConditionType (RESTRITO: Best/Better/Good — 3 niveis) |
+| Valor pedido pelo cliente | CustomerAskingValue |
+| **Valor preliminar do PRU** | **InitialValue** ("preliminary value based on provider estimates" — e o campo onde o Flow grava o valor buscado na Decision Matrix) |
+| Valor final do item | FinalValue (CALCULADO) + TotalAdjustmentValue (calculado) |
+| Data compra / fabricacao / fim garantia | PurchaseDate / ManufacturedDate / WarrantyEndDate |
+| Veiculo existente (re-vinculo) | ReferenceRecordId polimorfico = **Asset ou Vehicle** (o elo com a HU-045: VIN ja vendido pelo GQ re-vincula aqui) |
+
+- AppraisalId e MASTER-DETAIL com Appraisal. Type = Vehicle | Asset.
+- **ALERTA de verificacao (T02):** MakeName/ModelName/ModelYear/Trim/ExteriorColor/
+  ConditionType aparecem como RESTRICTED picklists com valores de exemplo (Make 1,
+  Maruti, 2023-2025...). Confirmar no Setup/describe se aceitam valores proprios
+  (quase certo que sim — sao placeholders de doc), MAS validar CEDO: se ConditionType
+  nao aceitar valores, a escala de condicao do GrupoQ tera que mapear em
+  Best/Better/Good (3 niveis) — pergunta de negocio.
+- Zero campo custom na ficha; os unicos customs da HU seguem sendo os indicadores
+  legais no Appraisal (multas/gravames/judicial).
+- Pendente: pagina do AppraisalItemProviderValuation (papel: registrar a avaliacao
+  por provedor; o valor operacional preliminar ja tem casa no InitialValue).
