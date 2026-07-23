@@ -22,7 +22,7 @@ configuración no viajan en deploys — es el comportamiento normal de la plataf
 ### 1.1 Cómo desplegar el paquete (Workbench — cualquier ambiente)
 1. https://workbench.developerforce.com > Environment: Sandbox > API 63.0 > login
    con el usuario admin del ambiente.
-2. Menú migration > Deploy > Choose File: `HU036_paquete_v3.zip` (incluye destructiveChangesPost.xml — en Workbench el zip lo aplica automaticamente).
+2. Menú migration > Deploy > Choose File: `HU036_paquete_v4.zip` (incluye destructiveChangesPost.xml — en Workbench el zip lo aplica automaticamente).
 3. Marcar **Single Package** y **Rollback On Error**. Next > Deploy.
 4. Verificar en Object Manager > Appraisal que los 4 campos existen y en
    Permission Sets que "GQ Avalúo - Familia Appraisal" existe.
