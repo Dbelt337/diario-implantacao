@@ -54,7 +54,7 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>UpdateOpportunityTradeIn</targetReference>
+                <targetReference>GetAcceptedAppraisal</targetReference>
             </connector>
             <label>Accepted Now</label>
         </rules>
@@ -167,6 +167,27 @@
         <object>Task</object>
     </recordCreates>
     <recordLookups>
+        <name>GetAcceptedAppraisal</name>
+        <label>Get Records: Get Accepted Appraisal</label>
+        <locationX>396</locationX>
+        <locationY>179</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>UpdateOpportunityTradeIn</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Appraisal</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>GetExistingNoticeTask</name>
         <label>Get Records: Get Existing Notice</label>
         <locationX>176</locationX>
@@ -231,7 +252,7 @@
         <inputAssignments>
             <field>TradeInValue__c</field>
             <value>
-                <elementReference>$Record.FinalAppraisalValue</elementReference>
+                <elementReference>GetAcceptedAppraisal.FinalAppraisalValue</elementReference>
             </value>
         </inputAssignments>
         <object>Opportunity</object>
