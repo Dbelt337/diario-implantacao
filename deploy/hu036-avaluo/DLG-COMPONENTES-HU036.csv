@@ -1,0 +1,17 @@
+Componente (API Name);Label;Tipo de Metadato;Cloud / Frente;HU de Origen;Ambiente actual;Metodo de deploy;Estado / Nota
+Appraisal.TrafficFines__c;Multas (esquelas);CustomField (Picklist);Sales - Ventas;HU-036;DEV;Paquete (HU036_paquete_v4_limpio.zip);Desplegado en DEV 23/07; valores Si/No/Pendiente de verificacion
+Appraisal.Liens__c;Gravámenes;CustomField (Picklist);Sales - Ventas;HU-036;DEV;Paquete (HU036_paquete_v4_limpio.zip);Desplegado en DEV 23/07
+Appraisal.LegalProceedings__c;Procesos judiciales;CustomField (Picklist);Sales - Ventas;HU-036;DEV;Paquete (HU036_paquete_v4_limpio.zip);Desplegado en DEV 23/07
+Appraisal.RejectionReason__c;Motivo de rechazo;CustomField (Picklist abierta);Sales - Ventas;HU-036;DEV;Paquete (HU036_paquete_v4_limpio.zip);Desplegado en DEV 23/07; valores reales = insumo Grupo Q
+AppraisalManagement;Gestión de Avalúos;PermissionSet;Sales - Ventas;HU-036;DEV;Paquete (HU036_paquete_v4_limpio.zip);Desplegado en DEV 23/07; incluye Read Opportunity (dependencia de plataforma)
+AppraisalItemAfterHandler;Appraisal Item After Handler;Flow (Record-Triggered);Sales - Ventas;HU-036;DEV;Paquete (HU036_paquete_v4_limpio.zip);Desplegado como Draft; ACTIVAR tras el deploy; consume la Decision Matrix PRU
+PRU_Valor_Referencia;PRU Valor Referencia;Decision Matrix (BRE) - definicion + version;Sales - Ventas;HU-036;DEV;CONFIGURACION por ambiente (crear + CSV + activar version);No viaja en el paquete; pasos en GUIA-CONFIGURACION-COMPLETA-HU036.md paso 7
+Appraisal picklists (PurposeType/Status/ProviderName/ConditionType/Make/Model/Year/Adjustment.Type);varios;Valores de picklist estandar;Sales - Ventas;HU-036;DEV;CONFIGURACION por ambiente (Object Manager);Runbook DEPLOY-HU036.md seccion 2.4; StandardValueSet sin cobertura de deploy
+UnitOfMeasure Kilometros (km);Kilómetros;Registro de datos (UnitOfMeasure);Sales - Ventas;HU-036;DEV;CONFIGURACION por ambiente;Runbook 2.2
+Work Type Avaluo + ServiceTerritoryWorkType + Service Resources;Avalúo;Registros Scheduler;Sales - Ventas;HU-036;DEV;CONFIGURACION por ambiente;Runbook 2.3; reusa el Service Territory de la sucursal (Test Drive)
+Field History Tracking (Appraisal.Status);Status;Configuracion de objeto;Sales - Ventas;HU-036;DEV;CONFIGURACION por ambiente;Runbook 2.4b (los 4 campos custom ya llevan trackHistory en el paquete)
+Lightning Record Page del Appraisal;pendiente;FlexiPage;Sales - Ventas;HU-036;pendiente;Paquete v5 (en construccion);NO desplegar aun
+FlexCard AppraisalManagementCreateAppraisalCard en pagina Opportunity;Request an Appraisal;Componente ESTANDAR OmniStudio (referencia en FlexiPage);Sales - Ventas;HU-036;DEV;Configuracion de pagina (App Builder);Card de fabrica del paquete OmniStudio de Automotive - NO clonar ni customizar
+InactivityPolicy__mdt (+5 campos);Política de Inactividad;CustomMetadataType;Sales - Ventas;HU nueva cierre por inactividad (EN ADMISION - sin numero);DEV;Paquete (CierreInactividad_v2.zip);NO PROMOVER a INT hasta admitir la HU
+InactivityPolicy.Default;Default;CustomMetadata (registro);Sales - Ventas;HU nueva cierre por inactividad (EN ADMISION);DEV;Paquete (CierreInactividad_v2.zip);NO PROMOVER; parametros 23/30/etapa/textos
+CloseInactiveOpportunities;Close Inactive Opportunities;Flow (Schedule-Triggered);Sales - Ventas;HU nueva cierre por inactividad (EN ADMISION);DEV;Paquete (CierreInactividad_v2.zip);DRAFT - NO PROMOVER NI ACTIVAR hasta admitir la HU
