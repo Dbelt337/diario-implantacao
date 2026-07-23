@@ -44,8 +44,16 @@ en cada ambiente se crean nuevos.
 ### 2.1 Features y moneda (una vez por ambiente)
 - [x] DEV: Automotive + Automotive Scheduler activos (Setup > Automotive Settings).
 - [x] DEV: familia Appraisal habilitada (objetos createable — verificado 23/07).
-- [x] DEV: moneda USD activada (Setup > Company Information > Manage Currencies;
-      tasa de sandbox aprox. 0.00196; en PROD la tasa la gobierna el sync del SAP).
+- [ ] Moneda USD: Manage Currencies > New > USD, tasa aprox 0.00196 (1 CRC),
+      2 decimales. OJO 23/07: el check anterior era erroneo — la org solo tenia
+      CRC activa. NO cambiar Corporate (queda CRC); ACM (tasas datadas) no se
+      habilita. En PROD la tasa la gobierna el proceso financiero/SAP.
+
+### 2.1b Hallazgos de campos obligatorios (verificado en la UI, 23/07)
+- Appraisal.UsageType obligatorio (valor: Automotive) — ya documentado.
+- AppraisalItem.Usage (kilometraje) OBLIGATORIO en la creacion + su
+  UsageUnitOfMeasureId (registro "Kilómetros"). Considerar en layouts y cargas.
+- Appraisal.PurposeType obligatorio y el picklist vino vacio (sembrar Trade-In).
 
 ### 2.2 Unidad de medida
 - [x] DEV: registro UnitOfMeasure Name="Kilómetros", UnitCode="km"
