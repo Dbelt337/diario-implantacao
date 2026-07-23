@@ -4,6 +4,15 @@
     <description>HU-036. Acceso a la familia Appraisal (avalúo de vehículo usado / trade-in) y a los campos de observaciones legales. Asignar a: asesor de ventas, valuador, gerente de usados.</description>
     <hasActivationRequired>false</hasActivationRequired>
     <objectPermissions>
+        <object>Opportunity</object>
+        <allowCreate>false</allowCreate>
+        <allowRead>true</allowRead>
+        <allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>false</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
         <object>Appraisal</object>
         <allowCreate>true</allowCreate>
         <allowRead>true</allowRead>
