@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Multas_Esquelas__c</fullName>
+        <label>Multas (esquelas)</label>
+        <type>Picklist</type>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Sí</fullName>
+                    <default>false</default>
+                    <label>Sí</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>Pendiente de verificación</fullName>
+                    <default>true</default>
+                    <label>Pendiente de verificación</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Gravamenes__c</fullName>
+        <label>Gravámenes</label>
+        <type>Picklist</type>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Sí</fullName>
+                    <default>false</default>
+                    <label>Sí</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>Pendiente de verificación</fullName>
+                    <default>true</default>
+                    <label>Pendiente de verificación</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Procesos_Judiciales__c</fullName>
+        <label>Procesos judiciales</label>
+        <type>Picklist</type>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Sí</fullName>
+                    <default>false</default>
+                    <label>Sí</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>Pendiente de verificación</fullName>
+                    <default>true</default>
+                    <label>Pendiente de verificación</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Motivo_Rechazo__c</fullName>
+        <label>Motivo de rechazo</label>
+        <type>Picklist</type>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <valueSet>
+            <restricted>false</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Otro</fullName>
+                    <default>false</default>
+                    <label>Otro</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+</CustomObject>

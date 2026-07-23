@@ -9,15 +9,26 @@ configuración no viajan en deploys — es el comportamiento normal de la plataf
 
 | Componente | Tipo de metadato | Estado |
 |---|---|---|
-| Campos custom en Appraisal: Multas_Esquelas__c, Gravamenes__c, Procesos_Judiciales__c, Motivo_Rechazo__c | CustomField | Pendiente de crear |
-| Field History Tracking (Appraisal: Status, InitialValue, indicadores) | CustomField (trackHistory) | Pendiente |
+| Campos custom en Appraisal: Multas_Esquelas__c, Gravamenes__c, Procesos_Judiciales__c, Motivo_Rechazo__c | CustomField | **EN PAQUETE** (carpeta paquete/, zip HU036_paquete_v1.zip) |
+| Field History Tracking de los campos custom | CustomField (trackHistory=true) | **EN PAQUETE** (embebido en cada campo) |
+| Field History Tracking de campos estándar (Appraisal.Status; AppraisalItem.InitialValue) | Configuración por ambiente | Runbook 2.4b (Set History Tracking en Object Manager) |
+| Permission Set GQ_Avaluo_Appraisal (objetos de la familia + 4 campos) | PermissionSet | **EN PAQUETE** |
 | Lightning Record Page del Appraisal | FlexiPage | Pendiente |
 | Acción "Request an Appraisal" en Opportunity (layout) | QuickAction + Layout | Pendiente |
 | Flow: notificación al proveedor externo | Flow | Pendiente |
 | Flow: búsqueda del PRU -> ProviderVal + InitialValue | Flow | Pendiente |
 | Flow: cierre del avalúo (Aceptado -> Opportunity) + ramo de rechazo | Flow | Pendiente |
 | Decision Matrix PRU_ValorReferencia (definición) | DecisionMatrixDefinition (+ Version) | Pendiente |
-| Permission Set de acceso a la familia Appraisal (objetos/campos) | PermissionSet | Pendiente |
+### 1.1 Cómo desplegar el paquete (Workbench — cualquier ambiente)
+1. https://workbench.developerforce.com > Environment: Sandbox > API 63.0 > login
+   con el usuario admin del ambiente.
+2. Menú migration > Deploy > Choose File: `HU036_paquete_v1.zip`.
+3. Marcar **Single Package** y **Rollback On Error**. Next > Deploy.
+4. Verificar en Object Manager > Appraisal que los 4 campos existen y en
+   Permission Sets que "GQ Avalúo - Familia Appraisal" existe.
+Nota: si el deploy reclamara por trackHistory (history no habilitado para el
+objeto en el ambiente), habilitar primero Set History Tracking en
+Object Manager > Appraisal y reintentar.
 
 Nota sobre picklists de campos ESTÁNDAR (PurposeType, Status, Adjustment.Type,
 ProviderName, ConditionType, MakeName...): los valores agregados a picklists
@@ -63,6 +74,14 @@ en cada ambiente se crean nuevos.
 - [ ] AppraisalItem.ConditionType / MakeName / ModelName / ModelYear / Trim /
       ExteriorColor: valores del INSUMO Grupo Q (alinear con los picklists de
       Vehicle — una sola taxonomía).
+- [ ] Motivo_Rechazo__c: agregar los valores reales del INSUMO Grupo Q
+      (el paquete lo entrega solo con "Otro").
+
+### 2.4b Field History de campos estándar (por ambiente)
+- [ ] Object Manager > Appraisal > Set History Tracking: Status.
+- [ ] Object Manager > Appraisal Item > Set History Tracking: Initial Value
+      (si la opción existe para el objeto).
+      (Los 4 campos custom ya llevan trackHistory en el paquete.)
 
 ### 2.5 Datos de la matriz PRU
 - [ ] Carga del CSV en la Decision Matrix (nueva versión por actualización).
