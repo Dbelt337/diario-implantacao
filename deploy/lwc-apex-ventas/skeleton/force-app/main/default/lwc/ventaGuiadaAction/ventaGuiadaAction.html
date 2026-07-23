@@ -1,0 +1,18 @@
+<template>
+    <lightning-card title="Venta guiada">
+        <div class="slds-p-around_medium">
+            <template lwc:if={isVentaVehiculo}>
+                <c-venta-vehiculo record-id={recordId}></c-venta-vehiculo>
+            </template>
+            <template lwc:if={isVentaUsados}>
+                <c-venta-usados record-id={recordId}></c-venta-usados>
+            </template>
+            <template lwc:if={isContraventaRepuestos}>
+                <c-contraventa-repuestos record-id={recordId}></c-contraventa-repuestos>
+            </template>
+            <template lwc:if={isVentaPA}>
+                <c-venta-p-a record-id={recordId}></c-venta-p-a>
+            </template>
+        </div>
+    </lightning-card>
+</template>
