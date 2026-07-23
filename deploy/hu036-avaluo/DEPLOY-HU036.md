@@ -44,9 +44,8 @@ en cada ambiente se crean nuevos.
 ### 2.1 Features y moneda (una vez por ambiente)
 - [x] DEV: Automotive + Automotive Scheduler activos (Setup > Automotive Settings).
 - [x] DEV: familia Appraisal habilitada (objetos createable — verificado 23/07).
-- [ ] Moneda USD: Manage Currencies > New > USD, tasa aprox 0.00196 (1 CRC),
-      2 decimales. OJO 23/07: el check anterior era erroneo — la org solo tenia
-      CRC activa. NO cambiar Corporate (queda CRC); ACM (tasas datadas) no se
+- [x] DEV 23/07: moneda USD activada (Manage Currencies > New > USD, tasa
+      0.001960, 2 decimales). NO cambiar Corporate (queda CRC); ACM (tasas datadas) no se
       habilita. En PROD la tasa la gobierna el proceso financiero/SAP.
 
 ### 2.1b Hallazgos de campos obligatorios (verificado en la UI, 23/07)
