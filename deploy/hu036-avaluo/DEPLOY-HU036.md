@@ -16,7 +16,7 @@ configuración no viajan en deploys — es el comportamiento normal de la plataf
 | Lightning Record Page del Appraisal | FlexiPage | Pendiente |
 | Acción "Request an Appraisal" en Opportunity (layout) | QuickAction + Layout | Pendiente |
 | Flow: notificación al proveedor externo | Flow | Pendiente |
-| Flow: Appraisal Item After Handler (búsqueda del PRU -> ProviderVal + InitialValue) | Flow | **DESPLEGADO en DEV 23/07** como Draft (Id DEV: 301WK00002Tt7brYAB; actionType runDecisionMatrix, action PRU_Valor_Referencia). PENDIENTE: activar + prueba end-to-end |
+| Flow: Appraisal Item After Handler (búsqueda del PRU -> ProviderVal + InitialValue) | Flow | **DESPLEGADO en DEV 23/07** como Draft (Id DEV: 301WK00002Tt7brYAB; actionType runDecisionMatrix, action PRU_Valor_Referencia). ACTIVADO y PROBADO end-to-end 23/07 (item Toyota/Corolla/2020 -> ProviderVal PRU + InitialValue 14.500 + FinalValue calculado) |
 | Flow: cierre del avalúo (Aceptado -> Opportunity) + ramo de rechazo | Flow | Pendiente |
 | Decision Matrix PRU_ValorReferencia (definición) | DecisionMatrixDefinition (+ Version) | Pendiente |
 ### 1.1 Cómo desplegar el paquete (Workbench — cualquier ambiente)
