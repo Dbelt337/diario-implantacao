@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Política de Inactividad</label>
+    <pluralLabel>Políticas de Inactividad</pluralLabel>
+    <visibility>Public</visibility>
+    <fields>
+        <fullName>DaysToAlert__c</fullName>
+        <label>Días para alerta</label>
+        <description>All countries. Number of days without opportunity activity (LastActivityDate) after which the owner receives a warning task. Consumed by the scheduled flow Close Inactive Opportunities. Business-tunable per environment without touching the flow.</description>
+        <type>Number</type>
+        <precision>3</precision>
+        <scale>0</scale>
+        <required>true</required>
+        <unique>false</unique>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+    </fields>
+    <fields>
+        <fullName>DaysToClose__c</fullName>
+        <label>Días para cierre</label>
+        <description>All countries. Number of days without opportunity activity (LastActivityDate) after which the opportunity is automatically closed as lost. Consumed by the scheduled flow Close Inactive Opportunities.</description>
+        <type>Number</type>
+        <precision>3</precision>
+        <scale>0</scale>
+        <required>true</required>
+        <unique>false</unique>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+    </fields>
+    <fields>
+        <fullName>LostStageName__c</fullName>
+        <label>Etapa de perdida</label>
+        <description>All countries. Exact API name of the Opportunity stage used for automatic closure as lost. Must match an existing closed/lost stage of the sales process. Consumed by the scheduled flow Close Inactive Opportunities.</description>
+        <type>Text</type>
+        <length>255</length>
+        <required>true</required>
+        <unique>false</unique>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+    </fields>
+    <fields>
+        <fullName>AlertTaskSubject__c</fullName>
+        <label>Asunto de la tarea de alerta</label>
+        <description>All countries. Subject of the warning task created before automatic closure. Also used by the flow to avoid duplicate alerts for the same opportunity. Translatable per business preference.</description>
+        <type>Text</type>
+        <length>255</length>
+        <required>true</required>
+        <unique>false</unique>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+    </fields>
+    <fields>
+        <fullName>CloseReasonValue__c</fullName>
+        <label>Valor del motivo de cierre</label>
+        <description>All countries. Picklist value to be written to the opportunity close reason field (from the manual closure user story) when the automatic closure runs. Kept in configuration so the wording can change without redeploying the flow.</description>
+        <type>Text</type>
+        <length>255</length>
+        <required>false</required>
+        <unique>false</unique>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+    </fields>
+</CustomObject>

@@ -1,33 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <constants>
-        <name>daysToAlert</name>
-        <dataType>Number</dataType>
-        <value>
-            <numberValue>23.0</numberValue>
-        </value>
-    </constants>
-    <constants>
-        <name>daysToClose</name>
-        <dataType>Number</dataType>
-        <value>
-            <numberValue>30.0</numberValue>
-        </value>
-    </constants>
-    <constants>
-        <name>lostStageName</name>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>Closed Lost</stringValue>
-        </value>
-    </constants>
-    <constants>
-        <name>alertTaskSubject</name>
-        <dataType>String</dataType>
-        <value>
-            <stringValue>Aviso: oportunidad será cerrada por inactividad</stringValue>
-        </value>
-    </constants>
     <decisions>
         <name>EvaluateInactivity</name>
         <label>Decision: Days Inactive?</label>
@@ -41,7 +13,7 @@
                 <leftValueReference>daysInactive</leftValueReference>
                 <operator>GreaterThanOrEqualTo</operator>
                 <rightValue>
-                    <elementReference>daysToClose</elementReference>
+                    <elementReference>GetInactivityPolicy.DaysToClose__c</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -56,7 +28,7 @@
                 <leftValueReference>daysInactive</leftValueReference>
                 <operator>GreaterThanOrEqualTo</operator>
                 <rightValue>
-                    <elementReference>daysToAlert</elementReference>
+                    <elementReference>GetInactivityPolicy.DaysToAlert__c</elementReference>
                 </rightValue>
             </conditions>
             <connector>
@@ -87,7 +59,7 @@
             <label>No Alert Yet</label>
         </rules>
     </decisions>
-    <description>All countries. Daily scheduled evaluation of open opportunities by inactivity, measured on LastActivityDate (falls back to CreatedDate when no activity exists; the standard field already counts scheduled follow-up events). At daysToAlert days it creates a single warning task for the owner (deduplicated by subject); at daysToClose days it closes the opportunity as lost. The close reason value from the closure user story must be added to the update element once its field API name is confirmed. Parameters are flow constants so business refinement can tune them without redesign. Origin: automatic closure by inactivity user story (draft under admission).</description>
+    <description>All countries. Daily scheduled evaluation of open opportunities by inactivity, measured on LastActivityDate (falls back to CreatedDate when no activity exists; the standard field already counts scheduled follow-up events). At the configured alert threshold it creates a single warning task for the owner (deduplicated by subject); at the configured close threshold it closes the opportunity as lost. The close reason value from the closure user story must be added to the update element once its field API name is confirmed. All parameters (days, lost stage, texts, close reason value) live in the InactivityPolicy custom metadata type: the business tunes them per environment in Setup without redeploying the flow. If no policy record exists the flow safely does nothing. Origin: automatic closure by inactivity user story (draft under admission).</description>
     <environments>Default</environments>
     <formulas>
         <name>daysInactive</name>
@@ -98,7 +70,7 @@
     <formulas>
         <name>plannedCloseDate</name>
         <dataType>Date</dataType>
-        <expression>TODAY() + ({!daysToClose} - {!daysInactive})</expression>
+        <expression>TODAY() + ({!GetInactivityPolicy.DaysToClose__c} - {!daysInactive})</expression>
     </formulas>
     <interviewLabel>Close Inactive Opportunities {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Close Inactive Opportunities</label>
@@ -123,7 +95,7 @@
         <inputAssignments>
             <field>Subject</field>
             <value>
-                <elementReference>alertTaskSubject</elementReference>
+                <elementReference>GetInactivityPolicy.AlertTaskSubject__c</elementReference>
             </value>
         </inputAssignments>
         <inputAssignments>
@@ -184,6 +156,19 @@
         <object>Task</object>
     </recordCreates>
     <recordLookups>
+        <name>GetInactivityPolicy</name>
+        <label>Get Records: Get Inactivity Policy</label>
+        <locationX>176</locationX>
+        <locationY>179</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>EvaluateInactivity</targetReference>
+        </connector>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>InactivityPolicy__mdt</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>GetExistingAlertTask</name>
         <label>Get Records: Get Existing Alert Task</label>
         <locationX>264</locationX>
@@ -204,7 +189,7 @@
             <field>Subject</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>alertTaskSubject</elementReference>
+                <elementReference>GetInactivityPolicy.AlertTaskSubject__c</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
@@ -222,7 +207,7 @@
         <inputAssignments>
             <field>StageName</field>
             <value>
-                <elementReference>lostStageName</elementReference>
+                <elementReference>GetInactivityPolicy.LostStageName__c</elementReference>
             </value>
         </inputAssignments>
         <inputReference>$Record</inputReference>
@@ -231,7 +216,7 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>EvaluateInactivity</targetReference>
+            <targetReference>GetInactivityPolicy</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
