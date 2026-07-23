@@ -9,10 +9,10 @@ configuración no viajan en deploys — es el comportamiento normal de la plataf
 
 | Componente | Tipo de metadato | Estado |
 |---|---|---|
-| Campos custom en Appraisal: Multas_Esquelas__c, Gravamenes__c, Procesos_Judiciales__c, Motivo_Rechazo__c | CustomField | **EN PAQUETE** (carpeta paquete/, zip HU036_paquete_v1.zip) |
-| Field History Tracking de los campos custom | CustomField (trackHistory=true) | **EN PAQUETE** (embebido en cada campo) |
+| Campos custom en Appraisal: Multas_Esquelas__c, Gravamenes__c, Procesos_Judiciales__c, Motivo_Rechazo__c | CustomField | **DESPLEGADO en DEV 23/07** (paquete v2, deploy success:true) |
+| Field History Tracking de los campos custom | CustomField (trackHistory=true) | **DESPLEGADO en DEV 23/07** (embebido; el org aceptó trackHistory — history del objeto ya habilitado) |
 | Field History Tracking de campos estándar (Appraisal.Status; AppraisalItem.InitialValue) | Configuración por ambiente | Runbook 2.4b (Set History Tracking en Object Manager) |
-| Permission Set GQ_Avaluo_Appraisal (objetos de la familia + 4 campos) | PermissionSet | **EN PAQUETE** |
+| Permission Set GQ_Avaluo_Appraisal (Read Opportunity + familia Appraisal + 4 campos) | PermissionSet | **DESPLEGADO en DEV 23/07** (Id DEV: 0PSWK000001BerB4AS) |
 | Lightning Record Page del Appraisal | FlexiPage | Pendiente |
 | Acción "Request an Appraisal" en Opportunity (layout) | QuickAction + Layout | Pendiente |
 | Flow: notificación al proveedor externo | Flow | Pendiente |
