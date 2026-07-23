@@ -3,11 +3,10 @@ import VentaGuiadaModal from 'c/ventaGuiadaModal';
 
 /**
  * All countries. Headless quick action: opens the guided-selling experience in
- * a LARGE LightningModal (modern modal API) so the flow has real screen space.
- * The step-by-step lives in ventaGuiadaModal; secondary confirmations open as
- * stacked modals from inside it.
+ * a LARGE LightningModal. Replaces the earlier screen-action launcher (the
+ * platform does not allow changing an action component type in place).
  */
-export default class VentaGuiadaAction extends LightningElement {
+export default class VentaGuiadaLauncher extends LightningElement {
     @api recordId;
 
     @api invoke() {

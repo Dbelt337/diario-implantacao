@@ -12,7 +12,7 @@
         <name>ApexClass</name>
     </types>
     <types>
-        <members>ventaGuiadaAction</members>
+        <members>ventaGuiadaLauncher</members>
         <members>ventaGuiadaModal</members>
         <members>cotizacionConfirmModal</members>
         <members>ventaVehiculo</members>
@@ -26,7 +26,7 @@
         <name>CustomObject</name>
     </types>
     <types>
-        <members>Opportunity.VentaGuiada</members>
+        <members>Opportunity.VentaGuiadaModal</members>
         <name>QuickAction</name>
     </types>
     <version>63.0</version>
