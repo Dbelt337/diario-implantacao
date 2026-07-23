@@ -67,7 +67,7 @@ en cada ambiente se crean nuevos.
       valuadores reales al llegar el insumo; no desplegar el recurso de prueba.
 
 ### 2.4 Valores de picklist (por ambiente, vía Object Manager)
-- [x] Appraisal.PurposeType: Trade-In (nativo restrito, ya venia de fabrica)
+- [x] DEV 23/07: Appraisal.PurposeType: Trade-In (OJO: en este org el picklist vino VACIO — sembrar el valor en cada ambiente, la doc lo describia como restricto de fabrica)
 - [x] DEV 23/07: Appraisal.Status: Agendado | Realizado | Aceptado | Rechazado
 - [ ] AppraisalAdjustment.Type: Deducción | Excepción
 - [ ] AppraisalItemProviderVal.ProviderName: PRU
