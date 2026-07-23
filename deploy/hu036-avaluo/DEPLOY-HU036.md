@@ -86,7 +86,13 @@ en cada ambiente se crean nuevos.
       (Los 4 campos custom ya llevan trackHistory en el paquete.)
 
 ### 2.5 Datos de la matriz PRU
-- [ ] Carga del CSV en la Decision Matrix (nueva versión por actualización).
+- [x] DEV 23/07: matriz "PRU Valor Referencia" creada (Lookup Tables / BRE),
+      columnas Pais/Marca/Modelo/Anio (Input, Text) + ValorReferencia (Output,
+      Currency); 12 filas de prueba cargadas por CSV
+      (PRU_Valor_Referencia_carga_DEV.csv). PENDIENTE: activar la versión V1.
+      Nota: los valores se leen en CRC (moneda default) — confirmar con Grupo Q
+      si el PRU real viene en colones o USD (pregunta del insumo).
+- [ ] Carga del CSV REAL en la Decision Matrix (nueva versión por actualización).
       La DEFINICIÓN de la matriz va como metadato (sección 1); las FILAS/versiones
       se cargan por CSV en cada ambiente (o solo en PROD, según gobernanza del dato).
 
