@@ -9,6 +9,8 @@
             <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
                 <lightning-progress-step label="Vehículo" value="seleccion"></lightning-progress-step>
                 <lightning-progress-step label="Precio y stock" value="precio"></lightning-progress-step>
+                <lightning-progress-step label="Descuentos" value="descuento"></lightning-progress-step>
+                <lightning-progress-step label="Pago" value="pago"></lightning-progress-step>
                 <lightning-progress-step label="Cotización" value="cotizacion"></lightning-progress-step>
             </lightning-progress-indicator>
 
@@ -77,6 +79,125 @@
                             </div>
                         </lightning-layout-item>
                     </lightning-layout>
+                </template>
+
+                <template lwc:if={isStepDescuento}>
+                    <lightning-layout multiple-rows>
+                        <lightning-layout-item size="7" padding="around-small">
+                            <div class="slds-box slds-box_small">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">Descuento comercial</h3>
+                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                    <span>Total de referencia</span>
+                                    <span class="slds-text-title_bold">{totalReferenciaFmt}</span>
+                                </div>
+                                <lightning-input type="number" label="Descuento solicitado (CRC)"
+                                    value={descuento} formatter="decimal" step="1000" min="0"
+                                    onchange={handleDescuentoChange} class="slds-m-vertical_small"></lightning-input>
+                                <p class="slds-text-body_small slds-m-bottom_small">
+                                    Descuento máximo sin aprobación (hasta el precio mínimo): <strong>{maxDescuentoDirectoFmt}</strong>
+                                </p>
+                                <template lwc:if={descuentoDentroDelMargen}>
+                                    <lightning-badge label="Dentro del margen de la sucursal — se aplica directo" class="slds-theme_success"></lightning-badge>
+                                </template>
+                                <template lwc:if={descuentoPendiente}>
+                                    <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
+                                        El descuento supera el precio mínimo en {excesoSobreMinimoFmt} — requiere aprobación del Gerente de Sucursal.
+                                    </div>
+                                    <lightning-button label="Enviar a aprobación" variant="brand" onclick={handleEnviarAprobacion}></lightning-button>
+                                </template>
+                                <template lwc:if={descuentoAprobado}>
+                                    <lightning-badge label="Aprobado por Gerente de Sucursal (simulado)" class="slds-theme_success"></lightning-badge>
+                                </template>
+                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row slds-m-top_small">
+                                    <span class="slds-text-heading_small">Total con descuento</span>
+                                    <span class="slds-text-heading_small">{totalConDescuentoFmt}</span>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="5" padding="around-small">
+                            <div class="slds-box slds-box_small">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">Cómo funciona en real</h3>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Precio mínimo por modelo/versión: <strong>Decision Matrix (BRE)</strong>, mantenida por el negocio — nunca en Apex.
+                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Descuento dentro del margen: se aplica directo y queda trazado en la cotización.
+                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Debajo del precio mínimo: <strong>Approval Process nativo</strong> con el Gerente de Sucursal; el vendedor no avanza sin la aprobación.
+                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Programas de descuento y protección de precio: <strong>Rebate Management / Price Protection</strong> (licenciados).
+                                </p>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+
+                <template lwc:if={isStepPago}>
+                    <div class="slds-box slds-box_small slds-m-bottom_small">
+                        <lightning-radio-group name="formaPago" label="Forma de pago"
+                            options={formaPagoOptions} value={formaPago} type="radio"
+                            onchange={handleFormaPagoChange}></lightning-radio-group>
+                    </div>
+                    <template lwc:if={isContado}>
+                        <div class="slds-box slds-box_small">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">Pago de contado</h3>
+                            <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row">
+                                <span class="slds-text-heading_small">Total a pagar</span>
+                                <span class="slds-text-heading_small">{totalConDescuentoFmt}</span>
+                            </div>
+                            <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
+                                Real: la forma de pago queda en la cotización; el precio definitivo lo certifica SAP al facturar.
+                            </p>
+                        </div>
+                    </template>
+                    <template lwc:if={isFinanciado}>
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="6" padding="around-small">
+                                <div class="slds-box slds-box_small">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Condiciones (simulación comercial)</h3>
+                                    <lightning-input type="number" label="Prima (CRC) — sugerida 30%"
+                                        value={primaValue} formatter="decimal" step="100000" min="0"
+                                        onchange={handlePrimaChange} class="slds-m-bottom_small"></lightning-input>
+                                    <lightning-combobox label="Plazo" options={plazoOptions} value={plazo}
+                                        onchange={handlePlazoChange} class="slds-m-bottom_small"></lightning-combobox>
+                                    <p class="slds-text-body_small">Tasa: <strong>{tasaReferenciaFmt}</strong></p>
+                                </div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" padding="around-small">
+                                <div class="slds-box slds-box_small">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Cálculo estimado</h3>
+                                    <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                        <span>Total con descuento</span>
+                                        <span class="slds-text-title_bold">{totalConDescuentoFmt}</span>
+                                    </div>
+                                    <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                        <span>Prima</span>
+                                        <span class="slds-text-title_bold">- {primaFmt}</span>
+                                    </div>
+                                    <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                        <span>Monto a financiar</span>
+                                        <span class="slds-text-title_bold">{montoFinanciadoFmt}</span>
+                                    </div>
+                                    <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row">
+                                        <span class="slds-text-heading_small">Cuota mensual estimada</span>
+                                        <span class="slds-text-heading_small">{cuotaMensualFmt}</span>
+                                    </div>
+                                    <div class="slds-m-top_small">
+                                        <lightning-button label="Llamar al flujo del financiero (CrediQ)" variant="brand"
+                                            onclick={handleLlamarFinanciero} disabled={solicitudFinancieroEnviada}></lightning-button>
+                                    </div>
+                                    <template lwc:if={solicitudFinancieroEnviada}>
+                                        <lightning-badge label="Solicitud enviada — En análisis (simulado)" class="slds-m-top_small"></lightning-badge>
+                                    </template>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak slds-p-horizontal_small">
+                            Real: esta pantalla solo LLAMA al flujo de la frente financiera (CrediQ) con vehículo, prima y plazo; tasas, seguros y aprobación crediticia se resuelven allá. La cuota mostrada es una referencia comercial, no una oferta de crédito.
+                        </p>
+                    </template>
                 </template>
 
                 <template lwc:if={isStepCotizacion}>

@@ -15,6 +15,7 @@
         <members>ventaGuiadaLauncher</members>
         <members>ventaGuiadaModal</members>
         <members>cotizacionConfirmModal</members>
+        <members>aprobacionDescuentoModal</members>
         <members>ventaVehiculo</members>
         <members>ventaUsados</members>
         <members>contraventaRepuestos</members>
