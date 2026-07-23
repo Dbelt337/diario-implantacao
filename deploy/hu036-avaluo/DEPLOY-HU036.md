@@ -46,10 +46,14 @@ en cada ambiente se crean nuevos.
 - [x] DEV: reuso del Service Territory de la sucursal (0HhWK000000Poxh0AC,
       "GQ TD Sucursal Central"); pendiente rename a "GQ Sucursal Central"
       (coordinar con el dueño del Test Drive).
-- [ ] Vincular Work Type Avalúo al territory (ServiceTerritoryWorkType).
+- [x] DEV: Work Type Avalúo vinculado al territory (ServiceTerritoryWorkType
+      Id DEV: 0VEWK00000019R34AI).
 - [ ] Service Resources de los valuadores reales + ServiceTerritoryMember
       (+ Operating Hours propias si difieren de la sucursal). INSUMO Grupo Q.
-- [ ] Recurso de prueba de DEV (si se creó) se desactiva antes de UAT.
+- [x] DEV: recurso de prueba = Service Resource existente del Test Drive
+      ("Diego Beltrao", 0HnWK000000MMGP0A4, ya miembro del territory
+      0HuWK000000ItUH0A0 — reutilizado, nada creado). Sustituir por los
+      valuadores reales al llegar el insumo; no desplegar el recurso de prueba.
 
 ### 2.4 Valores de picklist (por ambiente, vía Object Manager)
 - [ ] Appraisal.PurposeType: Trade-In
