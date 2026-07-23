@@ -13,6 +13,7 @@
     </types>
     <types>
         <members>AppraisalItemAfterHandler</members>
+        <members>AppraisalAfterHandler</members>
         <name>Flow</name>
     </types>
     <version>63.0</version>
