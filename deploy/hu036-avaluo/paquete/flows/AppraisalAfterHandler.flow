@@ -47,12 +47,34 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>SendProviderEmail</targetReference>
+                <targetReference>GetExistingNoticeTask</targetReference>
             </connector>
             <label>Email Available</label>
         </rules>
     </decisions>
-    <description>All countries. After-save handler for the Appraisal object (used-vehicle trade-in). Current branch: when the appraiser assigned is a Contact (external provider per the business rules), sends the notification email with the customer intent and logs a task on the related Opportunity for traceability. The notification text is a placeholder until the business provides the final wording. Future branches of this same handler: acceptance/rejection closure once the quote consumption design is settled. Origin: used-vehicle trade-in appraisal user story (external provider notification).</description>
+    <decisions>
+        <name>NoticeAlreadySent</name>
+        <label>Decision: Notice Already Sent?</label>
+        <locationX>176</locationX>
+        <locationY>359</locationY>
+        <defaultConnectorLabel>Notice Exists</defaultConnectorLabel>
+        <rules>
+            <name>NoNoticeYet</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetExistingNoticeTask</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>SendProviderEmail</targetReference>
+            </connector>
+            <label>No Notice Yet</label>
+        </rules>
+    </decisions>
+    <description>All countries. After-save handler for the Appraisal object (used-vehicle trade-in). Current branch: when the appraiser assigned is a Contact (external provider per the business rules; detection by Contact lookup — internal appraisers are Users and end the flow silently), sends the notification email once per opportunity (deduplicated by the traceability task) with the customer intent and logs a task on the related Opportunity for traceability. The notification text is a placeholder until the business provides the final wording. Future branches of this same handler: acceptance/rejection closure once the quote consumption design is settled. Origin: used-vehicle trade-in appraisal user story (external provider notification).</description>
     <environments>Default</environments>
     <interviewLabel>Appraisal After Handler {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Appraisal After Handler</label>
@@ -101,6 +123,34 @@
         <object>Task</object>
     </recordCreates>
     <recordLookups>
+        <name>GetExistingNoticeTask</name>
+        <label>Get Records: Get Existing Notice</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>NoticeAlreadySent</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WhatId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ReferenceRecordId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Subject</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Aviso enviado al proveedor externo del avalúo</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>GetProviderContact</name>
         <label>Get Records: Get Provider Contact</label>
         <locationX>176</locationX>
@@ -127,7 +177,14 @@
         <connector>
             <targetReference>GetProviderContact</targetReference>
         </connector>
-        <filterFormula>BEGINS(TEXT({!$Record.AppraisedById}), "003") &amp;&amp; (ISNEW() || ISCHANGED({!$Record.AppraisedById}))</filterFormula>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>AppraisedById</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
         <object>Appraisal</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
