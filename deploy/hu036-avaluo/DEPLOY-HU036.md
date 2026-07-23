@@ -15,7 +15,7 @@ configuración no viajan en deploys — es el comportamiento normal de la plataf
 | Permission Set AppraisalManagement "Gestión de Avalúos" (Read Opportunity + familia Appraisal + 4 campos) | PermissionSet | **DESPLEGADO en DEV 23/07** (Id DEV: 0PSWK000001Bfs54AC; GQ_Avaluo_Appraisal eliminado) |
 | Lightning Record Page del Appraisal | FlexiPage | Pendiente |
 | Acción "Request an Appraisal" en Opportunity (layout) | QuickAction + Layout | Pendiente |
-| Flow: notificación al proveedor externo | — | CANCELADO 23/07 (decisión: sin flows nuevos; el asesor notifica por correo — procedimiento) |
+| Flow: Appraisal After Handler (notificación al proveedor externo por email + task de trazabilidad) | Flow | **DESPLEGADO en DEV 23/07** como Draft (paquete v5, Id DEV: 301WK00002TtMJLYA3; deteccion del proveedor por lookup de Contact, dedupe por task). PENDIENTE: activar + prueba con Contact + texto oficial del insumo |
 | Flow: Appraisal Item After Handler (búsqueda del PRU -> ProviderVal + InitialValue) | Flow | **DESPLEGADO en DEV 23/07** como Draft (Id DEV: 301WK00002Tt7brYAB; actionType runDecisionMatrix, action PRU_Valor_Referencia). ACTIVADO y PROBADO end-to-end 23/07 (item Toyota/Corolla/2020 -> ProviderVal PRU + InitialValue 14.500 + FinalValue calculado) |
 | Flow: cierre del avalúo (Aceptado -> Opportunity) | — | CANCELADO 23/07 (decisión: proceso nativo — valuador actualiza Status, asesor aplica el trade-in en la cotización) |
 | Flow: Appraisal Adjustment Before Handler | — | CANCELADO 23/07 (decisión: procedimiento — el usuario selecciona Approved al crear; capacitación + help text) |
