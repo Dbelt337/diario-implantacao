@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>SapInventoryService</members>
+        <members>SapInventoryServiceTest</members>
+        <members>PricingService</members>
+        <members>QuoteOrderService</members>
+        <members>SapOrderService</members>
+        <members>MaterialSearchService</members>
+        <members>VentasTestDataFactory</members>
+        <members>SapCalloutMockFactory</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>ventaGuiadaAction</members>
+        <members>ventaVehiculo</members>
+        <members>ventaUsados</members>
+        <members>contraventaRepuestos</members>
+        <members>ventaPA</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>SapOrderResponse__e</members>
+        <name>CustomObject</name>
+    </types>
+    <version>63.0</version>
+</Package>
