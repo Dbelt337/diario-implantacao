@@ -212,3 +212,31 @@ Comentários nativos (as notas do assessor de piso).
 
 Familia confirmada: Appraisal (ok) + AppraisalItem (ok) + AppraisalAdjustment (ok).
 Pendentes: AppraisalItemProviderVal e AppraisalItemAddOn (paginas ou describe T02).
+
+## DESCRIBE da org (23/07) — familia COMPLETA ativa; ProviderVal fechado
+
+- TODOS os objetos createable=true no DevSales: Appraisal (25), AppraisalItem (52),
+  AppraisalItemAddon (14), AppraisalItemProviderVal (18), AppraisalAdjustment (18).
+  T01 evidenciado (familia habilitada); T02 concluido.
+- AppraisalComment NAO existe como objeto nesta org — usar o campo Appraisal.Comment
+  (textarea) para as notas. Corrigir na planilha (T16 mencionava AppraisalComment).
+- FORMULAS confirmadas na org: FinalAppraisalValue, TotalItemFinalValue,
+  TotalAdjustmentValue (Appraisal) e FinalValue (Item) — updateable=false.
+- Appraisal.UsageType e OBRIGATORIO no create (valor: Automotive).
+
+### AppraisalItemProviderVal — desenho fechado
+- ProviderName e PICKLIST OBRIGATORIO (nao lookup!) — o provedor PRU vira um VALOR
+  de picklist. ValuationDateTime obrigatorio.
+- TRES valores por condicao: CleanConditionValue / AverageConditionValue /
+  RoughConditionValue — espelho do padrao blue book e simetrico ao
+  AppraisalItem.ConditionType (Best/Better/Good ~ Clean/Average/Rough).
+- Fluxo do PRU: matriz devolve o(s) valor(es) -> Flow cria ProviderVal
+  (ProviderName=PRU, ValuationDateTime=agora, valores por condicao) e grava
+  AppraisalItem.InitialValue (+ avaliar InitialValueLogic, picklist existente).
+- PERGUNTA NOVA para o GrupoQ: o PRU deles tem valor UNICO ou por condicao
+  (limpio/promedio/rough)? Define quantas colunas de saida a matriz tera.
+
+### Pendencia final (unica): valores e editabilidade dos picklists
+MakeName/ModelName/ModelYear/Trim/ExteriorColor/ConditionType (Item),
+ProviderName (ProviderVal), InitialValueLogic, Status (Appraisal) — rodar o
+mini-describe de valores ou conferir no Object Manager se aceitam valores novos.
