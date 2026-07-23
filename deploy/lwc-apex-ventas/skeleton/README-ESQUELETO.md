@@ -46,3 +46,15 @@ y la assetizacion son nativos; las reglas viven en el BRE.
 2. Contrato JSON definitivo del Mule (campos del request/response).
 3. Invocacion del BRE desde Apex para PricingService (o mover esa lectura a
    la LWC via flow/action segun rendimiento).
+
+## Publicacion del boton "Venta guiada"
+- La pagina "GQ Opportunity - Retail" usa ACCIONES DINAMICAS en el Highlights
+  Panel (App Builder > Highlights Panel > Actions) — el boton se agrega/quita
+  ahi, no en el page layout clasico.
+- Al reemplazar una quick action (borrado + recreacion), la referencia vieja
+  en el Highlights Panel queda rota ("Highlights Panel is invalid"): quitar la
+  entrada muerta con la X, Add Action con la nueva y Save.
+- El launcher actual es headless: el click abre directamente el LightningModal
+  grande (ventaGuiadaModal) con el step-by-step; el sub-modal de confirmacion
+  (cotizacionConfirmModal) demuestra el patron de modales apilados.
+
