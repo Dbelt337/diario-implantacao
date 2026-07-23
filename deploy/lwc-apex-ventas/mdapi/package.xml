@@ -23,5 +23,9 @@
         <members>SapOrderResponse__e</members>
         <name>CustomObject</name>
     </types>
+    <types>
+        <members>Opportunity.VentaGuiada</members>
+        <name>QuickAction</name>
+    </types>
     <version>63.0</version>
 </Package>

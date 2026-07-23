@@ -1,14 +1,17 @@
 import { LightningElement, api, wire } from 'lwc';
+import { CloseActionScreenEvent } from 'lightning/actions';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import RECORD_TYPE_NAME from '@salesforce/schema/Opportunity.RecordType.DeveloperName';
 
 /**
- * All countries. Parent screen action for guided selling: routes to the
- * business-line child component by Record Type and context. Thin by design —
- * every rule and callout lives in the Apex service layer.
+ * All countries. Screen quick action for guided selling: the platform opens it
+ * in a modal; the component walks the seller through the guided steps and
+ * routes the business-line UI by Record Type. Thin by design — every rule and
+ * callout lives in the Apex service layer.
  */
 export default class VentaGuiadaAction extends LightningElement {
     _recordId;
+    currentStep = 'seleccion';
 
     // recordId arrives via setter, not in connectedCallback (GUIA note)
     @api
@@ -37,5 +40,41 @@ export default class VentaGuiadaAction extends LightningElement {
     }
     get isVentaPA() {
         return this.recordTypeDeveloperName === 'VentaPA';
+    }
+
+    get isStepSeleccion() {
+        return this.currentStep === 'seleccion';
+    }
+    get isStepPrecio() {
+        return this.currentStep === 'precio';
+    }
+    get isStepCotizacion() {
+        return this.currentStep === 'cotizacion';
+    }
+    get isFirstStep() {
+        return this.currentStep === 'seleccion';
+    }
+    get isLastStep() {
+        return this.currentStep === 'cotizacion';
+    }
+
+    handleNext() {
+        if (this.currentStep === 'seleccion') {
+            this.currentStep = 'precio';
+        } else if (this.currentStep === 'precio') {
+            this.currentStep = 'cotizacion';
+        }
+    }
+
+    handleBack() {
+        if (this.currentStep === 'cotizacion') {
+            this.currentStep = 'precio';
+        } else if (this.currentStep === 'precio') {
+            this.currentStep = 'seleccion';
+        }
+    }
+
+    handleCancel() {
+        this.dispatchEvent(new CloseActionScreenEvent());
     }
 }
