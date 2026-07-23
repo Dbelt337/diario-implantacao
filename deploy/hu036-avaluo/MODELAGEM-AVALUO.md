@@ -195,3 +195,20 @@ Comentários nativos (as notas do assessor de piso).
   legais no Appraisal (multas/gravames/judicial).
 - Pendente: pagina do AppraisalItemProviderValuation (papel: registrar a avaliacao
   por provedor; o valor operacional preliminar ja tem casa no InitialValue).
+
+## AppraisalAdjustment — Object Reference oficial (23/07)
+
+- **AdjustedById polimorfico: Contact ou User** — a traça de "quem ajustou" e nativa
+  (deducao do valuador = User; se um dia o externo ajustar, Contact).
+- **AdjustmentValue: currency positivo OU negativo** — cobre deducoes (negativas) e
+  excecoes do gerente para cima (positivas). Type restrito: Negative | Positive.
+- **Master-detail com Appraisal + lookup opcional a AppraisalItem** — ajuste pode ser
+  do avaluo inteiro ou de um item; alimenta os TotalAdjustmentValue calculados.
+- **Status RESTRITO nativo: Approved | InReview | Rejected** — a HU diz "sem
+  aprovacao formal", entao os ajustes nascem Approved; MAS se o GrupoQ um dia
+  quiser aprovacao do gerente para excecoes acima de um teto, o workflow ja existe
+  de fabrica (so adicionar um Flow que poe InReview) — future-proof sem custo.
+- Description livre para o motivo de cada deducao.
+
+Familia confirmada: Appraisal (ok) + AppraisalItem (ok) + AppraisalAdjustment (ok).
+Pendentes: AppraisalItemProviderVal e AppraisalItemAddOn (paginas ou describe T02).
