@@ -1,0 +1,13 @@
+<template>
+    <lightning-modal-header label="Confirmar cotización"></lightning-modal-header>
+    <lightning-modal-body>
+        <p class="slds-p-around_small">
+            ¿Crear la cotización con el total de referencia de <strong>CRC 24.631.000</strong>
+            (incluye el trade-in del avalúo aceptado)?
+        </p>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Volver" onclick={handleCancel} class="slds-m-right_x-small"></lightning-button>
+        <lightning-button label="Crear cotización" variant="brand" onclick={handleConfirm}></lightning-button>
+    </lightning-modal-footer>
+</template>

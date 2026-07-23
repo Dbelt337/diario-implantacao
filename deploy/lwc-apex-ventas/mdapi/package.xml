@@ -13,6 +13,8 @@
     </types>
     <types>
         <members>ventaGuiadaAction</members>
+        <members>ventaGuiadaModal</members>
+        <members>cotizacionConfirmModal</members>
         <members>ventaVehiculo</members>
         <members>ventaUsados</members>
         <members>contraventaRepuestos</members>

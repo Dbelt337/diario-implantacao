@@ -1,0 +1,17 @@
+.modal-body {
+    min-height: 60vh;
+}
+.selected-row {
+    background-color: #f3f9ff;
+    outline: 2px solid #0176d3;
+}
+tbody tr {
+    cursor: pointer;
+}
+.line-row {
+    border-bottom: 1px solid #f3f3f3;
+}
+.total-row {
+    border-top: 2px solid #0176d3;
+    margin-top: 0.25rem;
+}
