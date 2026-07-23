@@ -9,14 +9,14 @@ configuración no viajan en deploys — es el comportamiento normal de la plataf
 
 | Componente | Tipo de metadato | Estado |
 |---|---|---|
-| Campos custom en Appraisal: TrafficFines__c, Liens__c, LegalProceedings__c, RejectionReason__c (labels en español; API en inglés por la GRPQM Naming Convention) | CustomField | **EN PAQUETE v3** (reemplazan a los 4 nombres antiguos en español, eliminados vía destructiveChangesPost) |
+| Campos custom en Appraisal: TrafficFines__c, Liens__c, LegalProceedings__c, RejectionReason__c (labels en español; API en inglés por la GRPQM Naming Convention) | CustomField | **DESPLEGADO en DEV 23/07** (paquete v4; los 4 nombres antiguos en español eliminados en el mismo deploy) |
 | Field History Tracking de los campos custom | CustomField (trackHistory=true) | **DESPLEGADO en DEV 23/07** (embebido; el org aceptó trackHistory — history del objeto ya habilitado) |
 | Field History Tracking de campos estándar (Appraisal.Status; AppraisalItem.InitialValue) | Configuración por ambiente | Runbook 2.4b (Set History Tracking en Object Manager) |
-| Permission Set AppraisalManagement "Gestión de Avalúos" (Read Opportunity + familia Appraisal + 4 campos) | PermissionSet | **EN PAQUETE v3** (reemplaza a GQ_Avaluo_Appraisal — quitar la asignación del PS viejo ANTES del deploy) |
+| Permission Set AppraisalManagement "Gestión de Avalúos" (Read Opportunity + familia Appraisal + 4 campos) | PermissionSet | **DESPLEGADO en DEV 23/07** (Id DEV: 0PSWK000001Bfs54AC; GQ_Avaluo_Appraisal eliminado) |
 | Lightning Record Page del Appraisal | FlexiPage | Pendiente |
 | Acción "Request an Appraisal" en Opportunity (layout) | QuickAction + Layout | Pendiente |
 | Flow: notificación al proveedor externo | Flow | Pendiente |
-| Flow: Appraisal Item After Handler (búsqueda del PRU -> ProviderVal + InitialValue) | Flow | **EN PAQUETE v3** (se despliega como Draft; revisar y activar en Flow Builder) |
+| Flow: Appraisal Item After Handler (búsqueda del PRU -> ProviderVal + InitialValue) | Flow | **DESPLEGADO en DEV 23/07** como Draft (Id DEV: 301WK00002Tt7brYAB; actionType runDecisionMatrix, action PRU_Valor_Referencia). PENDIENTE: activar + prueba end-to-end |
 | Flow: cierre del avalúo (Aceptado -> Opportunity) + ramo de rechazo | Flow | Pendiente |
 | Decision Matrix PRU_ValorReferencia (definición) | DecisionMatrixDefinition (+ Version) | Pendiente |
 ### 1.1 Cómo desplegar el paquete (Workbench — cualquier ambiente)
@@ -89,7 +89,7 @@ en cada ambiente se crean nuevos.
 - [x] DEV 23/07: matriz "PRU Valor Referencia" creada (Lookup Tables / BRE),
       columnas Pais/Marca/Modelo/Anio (Input, Text) + ValorReferencia (Output,
       Currency); 12 filas de prueba cargadas por CSV
-      (PRU_Valor_Referencia_carga_DEV.csv). PENDIENTE: activar la versión V1.
+      (PRU_Valor_Referencia_carga_DEV.csv). Version V1 ACTIVADA 23/07 (accion runDecisionMatrix/PRU_Valor_Referencia publicada).
       Nota: los valores se leen en CRC (moneda default) — confirmar con Grupo Q
       si el PRU real viene en colones o USD (pregunta del insumo).
 - [ ] Carga del CSV REAL en la Decision Matrix (nueva versión por actualización).
