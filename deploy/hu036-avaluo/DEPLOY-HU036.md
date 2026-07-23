@@ -57,6 +57,15 @@ en cada ambiente se crean nuevos.
   DEV 23/07: escala PROVISORIA sembrada: Bueno | Promedio | Malo (reemplazar
   con la escala real del insumo).
 - Appraisal.PurposeType obligatorio y el picklist vino vacio (sembrar Trade-In).
+- REGLA DE CALCULO (probado 23/07): un AppraisalAdjustment SOLO computa en los
+  totales cuando Status = Approved (sin status o InReview NO afecta el valor).
+  Proceso: la deduccion del valuador nace Approved (HU: sin aprobacion formal);
+  excepciones futuras pueden nacer InReview (no mueven el valor hasta aprobar).
+- COMPOSICION de totales (probado por SOQL): ajuste VINCULADO a un item computa
+  via FinalValue del item -> TotalItemFinalValue; TotalAdjustmentValue del
+  Appraisal suma solo ajustes SIN item. FinalAppraisalValue = suma de ambos.
+- El objeto Appraisal no expone campo Name en SOQL (autonumber con otro API
+  name); consultar por Id.
 
 ### 2.2 Unidad de medida
 - [x] DEV: registro UnitOfMeasure Name="Kilómetros", UnitCode="km"

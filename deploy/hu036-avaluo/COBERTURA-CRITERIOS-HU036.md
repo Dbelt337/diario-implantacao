@@ -14,7 +14,7 @@ INSUMO (bloqueado por dato del Grupo Q) · OTRA FRENTE (dependencia externa).
 | 6 | Resultado en familia nativa Appraisal relacionada a la Opportunity | PROBADO 23/07 | APL-000000002 con ReferenceRecord = Opportunity |
 | 7 | FinalAppraisalValue calculado nativamente (no se digita) | PROBADO 23/07 | Final Value CRC 14.500 calculado por formula (updateable=false) |
 | 8 | PRU registrado en AppraisalItemProviderVal, tabla maestra por país | PROBADO 23/07 (estructura) | AIP-000000001 creado por el Flow; matriz con columna Pais. Carga REAL = INSUMO (archivo PRU + moneda + unico/por condicion) |
-| 9 | Deducciones/excepciones = AppraisalAdjustment con traza, sin aprobación | PROBADO 23/07 | Ajuste Deducción CRC -500 en APL-000000002 con CreatedBy (traza nativa); recalculo del FinalAppraisalValue a 14.000 verificado en el header |
+| 9 | Deducciones/excepciones = AppraisalAdjustment con traza, sin aprobación | PROBADO 23/07 | Ajuste Deducción CRC -500 con CreatedBy (traza nativa); FinalAppraisalValue recalculado a 14.000 (SOQL 23/07). Hallazgo: el ajuste solo computa con Status=Approved |
 | 10 | Indicadores legales como campos custom + notas en Appraisal.Comment | LISTO PARA PROBAR | 4 campos desplegados (paquete v4, naming GRPQM). Exponer en la Lightning Page (v5) y probar |
 | 11 | Al finalizar, Flow actualiza automáticamente la Opportunity | EN CONSTRUCCION (v5, Flow 3) | Decisión de modelado pendiente: campo destino del trade-in en Opportunity/Quote |
 | 12 | Otra sucursal: ST correspondiente, Owner no cambia, Opportunity Team | LISTO PARA PROBAR (diseño) | Owner inmutable es comportamiento estándar; prueba completa requiere un segundo territory (o el de otra sucursal real) |
