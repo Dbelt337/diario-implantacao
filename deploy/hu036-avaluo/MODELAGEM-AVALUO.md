@@ -240,3 +240,30 @@ Pendentes: AppraisalItemProviderVal e AppraisalItemAddOn (paginas ou describe T0
 MakeName/ModelName/ModelYear/Trim/ExteriorColor/ConditionType (Item),
 ProviderName (ProviderVal), InitialValueLogic, Status (Appraisal) — rodar o
 mini-describe de valores ou conferir no Object Manager se aceitam valores novos.
+
+## PICKLISTS DA ORG (23/07) — desenho FECHADO, zero restricao de negocio
+
+- ABERTOS e vazios (restricted=false — GrupoQ define os valores): PurposeType,
+  Appraisal.Status, MakeName, ModelName, ModelYear, Trim, ExteriorColor,
+  ConditionType, OwnershipType, InitialValueLogic, ProviderName,
+  AppraisalAdjustment.Type, RegistrationState.
+  -> A escala de condicao do GrupoQ entra COMO ELES USAM (sem mapear em
+  Best/Better/Good); qualquer marca em MakeName; ProviderName recebe "PRU".
+- Restritos (e adequados): UsageType = Automotive | Lending (usar Automotive);
+  AppraisalItem.Type = Vehicle | Asset | PartyFinancialAsset (usar Vehicle);
+  CountryCode = CR | SV | GT | HN | NI | PA (os seis paises do grupo — dimensao
+  pais pronta); AppraisalAdjustment.Status = InReview | Approved | Rejected.
+- ALERTA de ambiente: CurrencyIsoCode restrito com SO CRC ativa no DevSales.
+  O modelo de precos preve USD (lista em USD, exibicao em colones) — ativar USD
+  nas moedas da org (Setup > Company Information > Currency) antes dos testes
+  de preco/avaluo em dolares.
+
+Semeadura de valores (tarefa de config da Fase 2):
+- PurposeType: Trade-In (e Venta se aplicar)
+- Appraisal.Status: Agendado | Realizado | Aceptado | Rechazado
+- ConditionType: escala do GrupoQ (pedir — insumo)
+- MakeName/ModelName/ModelYear/Trim/ExteriorColor: listas do GrupoQ (alinhar com
+  os picklists do Vehicle para nao criar duas taxonomias)
+- ProviderName: PRU
+- AppraisalAdjustment.Type: Deduccion | Excepcion
+- InitialValueLogic: PRU Promedio (ou conforme resposta valor unico vs por condicao)
