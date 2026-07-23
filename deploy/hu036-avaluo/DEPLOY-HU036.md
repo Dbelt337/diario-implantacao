@@ -17,7 +17,9 @@ configuración no viajan en deploys — es el comportamiento normal de la plataf
 | Acción "Request an Appraisal" en Opportunity (layout) | QuickAction + Layout | Pendiente |
 | Flow: Appraisal After Handler (notificación al proveedor externo por email + task de trazabilidad) | Flow | **DESPLEGADO en DEV 23/07** como Draft (paquete v5, Id DEV: 301WK00002TtMJLYA3; deteccion del proveedor por lookup de Contact, dedupe por task). PENDIENTE: activar + prueba con Contact + texto oficial del insumo |
 | Flow: Appraisal Item After Handler (búsqueda del PRU -> ProviderVal + InitialValue) | Flow | **DESPLEGADO en DEV 23/07** como Draft (Id DEV: 301WK00002Tt7brYAB; actionType runDecisionMatrix, action PRU_Valor_Referencia). ACTIVADO y PROBADO end-to-end 23/07 (item Toyota/Corolla/2020 -> ProviderVal PRU + InitialValue 14.500 + FinalValue calculado) |
-| Flow: cierre del avalúo (Aceptado -> Opportunity) | — | CANCELADO 23/07 (decisión: proceso nativo — valuador actualiza Status, asesor aplica el trade-in en la cotización) |
+| Ramo de cierre en Appraisal After Handler (Aceptado -> TradeInValue__c en Opportunity, via re-consulta del valor calculado) | Flow (mismo handler) | **DESPLEGADO en DEV 23/07** (paquete v6, sin warnings). PENDIENTE: activar + pruebas P11-P13 |
+| Campo Opportunity.TradeInValue__c "Valor de trade-in" | CustomField | **DESPLEGADO en DEV 23/07** (v6; evidencia en la Description: describe 23/07 sin columna nativa en Opportunity/Quote — 88/88 campos, cero candidatos) |
+| Validation rule Appraisal.RejectionReasonRequired | ValidationRule | **DESPLEGADO en DEV 23/07** (v6; Rechazado exige RejectionReason__c) |
 | Flow: Appraisal Adjustment Before Handler | — | CANCELADO 23/07 (decisión: procedimiento — el usuario selecciona Approved al crear; capacitación + help text) |
 | Decision Matrix PRU_ValorReferencia (definición) | DecisionMatrixDefinition (+ Version) | Pendiente |
 ### 1.1 Cómo desplegar el paquete (Workbench — cualquier ambiente)

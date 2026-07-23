@@ -10,22 +10,22 @@ INSUMO (bloqueado por dato del Grupo Q) · OTRA FRENTE (dependencia externa).
 | 2 | Disponibilidad en Scheduler; SAP no participa | PROBADO 23/07 | Confirmado en la prueba de SA-0032 (agenda 100% Scheduler) |
 | 3 | Sin Experience Cloud; asesor agenda; solicitud online genera Lead | PARCIAL / OTRA FRENTE | Agendamiento por asesor: criterio 1. Web-to-Lead (GQ-CA-01-179) pertenece a la frente digital/leads — coordinar |
 | 4 | Valuadores internos = User + Service Resource, sin SAP | PROBADO (con recurso de prueba) | Recurso real por sucursal = INSUMO (nombres + horarios) |
-| 5 | Proveedor externo = Cuenta/Contacto + notificación automática vía Flow | PROCESO NATIVO (decisión 23/07) | Sin flow nuevo: el asesor notifica por correo (actividad en la Opp). La HU cita "Flow" — alinear redacción V3 con Melisa |
+| 5 | Proveedor externo = Cuenta/Contacto + notificación automática vía Flow | CONSTRUIDO (v5/v6) | Appraisal After Handler: email al Contact + task de trazabilidad, dedupe. Falta activar + probar (P13); texto oficial = insumo |
 | 6 | Resultado en familia nativa Appraisal relacionada a la Opportunity | PROBADO 23/07 | APL-000000002 con ReferenceRecord = Opportunity |
 | 7 | FinalAppraisalValue calculado nativamente (no se digita) | PROBADO 23/07 | Final Value CRC 14.500 calculado por formula (updateable=false) |
 | 8 | PRU registrado en AppraisalItemProviderVal, tabla maestra por país | PROBADO 23/07 (estructura) | AIP-000000001 creado por el Flow; matriz con columna Pais. Carga REAL = INSUMO (archivo PRU + moneda + unico/por condicion) |
 | 9 | Deducciones/excepciones = AppraisalAdjustment con traza, sin aprobación | PROBADO 23/07 | Ajuste Deducción CRC -500 con CreatedBy (traza nativa); FinalAppraisalValue recalculado a 14.000 (SOQL 23/07). Hallazgo: el ajuste solo computa con Status=Approved |
 | 10 | Indicadores legales como campos custom + notas en Appraisal.Comment | LISTO PARA PROBAR | 4 campos desplegados (paquete v4, naming GRPQM). Exponer en la Lightning Page (v5) y probar |
-| 11 | Al finalizar, Flow actualiza automáticamente la Opportunity | PROCESO NATIVO (decisión 23/07) | Sin flow nuevo: valuador pone Status y el asesor aplica el trade-in en la cotización. La HU cita "Flow" — alinear redacción V3 con Melisa |
+| 11 | Al finalizar, Flow actualiza automáticamente la Opportunity | CONSTRUIDO (v6) | Ramo Aceptado -> TradeInValue__c (evidencia de no-columna-nativa en la Description del campo). Falta activar + probar (P11) |
 | 12 | Otra sucursal: ST correspondiente, Owner no cambia, Opportunity Team | LISTO PARA PROBAR (diseño) | Owner inmutable es comportamiento estándar; prueba completa requiere un segundo territory (o el de otra sucursal real) |
-| 13 | Valor aceptado se consume como trade-in en la cotización y recalcula neto; envío por correo/WhatsApp | PROCESO NATIVO + OTRA FRENTE | Consumo: procedimiento del asesor en la cotización. Envío O365/WhatsApp = frente integraciones |
-| 14 | Rechazo: renegociar o continuar sin usado, registrando motivo | PROCESO NATIVO | RejectionReason__c desplegado; el asesor lo llena al registrar el rechazo. Valores reales = INSUMO |
+| 13 | Valor aceptado se consume como trade-in en la cotización y recalcula neto; envío por correo/WhatsApp | PARCIAL | TradeInValue__c disponible para la cotización (mecánica del neto se alinea con el diseño de precios); envío O365/WhatsApp = frente integraciones |
+| 14 | Rechazo: renegociar o continuar sin usado, registrando motivo | CONSTRUIDO (v6) | Validation rule RejectionReasonRequired obliga el motivo. Falta probar (P12); valores reales = INSUMO |
 | 15 | Avalúo y resultado visibles en el 360 del prospecto | PARCIAL | Related lists nativas ya visibles; formalizar Lightning Record Page (v5) |
 
 ## Lectura rápida
 - PROBADOS: 1, 2, 6, 7, 8 (estructura), 9 — agendamiento + corazón nativo + ajustes.
 - LISTOS PARA PROBAR: 4 (con recurso real), 10 (campos legales en la página), 12 (segundo territory).
-- PROCESO NATIVO (decisión 23/07, sin flows nuevos): 5, 11, 13 (lado SF), 14.
+- CONSTRUIDOS pendientes de activar/probar (v5/v6): 5, 11, 14 (y 13 lado SF via TradeInValue__c). NOTA: la decisión "sin flows" fue revertida el mismo 23/07 — la HU se cumple como escrita, sin realinear redacción con Melisa.
 - EN CONSTRUCCION (paquete v5 reducido): 15 (Lightning Record Page + Quick Action).
 - INSUMO Grupo Q: PRU real (archivo/moneda/condicion), escala de condición
   (obligatoria — bloquea el alta del item), motivos de rechazo, valuadores,

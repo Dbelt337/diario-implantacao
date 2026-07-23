@@ -15,3 +15,6 @@ FlexCard AppraisalManagementCreateAppraisalCard en pagina Opportunity;Request an
 InactivityPolicy__mdt (+5 campos);Política de Inactividad;CustomMetadataType;Sales - Ventas;HU nueva cierre por inactividad (EN ADMISION - sin numero);DEV;Paquete (CierreInactividad_v2.zip);NO PROMOVER a INT hasta admitir la HU
 InactivityPolicy.Default;Default;CustomMetadata (registro);Sales - Ventas;HU nueva cierre por inactividad (EN ADMISION);DEV;Paquete (CierreInactividad_v2.zip);NO PROMOVER; parametros 23/30/etapa/textos
 CloseInactiveOpportunities;Close Inactive Opportunities;Flow (Schedule-Triggered);Sales - Ventas;HU nueva cierre por inactividad (EN ADMISION);DEV;Paquete (CierreInactividad_v2.zip);DRAFT - NO PROMOVER NI ACTIVAR hasta admitir la HU
+AppraisalAfterHandler;Appraisal After Handler;Flow (Record-Triggered);Sales - Ventas;HU-036;DEV;Paquete (HU036_paquete_v6.zip);Draft - notificacion proveedor externo + ramo de cierre (TradeInValue); activar tras configurar
+Opportunity.TradeInValue__c;Valor de trade-in;CustomField (Currency);Sales - Ventas;HU-036;DEV;Paquete (HU036_paquete_v6.zip);Desplegado 23/07; evidencia de no-columna-nativa en la Description
+Appraisal.RejectionReasonRequired;Rejection Reason Required;ValidationRule;Sales - Ventas;HU-036;DEV;Paquete (HU036_paquete_v6.zip);Desplegado 23/07; Rechazado exige motivo
