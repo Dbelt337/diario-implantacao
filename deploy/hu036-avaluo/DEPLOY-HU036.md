@@ -111,6 +111,20 @@ en cada ambiente se crean nuevos.
 - [ ] Asignar el Permission Set de Appraisal a los perfiles (asesor, valuador,
       gerente de usados).
 - [ ] Permission set de Scheduler Resource a los valuadores.
+- [ ] Permission set OMNISTUDIO USER a los usuarios del card "Request an
+      Appraisal" (el card es un FlexCard del paquete OmniStudio de Automotive).
+
+### 2.7 Dependencia OmniStudio (doc oficial "OmniStudio for Automotive Cloud", 23/07)
+- El card "Request an Appraisal" (AppraisalManagementCreateAppraisalCard) es un
+  FlexCard ESTANDAR del managed package OmniStudio que Automotive Cloud instala;
+  upgrades automaticos por Salesforce.
+- Licencias requeridas: OmniStudio Admin / OmniStudio User / OmniStudio Runtime
+  for Communities — cubiertas (27.131 asientos OmniStudio, evidencia 22/07).
+- REGLA DE GOBERNANZA: NO deshabilitar el setting "Managed Package Runtime"
+  (es la llave para customizar los componentes de fabrica). Customizar un
+  componente estandar = salir del ciclo de upgrades = mantenimiento propio.
+  Cualquier necesidad de ajuste se evalua primero via Lightning Page /
+  configuracion, y un eventual clone es decision de arquitectura registrada.
 
 ## 3. Orden de despliegue
 1. Runbook 2.1 (features/moneda) -> 2. Paquete de metadatos -> 3. Runbook 2.2-2.6.
