@@ -70,3 +70,11 @@
   Procesos_Judiciales__c/Motivo_Rechazo__c -> TrafficFines__c/Liens__c/
   LegalProceedings__c/RejectionReason__c; PS GQ_Avaluo_Appraisal ->
   AppraisalManagement ("Gestion de Avaluos").
+
+## HU-036 decisao de execucao (23/07/2026)
+- SEM flows novos alem do "Appraisal Item After Handler" (PRU, deployado e
+  provado). Cierre, notificacao ao proveedor e default do ajuste = processo
+  NATIVO/manual do usuario. CA-5 e CA-11 da HU citam "Flow" textualmente -
+  alinhar redacao V3 com a Melisa (uma versao unica antes do refinamento).
+- Regra de plataforma provada: AppraisalAdjustment so computa nos totais com
+  Status=Approved; ajuste vinculado a item rola via FinalValue do item.

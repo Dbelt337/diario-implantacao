@@ -15,10 +15,10 @@ configuración no viajan en deploys — es el comportamiento normal de la plataf
 | Permission Set AppraisalManagement "Gestión de Avalúos" (Read Opportunity + familia Appraisal + 4 campos) | PermissionSet | **DESPLEGADO en DEV 23/07** (Id DEV: 0PSWK000001Bfs54AC; GQ_Avaluo_Appraisal eliminado) |
 | Lightning Record Page del Appraisal | FlexiPage | Pendiente |
 | Acción "Request an Appraisal" en Opportunity (layout) | QuickAction + Layout | Pendiente |
-| Flow: notificación al proveedor externo | Flow | Pendiente |
+| Flow: notificación al proveedor externo | — | CANCELADO 23/07 (decisión: sin flows nuevos; el asesor notifica por correo — procedimiento) |
 | Flow: Appraisal Item After Handler (búsqueda del PRU -> ProviderVal + InitialValue) | Flow | **DESPLEGADO en DEV 23/07** como Draft (Id DEV: 301WK00002Tt7brYAB; actionType runDecisionMatrix, action PRU_Valor_Referencia). ACTIVADO y PROBADO end-to-end 23/07 (item Toyota/Corolla/2020 -> ProviderVal PRU + InitialValue 14.500 + FinalValue calculado) |
-| Flow: cierre del avalúo (Aceptado -> Opportunity) + ramo de rechazo | Flow | Pendiente (v5) |
-| Flow: Appraisal Adjustment Before Handler (default Status=Approved al crear) | Flow | Pendiente (v5) — hallazgo 23/07: ajuste sin Approved no computa |
+| Flow: cierre del avalúo (Aceptado -> Opportunity) | — | CANCELADO 23/07 (decisión: proceso nativo — valuador actualiza Status, asesor aplica el trade-in en la cotización) |
+| Flow: Appraisal Adjustment Before Handler | — | CANCELADO 23/07 (decisión: procedimiento — el usuario selecciona Approved al crear; capacitación + help text) |
 | Decision Matrix PRU_ValorReferencia (definición) | DecisionMatrixDefinition (+ Version) | Pendiente |
 ### 1.1 Cómo desplegar el paquete (Workbench — cualquier ambiente)
 1. https://workbench.developerforce.com > Environment: Sandbox > API 63.0 > login
@@ -69,9 +69,8 @@ en cada ambiente se crean nuevos.
   name); consultar por Id.
 - AppraisalAdjustment.Status es picklist restricto GESTIONADO POR LA PLATAFORMA
   (Approved/InReview/Rejected, sin seccion de valores ni default configurable).
-  Solucion en paquete v5: flow before-save "Appraisal Adjustment Before Handler"
-  que setea Approved cuando el Status viene vacio en la creacion (respeta un
-  InReview explicito).
+  Decision 23/07: SIN flow adicional — procedimiento de usuario (seleccionar
+  Approved al crear) + help text en el layout + capacitacion.
 
 ### 2.2 Unidad de medida
 - [x] DEV: registro UnitOfMeasure Name="Kilómetros", UnitCode="km"
