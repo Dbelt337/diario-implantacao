@@ -1,7 +1,9 @@
 # Roteamento de Leads via Omni-Channel — roteiro de configuracao por ambiente
 
 Objetivo: deixar o lead criado (integracao ou manual) caindo automaticamente
-no assessor online (perfil AC_BDC_Ag) via fila da Costa Rica + Omni-Channel.
+no assessor online via fila da Costa Rica + Omni-Channel. Perfil alvo:
+Name real no org = "Agente BDC / AVO" (codigo do glossario: AC_BDC_Ag).
+Atencao: existe tambem um perfil chamado so "Agente" — nao confundir.
 Aplicavel a qualquer ambiente (QA/UAT/PROD); escrito na sequencia de
 dependencias — executar na ordem. Itens ja existentes: verificar e pular.
 
@@ -81,7 +83,8 @@ Em massa via Apex anonimo (idempotente):
 
     // Adiciona todos os usuarios ativos do perfil na fila (via GroupMember)
     String queueDevName = 'NOME_DEV_DA_FILA_CR';   // ajustar
-    List<String> profileNames = new List<String>{ 'AC_BDC_Ag' };
+    // Name real do perfil no org (o codigo AC_BDC_Ag e so do glossario)
+    List<String> profileNames = new List<String>{ 'Agente BDC / AVO' };
     Group fila = [SELECT Id FROM Group
                   WHERE Type = 'Queue' AND DeveloperName = :queueDevName LIMIT 1];
     List<User> users = [SELECT Id FROM User
