@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <assignments>
+        <name>SetOwnerToQueue</name>
+        <label>Assignment: Set Owner to Queue</label>
+        <locationX>176</locationX>
+        <locationY>431</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.OwnerId</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>GetTargetQueue.Id</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>CreatorRoutesToQueue</name>
+        <label>Decision: Digital Channel Lead?</label>
+        <locationX>176</locationX>
+        <locationY>191</locationY>
+        <defaultConnectorLabel>Keep Creator as Owner</defaultConnectorLabel>
+        <rules>
+            <name>DigitalChannel</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetCreatorUser</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.OwnerId</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record.CreatedById</elementReference>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>routableLead</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>GetTargetQueue</targetReference>
+            </connector>
+            <label>Digital Channel</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>QueueFound</name>
+        <label>Decision: Queue Found?</label>
+        <locationX>176</locationX>
+        <locationY>359</locationY>
+        <defaultConnectorLabel>No Queue</defaultConnectorLabel>
+        <rules>
+            <name>QueueExists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetTargetQueue</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>SetOwnerToQueue</targetReference>
+            </connector>
+            <label>Queue Exists</label>
+        </rules>
+    </decisions>
+    <description>All countries. Before-save handler for Lead creation. When the creating user is a digital-channel technical user (User.RoutesLeadsToQueue__c = true: integration/Mule, Web-to-Lead default creator, portal guest users) and the lead matches a routable segment, sets the owner to the target Omni queue so the after-save routing flow dispatches it to Omni-Channel. Leads created by sellers in the UI keep their creator as owner and are never touched (business rule of the digital lead routing requirement). Explicit owner set by the API (owner different from creator) is respected. Segment-to-queue mapping mirrors Lead_TriggerOmniRouting: Industry Repuestos / PA, CompanyCode N101 / N105 (motos), default Costa Rica sales queue.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>routableLead</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(
+  AND(
+    NOT(ISBLANK(TEXT({!$Record.Brand__c}))),
+    OR(TEXT({!$Record.CompanyCode__c}) = "C101", TEXT({!$Record.CompanyCode__c}) = "C105")
+  ),
+  TEXT({!$Record.CompanyCode__c}) = "N101",
+  TEXT({!$Record.CompanyCode__c}) = "N105",
+  TEXT({!$Record.Industry}) = "Repuestos",
+  TEXT({!$Record.Industry}) = "PA"
+)</expression>
+    </formulas>
+    <formulas>
+        <name>targetQueueDevName</name>
+        <dataType>String</dataType>
+        <expression>IF(TEXT({!$Record.Industry}) = "Repuestos", "Leads_Repuestos",
+IF(TEXT({!$Record.Industry}) = "PA", "Leads_Productos_Automotrices",
+IF(TEXT({!$Record.CompanyCode__c}) = "N101", "Leads_N101_Motos",
+IF(TEXT({!$Record.CompanyCode__c}) = "N105", "Leads_N105_Motos",
+"Queue_Vendedores_CR"))))</expression>
+    </formulas>
+    <interviewLabel>Lead Before Handler {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead Before Handler</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>GetCreatorUser</name>
+        <label>Get Records: Get Creator User</label>
+        <locationX>176</locationX>
+        <locationY>119</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>CreatorRoutesToQueue</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.CreatedById</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>RoutesLeadsToQueue__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetTargetQueue</name>
+        <label>Get Records: Get Target Queue</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>QueueFound</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>targetQueueDevName</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Type</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Queue</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Group</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>GetCreatorUser</targetReference>
+        </connector>
+        <object>Lead</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>
