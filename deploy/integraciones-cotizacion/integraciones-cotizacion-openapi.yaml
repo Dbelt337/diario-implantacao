@@ -1,0 +1,288 @@
+openapi: 3.0.3
+info:
+  title: GrupoQ - API de Cotizacion (MuleSoft SAP Gateway)
+  description: >
+    PROPUESTA DE CONTRATO (HU-119) del lado Salesforce para los servicios del
+    flujo de cotizacion y pedido. SAP es la fuente de la verdad de precio y
+    stock; Salesforce consulta y muestra. Los retornos asincronos (confirmacion
+    del pedido y facturacion) estan modelados como callbacks del recurso
+    /orders. Endpoints, nombres y campos por validar con el equipo de
+    integraciones.
+  version: 0.1.0-propuesta
+servers:
+  - url: https://{muleHost}/api/v1
+    description: Gateway MuleSoft (URL por ambiente - Named Credential MuleSoftPricesInventory)
+    variables:
+      muleHost:
+        default: mule-dev.grupoq.com
+paths:
+  /prices-and-inventory:
+    post:
+      summary: Precio e inventario del material (consulta sincrona de la cotizacion)
+      description: >
+        SAP construye el precio (Repuestos: FOB x factor x mark-up; PA: lista
+        aplicable; Autos: lista de la sociedad) ya convertido a la moneda del
+        cliente, y devuelve el stock por tipo (disponible / en transito) y la
+        disponibilidad futura (ATP). Consumido por SapInventoryService via
+        Continuation (timeout 60s).
+      operationId: getPricesAndInventory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceInventoryRequest'
+      responses:
+        '200':
+          description: Precio y stock resueltos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceInventoryResponse'
+        '404':
+          description: Material sin precio construible ni lista vigente (Esc. 10 HU-028)
+        '504':
+          description: SAP no respondio dentro del timeout (Esc. 11)
+  /materials:
+    get:
+      summary: Busqueda de materiales (local SAP)
+      operationId: searchMaterials
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema: { type: string }
+          description: Codigo SAP, codigo de fabrica o descripcion parcial
+        - name: sociedad
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Materiales encontrados
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Material' }
+  /material-requests:
+    post:
+      summary: Solicitud de creacion/extension de material (HU-039)
+      description: >
+        SF solicita, SAP ejecuta y devuelve el MATNR de forma asincrona
+        (callback onMaterialCreated actualiza el MISMO Product2 de la
+        solicitud y lo activa - guarda anti-duplicado con el sync).
+      operationId: requestMaterialCreation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaterialRequest'
+      responses:
+        '202':
+          description: Solicitud aceptada (ack)
+      callbacks:
+        onMaterialCreated:
+          'https://{sfHost}/services/data/v63.0/sobjects/Product2/ExternalRequestId__c/{requestId}':
+            patch:
+              summary: Retorno del MATNR - actualiza y activa el Product2 de la solicitud
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      properties:
+                        ProductCode: { type: string, description: MATNR creado en SAP }
+                        IsActive: { type: boolean }
+              responses:
+                '204': { description: Material actualizado }
+  /orders:
+    post:
+      summary: Envio del pedido a SAP (asincrono, tras cotizacion aprobada)
+      description: >
+        Enviado por SapOrderService (Queueable). El ack solo confirma la
+        recepcion (Order queda en Enviado a SAP). La confirmacion y la
+        facturacion vuelven por los callbacks - dos mecanismos distintos por
+        gobernanza: la confirmacion publica el platform event
+        SapOrderResponse__e; la facturacion es update inbound directo (SIN
+        platform event) y es el gatillo de assetizacion + entrega.
+      operationId: submitOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '202':
+          description: Pedido recibido por el gateway (Order pasa a Enviado a SAP)
+      callbacks:
+        onOrderConfirmed:
+          'https://{sfHost}/services/data/v63.0/sobjects/SapOrderResponse__e':
+            post:
+              summary: Confirmacion del pedido - publica el platform event
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/OrderConfirmedEvent'
+              responses:
+                '201': { description: Evento publicado (subscriber actualiza la Order a Confirmado SAP) }
+        onInvoiced:
+          'https://{sfHost}/{invoiceInboundEndpoint}':
+            post:
+              summary: Retorno de facturacion (endpoint exacto por definir - IP GrupoQ_OrderInvoiceUpdate)
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/InvoiceNotification'
+              responses:
+                '200': { description: Order actualizada a Facturado; dispara assetizacion y entrega }
+  /orders/{sapOrderNumber}/cancellation:
+    post:
+      summary: Solicitud de cancelacion (solo pedido enviado y NO facturado)
+      description: >
+        Antes de enviar se cancela en SF; ya facturado NO es cancelacion (es
+        devolucion con nota de credito en SAP + Reduction Order en SF). SAP
+        anula y confirma de forma asincrona; la unidad queda liberada.
+      operationId: requestOrderCancellation
+      parameters:
+        - name: sapOrderNumber
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId: { type: string, description: Id de la Order en Salesforce }
+                motivo: { type: string }
+      responses:
+        '202': { description: Solicitud de anulacion aceptada }
+  /price-simulations:
+    post:
+      summary: Simulacion de precio/margen (HU-028; fuera de la venta guiada)
+      description: SAP calcula el impacto sin afectar precios productivos; SF solo muestra.
+      operationId: simulatePrice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                materialCode: { type: string }
+                sociedad: { type: string }
+                fob: { type: number }
+                factorNacionalizacion: { type: number }
+                markUp: { type: number }
+      responses:
+        '200':
+          description: Resultado de la simulacion
+components:
+  schemas:
+    PriceInventoryRequest:
+      type: object
+      required: [sociedad]
+      properties:
+        materialCode: { type: string, description: Codigo SAP / SKU (combos incluidos). Obligatorio si no hay vin }
+        vin: { type: string }
+        sociedad: { type: string, example: C101 }
+        canal: { type: string, description: 'Rep&PA: CM / CF / CA / cuentas clave' }
+        clienteId: { type: string, description: Codigo de cliente SAP (precio especifico y moneda) }
+        cantidad: { type: number, default: 1 }
+        fechaPrecio: { type: string, format: date, description: Reconstruye el precio historico de una cotizacion vigente }
+    PriceInventoryResponse:
+      type: object
+      properties:
+        precio:
+          type: object
+          properties:
+            total: { type: number }
+            moneda: { type: string, example: CRC }
+            fechaPrecio: { type: string, format: date }
+        desglose:
+          type: array
+          items:
+            type: object
+            properties:
+              concepto: { type: string, example: Impuesto de referencia 13% }
+              valor: { type: number }
+        listaAplicada: { type: string, description: 'Rep&PA: general / canal / cliente / volumen' }
+        stock:
+          type: array
+          items: { $ref: '#/components/schemas/StockLine' }
+        disponibilidadFutura:
+          type: array
+          items: { $ref: '#/components/schemas/FutureAvailability' }
+    StockLine:
+      type: object
+      properties:
+        tipo: { type: string, enum: [disponible, en_transito, reservado] }
+        cantidad: { type: number }
+        ubicacion: { type: string, example: URUCA }
+        eta: { type: string, format: date, description: Solo en_transito }
+    FutureAvailability:
+      type: object
+      description: ATP - recebimentos futuros (diferencia pedido futuro de transito, HU-044)
+      properties:
+        fecha: { type: string, format: date }
+        cantidad: { type: number }
+        fuente: { type: string, example: pedido_importacion }
+    Material:
+      type: object
+      properties:
+        materialCode: { type: string }
+        descripcion: { type: string }
+        marca: { type: string }
+        origen: { type: string }
+        existeEnSalesforce: { type: boolean }
+    MaterialRequest:
+      type: object
+      required: [requestId, descripcion, sociedad]
+      properties:
+        requestId: { type: string, description: ExternalRequestId del Product2 de la solicitud }
+        descripcion: { type: string }
+        sociedad: { type: string }
+        marca: { type: string }
+        datosTecnicos: { type: object }
+    OrderRequest:
+      type: object
+      required: [orderId, sociedad, clienteId, lineas]
+      properties:
+        orderId: { type: string, description: Id/numero de la Order en Salesforce (clave de correlacion) }
+        cotizacionId: { type: string }
+        sociedad: { type: string }
+        clienteId: { type: string }
+        fechaPrecio: { type: string, format: date, description: SAP respeta el precio cotizado vigente }
+        lineas:
+          type: array
+          items:
+            type: object
+            properties:
+              material: { type: string }
+              cantidad: { type: number }
+              precio: { type: number }
+              moneda: { type: string }
+    OrderConfirmedEvent:
+      type: object
+      description: Payload del platform event SapOrderResponse__e
+      required: [OrderId__c, Status__c]
+      properties:
+        OrderId__c: { type: string, description: Correlacion con la Order (clave del filtro de canal empApi) }
+        SapOrderNumber__c: { type: string }
+        Status__c: { type: string, example: OK }
+        ErrorMessage__c: { type: string }
+    InvoiceNotification:
+      type: object
+      required: [invoiceNumber]
+      properties:
+        orderId: { type: string }
+        sapOrderNumber: { type: string }
+        invoiceNumber: { type: string }
+        invoiceDate: { type: string, format: date }
+        montoFacturado: { type: number }
+        moneda: { type: string }
