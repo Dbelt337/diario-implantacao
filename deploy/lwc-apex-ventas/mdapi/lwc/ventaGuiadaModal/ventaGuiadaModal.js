@@ -309,6 +309,7 @@ export default class VentaGuiadaModal extends LightningModal {
             totalFmt: this.totalConDescuentoFmt
         });
         if (result === 'confirmar') {
+            // TODO real: GuidedSellingController.createQuote(this.recordId, payload) -> QuoteOrderService
             this.dispatchEvent(new ShowToastEvent({
                 title: 'Mock de presentación',
                 message: 'Aquí QuoteOrderService crea la cotización nativa con las líneas, el descuento trazado y el trade-in.',

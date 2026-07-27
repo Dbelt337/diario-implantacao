@@ -2,6 +2,8 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>SapInventoryService</members>
+        <members>GuidedSellingController</members>
+        <members>GuidedSellingControllerTest</members>
         <members>SapInventoryServiceTest</members>
         <members>PricingService</members>
         <members>QuoteOrderService</members>
