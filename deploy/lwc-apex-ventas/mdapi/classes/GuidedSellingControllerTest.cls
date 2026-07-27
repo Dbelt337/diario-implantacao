@@ -18,6 +18,28 @@ private class GuidedSellingControllerTest {
     }
 
     @isTest
+    static void selectionPageDataStubThrows() {
+        Boolean thrown = false;
+        try {
+            GuidedSellingController.getSelectionPageData('Tucson', 'nuevo');
+        } catch (AuraHandledException e) {
+            thrown = true;
+        }
+        System.assert(thrown, 'Skeleton stub must signal not-implemented.');
+    }
+
+    @isTest
+    static void pricePageDataStubThrows() {
+        Boolean thrown = false;
+        try {
+            GuidedSellingController.getPricePageData('SPW5K2G1U_D_D529', 'C101', null, null, 1);
+        } catch (AuraHandledException e) {
+            thrown = true;
+        }
+        System.assert(thrown, 'Skeleton stub must signal not-implemented.');
+    }
+
+    @isTest
     static void createQuoteStubThrows() {
         Boolean thrown = false;
         try {

@@ -10,6 +10,49 @@
 public with sharing class GuidedSellingController {
 
     /**
+     * BFF entry for the SELECTION screen — one screen, one call. Returns a
+     * single ViewModel with EVERYTHING the screen renders: the vehicle list
+     * (nuevo: local catalog + last known price via MaterialSearchService;
+     * usado: own inventory Vehicle SOQL + ficha) plus the accessory list of
+     * the sociedad pricebook, prefetched here so the Accesorios step renders
+     * with zero extra calls. The SAP price/stock query is NOT in this path:
+     * the LWC fires getPricesAndInventory in background on vehicle selection
+     * (prefetch window = the Accesorios step).
+     * @param searchTerm model, version or VIN fragment typed by the seller
+     * @param saleType 'nuevo' or 'usado' (router Record Type in real flow)
+     * @return serialized SelectionPageData ViewModel
+     */
+    @AuraEnabled(cacheable=true)
+    public static String getSelectionPageData(String searchTerm, String saleType) {
+        // TODO: aggregate MaterialSearchService/Vehicle SOQL + accessory
+        // PricebookEntries into ONE payload (BFF rule: never let the screen
+        // assemble the puzzle with several calls)
+        throw new AuraHandledException('Not implemented: skeleton stub.');
+    }
+
+    /**
+     * BFF entry for the PRICE screen — the LOCAL half of the ViewModel:
+     * price breakdown scaffolding (PricebookEntry reference, gastos,
+     * BRE reference tax via PricingService) ready to render instantly.
+     * The authoritative SAP half (precio ZGQREF, stock, disponibilidad
+     * futura) arrives through the getPricesAndInventory continuation the
+     * LWC prefetched at selection time; the screen merges both.
+     * @param materialCode SAP material/SKU of the selected vehicle
+     * @param sociedad selling company (C101/C105/N101/N105)
+     * @param canal channel for Repuestos & PA list selection (null for vehicles)
+     * @param clienteId SAP customer code when known (customer-specific price)
+     * @param cantidad quantity for volume scales (default 1)
+     * @return serialized PricePageData ViewModel (local part)
+     */
+    @AuraEnabled(cacheable=true)
+    public static String getPricePageData(String materialCode, String sociedad,
+            String canal, String clienteId, Integer cantidad) {
+        // TODO: delegate to PricingService (local breakdown + BRE); never
+        // block on SAP here — the continuation owns that leg
+        throw new AuraHandledException('Not implemented: skeleton stub.');
+    }
+
+    /**
      * Searches sellable vehicles/materials for the selection step.
      * New vehicles resolve through MaterialSearchService (local -> SAP);
      * used vehicles resolve from the OWN inventory (Vehicle records, SOQL).
