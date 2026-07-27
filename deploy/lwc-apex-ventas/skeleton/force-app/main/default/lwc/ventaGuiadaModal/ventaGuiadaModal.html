@@ -1,5 +1,5 @@
 <template>
-    <lightning-modal-header label="Venta guiada — Vehículo nuevo"></lightning-modal-header>
+    <lightning-modal-header label={tituloModal}></lightning-modal-header>
     <lightning-modal-body>
         <div class="modal-body">
             <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
@@ -7,6 +7,7 @@
             </div>
 
             <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
+                <lightning-progress-step label="Tipo" value="tipo"></lightning-progress-step>
                 <lightning-progress-step label="Vehículo" value="seleccion"></lightning-progress-step>
                 <lightning-progress-step label="Precio y stock" value="precio"></lightning-progress-step>
                 <lightning-progress-step label="Descuentos" value="descuento"></lightning-progress-step>
@@ -15,37 +16,91 @@
             </lightning-progress-indicator>
 
             <div class="slds-p-vertical_medium">
+                <template lwc:if={isStepTipo}>
+                    <h3 class="slds-text-heading_small slds-m-bottom_medium slds-text-align_center">¿Qué vas a vender?</h3>
+                    <lightning-layout horizontal-align="center">
+                        <lightning-layout-item size="5" padding="around-small">
+                            <div class={tipoNuevoClass} onclick={handleTipoNuevo}>
+                                <h3 class="slds-text-heading_medium">Vehículo nuevo</h3>
+                                <p class="slds-text-body_small slds-m-top_small">
+                                    Catálogo y stock consultados al SAP en línea (precio de lista de la sociedad, unidades por sucursal y en tránsito).
+                                </p>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="5" padding="around-small">
+                            <div class={tipoUsadoClass} onclick={handleTipoUsado}>
+                                <h3 class="slds-text-heading_medium">Vehículo usado</h3>
+                                <p class="slds-text-body_small slds-m-top_small">
+                                    Inventario PROPIO en Salesforce (unidades Vehicle con VIN, kilometraje y ficha del usado; precio de gestión propia).
+                                </p>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <p class="slds-text-body_small slds-m-top_small slds-text-color_weak slds-text-align_center">
+                        Real: el router del padre decide por el Record Type de la Opportunity; esta pantalla demuestra los dos caminos.
+                    </p>
+                </template>
+
                 <template lwc:if={isStepSeleccion}>
                     <lightning-input type="search" label="Buscar vehículo (modelo, versión, VIN)"
                         placeholder="Ej.: Tucson 2026" value={searchTerm}
                         onchange={handleSearchChange} class="slds-m-bottom_small"></lightning-input>
-                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-                        <thead>
-                            <tr class="slds-line-height_reset">
-                                <th scope="col">Modelo / Versión</th>
-                                <th scope="col">Año</th>
-                                <th scope="col">Color</th>
-                                <th scope="col">Precio de lista</th>
-                                <th scope="col">Stock Central</th>
-                                <th scope="col">Stock Lindora</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template for:each={vehicleOptions} for:item="vehicle">
-                                <tr key={vehicle.id} class={vehicle.rowClass}
-                                    data-id={vehicle.id} onclick={handleSelectVehicle}>
-                                    <td>{vehicle.modelo}</td>
-                                    <td>{vehicle.anio}</td>
-                                    <td>{vehicle.color}</td>
-                                    <td>{vehicle.precio}</td>
-                                    <td>{vehicle.stockCentral}</td>
-                                    <td>{vehicle.stockLindora}</td>
+                    <template lwc:if={esNuevo}>
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">Modelo / Versión</th>
+                                    <th scope="col">Año</th>
+                                    <th scope="col">Color</th>
+                                    <th scope="col">Precio de lista</th>
+                                    <th scope="col">Stock Central</th>
+                                    <th scope="col">Stock Lindora</th>
                                 </tr>
-                            </template>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <template for:each={vehicleOptions} for:item="vehicle">
+                                    <tr key={vehicle.id} class={vehicle.rowClass}
+                                        data-id={vehicle.id} onclick={handleSelectVehicle}>
+                                        <td>{vehicle.modelo}</td>
+                                        <td>{vehicle.anio}</td>
+                                        <td>{vehicle.color}</td>
+                                        <td>{vehicle.precio}</td>
+                                        <td>{vehicle.stockCentral}</td>
+                                        <td>{vehicle.stockLindora}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+                    <template lwc:if={esUsado}>
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">Modelo / Versión</th>
+                                    <th scope="col">Año</th>
+                                    <th scope="col">Kilometraje</th>
+                                    <th scope="col">VIN</th>
+                                    <th scope="col">Precio publicado</th>
+                                    <th scope="col">Ubicación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={vehicleOptions} for:item="vehicle">
+                                    <tr key={vehicle.id} class={vehicle.rowClass}
+                                        data-id={vehicle.id} onclick={handleSelectVehicle}>
+                                        <td>{vehicle.modelo}</td>
+                                        <td>{vehicle.anio}</td>
+                                        <td>{vehicle.km}</td>
+                                        <td>{vehicle.vin}</td>
+                                        <td>{vehicle.precio}</td>
+                                        <td>{vehicle.ubicacion}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
                     <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
-                        Selecciona una fila para continuar. (Real: MaterialSearchService — local, SAP y extensión automática.)
+                        {leyendaSeleccion}
                     </p>
                 </template>
 
@@ -62,21 +117,38 @@
                                 </template>
                                 <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row">
                                     <span class="slds-text-heading_small">Total de referencia</span>
-                                    <span class="slds-text-heading_small">CRC 24.631.000</span>
+                                    <span class="slds-text-heading_small">{totalReferenciaFmt}</span>
                                 </div>
                             </div>
                         </lightning-layout-item>
                         <lightning-layout-item size="5" padding="around-small">
-                            <div class="slds-box slds-box_small">
-                                <h3 class="slds-text-heading_small slds-m-bottom_small">Stock en línea (SAP vía MuleSoft)</h3>
-                                <p class="slds-p-vertical_xx-small">Sucursal Central: <strong>3 unidades</strong></p>
-                                <p class="slds-p-vertical_xx-small">Lindora: <strong>1 unidad</strong></p>
-                                <p class="slds-p-vertical_xx-small">Guápiles: <strong>0 unidades</strong></p>
-                                <lightning-badge label="Consulta SAP simulada" class="slds-m-top_small"></lightning-badge>
-                                <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
-                                    Real: SapInventoryService con Continuation — la pantalla nunca bloquea al asesor.
-                                </p>
-                            </div>
+                            <template lwc:if={esNuevo}>
+                                <div class="slds-box slds-box_small">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Stock en línea (SAP vía MuleSoft)</h3>
+                                    <p class="slds-p-vertical_xx-small">Sucursal Central: <strong>3 unidades</strong></p>
+                                    <p class="slds-p-vertical_xx-small">Lindora: <strong>1 unidad</strong></p>
+                                    <p class="slds-p-vertical_xx-small">Guápiles: <strong>0 unidades</strong></p>
+                                    <lightning-badge label="Consulta SAP simulada" class="slds-m-top_small"></lightning-badge>
+                                    <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
+                                        Real: SapInventoryService con Continuation — la pantalla nunca bloquea al asesor.
+                                    </p>
+                                </div>
+                            </template>
+                            <template lwc:if={esUsado}>
+                                <div class="slds-box slds-box_small">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Ficha del usado</h3>
+                                    <template for:each={fichaUsado} for:item="line">
+                                        <div key={line.id} class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                            <span>{line.etiqueta}</span>
+                                            <span class="slds-text-title_bold">{line.valor}</span>
+                                        </div>
+                                    </template>
+                                    <lightning-badge label="Inventario propio — sin consulta SAP" class="slds-m-top_small"></lightning-badge>
+                                    <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
+                                        Real: unidad Vehicle del inventario de usados (SOQL directo); precio y ficha administrados en Salesforce.
+                                    </p>
+                                </div>
+                            </template>
                         </lightning-layout-item>
                     </lightning-layout>
                 </template>
@@ -117,14 +189,12 @@
                         <lightning-layout-item size="5" padding="around-small">
                             <div class="slds-box slds-box_small">
                                 <h3 class="slds-text-heading_small slds-m-bottom_small">Cómo funciona en real</h3>
-                                <p class="slds-text-body_small slds-p-vertical_xx-small">
-                                    Precio mínimo por modelo/versión: <strong>Decision Matrix (BRE)</strong>, mantenida por el negocio — nunca en Apex.
-                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">{leyendaMinimo}</p>
                                 <p class="slds-text-body_small slds-p-vertical_xx-small">
                                     Descuento dentro del margen: se aplica directo y queda trazado en la cotización.
                                 </p>
                                 <p class="slds-text-body_small slds-p-vertical_xx-small">
-                                    Debajo del precio mínimo: <strong>Approval Process nativo</strong> con el Gerente de Sucursal; el vendedor no avanza sin la aprobación.
+                                    Debajo del precio mínimo: <strong>Approval Process nativo</strong>; el vendedor no avanza sin la aprobación.
                                 </p>
                                 <p class="slds-text-body_small slds-p-vertical_xx-small">
                                     Programas de descuento y protección de precio: <strong>Rebate Management / Price Protection</strong> (licenciados).
@@ -213,7 +283,7 @@
                             <lightning-button label="Crear cotización" variant="brand" onclick={handleCreateQuote}></lightning-button>
                         </div>
                         <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
-                            Real: QuoteOrderService crea la cotización nativa; el pedido viaja al SAP en segundo plano y el resultado vuelve por platform event.
+                            {leyendaCotizacion}
                         </p>
                     </div>
                 </template>
