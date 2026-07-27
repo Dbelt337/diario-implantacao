@@ -58,6 +58,11 @@ public with sharing class GuidedSellingController {
     @AuraEnabled
     public static Id createQuote(Id opportunityId, String quotePayloadJson) {
         // TODO: delegate to QuoteOrderService.createQuote
+        // plan (Davi):
+        // query opportunity + line item
+        // create Quote
+        // create QuoteLineItem (vehiculo + accesorios del pricebook)
+        // create discount approval (cuando el descuento supera el margen)
         throw new AuraHandledException('Not implemented: skeleton stub.');
     }
 }

@@ -9,6 +9,7 @@
             <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
                 <lightning-progress-step label="Tipo" value="tipo"></lightning-progress-step>
                 <lightning-progress-step label="Vehículo" value="seleccion"></lightning-progress-step>
+                <lightning-progress-step label="Accesorios" value="accesorios"></lightning-progress-step>
                 <lightning-progress-step label="Precio y stock" value="precio"></lightning-progress-step>
                 <lightning-progress-step label="Descuentos" value="descuento"></lightning-progress-step>
                 <lightning-progress-step label="Pago" value="pago"></lightning-progress-step>
@@ -54,7 +55,7 @@
                                     <th scope="col">Color</th>
                                     <th scope="col">Precio de lista</th>
                                     <th scope="col">Stock Central</th>
-                                    <th scope="col">Stock Lindora</th>
+                                    <th scope="col">Stock Sucursal</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,7 +67,7 @@
                                         <td>{vehicle.color}</td>
                                         <td>{vehicle.precio}</td>
                                         <td>{vehicle.stockCentral}</td>
-                                        <td>{vehicle.stockLindora}</td>
+                                        <td>{vehicle.stockDealer}</td>
                                     </tr>
                                 </template>
                             </tbody>
@@ -102,6 +103,42 @@
                     <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
                         {leyendaSeleccion}
                     </p>
+                </template>
+
+                <template lwc:if={isStepAccesorios}>
+                    <lightning-layout multiple-rows>
+                        <lightning-layout-item size="7" padding="around-small">
+                            <div class="slds-box slds-box_small">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">Accesorios del vehículo (opcional)</h3>
+                                <template for:each={accesorioOptions} for:item="acc">
+                                    <div key={acc.id} class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                        <lightning-input type="checkbox" label={acc.nombre}
+                                            checked={acc.sel} data-id={acc.id}
+                                            onchange={handleToggleAccesorio}></lightning-input>
+                                        <span class="slds-text-title_bold">{acc.precioFmt}</span>
+                                    </div>
+                                </template>
+                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row slds-m-top_small">
+                                    <span class="slds-text-heading_small">Total accesorios</span>
+                                    <span class="slds-text-heading_small">{accesoriosTotalFmt}</span>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="5" padding="around-small">
+                            <div class="slds-box slds-box_small">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">Cómo funciona en real</h3>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Accesorios = materiales SAP del pricebook <strong>Vehículos y accesorios</strong> de la sociedad; cada uno entra como línea adicional de la cotización (QuoteLineItem).
+                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    La compatibilidad accesorio x modelo es un insumo pendiente del GrupoQ; mientras tanto la lista se muestra completa.
+                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Este paso es opcional: Siguiente sin marcar nada continúa solo con el vehículo.
+                                </p>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
                 </template>
 
                 <template lwc:if={isStepPrecio}>
@@ -280,7 +317,7 @@
                             </div>
                         </template>
                         <div class="slds-m-top_medium slds-text-align_center">
-                            <lightning-button label="Crear cotización" variant="brand" onclick={handleCreateQuote}></lightning-button>
+                            <lightning-button label={createQuoteBtn.label} variant={createQuoteBtn.variant} onclick={handleCreateQuote}></lightning-button>
                         </div>
                         <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
                             {leyendaCotizacion}

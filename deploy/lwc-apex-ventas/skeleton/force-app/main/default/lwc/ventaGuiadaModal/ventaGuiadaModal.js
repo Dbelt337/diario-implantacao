@@ -7,24 +7,22 @@ import AprobacionDescuentoModal from 'c/aprobacionDescuentoModal';
 /**
  * All countries. Large modal with the guided-selling step-by-step. CURRENT
  * STATE: presentation mock (simulated data) showing the target experience;
- * each step gets wired to its Apex service (MaterialSearchService,
- * SapInventoryService + PricingService, QuoteOrderService). Secondary
- * decisions open stacked modals (quote confirmation, discount approval).
+ * each step gets wired to its Apex service through GuidedSellingController.
  * NEW vs USED split: new-vehicle price/stock come from SAP via MuleSoft
- * (live query); used-vehicle inventory and price are OWNED by Salesforce
- * (Vehicle records, SOQL, no SAP call) per the used-inventory user story.
- * Discounts: minimum price from BRE (new) or used-inventory management
- * (used); below-minimum goes through the native Approval Process.
- * Payment: the financing step only CALLS the financing front flow (CrediQ).
+ * (live query); used-vehicle inventory and price are OWNED by Salesforce.
+ * Accessories: additional quote lines from the sociedad price book
+ * ("Vehiculos y accesorios"); model compatibility pending business input.
+ * Future-order states (stock / in transit / none) drive the final button
+ * label per the no-stock quotation user story.
  */
 
-const STEPS = ['tipo', 'seleccion', 'precio', 'descuento', 'pago', 'cotizacion'];
+const STEPS = ['tipo', 'seleccion', 'accesorios', 'precio', 'descuento', 'pago', 'cotizacion'];
 
 // ------- parametros SIMULADOS (los reemplazan BRE / frente financiera) -------
-const TOTAL_NUEVO = 24631000;           // total de referencia del nuevo (mock)
-const TOTAL_USADO = 14927000;           // total de referencia del usado (mock)
-const MAX_DESCUENTO_DIRECTO = 700000;   // margen hasta el precio minimo
-const TASA_ANUAL_REFERENCIA = 9.5;      // % anual solo de referencia (real: CrediQ)
+const TOTAL_NUEVO = 24631000;
+const TOTAL_USADO = 14927000;
+const MAX_DESCUENTO_DIRECTO = 700000;
+const TASA_ANUAL_REFERENCIA = 9.5;
 
 function crc(value) {
     const n = Math.round(value || 0);
@@ -37,7 +35,7 @@ export default class VentaGuiadaModal extends LightningModal {
 
     currentStep = 'tipo';
     ventaTipo = '';
-    selectedVehicleId;
+    selectedVehicle;
     searchTerm = '';
 
     // paso Descuentos
@@ -53,11 +51,16 @@ export default class VentaGuiadaModal extends LightningModal {
     // ------- datos SIMULADOS (los reemplazan los servicios Apex) -------
     vehiclesNuevos = [
         { id: 'V1', modelo: 'Hyundai Tucson GLS 2.0', anio: '2026', color: 'Blanco Polar',
-          precio: 'CRC 21.500.000', stockCentral: 3, stockLindora: 1 },
+          precio: 'CRC 21.500.000', stockCentral: 3, stockDealer: 1 },
         { id: 'V2', modelo: 'Hyundai Tucson Limited', anio: '2026', color: 'Gris Titanio',
-          precio: 'CRC 24.900.000', stockCentral: 1, stockLindora: 0 },
+          precio: 'CRC 24.900.000', stockCentral: 1, stockDealer: 0 },
         { id: 'V3', modelo: 'Hyundai Creta GL 1.5', anio: '2026', color: 'Rojo Fuego',
-          precio: 'CRC 16.800.000', stockCentral: 5, stockLindora: 2 }
+          precio: 'CRC 16.800.000', stockCentral: 5, stockDealer: 2 },
+        { id: 'V4', modelo: 'Hyundai Tucson Híbrida', anio: '2026', color: 'Azul Océano',
+          precio: 'CRC 27.900.000', stockCentral: 0, stockDealer: 0,
+          disponibilidad: { cantidad: 2, eta: '15/09/2026', fuente: 'pedido_importacion' } },
+        { id: 'V5', modelo: 'Hyundai Santa Fe 2027', anio: '2027', color: 'Negro Fantasma',
+          precio: 'CRC 32.500.000', stockCentral: 0, stockDealer: 0 }
     ];
 
     vehiclesUsados = [
@@ -67,6 +70,13 @@ export default class VentaGuiadaModal extends LightningModal {
           vin: 'KM8J33...1207', precio: 'CRC 16.500.000', ubicacion: 'Lindora' },
         { id: 'U3', modelo: 'Chevrolet Onix LT', anio: '2023', km: '28.000 km',
           vin: '9BGKS48...3341', precio: 'CRC 11.800.000', ubicacion: 'La Uruca' }
+    ];
+
+    accesorios = [
+        { id: 'A1', nombre: 'Juego de tapetes', precio: 45000, sel: false },
+        { id: 'A2', nombre: 'Rack de techo', precio: 120000, sel: false },
+        { id: 'A3', nombre: 'Polarizado de ventanas', precio: 85000, sel: false },
+        { id: 'A4', nombre: 'Kit de seguridad (triángulo + extintor)', precio: 35000, sel: false }
     ];
 
     priceBreakdownNuevo = [
@@ -95,6 +105,7 @@ export default class VentaGuiadaModal extends LightningModal {
     // ------- navegacion -------
     get isStepTipo() { return this.currentStep === 'tipo'; }
     get isStepSeleccion() { return this.currentStep === 'seleccion'; }
+    get isStepAccesorios() { return this.currentStep === 'accesorios'; }
     get isStepPrecio() { return this.currentStep === 'precio'; }
     get isStepDescuento() { return this.currentStep === 'descuento'; }
     get isStepPago() { return this.currentStep === 'pago'; }
@@ -109,7 +120,7 @@ export default class VentaGuiadaModal extends LightningModal {
 
     get nextDisabled() {
         if (this.isStepTipo) return !this.ventaTipo;
-        if (this.isStepSeleccion) return !this.selectedVehicleId;
+        if (this.isStepSeleccion) return !this.selectedVehicle;
         if (this.isStepDescuento) return this.descuentoRequiereAprobacion && !this.descuentoAprobado;
         if (this.isStepPago) return !this.formaPago;
         return this.isStepCotizacion;
@@ -125,36 +136,31 @@ export default class VentaGuiadaModal extends LightningModal {
     }
 
     // ------- paso Tipo -------
-    handleTipoNuevo() {
-        this.setTipo('nuevo');
-    }
-    handleTipoUsado() {
-        this.setTipo('usado');
-    }
+    handleTipoNuevo() { this.setTipo('nuevo'); }
+    handleTipoUsado() { this.setTipo('usado'); }
     setTipo(tipo) {
         if (this.ventaTipo !== tipo) {
             this.ventaTipo = tipo;
-            this.selectedVehicleId = undefined;
+            this.selectedVehicle = undefined;
             this.descuento = 0;
             this.descuentoAprobado = false;
             this.formaPago = '';
             this.prima = undefined;
             this.solicitudFinancieroEnviada = false;
+            this.accesorios = this.accesorios.map(a => ({ ...a, sel: false }));
         }
     }
-    get tipoNuevoClass() {
-        return this.esNuevo ? 'tipo-card tipo-card-selected' : 'tipo-card';
-    }
-    get tipoUsadoClass() {
-        return this.esUsado ? 'tipo-card tipo-card-selected' : 'tipo-card';
-    }
+    get tipoNuevoClass() { return this.esNuevo ? 'tipo-card tipo-card-selected' : 'tipo-card'; }
+    get tipoUsadoClass() { return this.esUsado ? 'tipo-card tipo-card-selected' : 'tipo-card'; }
 
     // ------- paso Vehiculo -------
+    get vehiclesActuales() {
+        return this.esUsado ? this.vehiclesUsados : this.vehiclesNuevos;
+    }
     get vehicleOptions() {
-        const source = this.esUsado ? this.vehiclesUsados : this.vehiclesNuevos;
-        return source.map((vehicle) => ({
+        return this.vehiclesActuales.map((vehicle) => ({
             ...vehicle,
-            rowClass: vehicle.id === this.selectedVehicleId
+            rowClass: vehicle.id === this.selectedVehicle?.id
                 ? 'slds-hint-parent selected-row'
                 : 'slds-hint-parent'
         }));
@@ -162,22 +168,51 @@ export default class VentaGuiadaModal extends LightningModal {
     get leyendaSeleccion() {
         return this.esUsado
             ? 'Selecciona una fila para continuar. (Real: inventario PROPIO en Vehicle — SOQL directo, sin SAP. Ficha del usado de la historia de inventario de usados.)'
-            : 'Selecciona una fila para continuar. (Real: MaterialSearchService — local, SAP y extensión automática.)';
+            : 'Selecciona una fila para continuar. (Real: MaterialSearchService — local, SAP y extensión automática. Stock 0 con tránsito o sin unidades habilita la cotización futura.)';
     }
     handleSearchChange(event) {
+        // TODO real: GuidedSellingController.searchVehicles con debounce
         this.searchTerm = event.target.value;
     }
     handleSelectVehicle(event) {
-        this.selectedVehicleId = event.currentTarget.dataset.id;
+        this.selectedVehicle = this.vehiclesActuales.find(
+            (el) => el.id === event.currentTarget.dataset.id
+        );
+    }
+
+    // ------- paso Accesorios -------
+    get accesorioOptions() {
+        return this.accesorios.map(a => ({ ...a, precioFmt: crc(a.precio) }));
+    }
+    get accesoriosSeleccionados() {
+        return this.accesorios.filter(a => a.sel);
+    }
+    get accesoriosTotal() {
+        return this.accesoriosSeleccionados.reduce((sum, a) => sum + a.precio, 0);
+    }
+    get accesoriosTotalFmt() { return crc(this.accesoriosTotal); }
+    get tieneAccesorios() { return this.accesoriosTotal > 0; }
+    handleToggleAccesorio(event) {
+        const id = event.currentTarget.dataset.id;
+        this.accesorios = this.accesorios.map(a =>
+            a.id === id ? { ...a, sel: event.target.checked } : a);
     }
 
     // ------- paso Precio -------
     get priceBreakdown() {
-        return this.esUsado ? this.priceBreakdownUsado : this.priceBreakdownNuevo;
+        const base = this.esUsado ? this.priceBreakdownUsado : this.priceBreakdownNuevo;
+        if (!this.tieneAccesorios) return base;
+        return [...base, {
+            id: 'acc',
+            concepto: `Accesorios seleccionados (${this.accesoriosSeleccionados.length})`,
+            valor: this.accesoriosTotalFmt
+        }];
     }
 
     // ------- paso Descuentos -------
-    get baseTotal() { return this.esUsado ? TOTAL_USADO : TOTAL_NUEVO; }
+    get baseTotal() {
+        return (this.esUsado ? TOTAL_USADO : TOTAL_NUEVO) + this.accesoriosTotal;
+    }
     get totalReferenciaFmt() { return crc(this.baseTotal); }
     get maxDescuentoDirectoFmt() { return crc(MAX_DESCUENTO_DIRECTO); }
     get descuentoNum() { return Number(this.descuento) || 0; }
@@ -251,16 +286,11 @@ export default class VentaGuiadaModal extends LightningModal {
     }
     get cuotaMensualFmt() { return crc(this.cuotaMensual); }
 
-    handleFormaPagoChange(event) {
-        this.formaPago = event.detail.value;
-    }
-    handlePrimaChange(event) {
-        this.prima = event.detail.value;
-    }
-    handlePlazoChange(event) {
-        this.plazo = event.detail.value;
-    }
+    handleFormaPagoChange(event) { this.formaPago = event.detail.value; }
+    handlePrimaChange(event) { this.prima = event.detail.value; }
+    handlePlazoChange(event) { this.plazo = event.detail.value; }
     handleLlamarFinanciero() {
+        // TODO real: lanzar el flow/subflujo de la frente financiera (CrediQ)
         this.solicitudFinancieroEnviada = true;
         this.dispatchEvent(new ShowToastEvent({
             title: 'Mock de presentación',
@@ -270,15 +300,43 @@ export default class VentaGuiadaModal extends LightningModal {
     }
 
     // ------- paso Cotizacion -------
+    get vehiculoResumen() {
+        const v = this.selectedVehicle;
+        if (!v) return '-';
+        return this.esUsado
+            ? `${v.modelo} — ${v.anio} — ${v.km} — VIN ${v.vin} (USADO)`
+            : `${v.modelo} — ${v.anio} — ${v.color}`;
+    }
+    /**
+     * Estados de la cotizacion segun disponibilidad (aporte Davi, HU-044):
+     * con stock = cotizacion normal; sin stock con unidades en transito =
+     * cotizacion contra transito (ETA); sin stock ni transito = la cotizacion
+     * SOLICITA la unidad (HU-044: dado un modelo, si no lo encuentra, lo
+     * solicita). Usados siempre cotizan la unidad disponible.
+     */
+    get createQuoteBtn() {
+        if (this.esUsado) return { label: 'Crear cotización', variant: 'brand' };
+        const v = this.selectedVehicle;
+        if (!v) return { label: 'Crear cotización', variant: 'brand' };
+        if (v.stockDealer || v.stockCentral) {
+            return { label: 'Crear cotización', variant: 'brand' };
+        }
+        // verificar si vamos utilizar este flujo separado de 'Crear cotizacion' default
+        if (v.disponibilidad?.cantidad) {
+            return { label: 'Crear cotización con unidad en tránsito', variant: 'brand' };
+        }
+        return { label: 'Crear cotización y solicitar unidad', variant: 'neutral' };
+    }
+
     get quoteSummary() {
         const rows = [
             { id: 'q1', etiqueta: 'Cliente', valor: 'Vendedor- (Cuenta de prueba)' },
-            { id: 'q2', etiqueta: 'Vehículo',
-              valor: this.esUsado
-                ? 'Hyundai Accent 1.6 — 2022 — 45.000 km — VIN 3KPC24...4885 (USADO)'
-                : 'Hyundai Tucson GLS 2.0 — 2026 — Blanco Polar' },
+            { id: 'q2', etiqueta: 'Vehículo', valor: this.vehiculoResumen },
             { id: 'q3', etiqueta: 'Total de referencia', valor: this.totalReferenciaFmt }
         ];
+        this.accesoriosSeleccionados.forEach((a, idx) => {
+            rows.push({ id: 'acc' + idx, etiqueta: 'Accesorio: ' + a.nombre, valor: crc(a.precio) });
+        });
         if (this.descuentoNum > 0) {
             const sufijo = this.descuentoRequiereAprobacion ? ' (aprobado por Gerente — simulado)' : ' (dentro del margen)';
             rows.push({ id: 'q4', etiqueta: 'Descuento comercial', valor: '- ' + crc(this.descuentoNum) + sufijo });
@@ -291,6 +349,13 @@ export default class VentaGuiadaModal extends LightningModal {
         } else if (this.isContado) {
             rows.push({ id: 'q6', etiqueta: 'Forma de pago', valor: 'Contado' });
         }
+        const v = this.selectedVehicle;
+        if (this.esNuevo && v && !v.stockDealer && !v.stockCentral) {
+            rows.push({ id: 'q11', etiqueta: 'Disponibilidad',
+                valor: v.disponibilidad?.cantidad
+                    ? `Sin stock — ${v.disponibilidad.cantidad} unidades en tránsito, ETA ${v.disponibilidad.eta}`
+                    : 'Sin stock ni tránsito — la cotización registra la solicitud de la unidad (HU-044)' });
+        }
         rows.push({ id: 'q9', etiqueta: 'Vigencia de la cotización', valor: '15 días' });
         rows.push({ id: 'q10', etiqueta: 'Precio definitivo',
             valor: this.esUsado ? 'Facturación del usado: definición pendiente (SAP o local)' : 'Lo certifica SAP al facturar' });
@@ -299,7 +364,7 @@ export default class VentaGuiadaModal extends LightningModal {
     get leyendaCotizacion() {
         return this.esUsado
             ? 'Real: QuoteOrderService crea la cotización nativa. Al facturar, la assetización CIERRA el asset del dueño anterior y crea el del comprador (misma unidad Vehicle, historial completo).'
-            : 'Real: QuoteOrderService crea la cotización nativa; el pedido viaja al SAP en segundo plano y el resultado vuelve por platform event.';
+            : 'Real: QuoteOrderService crea la cotización nativa; el pedido viaja al SAP en segundo plano y el resultado vuelve por platform event. Accesorios = líneas del pricebook Vehículos y accesorios.';
     }
 
     async handleCreateQuote() {
@@ -309,10 +374,13 @@ export default class VentaGuiadaModal extends LightningModal {
             totalFmt: this.totalConDescuentoFmt
         });
         if (result === 'confirmar') {
-            // TODO real: GuidedSellingController.createQuote(this.recordId, payload) -> QuoteOrderService
+            // TODO real: GuidedSellingController.createQuote(this.recordId) (capa LWC)
+            // -> QuoteOrderService.createQuote(): retrieve de las infos (vehiculo,
+            // line items de accesorios, datos de descuento) por recordId; crea la
+            // Quote + QuoteLineItems y el approval de descuento cuando necesario.
             this.dispatchEvent(new ShowToastEvent({
                 title: 'Mock de presentación',
-                message: 'Aquí QuoteOrderService crea la cotización nativa con las líneas, el descuento trazado y el trade-in.',
+                message: 'Aquí QuoteOrderService crea la cotización nativa con las líneas, los accesorios, el descuento trazado y el trade-in.',
                 variant: 'info'
             }));
             this.close('cotizacion-creada');
