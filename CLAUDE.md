@@ -56,8 +56,9 @@
   consulta síncrona SAP via Continuation (MuleSoft POST /api/v1/
   prices-and-inventory); assetização nativa (Asset + Vehicle +
   AssetContactParticipant via Flow); Record Types separam Venta Vehículo
-  x Contraventa Repuestos. Decisão LWC vs OmniStudio em validação com a
-  Salesforce (e-mail chefe -> Felipe Pajón) — não cravar antes do aval.
+  x Contraventa Repuestos. Decisão LWC vs OmniStudio: SEGUIR com LWC+Apex
+  sem esperar o aval do Felipe Pajón (decisão Diego Braz, 27/07/2026) —
+  o esqueleto deixa de ser "preparação" e vira o caminho oficial do build.
 
 ## Naming conventions oficiais (GRPQM - Diego Braz, 23/07/2026)
 - TODO metadato: API name em INGLES, PascalCase, SEM underscores (remover os

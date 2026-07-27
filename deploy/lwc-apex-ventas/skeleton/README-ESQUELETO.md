@@ -5,9 +5,15 @@ LWC y Apex SOLO en interfaz e integracion; el modelo, la cotizacion, el pedido
 y la assetizacion son nativos; las reglas viven en el BRE.
 
 ## GOBERNANZA — leer antes de desplegar
-- NO se despliega hasta el aval de la validacion LWC vs OmniStudio con
-  Salesforce (reunion con Producto en agenda via Felipe Pajon). Este scaffold
-  es preparacion versionada en el repositorio.
+- DECISION 27/07/2026 (Diego Braz): seguir con LWC+Apex SIN esperar el aval
+  de la validacion con Salesforce (Felipe Pajon). Este scaffold es el camino
+  oficial del build; si el aval posterior trae observaciones, se incorporan
+  como ajustes, no como cambio de rumbo.
+- Regla BFF (27/07): una pantalla = una llamada Apex. GuidedSellingController
+  agrega todo lo que la pantalla renderiza en UN payload (ViewModel);
+  MuleSoft agrega del lado SAP (precio + stock + disponibilidad futura en un
+  solo endpoint). Render local primero, prefetch de la consulta SAP durante
+  el paso Accesorios, cacheable=true en lecturas.
 - Al desplegar: registrar cada componente en la DLG como "Ventas / HU-042"
   (o la HU que corresponda) el mismo dia.
 - Prerequisito de integracion: Named Credential "MuleSoftPricesInventory"
