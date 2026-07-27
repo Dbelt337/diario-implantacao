@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Agente BDC / AVO</members>
+        <members>Asesor de Ventas de Vehículos (APV)</members>
+        <members>Ejecutivo de Servicontrato (Autopits)</members>
+        <members>Gerente / Vendedor de Flotas</members>
+        <members>Gerente de Sucursal</members>
+        <members>Gerente de Ventas / Gerente de Marca</members>
+        <members>Supervisor de Repuestos</members>
+        <members>Vendedor de Repuestos</members>
+        <name>Profile</name>
+    </types>
+    <version>63.0</version>
+</Package>
