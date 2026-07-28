@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Retrieve de reconciliacion del esqueleto (estado v13): correr ANTES de
+     evolucionar componentes para incorporar ediciones hechas directo en la
+     org (practica acordada 27/07). Cubre LWC, Apex, static resource y los
+     metadatos de la HU-042. -->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>ventaGuiadaLauncher</members>
@@ -16,10 +20,42 @@
         <members>GuidedSellingControllerTest</members>
         <members>QuoteOrderService</members>
         <members>SapInventoryService</members>
+        <members>SapInventoryServiceTest</members>
         <members>PricingService</members>
         <members>MaterialSearchService</members>
         <members>SapOrderService</members>
+        <members>VentasTestDataFactory</members>
+        <members>SapCalloutMockFactory</members>
         <name>ApexClass</name>
+    </types>
+    <types>
+        <members>GrupoQLogo</members>
+        <name>StaticResource</name>
+    </types>
+    <types>
+        <members>Quote.NewVehicle</members>
+        <members>Quote.UsedVehicle</members>
+        <name>RecordType</name>
+    </types>
+    <types>
+        <members>ViewInventoryQuantities</members>
+        <name>CustomPermission</name>
+    </types>
+    <types>
+        <members>InventoryQuantitiesAccess</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>InventoryAlert</members>
+        <name>CustomNotificationType</name>
+    </types>
+    <types>
+        <members>InventoryExhaustedNotification</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>Opportunity.VentaGuiadaModal</members>
+        <name>QuickAction</name>
     </types>
     <version>63.0</version>
 </Package>
