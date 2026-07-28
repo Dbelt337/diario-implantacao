@@ -14,6 +14,15 @@ y la assetizacion son nativos; las reglas viven en el BRE.
   MuleSoft agrega del lado SAP (precio + stock + disponibilidad futura en un
   solo endpoint). Render local primero, prefetch de la consulta SAP durante
   el paso Accesorios, cacheable=true en lecturas.
+- Frontera client/server (28/07): client-side = confort (navegacion,
+  calculos de exhibicion, refinar la pagina ya cargada, ocultar por
+  permiso); server-side = ley (busqueda SOQL indexada con LIMIT ~50 +
+  carga incremental — nunca el catalogo completo al navegador; validaciones
+  de negocio como un-vehiculo-por-quote; FLS/sharing). El gate de
+  ViewInventoryQuantities en el LWC es cosmetico: el Apex debe chequear
+  FeatureManagement.checkPermission y NO incluir cantidades en el payload
+  sin el permiso. Toda regla se revalida en el service — el controller
+  puede invocarse por fuera de la pantalla.
 - Al desplegar: registrar cada componente en la DLG como "Ventas / HU-042"
   (o la HU que corresponda) el mismo dia.
 - Prerequisito de integracion: Named Credential "MuleSoftPricesInventory"
