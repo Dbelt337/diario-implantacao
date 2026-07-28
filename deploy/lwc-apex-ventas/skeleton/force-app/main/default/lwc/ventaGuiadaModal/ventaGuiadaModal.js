@@ -72,12 +72,31 @@ export default class VentaGuiadaModal extends LightningModal {
           vin: '9BGKS48...3341', precio: 'CRC 11.800.000', ubicacion: 'La Uruca' }
     ];
 
-    accesorios = [
-        { id: 'A1', nombre: 'Juego de tapetes', precio: 45000, sel: false },
-        { id: 'A2', nombre: 'Rack de techo', precio: 120000, sel: false },
-        { id: 'A3', nombre: 'Polarizado de ventanas', precio: 85000, sel: false },
-        { id: 'A4', nombre: 'Kit de seguridad (triángulo + extintor)', precio: 35000, sel: false }
+    /**
+     * Catalogo SIMULADO de piezas y accesorios asociado al vehiculo:
+     * "modelos" lista los vehiculos demo compatibles. Real: materiales SAP
+     * del pricebook "Vehiculos y accesorios" de la sociedad, filtrados por
+     * la matriz de compatibilidad accesorio x modelo (insumo GrupoQ).
+     */
+    accesoriosCatalogo = [
+        { id: 'A1', nombre: 'Juego de tapetes', categoria: 'Confort', precio: 45000,
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'U1', 'U2', 'U3'] },
+        { id: 'A2', nombre: 'Rack de techo', categoria: 'Exterior', precio: 120000,
+          modelos: ['V1', 'V2', 'V4', 'V5', 'U2'] },
+        { id: 'A3', nombre: 'Polarizado de ventanas', categoria: 'Confort', precio: 85000,
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'U1', 'U2', 'U3'] },
+        { id: 'A4', nombre: 'Kit de seguridad (triángulo + extintor)', categoria: 'Seguridad', precio: 35000,
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'U1', 'U2', 'U3'] },
+        { id: 'A5', nombre: 'Estribos laterales', categoria: 'Exterior', precio: 160000,
+          modelos: ['V1', 'V2', 'V4', 'V5', 'U2'] },
+        { id: 'A6', nombre: 'Cámara de retroceso adicional', categoria: 'Seguridad', precio: 95000,
+          modelos: ['V3', 'U1', 'U3'] },
+        { id: 'A7', nombre: 'Protector de maletero', categoria: 'Exterior', precio: 55000,
+          modelos: ['V1', 'V2', 'V3', 'V4', 'U1', 'U3'] },
+        { id: 'A8', nombre: 'Sensor de parqueo delantero', categoria: 'Seguridad', precio: 110000,
+          modelos: ['V3', 'V5', 'U1', 'U3'] }
     ];
+    accesoriosSel = {};
 
     priceBreakdownNuevo = [
         { id: 'p1', concepto: 'Precio de lista (PricebookEntry, sociedad C101)', valor: 'CRC 21.500.000' },
@@ -147,7 +166,7 @@ export default class VentaGuiadaModal extends LightningModal {
             this.formaPago = '';
             this.prima = undefined;
             this.solicitudFinancieroEnviada = false;
-            this.accesorios = this.accesorios.map(a => ({ ...a, sel: false }));
+            this.accesoriosSel = {};
         }
     }
     get tipoNuevoClass() { return this.esNuevo ? 'tipo-card tipo-card-selected' : 'tipo-card'; }
@@ -175,17 +194,48 @@ export default class VentaGuiadaModal extends LightningModal {
         this.searchTerm = event.target.value;
     }
     handleSelectVehicle(event) {
+        const previo = this.selectedVehicle?.id;
         this.selectedVehicle = this.vehiclesActuales.find(
             (el) => el.id === event.currentTarget.dataset.id
         );
+        // cambiar de vehiculo cambia el catalogo compatible: se limpia la seleccion
+        if (previo !== this.selectedVehicle?.id) this.accesoriosSel = {};
     }
 
-    // ------- paso Accesorios -------
-    get accesorioOptions() {
-        return this.accesorios.map(a => ({ ...a, precioFmt: crc(a.precio) }));
+    // ------- barra de marca (logo + contexto del vehiculo) -------
+    get tieneVehiculo() { return !!this.selectedVehicle; }
+    get vehiculoChip() {
+        const v = this.selectedVehicle;
+        if (!v) return '';
+        return this.esUsado ? `${v.modelo} ${v.anio} — VIN ${v.vin}` : `${v.modelo} ${v.anio}`;
+    }
+
+    // ------- paso Accesorios (catalogo asociado al vehiculo) -------
+    get accesoriosDisponibles() {
+        const v = this.selectedVehicle;
+        if (!v) return [];
+        return this.accesoriosCatalogo.filter(a => a.modelos.includes(v.id));
+    }
+    get accesorioCategorias() {
+        const cats = [];
+        this.accesoriosDisponibles.forEach(a => {
+            const item = { ...a, precioFmt: crc(a.precio), sel: !!this.accesoriosSel[a.id] };
+            let cat = cats.find(c => c.nombre === a.categoria);
+            if (!cat) {
+                cat = { nombre: a.categoria, items: [] };
+                cats.push(cat);
+            }
+            cat.items.push(item);
+        });
+        return cats;
+    }
+    get tituloAccesorios() {
+        const v = this.selectedVehicle;
+        const n = this.accesoriosDisponibles.length;
+        return v ? `Catálogo compatible con ${v.modelo} (${n} piezas)` : 'Catálogo de accesorios';
     }
     get accesoriosSeleccionados() {
-        return this.accesorios.filter(a => a.sel);
+        return this.accesoriosDisponibles.filter(a => this.accesoriosSel[a.id]);
     }
     get accesoriosTotal() {
         return this.accesoriosSeleccionados.reduce((sum, a) => sum + a.precio, 0);
@@ -194,8 +244,7 @@ export default class VentaGuiadaModal extends LightningModal {
     get tieneAccesorios() { return this.accesoriosTotal > 0; }
     handleToggleAccesorio(event) {
         const id = event.currentTarget.dataset.id;
-        this.accesorios = this.accesorios.map(a =>
-            a.id === id ? { ...a, sel: event.target.checked } : a);
+        this.accesoriosSel = { ...this.accesoriosSel, [id]: event.target.checked };
     }
 
     // ------- paso Precio -------
