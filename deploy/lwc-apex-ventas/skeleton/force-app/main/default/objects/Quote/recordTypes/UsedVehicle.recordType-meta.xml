@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+<fullName>UsedVehicle</fullName>
+        <active>true</active>
+        <description>Todos los paises. Cotizacion de vehiculo usado: ligada a la unidad especifica del inventario (Vehicle, VIN) con ficha e historial. Plantilla de usados. HU-042.</description>
+        <label>Vehículo Usado</label>
+</RecordType>

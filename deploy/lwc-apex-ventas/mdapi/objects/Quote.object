@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <recordTypes>
+        <fullName>NewVehicle</fullName>
+        <active>true</active>
+        <description>Todos los paises. Cotizacion de vehiculo nuevo (Autos y Motos): se cotiza por codigo activo (modelo/version, Product2.IsActive), sin unidad especifica. Plantilla de nuevos. HU-042.</description>
+        <label>Vehículo Nuevo</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>UsedVehicle</fullName>
+        <active>true</active>
+        <description>Todos los paises. Cotizacion de vehiculo usado: ligada a la unidad especifica del inventario (Vehicle, VIN) con ficha e historial. Plantilla de usados. HU-042.</description>
+        <label>Vehículo Usado</label>
+    </recordTypes>
+</CustomObject>

@@ -49,19 +49,34 @@
                 </template>
 
                 <template lwc:if={isStepSeleccion}>
-                    <lightning-input type="search" label="Buscar vehículo (modelo, versión, VIN)"
-                        placeholder="Ej.: Tucson 2026" value={searchTerm}
-                        onchange={handleSearchChange} class="slds-m-bottom_small"></lightning-input>
+                    <lightning-layout class="slds-m-bottom_small">
+                        <lightning-layout-item size="6" padding="horizontal-small">
+                            <lightning-input type="search" label="Buscar vehículo (modelo, versión, color, VIN)"
+                                placeholder="Ej.: Tucson 2026" value={searchTerm}
+                                onchange={handleSearchChange}></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3" padding="horizontal-small">
+                            <lightning-combobox label="Marca" options={marcaOptions}
+                                value={filtroMarca} onchange={handleFiltroMarca}></lightning-combobox>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3" padding="horizontal-small">
+                            <lightning-combobox label="Año" options={anioOptions}
+                                value={filtroAnio} onchange={handleFiltroAnio}></lightning-combobox>
+                        </lightning-layout-item>
+                    </lightning-layout>
                     <template lwc:if={esNuevo}>
                         <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                             <thead>
                                 <tr class="slds-line-height_reset">
                                     <th scope="col">Modelo / Versión</th>
                                     <th scope="col">Año</th>
-                                    <th scope="col">Color</th>
+                                    <th scope="col">Color exterior</th>
+                                    <th scope="col">Color interior</th>
                                     <th scope="col">Precio de lista</th>
-                                    <th scope="col">Stock Central</th>
-                                    <th scope="col">Stock Sucursal</th>
+                                    <template lwc:if={puedeVerCantidades}>
+                                        <th scope="col">Stock Central</th>
+                                        <th scope="col">Stock Sucursal</th>
+                                    </template>
                                 </tr>
                             </thead>
                             <tbody>
@@ -71,9 +86,12 @@
                                         <td>{vehicle.modelo}</td>
                                         <td>{vehicle.anio}</td>
                                         <td>{vehicle.color}</td>
+                                        <td>{vehicle.colorInt}</td>
                                         <td>{vehicle.precio}</td>
-                                        <td>{vehicle.stockCentral}</td>
-                                        <td>{vehicle.stockDealer}</td>
+                                        <template lwc:if={puedeVerCantidades}>
+                                            <td>{vehicle.stockCentral}</td>
+                                            <td>{vehicle.stockDealer}</td>
+                                        </template>
                                     </tr>
                                 </template>
                             </tbody>
@@ -174,13 +192,22 @@
                         <lightning-layout-item size="5" padding="around-small">
                             <template lwc:if={esNuevo}>
                                 <div class="slds-box slds-box_small">
-                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Stock en línea (SAP vía MuleSoft)</h3>
-                                    <p class="slds-p-vertical_xx-small">Sucursal Central: <strong>3 unidades</strong></p>
-                                    <p class="slds-p-vertical_xx-small">Lindora: <strong>1 unidad</strong></p>
-                                    <p class="slds-p-vertical_xx-small">Guápiles: <strong>0 unidades</strong></p>
-                                    <lightning-badge label="Consulta SAP simulada" class="slds-m-top_small"></lightning-badge>
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Disponibilidad en línea (SAP vía MuleSoft)</h3>
+                                    <template lwc:if={puedeVerCantidades}>
+                                        <p class="slds-p-vertical_xx-small">Sucursal Central: <strong>3 unidades</strong></p>
+                                        <p class="slds-p-vertical_xx-small">Lindora: <strong>1 unidad</strong></p>
+                                        <p class="slds-p-vertical_xx-small">Guápiles: <strong>0 unidades</strong></p>
+                                    </template>
+                                    <template lwc:else>
+                                        <p class="slds-p-vertical_xx-small">Disponible en: <strong>Sucursal Central, Lindora</strong></p>
+                                        <p class="slds-text-body_small slds-text-color_weak">
+                                            Cantidades visibles solo con el permiso "Ver cantidades de inventario" (asesor de piso).
+                                        </p>
+                                    </template>
+                                    <p class="slds-p-vertical_xx-small">Colores: <strong>Blanco Polar / Negro</strong> — En tránsito: <strong>consulta país</strong></p>
+                                    <lightning-badge label="Consulta SAP simulada — informativa, sin bloqueo" class="slds-m-top_small"></lightning-badge>
                                     <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
-                                        Real: SapInventoryService con Continuation — la pantalla nunca bloquea al asesor.
+                                        Real: SapInventoryService con Continuation — informativa; los bloqueos son de la reserva (HU-046), nunca de la cotización.
                                     </p>
                                 </div>
                             </template>

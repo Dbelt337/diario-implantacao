@@ -28,6 +28,28 @@ y la assetizacion son nativos; las reglas viven en el BRE.
   persistent browser caching" para que los testers vean los LWC nuevos sin
   logout/login.
 
+## HU-042 (v13) — metadatos de la historia de seleccion de vehiculo
+- Quote Record Types NewVehicle ("Vehículo Nuevo") y UsedVehicle ("Vehículo
+  Usado") — base de las plantillas diferenciadas (T02). TRIO post-deploy por
+  ambiente: asignacion a perfiles + page layout assignment + defaults.
+- CustomPermission ViewInventoryQuantities + PermissionSet
+  InventoryQuantitiesAccess (T04): asignar el PS a los asesores de PISO.
+  Sin el permiso, la venta guiada oculta las columnas/cantidades de stock
+  (RN-03: online no ve cantidades; disponibilidad cualitativa si).
+- CustomNotificationType InventoryAlert + Flow InventoryExhaustedNotification
+  (T06): subflujo autolanzado (inputs RecipientId, ProductCode, ProductName,
+  TargetRecordId) que avisa al encargado para EVALUAR desactivar el codigo.
+  Llega en Draft — ACTIVAR tras el deploy; lo invoca la integracion de
+  disponibilidad o un batch cuando el nivel pais llegue a cero.
+- scripts/DESCRIBE-hu042.apex (T01): correr ANTES de crear campos en la
+  linea (T08) — confirma lookups nativos a Vehicle y campos de color.
+- Config por ambiente SIN cobertura de deploy: Field History de Quote
+  (historial de cotizaciones, T15) y matrices BRE de precio de referencia
+  (T09) se configuran en la org.
+- Seleccion del mock alineada a la HU: filtros marca/año + busqueda, color
+  exterior E interior, cantidades tras el permiso, cotizacion sin stock
+  (codigo activo = Product2.IsActive como interruptor de cotizable, T05).
+
 ## Capa Apex (services de la pestana "Capas y componentes")
 - SapInventoryService (+Test): Continuation @AuraEnabled(continuation=true
   cacheable=true) contra callout:MuleSoftPricesInventory/api/v1/

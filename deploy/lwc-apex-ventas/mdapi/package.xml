@@ -36,5 +36,26 @@
         <members>GrupoQLogo</members>
         <name>StaticResource</name>
     </types>
+    <types>
+        <members>Quote.NewVehicle</members>
+        <members>Quote.UsedVehicle</members>
+        <name>RecordType</name>
+    </types>
+    <types>
+        <members>ViewInventoryQuantities</members>
+        <name>CustomPermission</name>
+    </types>
+    <types>
+        <members>InventoryQuantitiesAccess</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>InventoryAlert</members>
+        <name>CustomNotificationType</name>
+    </types>
+    <types>
+        <members>InventoryExhaustedNotification</members>
+        <name>Flow</name>
+    </types>
     <version>63.0</version>
 </Package>

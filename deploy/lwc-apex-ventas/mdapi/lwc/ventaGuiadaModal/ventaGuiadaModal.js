@@ -2,6 +2,7 @@ import { api } from 'lwc';
 import LightningModal from 'lightning/modal';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import GRUPOQ_LOGO from '@salesforce/resourceUrl/GrupoQLogo';
+import hasViewInventoryQuantities from '@salesforce/customPermission/ViewInventoryQuantities';
 import CotizacionConfirmModal from 'c/cotizacionConfirmModal';
 import AprobacionDescuentoModal from 'c/aprobacionDescuentoModal';
 
@@ -38,6 +39,8 @@ export default class VentaGuiadaModal extends LightningModal {
     ventaTipo = '';
     selectedVehicle;
     searchTerm = '';
+    filtroMarca = '';
+    filtroAnio = '';
 
     // paso Descuentos
     descuento = 0;
@@ -51,25 +54,33 @@ export default class VentaGuiadaModal extends LightningModal {
 
     // ------- datos SIMULADOS (los reemplazan los servicios Apex) -------
     vehiclesNuevos = [
-        { id: 'V1', modelo: 'Hyundai Tucson GLS 2.0', anio: '2026', color: 'Blanco Polar',
+        { id: 'V1', marca: 'Hyundai', modelo: 'Hyundai Tucson GLS 2.0', anio: '2026',
+          color: 'Blanco Polar', colorInt: 'Negro',
           precio: 'CRC 21.500.000', stockCentral: 3, stockDealer: 1 },
-        { id: 'V2', modelo: 'Hyundai Tucson Limited', anio: '2026', color: 'Gris Titanio',
+        { id: 'V2', marca: 'Hyundai', modelo: 'Hyundai Tucson Limited', anio: '2026',
+          color: 'Gris Titanio', colorInt: 'Beige',
           precio: 'CRC 24.900.000', stockCentral: 1, stockDealer: 0 },
-        { id: 'V3', modelo: 'Hyundai Creta GL 1.5', anio: '2026', color: 'Rojo Fuego',
+        { id: 'V3', marca: 'Hyundai', modelo: 'Hyundai Creta GL 1.5', anio: '2026',
+          color: 'Rojo Fuego', colorInt: 'Negro',
           precio: 'CRC 16.800.000', stockCentral: 5, stockDealer: 2 },
-        { id: 'V4', modelo: 'Hyundai Tucson Híbrida', anio: '2026', color: 'Azul Océano',
+        { id: 'V4', marca: 'Hyundai', modelo: 'Hyundai Tucson Híbrida', anio: '2026',
+          color: 'Azul Océano', colorInt: 'Gris',
           precio: 'CRC 27.900.000', stockCentral: 0, stockDealer: 0,
           disponibilidad: { cantidad: 2, eta: '15/09/2026', fuente: 'pedido_importacion' } },
-        { id: 'V5', modelo: 'Hyundai Santa Fe', anio: '2027', color: 'Negro Fantasma',
-          precio: 'CRC 32.500.000', stockCentral: 0, stockDealer: 0 }
+        { id: 'V5', marca: 'Hyundai', modelo: 'Hyundai Santa Fe', anio: '2027',
+          color: 'Negro Fantasma', colorInt: 'Marrón',
+          precio: 'CRC 32.500.000', stockCentral: 0, stockDealer: 0 },
+        { id: 'V6', marca: 'Chevrolet', modelo: 'Chevrolet Groove LT', anio: '2026',
+          color: 'Plata Estelar', colorInt: 'Negro',
+          precio: 'CRC 15.900.000', stockCentral: 4, stockDealer: 1 }
     ];
 
     vehiclesUsados = [
-        { id: 'U1', modelo: 'Hyundai Accent 1.6', anio: '2022', km: '45.000 km',
+        { id: 'U1', marca: 'Hyundai', modelo: 'Hyundai Accent 1.6', anio: '2022', km: '45.000 km',
           vin: '3KPC24...4885', precio: 'CRC 12.900.000', ubicacion: 'La Uruca' },
-        { id: 'U2', modelo: 'Hyundai Tucson GLS', anio: '2021', km: '62.000 km',
+        { id: 'U2', marca: 'Hyundai', modelo: 'Hyundai Tucson GLS', anio: '2021', km: '62.000 km',
           vin: 'KM8J33...1207', precio: 'CRC 16.500.000', ubicacion: 'Lindora' },
-        { id: 'U3', modelo: 'Chevrolet Onix LT', anio: '2023', km: '28.000 km',
+        { id: 'U3', marca: 'Chevrolet', modelo: 'Chevrolet Onix LT', anio: '2023', km: '28.000 km',
           vin: '9BGKS48...3341', precio: 'CRC 11.800.000', ubicacion: 'La Uruca' }
     ];
 
@@ -81,21 +92,21 @@ export default class VentaGuiadaModal extends LightningModal {
      */
     accesoriosCatalogo = [
         { id: 'A1', nombre: 'Juego de tapetes', categoria: 'Confort', precio: 45000,
-          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'U1', 'U2', 'U3'] },
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1', 'U2', 'U3'] },
         { id: 'A2', nombre: 'Rack de techo', categoria: 'Exterior', precio: 120000,
           modelos: ['V1', 'V2', 'V4', 'V5', 'U2'] },
         { id: 'A3', nombre: 'Polarizado de ventanas', categoria: 'Confort', precio: 85000,
-          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'U1', 'U2', 'U3'] },
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1', 'U2', 'U3'] },
         { id: 'A4', nombre: 'Kit de seguridad (triángulo + extintor)', categoria: 'Seguridad', precio: 35000,
-          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'U1', 'U2', 'U3'] },
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1', 'U2', 'U3'] },
         { id: 'A5', nombre: 'Estribos laterales', categoria: 'Exterior', precio: 160000,
           modelos: ['V1', 'V2', 'V4', 'V5', 'U2'] },
         { id: 'A6', nombre: 'Cámara de retroceso adicional', categoria: 'Seguridad', precio: 95000,
-          modelos: ['V3', 'U1', 'U3'] },
+          modelos: ['V3', 'V6', 'U1', 'U3'] },
         { id: 'A7', nombre: 'Protector de maletero', categoria: 'Exterior', precio: 55000,
-          modelos: ['V1', 'V2', 'V3', 'V4', 'U1', 'U3'] },
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V6', 'U1', 'U3'] },
         { id: 'A8', nombre: 'Sensor de parqueo delantero', categoria: 'Seguridad', precio: 110000,
-          modelos: ['V3', 'V5', 'U1', 'U3'] }
+          modelos: ['V3', 'V5', 'V6', 'U1', 'U3'] }
     ];
     accesoriosSel = {};
 
@@ -168,6 +179,9 @@ export default class VentaGuiadaModal extends LightningModal {
             this.prima = undefined;
             this.solicitudFinancieroEnviada = false;
             this.accesoriosSel = {};
+            this.searchTerm = '';
+            this.filtroMarca = '';
+            this.filtroAnio = '';
         }
     }
     get tipoNuevoClass() { return this.esNuevo ? 'tipo-card tipo-card-selected' : 'tipo-card'; }
@@ -177,23 +191,48 @@ export default class VentaGuiadaModal extends LightningModal {
     get vehiclesActuales() {
         return this.esUsado ? this.vehiclesUsados : this.vehiclesNuevos;
     }
+    /**
+     * Cantidades de inventario (HU-042 RN-03): visibles SOLO con la Custom
+     * Permission ViewInventoryQuantities (asesor de piso). La disponibilidad
+     * cualitativa (colores, ubicacion, transito) sigue visible para todos.
+     */
+    get puedeVerCantidades() {
+        return !!hasViewInventoryQuantities;
+    }
+    get marcaOptions() {
+        const marcas = [...new Set(this.vehiclesActuales.map(v => v.marca))];
+        return [{ label: 'Todas las marcas', value: '' },
+            ...marcas.map(m => ({ label: m, value: m }))];
+    }
+    get anioOptions() {
+        const anios = [...new Set(this.vehiclesActuales.map(v => v.anio))].sort();
+        return [{ label: 'Todos los años', value: '' },
+            ...anios.map(a => ({ label: a, value: a }))];
+    }
     get vehicleOptions() {
-        return this.vehiclesActuales.map((vehicle) => ({
-            ...vehicle,
-            rowClass: vehicle.id === this.selectedVehicle?.id
-                ? 'slds-hint-parent selected-row'
-                : 'slds-hint-parent'
-        }));
+        const term = (this.searchTerm || '').toLowerCase();
+        return this.vehiclesActuales
+            .filter(v => (!this.filtroMarca || v.marca === this.filtroMarca)
+                && (!this.filtroAnio || v.anio === this.filtroAnio)
+                && (!term || `${v.modelo} ${v.color || ''} ${v.vin || ''}`.toLowerCase().includes(term)))
+            .map((vehicle) => ({
+                ...vehicle,
+                rowClass: vehicle.id === this.selectedVehicle?.id
+                    ? 'slds-hint-parent selected-row'
+                    : 'slds-hint-parent'
+            }));
     }
     get leyendaSeleccion() {
         return this.esUsado
             ? 'Selecciona una fila para continuar. (Real: inventario PROPIO en Vehicle — SOQL directo, sin SAP. Ficha del usado de la historia de inventario de usados.)'
-            : 'Selecciona una fila para continuar. (Real: MaterialSearchService — local, SAP y extensión automática. Stock 0 con tránsito o sin unidades habilita la cotización futura.)';
+            : 'Selecciona una fila para continuar. (Real: busqueda sobre el CODIGO ACTIVO — Product2.IsActive — via MaterialSearchService; se cotiza aun sin existencia. Stock 0 con tránsito o sin unidades cambia el botón final.)';
     }
     handleSearchChange(event) {
-        // TODO real: GuidedSellingController.searchVehicles con debounce
+        // TODO real: GuidedSellingController.getSelectionPageData con debounce
         this.searchTerm = event.target.value;
     }
+    handleFiltroMarca(event) { this.filtroMarca = event.detail.value; }
+    handleFiltroAnio(event) { this.filtroAnio = event.detail.value; }
     handleSelectVehicle(event) {
         const previo = this.selectedVehicle?.id;
         this.selectedVehicle = this.vehiclesActuales.find(

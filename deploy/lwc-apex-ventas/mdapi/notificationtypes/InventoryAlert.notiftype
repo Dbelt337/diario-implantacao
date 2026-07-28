@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>InventoryAlert</customNotifTypeName>
+    <description>Todos los paises. Aviso al encargado de que un codigo de vehiculo quedo sin disponibilidad a nivel pais, para EVALUAR desactivarlo (HU-042 T06; decision humana, no automatica).</description>
+    <desktop>true</desktop>
+    <masterLabel>Aviso de inventario</masterLabel>
+    <mobile>true</mobile>
+</CustomNotificationType>

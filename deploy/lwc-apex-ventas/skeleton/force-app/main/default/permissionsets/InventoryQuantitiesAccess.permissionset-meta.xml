@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>ViewInventoryQuantities</name>
+    </customPermissions>
+    <description>Todos los paises. Otorga el permiso Ver cantidades de inventario en la venta guiada (HU-042 RN-03). Asignar a los usuarios de asesor de piso; NO asignar a los asesores online.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Ver cantidades de inventario</label>
+</PermissionSet>
