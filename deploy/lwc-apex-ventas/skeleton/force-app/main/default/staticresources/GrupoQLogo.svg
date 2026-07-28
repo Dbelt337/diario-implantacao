@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 490" role="img" aria-label="GrupoQ">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" role="img" aria-label="GrupoQ">
   <defs>
     <linearGradient id="gqBlue" x1="0" y1="0" x2="0.35" y2="1">
       <stop offset="0" stop-color="#8FBDE9"/>
@@ -16,16 +16,13 @@
       <stop offset="1" stop-color="#D9534F"/>
     </linearGradient>
   </defs>
-  <!-- swoosh rojo: lado derecho, de oscuro arriba a claro abajo -->
-  <path d="M 222.6 62 A 130 130 0 1 1 135 302.6"
-        fill="none" stroke="url(#gqRed)" stroke-width="56" stroke-linecap="round"/>
-  <!-- swoosh azul: sobre el rojo, cubre el lado izquierdo -->
-  <path d="M 265 77.4 A 130 130 0 1 0 177.4 318"
-        fill="none" stroke="url(#gqBlue)" stroke-width="56" stroke-linecap="round"/>
-  <!-- cola de la Q -->
-  <rect x="269" y="220" width="52" height="150" fill="url(#gqTail)"
-        transform="rotate(-45 295 295)"/>
-  <text x="200" y="462" text-anchor="middle"
-        font-family="Helvetica, Arial, sans-serif" font-size="56"
-        fill="#173F8F" letter-spacing="10">GRUPO<tspan font-weight="bold">Q</tspan></text>
+  <!-- Q horizontal lockup: icono a la izquierda, wordmark al lado -->
+  <path d="M 166.5 56.4 A 95 95 0 1 1 102.5 232.3"
+        fill="none" stroke="url(#gqRed)" stroke-width="40" stroke-linecap="round"/>
+  <path d="M 197.5 67.7 A 95 95 0 1 0 133.5 243.6"
+        fill="none" stroke="url(#gqBlue)" stroke-width="40" stroke-linecap="round"/>
+  <rect x="202" y="165" width="36" height="110" fill="url(#gqTail)"
+        transform="rotate(-45 220 220)"/>
+  <text x="305" y="192" font-family="Helvetica, Arial, sans-serif" font-size="104"
+        fill="#173F8F" letter-spacing="8">GRUPO<tspan font-weight="bold">Q</tspan></text>
 </svg>
