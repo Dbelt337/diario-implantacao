@@ -9,19 +9,19 @@
         <members>QuoteOrderService</members>
         <members>SapOrderService</members>
         <members>MaterialSearchService</members>
-        <members>VentasTestDataFactory</members>
+        <members>SalesTestDataFactory</members>
         <members>SapCalloutMockFactory</members>
         <name>ApexClass</name>
     </types>
     <types>
-        <members>ventaGuiadaLauncher</members>
-        <members>ventaGuiadaModal</members>
-        <members>cotizacionConfirmModal</members>
-        <members>aprobacionDescuentoModal</members>
-        <members>ventaVehiculo</members>
-        <members>ventaUsados</members>
-        <members>contraventaRepuestos</members>
-        <members>ventaPA</members>
+        <members>guidedSellingLauncher</members>
+        <members>guidedSellingModal</members>
+        <members>quoteConfirmModal</members>
+        <members>discountApprovalModal</members>
+        <members>vehicleSale</members>
+        <members>usedVehicleSale</members>
+        <members>partsCounterSale</members>
+        <members>agriculturalProductsSale</members>
         <name>LightningComponentBundle</name>
     </types>
     <types>
@@ -29,7 +29,7 @@
         <name>CustomObject</name>
     </types>
     <types>
-        <members>Opportunity.VentaGuiadaModal</members>
+        <members>Opportunity.GuidedSelling</members>
         <name>QuickAction</name>
     </types>
     <types>

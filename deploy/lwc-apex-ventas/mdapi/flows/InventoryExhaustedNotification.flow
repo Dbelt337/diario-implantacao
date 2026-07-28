@@ -59,7 +59,7 @@
     <description>Todos los paises. HU-042 T06: notifica al encargado que la disponibilidad pais de un codigo de vehiculo llego a cero, para EVALUAR desactivar el codigo (Product2.IsActive). Decision humana: el flujo NO desactiva nada. Subflujo autolanzado, invocado por el proceso que detecte el agotamiento (integracion de disponibilidad o batch).</description>
     <environments>Default</environments>
     <interviewLabel>Inventory Exhausted Notification {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Inventory Exhausted Notification</label>
+    <label>Send Inventory Exhausted Notification</label>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
         <name>Get_Notification_Type</name>

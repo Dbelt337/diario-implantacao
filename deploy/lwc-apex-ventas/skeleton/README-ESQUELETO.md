@@ -28,6 +28,25 @@ y la assetizacion son nativos; las reglas viven en el BRE.
   persistent browser caching" para que los testers vean los LWC nuevos sin
   logout/login.
 
+## Renombre a la convencion GRPQM (v18, 28/07)
+- Los 8 bundles LWC nacieron en espanol en la fase mock; con el esqueleto
+  como camino oficial se renombraron a ingles (regla: metadato nunca en
+  espanol): guidedSellingLauncher, guidedSellingModal, quoteConfirmModal,
+  discountApprovalModal, vehicleSale, usedVehicleSale, partsCounterSale,
+  agriculturalProductsSale. QuickAction nueva Opportunity.GuidedSelling
+  (label sigue "Venta guiada"); VentasTestDataFactory -> SalesTestDataFactory;
+  label del flow con verbo (Send Inventory Exhausted Notification); RT
+  descriptions con el proceso de negocio primero. Los componentes viejos se
+  eliminan via destructiveChangesPost en el mismo deploy.
+- SECUENCIA DE DEPLOY del v18: (1) quitar la accion "Venta guiada" vieja de
+  la record page/layout ANTES del deploy (la eliminacion falla si esta
+  referenciada); (2) desplegar el zip (crea nuevos + borra viejos);
+  (3) re-agregar la accion nueva (Opportunity.GuidedSelling) a la pagina;
+  (4) logout/login.
+- Deuda registrada: identificadores internos del JS del mock aun en espanol
+  (se normalizan al industrializar); evaluar rename del platform event
+  SapOrderResponse__e a patron <Action><Entity>Event con Diego Braz.
+
 ## HU-042 (v13) — metadatos de la historia de seleccion de vehiculo
 - Quote Record Types NewVehicle ("Vehículo Nuevo") y UsedVehicle ("Vehículo
   Usado") — base de las plantillas diferenciadas (T02). TRIO post-deploy por

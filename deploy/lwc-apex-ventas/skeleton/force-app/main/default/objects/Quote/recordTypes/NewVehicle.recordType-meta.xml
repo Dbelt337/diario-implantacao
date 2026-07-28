@@ -2,7 +2,7 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
 <fullName>NewVehicle</fullName>
         <active>true</active>
-        <description>Todos los paises. HU-042 T02: cotizacion de vehiculo nuevo (Autos y Motos) por codigo activo (version por Product2.IsActive), sin unidad especifica. Base de la plantilla de nuevos.</description>
+        <description>Cotizacion de vehiculo nuevo (Autos y Motos) por codigo activo (version por Product2.IsActive), sin unidad especifica; base de la plantilla de nuevos (HU-042 T02). Todos los paises.</description>
         <label>Vehículo Nuevo</label>
         <picklistValues>
             <picklist>Status</picklist>

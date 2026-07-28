@@ -3,7 +3,7 @@
     <recordTypes>
         <fullName>NewVehicle</fullName>
         <active>true</active>
-        <description>Todos los paises. HU-042 T02: cotizacion de vehiculo nuevo (Autos y Motos) por codigo activo (version por Product2.IsActive), sin unidad especifica. Base de la plantilla de nuevos.</description>
+        <description>Cotizacion de vehiculo nuevo (Autos y Motos) por codigo activo (version por Product2.IsActive), sin unidad especifica; base de la plantilla de nuevos (HU-042 T02). Todos los paises.</description>
         <label>Vehículo Nuevo</label>
         <picklistValues>
             <picklist>Status</picklist>
@@ -44,7 +44,7 @@
     <recordTypes>
         <fullName>UsedVehicle</fullName>
         <active>true</active>
-        <description>Todos los paises. HU-042 T02: cotizacion de vehiculo usado ligada a la unidad especifica del inventario (linea de cotizacion vinculada al Vehicle; lookup pendiente del describe T01). Base de la plantilla de usados.</description>
+        <description>Cotizacion de vehiculo usado ligada a la unidad especifica del inventario via QuoteLineItem.Vehicle__c (describe T01 28/07: sin lookup nativo); base de la plantilla de usados (HU-042 T02). Todos los paises.</description>
         <label>Vehículo Usado</label>
         <picklistValues>
             <picklist>Status</picklist>

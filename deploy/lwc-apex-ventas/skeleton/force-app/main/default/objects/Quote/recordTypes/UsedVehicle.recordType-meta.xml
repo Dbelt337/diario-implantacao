@@ -2,7 +2,7 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
 <fullName>UsedVehicle</fullName>
         <active>true</active>
-        <description>Todos los paises. HU-042 T02: cotizacion de vehiculo usado ligada a la unidad especifica del inventario (linea de cotizacion vinculada al Vehicle; lookup pendiente del describe T01). Base de la plantilla de usados.</description>
+        <description>Cotizacion de vehiculo usado ligada a la unidad especifica del inventario via QuoteLineItem.Vehicle__c (describe T01 28/07: sin lookup nativo); base de la plantilla de usados (HU-042 T02). Todos los paises.</description>
         <label>Vehículo Usado</label>
         <picklistValues>
             <picklist>Status</picklist>
