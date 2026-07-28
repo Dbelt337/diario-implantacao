@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+<fullName>Vehicle__c</fullName>
+        <label>Vehículo</label>
+        <type>Lookup</type>
+        <referenceTo>Vehicle</referenceTo>
+        <relationshipLabel>Líneas de cotización</relationshipLabel>
+        <relationshipName>QuoteLineItems</relationshipName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <required>false</required>
+        <description>Todos los paises. HU-042: vincula la linea de cotizacion a la unidad ESPECIFICA del inventario (usados: cada unidad es unica, VIN). Confirmado por describe T01 (28/07): no existe lookup nativo de la linea a Vehicle; el vinculo nativo (Asset.VehicleId) ocurre recien en la assetizacion post-facturacion.</description>
+</CustomField>

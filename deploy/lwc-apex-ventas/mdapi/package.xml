@@ -42,6 +42,10 @@
         <name>RecordType</name>
     </types>
     <types>
+        <members>QuoteLineItem.Vehicle__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
         <members>ViewInventoryQuantities</members>
         <name>CustomPermission</name>
     </types>

@@ -1,7 +1,7 @@
 Componente (API Name);Label;Tipo de Metadato;Cloud / Frente;HU de Origen;Ambiente actual;Metodo de deploy;Estado / Nota
 Quote.NewVehicle;Vehículo Nuevo;RecordType (Quote);Sales - Ventas;HU-042 (T02);DEV;Creado en org 23/07 (Santiago); description estandarizada por paquete v16 el 28/07;Activo. TRIO por ambiente: perfiles + page layout assignment + plantilla de nuevos
 Quote.UsedVehicle;Vehículo Usado;RecordType (Quote);Sales - Ventas;HU-042 (T02);DEV;Creado en org 23/07 (Santiago); description estandarizada por paquete v16 el 28/07;Activo. TRIO por ambiente: perfiles + page layout assignment + plantilla de usados
-QuoteLineItem.Vehicle__c;Vehículo;CustomField (Lookup a Vehicle);Sales - Ventas;HU-042;DEV;Creado en org 23/07 (Santiago);PENDIENTE describe T01 (scripts/DESCRIBE-hu042.apex): si existe lookup nativo de la linea a Vehicle, eliminar ANTES de que reciba datos
+QuoteLineItem.Vehicle__c;Vehículo;CustomField (Lookup a Vehicle);Sales - Ventas;HU-042 (T08);DEV;Paquete (Esqueleto v17, 28/07);Describe T01 corrido 28/07: NO existe lookup nativo (la descripcion del RT lo citaba pero el campo no existia). Creado via paquete. Post-deploy: FLS a los perfiles/PS de ventas y agregar al layout de la linea
 ViewInventoryQuantities;Ver cantidades de inventario;CustomPermission;Sales - Ventas;HU-042 (T04, RN-03);DEV;Paquete (Esqueleto v16, 28/07);Desplegado. La venta guiada oculta cantidades de stock sin el permiso
 InventoryQuantitiesAccess;Ver cantidades de inventario;PermissionSet;Sales - Ventas;HU-042 (T04);DEV;Paquete (Esqueleto v16, 28/07);Desplegado. ASIGNAR a asesores de PISO; NO asignar a asesores online
 InventoryAlert;Aviso de inventario;CustomNotificationType;Sales - Ventas;HU-042 (T06);DEV;Paquete (Esqueleto v16, 28/07);Desplegado (desktop + mobile)
