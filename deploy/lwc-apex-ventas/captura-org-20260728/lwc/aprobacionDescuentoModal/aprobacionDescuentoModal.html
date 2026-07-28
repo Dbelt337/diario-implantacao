@@ -1,0 +1,29 @@
+<template>
+    <lightning-modal-header label="Enviar descuento a aprobación"></lightning-modal-header>
+    <lightning-modal-body>
+        <div class="slds-p-around_small">
+            <p class="slds-m-bottom_small">
+                El descuento solicitado supera el margen directo de la sucursal y baja del precio mínimo del modelo.
+            </p>
+            <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small">
+                <span>Descuento solicitado</span>
+                <span class="slds-text-title_bold">{descuentoFmt}</span>
+            </div>
+            <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small">
+                <span>Margen directo (precio mínimo)</span>
+                <span class="slds-text-title_bold">{maxDirectoFmt}</span>
+            </div>
+            <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small">
+                <span>Exceso que requiere aprobación</span>
+                <span class="slds-text-title_bold">{excesoFmt}</span>
+            </div>
+            <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
+                Aprobador: Gerente de Sucursal. Real: Approval Process nativo con traza en la cotización; el precio mínimo viene de la Decision Matrix (BRE).
+            </p>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Volver" onclick={handleCancel} class="slds-m-right_x-small"></lightning-button>
+        <lightning-button label="Enviar a aprobación" variant="brand" onclick={handleEnviar}></lightning-button>
+    </lightning-modal-footer>
+</template>

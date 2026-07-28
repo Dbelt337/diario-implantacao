@@ -1,0 +1,83 @@
+.modal-body {
+    min-height: 60vh;
+}
+.selected-row {
+    background-color: #f3f9ff;
+    outline: 2px solid #0176d3;
+}
+tbody tr {
+    cursor: pointer;
+}
+.line-row {
+    border-bottom: 1px solid #f3f3f3;
+}
+.total-row {
+    border-top: 2px solid #0176d3;
+    margin-top: 0.25rem;
+}
+.tipo-card {
+    border: 1px solid #d8dde6;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    min-height: 10rem;
+}
+.tipo-card:hover {
+    border-color: #0176d3;
+    background-color: #f3f9ff;
+}
+.tipo-card-selected {
+    border: 2px solid #0176d3;
+    background-color: #f3f9ff;
+}
+/* Marca: logo oficial via StaticResource GrupoQLogo (SVG vectorial) */
+.brand-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2.5rem;
+}
+.brand-logo-img {
+    height: 3.25rem;
+    width: auto;
+}
+.vehiculo-chip {
+    background-color: #f3f9ff;
+    border: 1px solid #0176d3;
+    border-radius: 1rem;
+    padding: 0.2rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #0176d3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+}
+.categoria-titulo {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #706e6b;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 0.15rem;
+}
+/* Transicion de entrada: anima los contenedores al montar cada paso */
+.tipo-card,
+.modal-body table,
+.modal-body .slds-box,
+.step-anim {
+    animation: stepIn 0.25s ease-out;
+}
+@keyframes stepIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
