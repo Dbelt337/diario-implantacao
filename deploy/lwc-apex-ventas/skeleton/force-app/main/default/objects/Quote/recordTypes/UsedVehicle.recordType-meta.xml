@@ -2,6 +2,41 @@
 <RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
 <fullName>UsedVehicle</fullName>
         <active>true</active>
-        <description>Todos los paises. Cotizacion de vehiculo usado: ligada a la unidad especifica del inventario (Vehicle, VIN) con ficha e historial. Plantilla de usados. HU-042.</description>
+        <description>Todos los paises. HU-042 T02: cotizacion de vehiculo usado ligada a la unidad especifica del inventario (linea de cotizacion vinculada al Vehicle; lookup pendiente del describe T01). Base de la plantilla de usados.</description>
         <label>Vehículo Usado</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Denied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Draft</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>In Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Needs Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Presented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
 </RecordType>

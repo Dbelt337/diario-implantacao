@@ -3,13 +3,83 @@
     <recordTypes>
         <fullName>NewVehicle</fullName>
         <active>true</active>
-        <description>Todos los paises. Cotizacion de vehiculo nuevo (Autos y Motos): se cotiza por codigo activo (modelo/version, Product2.IsActive), sin unidad especifica. Plantilla de nuevos. HU-042.</description>
+        <description>Todos los paises. HU-042 T02: cotizacion de vehiculo nuevo (Autos y Motos) por codigo activo (version por Product2.IsActive), sin unidad especifica. Base de la plantilla de nuevos.</description>
         <label>Vehículo Nuevo</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Denied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Draft</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>In Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Needs Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Presented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
     <recordTypes>
         <fullName>UsedVehicle</fullName>
         <active>true</active>
-        <description>Todos los paises. Cotizacion de vehiculo usado: ligada a la unidad especifica del inventario (Vehicle, VIN) con ficha e historial. Plantilla de usados. HU-042.</description>
+        <description>Todos los paises. HU-042 T02: cotizacion de vehiculo usado ligada a la unidad especifica del inventario (linea de cotizacion vinculada al Vehicle; lookup pendiente del describe T01). Base de la plantilla de usados.</description>
         <label>Vehículo Usado</label>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Denied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Draft</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>In Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Needs Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Presented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
 </CustomObject>

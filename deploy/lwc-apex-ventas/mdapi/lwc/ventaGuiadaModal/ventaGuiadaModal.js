@@ -69,10 +69,14 @@ export default class VentaGuiadaModal extends LightningModal {
           disponibilidad: { cantidad: 2, eta: '15/09/2026', fuente: 'pedido_importacion' } },
         { id: 'V5', marca: 'Hyundai', modelo: 'Hyundai Santa Fe', anio: '2027',
           color: 'Negro Fantasma', colorInt: 'Marrón',
-          precio: 'CRC 32.500.000', stockCentral: 0, stockDealer: 0 },
+          precio: 'CRC 32.500.000', stockCentral: 0, stockDealer: 0,
+          disponibilidadFutura: { fecha: '29/08/2026', cantidad: 2 } },
         { id: 'V6', marca: 'Chevrolet', modelo: 'Chevrolet Groove LT', anio: '2026',
           color: 'Plata Estelar', colorInt: 'Negro',
-          precio: 'CRC 15.900.000', stockCentral: 4, stockDealer: 1 }
+          precio: 'CRC 15.900.000', stockCentral: 4, stockDealer: 1 },
+        { id: 'V7', marca: 'Hyundai', modelo: 'Hyundai Ioniq 6', anio: '2027',
+          color: 'Blanco Lunar', colorInt: 'Negro',
+          precio: 'CRC 38.900.000', stockCentral: 0, stockDealer: 0 }
     ];
 
     vehiclesUsados = [
@@ -92,13 +96,13 @@ export default class VentaGuiadaModal extends LightningModal {
      */
     accesoriosCatalogo = [
         { id: 'A1', nombre: 'Juego de tapetes', categoria: 'Confort', precio: 45000,
-          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1', 'U2', 'U3'] },
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'U1', 'U2', 'U3'] },
         { id: 'A2', nombre: 'Rack de techo', categoria: 'Exterior', precio: 120000,
           modelos: ['V1', 'V2', 'V4', 'V5', 'U2'] },
         { id: 'A3', nombre: 'Polarizado de ventanas', categoria: 'Confort', precio: 85000,
-          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1', 'U2', 'U3'] },
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'U1', 'U2', 'U3'] },
         { id: 'A4', nombre: 'Kit de seguridad (triángulo + extintor)', categoria: 'Seguridad', precio: 35000,
-          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'U1', 'U2', 'U3'] },
+          modelos: ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'U1', 'U2', 'U3'] },
         { id: 'A5', nombre: 'Estribos laterales', categoria: 'Exterior', precio: 160000,
           modelos: ['V1', 'V2', 'V4', 'V5', 'U2'] },
         { id: 'A6', nombre: 'Cámara de retroceso adicional', categoria: 'Seguridad', precio: 95000,
@@ -400,8 +404,10 @@ export default class VentaGuiadaModal extends LightningModal {
     /**
      * Estados de la cotizacion segun disponibilidad (aporte Davi, HU-044):
      * con stock = cotizacion normal; sin stock con unidades en transito =
-     * cotizacion contra transito (ETA); sin stock ni transito = la cotizacion
-     * SOLICITA la unidad (HU-044: dado un modelo, si no lo encuentra, lo
+     * cotizacion contra transito (ETA); sin stock con RECEPCION FUTURA
+     * (disponibilidadFutura, aporte Davi: el estoque futuro en la tabla) =
+     * cotizacion futura contra la fecha de recepcion; sin nada = la
+     * cotizacion SOLICITA la unidad (HU-044: si no lo encuentra, lo
      * solicita). Usados siempre cotizan la unidad disponible.
      */
     get createQuoteBtn() {
@@ -414,6 +420,9 @@ export default class VentaGuiadaModal extends LightningModal {
         // verificar si vamos utilizar este flujo separado de 'Crear cotizacion' default
         if (v.disponibilidad?.cantidad) {
             return { label: 'Crear cotización con unidad en tránsito', variant: 'brand' };
+        }
+        if (v.disponibilidadFutura?.cantidad) {
+            return { label: 'Crear cotización futura', variant: 'neutral' };
         }
         return { label: 'Crear cotización y solicitar unidad', variant: 'neutral' };
     }
@@ -441,10 +450,15 @@ export default class VentaGuiadaModal extends LightningModal {
         }
         const v = this.selectedVehicle;
         if (this.esNuevo && v && !v.stockDealer && !v.stockCentral) {
-            rows.push({ id: 'q11', etiqueta: 'Disponibilidad',
-                valor: v.disponibilidad?.cantidad
-                    ? `Sin stock — ${v.disponibilidad.cantidad} unidades en tránsito, ETA ${v.disponibilidad.eta}`
-                    : 'Sin stock ni tránsito — la cotización registra la solicitud de la unidad (HU-044)' });
+            let dispo;
+            if (v.disponibilidad?.cantidad) {
+                dispo = `Sin stock — ${v.disponibilidad.cantidad} unidades en tránsito, ETA ${v.disponibilidad.eta}`;
+            } else if (v.disponibilidadFutura?.cantidad) {
+                dispo = `Sin stock — recepción futura: ${v.disponibilidadFutura.cantidad} unidades el ${v.disponibilidadFutura.fecha} (HU-044)`;
+            } else {
+                dispo = 'Sin stock ni tránsito — la cotización registra la solicitud de la unidad (HU-044)';
+            }
+            rows.push({ id: 'q11', etiqueta: 'Disponibilidad', valor: dispo });
         }
         rows.push({ id: 'q9', etiqueta: 'Vigencia de la cotización', valor: '15 días' });
         rows.push({ id: 'q10', etiqueta: 'Precio definitivo',
