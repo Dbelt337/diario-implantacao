@@ -1,0 +1,389 @@
+<template>
+    <lightning-modal-header label={tituloModal}></lightning-modal-header>
+    <lightning-modal-body>
+        <div class="modal-body">
+            <div class="brand-bar slds-m-bottom_small">
+                <img src={logoUrl} alt="GrupoQ" class="brand-logo-img"/>
+                <template lwc:if={tieneVehiculo}>
+                    <span class="vehiculo-chip">{vehiculoChip}</span>
+                </template>
+            </div>
+            <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
+                MOCK de presentación — propuesta de experiencia con datos simulados; los servicios SAP/BRE se conectan por etapa.
+            </div>
+
+            <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
+                <lightning-progress-step label="Tipo" value="tipo"></lightning-progress-step>
+                <lightning-progress-step label="Vehículo" value="seleccion"></lightning-progress-step>
+                <lightning-progress-step label="Accesorios" value="accesorios"></lightning-progress-step>
+                <lightning-progress-step label="Precio y stock" value="precio"></lightning-progress-step>
+                <lightning-progress-step label="Descuentos" value="descuento"></lightning-progress-step>
+                <lightning-progress-step label="Pago" value="pago"></lightning-progress-step>
+                <lightning-progress-step label="Cotización" value="cotizacion"></lightning-progress-step>
+            </lightning-progress-indicator>
+
+            <div class="slds-p-vertical_medium">
+                <template lwc:if={isStepTipo}>
+                    <h3 class="slds-text-heading_small slds-m-bottom_medium slds-text-align_center">¿Qué vas a vender?</h3>
+                    <lightning-layout horizontal-align="center">
+                        <lightning-layout-item size="5" padding="around-small">
+                            <div class={tipoNuevoClass} onclick={handleTipoNuevo}>
+                                <h3 class="slds-text-heading_medium">Vehículo nuevo</h3>
+                                <p class="slds-text-body_small slds-m-top_small">
+                                    Catálogo y stock consultados al SAP en línea (precio de lista de la sociedad, unidades por sucursal y en tránsito).
+                                </p>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="5" padding="around-small">
+                            <div class={tipoUsadoClass} onclick={handleTipoUsado}>
+                                <h3 class="slds-text-heading_medium">Vehículo usado</h3>
+                                <p class="slds-text-body_small slds-m-top_small">
+                                    Inventario PROPIO en Salesforce (unidades Vehicle con VIN, kilometraje y ficha del usado; precio de gestión propia).
+                                </p>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <p class="slds-text-body_small slds-m-top_small slds-text-color_weak slds-text-align_center">
+                        Real: el router del padre decide por el Record Type de la Opportunity; esta pantalla demuestra los dos caminos.
+                    </p>
+                </template>
+
+                <template lwc:if={isStepSeleccion}>
+                    <lightning-layout class="slds-m-bottom_small">
+                        <lightning-layout-item size="6" padding="horizontal-small">
+                            <lightning-input type="search" label="Buscar vehículo (modelo, versión, color, VIN)"
+                                placeholder="Ej.: Tucson 2026" value={searchTerm}
+                                onchange={handleSearchChange}></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3" padding="horizontal-small">
+                            <lightning-combobox label="Marca" options={marcaOptions}
+                                value={filtroMarca} onchange={handleFiltroMarca}></lightning-combobox>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3" padding="horizontal-small">
+                            <lightning-combobox label="Año" options={anioOptions}
+                                value={filtroAnio} onchange={handleFiltroAnio}></lightning-combobox>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <!--Change to LWC Datatable-->
+                    <template lwc:if={esNuevo}>
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">Modelo / Versión</th>
+                                    <th scope="col">Año</th>
+                                    <th scope="col">Color exterior</th>
+                                    <th scope="col">Color interior</th>
+                                    <th scope="col">Precio de lista</th>
+                                    <template lwc:if={puedeVerCantidades}>
+                                        <th scope="col">Stock Central</th>
+                                        <th scope="col">Stock Sucursal</th>
+                                        <th scope="col">Fecha de disponibilidad (ETA)</th>
+                                        <th scope="col">Stock Futuro</th>
+                                        <th scope="col">Fuente</th>
+                                    </template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={vehicleOptions} for:item="vehicle">
+                                    <tr key={vehicle.id} class={vehicle.rowClass}
+                                        data-id={vehicle.id} onclick={handleSelectVehicle}>
+                                        <td>{vehicle.modelo}</td>
+                                        <td>{vehicle.anio}</td>
+                                        <td>{vehicle.color}</td>
+                                        <td>{vehicle.colorInt}</td>
+                                        <td>{vehicle.precio}</td>
+                                        <template lwc:if={puedeVerCantidades}>
+                                            <td>{vehicle.stockCentral}</td>
+                                            <td>{vehicle.stockDealer}</td>
+                                            <template lwc:if={vehicle.disponibilidad}>
+                                                <td>{vehicle.disponibilidad.eta}</td>
+                                                <td>{vehicle.disponibilidad.cantidad}</td>
+                                                <td>{vehicle.disponibilidad.fuente}</td>
+                                            </template>
+                                            <template lwc:else>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </template>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+                    <template lwc:if={esUsado}>
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">Modelo / Versión</th>
+                                    <th scope="col">Año</th>
+                                    <th scope="col">Kilometraje</th>
+                                    <th scope="col">VIN</th>
+                                    <th scope="col">Precio publicado</th>
+                                    <th scope="col">Ubicación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={vehicleOptions} for:item="vehicle">
+                                    <tr key={vehicle.id} class={vehicle.rowClass}
+                                        data-id={vehicle.id} onclick={handleSelectVehicle}>
+                                        <td>{vehicle.modelo}</td>
+                                        <td>{vehicle.anio}</td>
+                                        <td>{vehicle.km}</td>
+                                        <td>{vehicle.vin}</td>
+                                        <td>{vehicle.precio}</td>
+                                        <td>{vehicle.ubicacion}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+                    <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
+                        {leyendaSeleccion}
+                    </p>
+                </template>
+
+                <template lwc:if={isStepAccesorios}>
+                    <div class="step-anim">
+                    <lightning-layout multiple-rows>
+                        <lightning-layout-item size="7" padding="around-small">
+                            <div class="slds-box slds-box_small">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">{tituloAccesorios}</h3>
+                                <template for:each={accesorioCategorias} for:item="cat">
+                                    <div key={cat.nombre} class="slds-m-bottom_small">
+                                        <p class="categoria-titulo slds-m-bottom_xx-small">{cat.nombre}</p>
+                                        <template for:each={cat.items} for:item="acc">
+                                            <div key={acc.id} class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                                <lightning-input type="checkbox" label={acc.nombre}
+                                                    checked={acc.sel} data-id={acc.id}
+                                                    onchange={handleToggleAccesorio}></lightning-input>
+                                                <span class="slds-text-title_bold">{acc.precioFmt}</span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row slds-m-top_small">
+                                    <span class="slds-text-heading_small">Total accesorios</span>
+                                    <span class="slds-text-heading_small">{accesoriosTotalFmt}</span>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="5" padding="around-small">
+                            <div class="slds-box slds-box_small">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">Cómo funciona en real</h3>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Catálogo asociado al vehículo: materiales SAP del pricebook <strong>Vehículos y accesorios</strong> de la sociedad, filtrados por la matriz de compatibilidad accesorio x modelo (insumo GrupoQ; aquí simulada).
+                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Cada pieza marcada entra como línea adicional de la cotización (QuoteLineItem). Cambiar de vehículo recarga el catálogo y limpia la selección.
+                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Este paso es opcional: Siguiente sin marcar nada continúa solo con el vehículo.
+                                </p>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    </div>
+                </template>
+
+                <template lwc:if={isStepPrecio}>
+                    <lightning-layout multiple-rows>
+                        <lightning-layout-item size="7" padding="around-small">
+                            <div class="slds-box slds-box_small">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">Composición del precio de referencia</h3>
+                                <template for:each={priceBreakdown} for:item="line">
+                                    <div key={line.id} class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                        <span>{line.concepto}</span>
+                                        <span class="slds-text-title_bold">{line.valor}</span>
+                                    </div>
+                                </template>
+                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row">
+                                    <span class="slds-text-heading_small">Total de referencia</span>
+                                    <span class="slds-text-heading_small">{totalReferenciaFmt}</span>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="5" padding="around-small">
+                            <template lwc:if={esNuevo}>
+                                <div class="slds-box slds-box_small">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Disponibilidad en línea (SAP vía MuleSoft)</h3>
+                                    <template lwc:if={puedeVerCantidades}>
+                                        <p class="slds-p-vertical_xx-small">Sucursal Central: <strong>3 unidades</strong></p>
+                                        <p class="slds-p-vertical_xx-small">Lindora: <strong>1 unidad</strong></p>
+                                        <p class="slds-p-vertical_xx-small">Guápiles: <strong>0 unidades</strong></p>
+                                    </template>
+                                    <template lwc:else>
+                                        <p class="slds-p-vertical_xx-small">Disponible en: <strong>Sucursal Central, Lindora</strong></p>
+                                        <p class="slds-text-body_small slds-text-color_weak">
+                                            Cantidades visibles solo con el permiso "Ver cantidades de inventario" (asesor de piso).
+                                        </p>
+                                    </template>
+                                    <p class="slds-p-vertical_xx-small">Colores: <strong>Blanco Polar / Negro</strong> — En tránsito: <strong>consulta país</strong></p>
+                                    <lightning-badge label="Consulta SAP simulada — informativa, sin bloqueo" class="slds-m-top_small"></lightning-badge>
+                                    <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
+                                        Real: SapInventoryService con Continuation — informativa; los bloqueos son de la reserva (HU-046), nunca de la cotización.
+                                    </p>
+                                </div>
+                            </template>
+                            <template lwc:if={esUsado}>
+                                <div class="slds-box slds-box_small">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Ficha del usado</h3>
+                                    <template for:each={fichaUsado} for:item="line">
+                                        <div key={line.id} class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                            <span>{line.etiqueta}</span>
+                                            <span class="slds-text-title_bold">{line.valor}</span>
+                                        </div>
+                                    </template>
+                                    <lightning-badge label="Inventario propio — sin consulta SAP" class="slds-m-top_small"></lightning-badge>
+                                    <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
+                                        Real: unidad Vehicle del inventario de usados (SOQL directo); precio y ficha administrados en Salesforce.
+                                    </p>
+                                </div>
+                            </template>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+
+                <template lwc:if={isStepDescuento}>
+                    <lightning-layout multiple-rows>
+                        <lightning-layout-item size="7" padding="around-small">
+                            <div class="slds-box slds-box_small">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">Descuento comercial</h3>
+                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                    <span>Total de referencia</span>
+                                    <span class="slds-text-title_bold">{totalReferenciaFmt}</span>
+                                </div>
+                                <lightning-input type="number" label="Descuento solicitado (CRC)"
+                                    value={descuento} formatter="decimal" step="1000" min="0"
+                                    onchange={handleDescuentoChange} class="slds-m-vertical_small"></lightning-input>
+                                <p class="slds-text-body_small slds-m-bottom_small">
+                                    Descuento máximo sin aprobación (hasta el precio mínimo): <strong>{maxDescuentoDirectoFmt}</strong>
+                                </p>
+                                <template lwc:if={descuentoDentroDelMargen}>
+                                    <lightning-badge label="Dentro del margen de la sucursal — se aplica directo" class="slds-theme_success"></lightning-badge>
+                                </template>
+                                <template lwc:if={descuentoPendiente}>
+                                    <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
+                                        El descuento supera el precio mínimo en {excesoSobreMinimoFmt} — requiere aprobación del Gerente de Sucursal.
+                                    </div>
+                                    <lightning-button label="Enviar a aprobación" variant="brand" onclick={handleEnviarAprobacion}></lightning-button>
+                                </template>
+                                <template lwc:if={descuentoAprobado}>
+                                    <lightning-badge label="Aprobado por Gerente de Sucursal (simulado)" class="slds-theme_success"></lightning-badge>
+                                </template>
+                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row slds-m-top_small">
+                                    <span class="slds-text-heading_small">Total con descuento</span>
+                                    <span class="slds-text-heading_small">{totalConDescuentoFmt}</span>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="5" padding="around-small">
+                            <div class="slds-box slds-box_small">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">Cómo funciona en real</h3>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">{leyendaMinimo}</p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Descuento dentro del margen: se aplica directo y queda trazado en la cotización.
+                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Debajo del precio mínimo: <strong>Approval Process nativo</strong>; el vendedor no avanza sin la aprobación.
+                                </p>
+                                <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                    Programas de descuento y protección de precio: <strong>Rebate Management / Price Protection</strong> (licenciados).
+                                </p>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+
+                <template lwc:if={isStepPago}>
+                    <div class="slds-box slds-box_small slds-m-bottom_small">
+                        <lightning-radio-group name="formaPago" label="Forma de pago"
+                            options={formaPagoOptions} value={formaPago} type="radio"
+                            onchange={handleFormaPagoChange}></lightning-radio-group>
+                    </div>
+                    <template lwc:if={isContado}>
+                        <div class="slds-box slds-box_small">
+                            <h3 class="slds-text-heading_small slds-m-bottom_small">Pago de contado</h3>
+                            <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row">
+                                <span class="slds-text-heading_small">Total a pagar</span>
+                                <span class="slds-text-heading_small">{totalConDescuentoFmt}</span>
+                            </div>
+                            <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
+                                Real: la forma de pago queda en la cotización; el precio definitivo lo certifica SAP al facturar.
+                            </p>
+                        </div>
+                    </template>
+                    <template lwc:if={isFinanciado}>
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="6" padding="around-small">
+                                <div class="slds-box slds-box_small">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Condiciones (simulación comercial)</h3>
+                                    <lightning-input type="number" label="Prima (CRC) — sugerida 30%"
+                                        value={primaValue} formatter="decimal" step="100000" min="0"
+                                        onchange={handlePrimaChange} class="slds-m-bottom_small"></lightning-input>
+                                    <lightning-combobox label="Plazo" options={plazoOptions} value={plazo}
+                                        onchange={handlePlazoChange} class="slds-m-bottom_small"></lightning-combobox>
+                                    <p class="slds-text-body_small">Tasa: <strong>{tasaReferenciaFmt}</strong></p>
+                                </div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" padding="around-small">
+                                <div class="slds-box slds-box_small">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Cálculo estimado</h3>
+                                    <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                        <span>Total con descuento</span>
+                                        <span class="slds-text-title_bold">{totalConDescuentoFmt}</span>
+                                    </div>
+                                    <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                        <span>Prima</span>
+                                        <span class="slds-text-title_bold">- {primaFmt}</span>
+                                    </div>
+                                    <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                        <span>Monto a financiar</span>
+                                        <span class="slds-text-title_bold">{montoFinanciadoFmt}</span>
+                                    </div>
+                                    <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row">
+                                        <span class="slds-text-heading_small">Cuota mensual estimada</span>
+                                        <span class="slds-text-heading_small">{cuotaMensualFmt}</span>
+                                    </div>
+                                    <div class="slds-m-top_small">
+                                        <lightning-button label="Llamar al flujo del financiero (CrediQ)" variant="brand"
+                                            onclick={handleLlamarFinanciero} disabled={solicitudFinancieroEnviada}></lightning-button>
+                                    </div>
+                                    <template lwc:if={solicitudFinancieroEnviada}>
+                                        <lightning-badge label="Solicitud enviada — En análisis (simulado)" class="slds-m-top_small"></lightning-badge>
+                                    </template>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak slds-p-horizontal_small">
+                            Real: esta pantalla solo LLAMA al flujo de la frente financiera (CrediQ) con vehículo, prima y plazo; tasas, seguros y aprobación crediticia se resuelven allá. La cuota mostrada es una referencia comercial, no una oferta de crédito.
+                        </p>
+                    </template>
+                </template>
+
+                <template lwc:if={isStepCotizacion}>
+                    <div class="slds-box slds-box_small">
+                        <h3 class="slds-text-heading_small slds-m-bottom_small">Resumen de la cotización</h3>
+                        <template for:each={quoteSummary} for:item="line">
+                            <div key={line.id} class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                <span>{line.etiqueta}</span>
+                                <span class="slds-text-title_bold">{line.valor}</span>
+                            </div>
+                        </template>
+                        <div class="slds-m-top_medium slds-text-align_center">
+                            <lightning-button label={createQuoteBtn.label} variant={createQuoteBtn.variant} onclick={handleCreateQuote}></lightning-button>
+                        </div>
+                        <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
+                            {leyendaCotizacion}
+                        </p>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Cancelar" onclick={handleCancel} class="slds-m-right_x-small"></lightning-button>
+        <lightning-button label="Atrás" onclick={handleBack} disabled={isFirstStep} class="slds-m-right_x-small"></lightning-button>
+        <lightning-button label="Siguiente" variant="brand" onclick={handleNext} disabled={nextDisabled}></lightning-button>
+    </lightning-modal-footer>
+</template>
