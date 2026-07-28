@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Todos los paises. Controla la visibilidad de las CANTIDADES de inventario en la seleccion de vehiculo de la venta guiada (HU-042 RN-03): el asesor de piso ve cantidades; el asesor online no. La disponibilidad (colores, ubicacion, transito) sigue visible para ambos.</description>
+    <description>Todos los paises. Visibilidad de cantidades de inventario en la venta guiada (HU-042 RN-03): asesor de piso ve cantidades, asesor online no. La disponibilidad cualitativa (colores, ubicacion, transito) sigue visible para todos.</description>
     <label>Ver cantidades de inventario</label>
 </CustomPermission>
