@@ -60,7 +60,7 @@ export default class VentaGuiadaModal extends LightningModal {
         { id: 'V4', modelo: 'Hyundai Tucson Híbrida', anio: '2026', color: 'Azul Océano',
           precio: 'CRC 27.900.000', stockCentral: 0, stockDealer: 0,
           disponibilidad: { cantidad: 2, eta: '15/09/2026', fuente: 'pedido_importacion' } },
-        { id: 'V5', modelo: 'Hyundai Santa Fe 2027', anio: '2027', color: 'Negro Fantasma',
+        { id: 'V5', modelo: 'Hyundai Santa Fe', anio: '2027', color: 'Negro Fantasma',
           precio: 'CRC 32.500.000', stockCentral: 0, stockDealer: 0 }
     ];
 
