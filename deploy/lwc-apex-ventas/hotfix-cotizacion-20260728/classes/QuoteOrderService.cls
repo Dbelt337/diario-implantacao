@@ -18,6 +18,9 @@ public with sharing class QuoteOrderService {
     // TODO: accessory must map to the correct vehicle quote (consider using a future new field on the OppLineItem)
         //quotePayloadJson not used yet -> map accessory here(?)
         //selectedVehicles not used yet -> map discount here
+
+
+    //future developement note: flow changed -> only a single quote will be created here and by using the interface the user must create a new quote and follow the same process for each vehicle (one quote per vehicle
     public static List<Quote> createQuotesSingleVehicle(Id opportunityId, String quotePayloadJson, String selectedVehicles) {
 
 
@@ -88,11 +91,30 @@ public with sharing class QuoteOrderService {
             mapOppLineItemsByVehicleId.put(vehicle.Product2Id, new List<OpportunityLineItem>{vehicle});
             //Create Quote
             //change Name to Name + SKU?
+
+
+            /*        if (v.disponibilidad?.cantidad) {
+            v.disponibilidad.fuente === 'recepcion_futura'
+                ? { label: 'Crear cotización futura', variant: 'neutral' }
+                : { label: 'Crear cotización con unidad en tránsito', variant: 'brand' };
+        }
+
+        { label: 'Crear cotización y solicitar unidad', variant: 'neutral' };
+        */
+        VehicleDTO v = (vehiclesDTO != null && !vehiclesDTO.isEmpty()) ? vehiclesDTO.get(0) : null;
+
+        String quoteStatus = (v == null) ? null : safeQuoteStatus(
+            (v.stockCentral != 0 || v.stockDealer != 0) ? 'En tránsito' :
+            (v.disponibilidad?.fuente == 'recepcion_futura' ? 'Pedido futuro' : 'Pendiente'));
+
             Quote quote = new Quote(
                 Name = (opp.Name + ' ' + vehicle.Product2.Name),
                 OpportunityId = opp.Id,
                 Pricebook2Id = opp.Pricebook2Id
             );
+            if (quoteStatus != null) {
+                quote.Status = quoteStatus;
+            }
             //substring(0, 80)
             if (quote.name != null && quote.name.length() > 80) {
                 quote.name = quote.name.substring(0, 80);
@@ -188,6 +210,25 @@ public with sharing class QuoteOrderService {
             Quantity = 1,
             UnitPrice = pbes[0].UnitPrice
         );
+    }
+
+    /**
+     * Applies the availability->status mapping ONLY when the value exists in
+     * the active Quote.Status picklist: the org still ships the default
+     * statuses (Draft, Presented, Accepted...), so writing an unknown value
+     * fails the insert with INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST.
+     * TODO (Davi): add En tránsito / Pedido futuro / Pendiente in Setup >
+     * Quote Statuses + Record Types NewVehicle/UsedVehicle; this guard then
+     * becomes a no-op and the mapping takes effect without redeploy.
+     */
+    private static String safeQuoteStatus(String candidate) {
+        for (Schema.PicklistEntry pe : Quote.Status.getDescribe().getPicklistValues()) {
+            if (pe.isActive() && pe.getValue() == candidate) {
+                return candidate;
+            }
+        }
+        System.debug('Quote.Status "' + candidate + '" no existe en el picklist activo; se deja el default.');
+        return null;
     }
 
     /**

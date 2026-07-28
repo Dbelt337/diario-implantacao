@@ -493,23 +493,8 @@ export default class VentaGuiadaModal extends LightningModal {
 
             //call QuoteOrderService mocked for now
             try {
-                // DTO shaped for QuoteOrderService.VehicleDTO (strings, no extra mock fields)
-                const v = this.selectedVehicle;
-                const selectedDto = v ? [{
-                    id: String(v.id ?? ''),
-                    modelo: String(v.modelo ?? ''),
-                    anio: String(v.anio ?? ''),
-                    color: String(v.color ?? ''),
-                    precio: String(v.precio ?? ''),
-                    stockCentral: v.stockCentral ?? null,
-                    stockDealer: v.stockDealer ?? null,
-                    disponibilidad: v.disponibilidad ? {
-                        cantidad: v.disponibilidad.cantidad ?? null,
-                        eta: v.disponibilidad.eta ?? '',
-                        fuente: v.disponibilidad.fuente ?? ''
-                    } : null
-                }] : [];
-                await createQuote({ opportunityId: this.recordId, quotePayloadJson: '{}', selectedVehicles: JSON.stringify(selectedDto) });
+                console.log('this.recordId,', this.recordId)
+                await createQuote({ opportunityId: this.recordId, quotePayloadJson: '{}', selectedVehicles: '['+JSON.stringify(this.selectedVehicle)+']' });
             this.dispatchEvent(new ShowToastEvent({
                 title: 'Cotización creada',
                 message: '',
