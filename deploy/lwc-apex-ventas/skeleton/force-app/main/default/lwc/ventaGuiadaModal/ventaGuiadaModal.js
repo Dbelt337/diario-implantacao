@@ -1,6 +1,7 @@
 import { api } from 'lwc';
 import LightningModal from 'lightning/modal';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import GRUPOQ_LOGO from '@salesforce/resourceUrl/GrupoQLogo';
 import CotizacionConfirmModal from 'c/cotizacionConfirmModal';
 import AprobacionDescuentoModal from 'c/aprobacionDescuentoModal';
 
@@ -203,6 +204,7 @@ export default class VentaGuiadaModal extends LightningModal {
     }
 
     // ------- barra de marca (logo + contexto del vehiculo) -------
+    get logoUrl() { return GRUPOQ_LOGO; }
     get tieneVehiculo() { return !!this.selectedVehicle; }
     get vehiculoChip() {
         const v = this.selectedVehicle;

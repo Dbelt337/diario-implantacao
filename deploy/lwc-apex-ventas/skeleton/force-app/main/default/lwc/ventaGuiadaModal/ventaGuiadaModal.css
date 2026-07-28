@@ -31,23 +31,16 @@ tbody tr {
     border: 2px solid #0176d3;
     background-color: #f3f9ff;
 }
-/* Marca: wordmark provisional en CSS — se reemplaza por el logo oficial
-   (StaticResource) cuando el archivo este disponible */
+/* Marca: logo oficial via StaticResource GrupoQLogo (SVG vectorial) */
 .brand-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    min-height: 2rem;
+    min-height: 2.5rem;
 }
-.brand-logo {
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: #032d60;
-    line-height: 1;
-}
-.brand-logo-q {
-    color: #0176d3;
+.brand-logo-img {
+    height: 3.25rem;
+    width: auto;
 }
 .vehiculo-chip {
     background-color: #f3f9ff;

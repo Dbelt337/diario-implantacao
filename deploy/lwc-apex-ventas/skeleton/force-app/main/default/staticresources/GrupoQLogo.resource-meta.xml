@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Public</cacheControl>
+    <contentType>image/svg+xml</contentType>
+    <description>Todos los paises. Logo oficial de GrupoQ en formato vectorial, usado por los componentes de la venta guiada y demas interfaces de marca.</description>
+</StaticResource>

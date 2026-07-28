@@ -32,5 +32,9 @@
         <members>Opportunity.VentaGuiadaModal</members>
         <name>QuickAction</name>
     </types>
+    <types>
+        <members>GrupoQLogo</members>
+        <name>StaticResource</name>
+    </types>
     <version>63.0</version>
 </Package>
