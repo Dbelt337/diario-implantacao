@@ -19,6 +19,14 @@ y la assetizacion son nativos; las reglas viven en el BRE.
 - Prerequisito de integracion: Named Credential "MuleSoftPricesInventory"
   configurada por ambiente (autenticacion de sistema; si Mule exigiera OAuth
   por usuario, revisar la estrategia ANTES de construir — limite de la GUIA).
+- Configuracion manual por ambiente que NO viaja en el paquete (checklist
+  post-deploy): (1) posicion de la accion "Venta guiada" en el page layout /
+  Dynamic Actions de la Opportunity — se pierde si otra frente edita el
+  layout (ocurrio 28/07: edicion del layout por pruebas de HU-036 la quito);
+  re-agregar en Salesforce Mobile and Lightning Experience Actions. (2) En
+  sandboxes de desarrollo, desmarcar Session Settings > "Enable secure and
+  persistent browser caching" para que los testers vean los LWC nuevos sin
+  logout/login.
 
 ## Capa Apex (services de la pestana "Capas y componentes")
 - SapInventoryService (+Test): Continuation @AuraEnabled(continuation=true
