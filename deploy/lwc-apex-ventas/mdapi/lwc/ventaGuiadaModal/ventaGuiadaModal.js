@@ -70,7 +70,7 @@ export default class VentaGuiadaModal extends LightningModal {
         { id: 'V5', marca: 'Hyundai', modelo: 'Hyundai Santa Fe', anio: '2027',
           color: 'Negro Fantasma', colorInt: 'Marrón',
           precio: 'CRC 32.500.000', stockCentral: 0, stockDealer: 0,
-          disponibilidadFutura: { fecha: '29/08/2026', cantidad: 2 } },
+          disponibilidad: { cantidad: 2, eta: '29/08/2026', fuente: 'recepcion_futura' } },
         { id: 'V6', marca: 'Chevrolet', modelo: 'Chevrolet Groove LT', anio: '2026',
           color: 'Plata Estelar', colorInt: 'Negro',
           precio: 'CRC 15.900.000', stockCentral: 4, stockDealer: 1 },
@@ -403,12 +403,13 @@ export default class VentaGuiadaModal extends LightningModal {
     }
     /**
      * Estados de la cotizacion segun disponibilidad (aporte Davi, HU-044):
-     * con stock = cotizacion normal; sin stock con unidades en transito =
-     * cotizacion contra transito (ETA); sin stock con RECEPCION FUTURA
-     * (disponibilidadFutura, aporte Davi: el estoque futuro en la tabla) =
-     * cotizacion futura contra la fecha de recepcion; sin nada = la
-     * cotizacion SOLICITA la unidad (HU-044: si no lo encuentra, lo
-     * solicita). Usados siempre cotizan la unidad disponible.
+     * UNA estructura unica "disponibilidad" { cantidad, eta, fuente } — la
+     * fuente distingue transito de recepcion futura (unificacion acordada
+     * con Davi 28/07, reemplaza disponibilidadFutura). Estados: con stock =
+     * cotizacion normal; en transito = cotizacion contra ETA; recepcion
+     * futura = cotizacion futura contra la fecha; sin nada = la cotizacion
+     * SOLICITA la unidad (HU-044: si no lo encuentra, lo solicita).
+     * Usados siempre cotizan la unidad disponible.
      */
     get createQuoteBtn() {
         if (this.esUsado) return { label: 'Crear cotización', variant: 'brand' };
@@ -419,10 +420,9 @@ export default class VentaGuiadaModal extends LightningModal {
         }
         // verificar si vamos utilizar este flujo separado de 'Crear cotizacion' default
         if (v.disponibilidad?.cantidad) {
-            return { label: 'Crear cotización con unidad en tránsito', variant: 'brand' };
-        }
-        if (v.disponibilidadFutura?.cantidad) {
-            return { label: 'Crear cotización futura', variant: 'neutral' };
+            return v.disponibilidad.fuente === 'recepcion_futura'
+                ? { label: 'Crear cotización futura', variant: 'neutral' }
+                : { label: 'Crear cotización con unidad en tránsito', variant: 'brand' };
         }
         return { label: 'Crear cotización y solicitar unidad', variant: 'neutral' };
     }
@@ -452,9 +452,9 @@ export default class VentaGuiadaModal extends LightningModal {
         if (this.esNuevo && v && !v.stockDealer && !v.stockCentral) {
             let dispo;
             if (v.disponibilidad?.cantidad) {
-                dispo = `Sin stock — ${v.disponibilidad.cantidad} unidades en tránsito, ETA ${v.disponibilidad.eta}`;
-            } else if (v.disponibilidadFutura?.cantidad) {
-                dispo = `Sin stock — recepción futura: ${v.disponibilidadFutura.cantidad} unidades el ${v.disponibilidadFutura.fecha} (HU-044)`;
+                dispo = v.disponibilidad.fuente === 'recepcion_futura'
+                    ? `Sin stock — recepción futura: ${v.disponibilidad.cantidad} unidades el ${v.disponibilidad.eta} (HU-044)`
+                    : `Sin stock — ${v.disponibilidad.cantidad} unidades en tránsito, ETA ${v.disponibilidad.eta}`;
             } else {
                 dispo = 'Sin stock ni tránsito — la cotización registra la solicitud de la unidad (HU-044)';
             }
