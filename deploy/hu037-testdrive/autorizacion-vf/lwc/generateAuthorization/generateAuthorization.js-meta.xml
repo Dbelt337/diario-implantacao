@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <isExposed>true</isExposed>
+    <description>Quick action sin pantalla que genera la autorizacion de test drive (PDF) y abre el archivo. HU-037 RN 9.</description>
+    <targets>
+        <target>lightning__RecordAction</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordAction">
+            <actionType>Action</actionType>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

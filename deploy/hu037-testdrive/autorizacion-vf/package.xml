@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>TestDriveAuthorizationCont</members>
+        <members>TestDriveAuthorizationContTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>TestDriveAuthorizationPdf</members>
+        <name>ApexPage</name>
+    </types>
+    <types>
+        <members>generateAuthorization</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>ServiceAppointment.GenerateAuthorization</members>
+        <name>QuickAction</name>
+    </types>
+    <version>63.0</version>
+</Package>

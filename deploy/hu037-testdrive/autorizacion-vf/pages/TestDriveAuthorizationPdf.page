@@ -1,0 +1,75 @@
+<apex:page controller="TestDriveAuthorizationCont" renderAs="pdf"
+           showHeader="false" sidebar="false" standardStylesheets="false"
+           applyBodyTag="false" applyHtmlTag="false">
+<html>
+<head>
+<style type="text/css">
+    @page { size: letter portrait; margin: 20mm 18mm; }
+    body { font-family: Arial Unicode MS, Helvetica, sans-serif; font-size: 11pt; color: #222; }
+    .header { border-bottom: 2px solid #1a3f6b; padding-bottom: 6px; }
+    .title { font-size: 15pt; font-weight: bold; color: #1a3f6b; }
+    .subtitle { font-size: 9pt; color: #555; }
+    table.data { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    table.data td { border: 1px solid #999; padding: 6px 8px; vertical-align: top; }
+    td.lbl { width: 32%; background-color: #eef2f7; font-weight: bold; font-size: 9pt; }
+    .clauses { margin-top: 14px; font-size: 9.5pt; text-align: justify; }
+    .sign { margin-top: 40px; width: 100%; }
+    .sign td { width: 50%; text-align: center; padding-top: 30px; font-size: 9pt; }
+    .line { border-top: 1px solid #222; margin: 0 22px; }
+    .foot { margin-top: 18px; font-size: 8pt; color: #777; }
+</style>
+</head>
+<body>
+    <div class="header">
+        <span class="title">Autorizaci&#243;n de Prueba de Manejo</span><br/>
+        <span class="subtitle">Grupo Q &#183; Cita {!appointment.AppointmentNumber} &#183; Generado el {!generatedOn}</span>
+    </div>
+
+    <table class="data">
+        <tr><td class="lbl">Cliente</td>
+            <td>{!appointment.Account.Name}</td></tr>
+        <tr><td class="lbl">Licencia de conducir</td>
+            <td>{!appointment.DriverLicenseNumber__c}</td></tr>
+        <tr><td class="lbl">Veh&#237;culo</td>
+            <td>{!appointment.VehicleDescription__c}</td></tr>
+        <tr><td class="lbl">Asesor</td>
+            <td>{!appointment.AdvisorName__c}</td></tr>
+        <tr><td class="lbl">Sucursal</td>
+            <td>{!appointment.ServiceTerritory.Name}</td></tr>
+        <tr><td class="lbl">Inicio</td>
+            <td><apex:outputText value="{0,date,dd/MM/yyyy HH:mm}">
+                    <apex:param value="{!appointment.SchedStartTime}"/>
+                </apex:outputText></td></tr>
+        <tr><td class="lbl">Fin</td>
+            <td><apex:outputText value="{0,date,dd/MM/yyyy HH:mm}">
+                    <apex:param value="{!appointment.SchedEndTime}"/>
+                </apex:outputText></td></tr>
+        <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(appointment.Street))}">
+            <tr><td class="lbl">Direcci&#243;n (a domicilio)</td>
+                <td>{!appointment.Street}, {!appointment.City}</td></tr>
+        </apex:outputPanel>
+    </table>
+
+    <div class="clauses">
+        <!-- Texto legal definido por el negocio (insumo pendiente de GrupoQ):
+             responsabilidad del conductor, vigencia de la autorizacion,
+             condiciones del vehiculo, uso de datos personales. -->
+        El cliente declara que la informaci&#243;n consignada es correcta, que
+        posee licencia de conducir vigente y que acepta las condiciones de la
+        prueba de manejo establecidas por Grupo Q.
+    </div>
+
+    <table class="sign">
+        <tr>
+            <td><div class="line"></div>Firma del cliente</td>
+            <td><div class="line"></div>Firma del asesor / recepci&#243;n</td>
+        </tr>
+    </table>
+
+    <div class="foot">
+        Documento generado desde Salesforce (HU-037). La licencia de conducir
+        registrada corresponde a la validada al momento del agendamiento.
+    </div>
+</body>
+</html>
+</apex:page>
