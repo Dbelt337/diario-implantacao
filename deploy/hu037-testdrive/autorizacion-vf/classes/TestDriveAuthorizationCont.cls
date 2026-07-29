@@ -61,6 +61,23 @@ public with sharing class TestDriveAuthorizationCont {
     }
 
     /**
+     * Flow-facing wrapper of the same generator, so the trigger surface can
+     * be a Screen Flow (quick action type Flow) instead of the headless LWC
+     * without touching the service. One generator, many callers.
+     * @param serviceAppointmentIds single-element list (Flow contract)
+     * @return ContentDocumentIds of the stored PDFs
+     */
+    @InvocableMethod(label='Generate Test Drive Authorization'
+        description='Generates the test drive authorization PDF into the appointment Files and returns the ContentDocumentId.')
+    public static List<Id> generateAuthorizationInvocable(List<Id> serviceAppointmentIds) {
+        List<Id> results = new List<Id>();
+        for (Id saId : serviceAppointmentIds) {
+            results.add(generateAuthorization(saId));
+        }
+        return results;
+    }
+
+    /**
      * Single query shared by the page and the service: the document tokens.
      * Vehicle, advisor and license come from the display stamps kept by
      * Assigned Resource After Handler / the booking OmniScript, so the
