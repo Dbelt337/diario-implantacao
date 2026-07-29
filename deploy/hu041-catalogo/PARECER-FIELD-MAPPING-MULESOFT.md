@@ -77,7 +77,41 @@ no de nombres.
 
 ## Proceso
 - Paso 1: correr DESCRIBE-hu041-mapping.apex en DEV (admin) y guardar el log.
+  [HECHO 29/07 — log apex07LWK00000Q71uw2AB, extracto en
+  DESCRIBE-RESULTADO-20260729.log]
 - Paso 2: ajustar la planilla con los resultados (columna de validacion) y
   las definiciones de arquitectura de arriba.
+  [HECHO 29/07 — GrupoQ_Vehicle_Field_Mapping_v2_validado_org.xlsx]
 - Paso 3: entregar a MuleSoft la version validada y registrar en la GUIA
-  (admision HU-041) el mismo dia.
+  (admision HU-041) el mismo dia. [PENDIENTE — Diego]
+
+## Resultado del describe (29/07/2026, log apex07LWK00000Q71uw2AB)
+
+Global: 64/64 campos propuestos EXISTEN en la org — ningun FALTA. Objetos de
+soporte (BusinessBrand, ProductAttribute x4, ProductMedia,
+VehDefSearchableField, GeoCountry) existen y son creables. Los nombres de la
+planilla v1 quedan validados sin correccion.
+
+Hallazgos que ajustan la arquitectura:
+
+1. NINGUN campo esta marcado como External ID — tampoco
+   VehicleDefinition.ExternalReferenceNumber, contra lo que indica la guia
+   v66.0 (solo idLookup: VehicleDefinition.Name y Vehicle.VIN). La opcion (a)
+   del punto 2 cae; queda la (b): campo custom External ID + Unique en
+   Product2 (SAPMaterialNumber__c) como llave del upsert de Mule.
+   Confirmacion final: Diego Braz.
+2. Picklists VACIAS en la org: FuelSource, TransmissionSystem,
+   DrivetrainSystem y DoorStyle tienen 0 valores; sus predecesores a
+   descontinuar si tienen (FuelType 5, TransmissionType 2, DrivetrainType 4,
+   DoorStyleType 4). Antes del primer sync: poblar los value sets de los
+   campos nuevos via metadata, o acordar uso transitorio de los viejos.
+3. Los campos de ficha tecnica de VehicleDefinition (cilindrada, potencia,
+   torque, dimensiones, pesos, rendimiento, capacidades) son TEXTO, no
+   numericos: las unidades viajan dentro del valor y no hay validacion de
+   plataforma — documentar unidades en el contrato Mule.
+4. GeoCountrySpecification NO existe en la org (GeoCountry si). Eliminar
+   cualquier referencia a ese objeto de los documentos del contrato.
+5. Product2.Family es picklist con 7 valores: validar cobertura de la
+   clasificacion requerida antes del sync.
+6. ModelYear es numero entero y Availability/DiscontinuedDate son
+   fecha/hora — sin sorpresas de tipo para el mapeo.
