@@ -9,6 +9,7 @@
         <members>QuoteOrderService</members>
         <members>PricingService</members>
         <members>SapOrderService</members>
+        <members>GuidedSellingController</members>
         <name>ApexClass</name>
     </types>
     <types>

@@ -54,6 +54,37 @@ aceptado (Status = Aceptado, picklist sembrado por HU-036).
 4. AVALUO QUE DEJA DE ESTAR ACEPTADO tras congelarse en una quote: alertar a
    la opp (flow en VehicleAppraisal), nunca deshacer solo. Evolucion aparte.
 
+## v2 (29/07 tarde) - retoma DENTRO del calculo de la venta guiada
+
+Con el describe de la org (log 29/07): PricebookEntry ya tenia la mitad
+local del precio (Gastos__c, PrecioMinimoAsesor__c, PrecioExonerado__c,
+PrecioExoneradoMinimo__c, AplicaCashback__c, MontoCashback__c). Novedades:
+
+- PricingService IMPLEMENTADO (ya no stub): columnas de referencia del PBE
+  (con swap exonerado cuando Opportunity.VentaExonerada__c), cashback,
+  operando de retoma con GATE DE VIGENCIA (solo avaluo Aceptado con
+  ValidityEndDate >= TODAY cuenta; vencido -> isTradeInExpired=true para
+  la pantalla avisar y bloquear). El impuesto de referencia sigue TODO BRE.
+- GuidedSellingController.getPricePageData IMPLEMENTADO: nuevo parametro
+  opportunityId; resuelve el PricebookEntry por el pricebook de la Opp
+  (pricebook = sociedad) + ProductCode, delega al servicio y devuelve el
+  PricingResult serializado. Sin PBE (usados) igual devuelve la retoma.
+
+Cableado del modal (paso 'precio', para Davi):
+1. Llamar getPricePageData(materialCode, sociedad, null, null, 1, recordId).
+2. Desglose: listPrice / expenses / (referencia BRE cuando llegue) y la fila
+   "Retoma (avaluo aceptado)" en negativo cuando tradeInValue > 0.
+3. Pie: <c-resumen-financiero precio-vehiculo={listPrice} accesorios={...}
+   impuestos={...} retoma={tradeInValue} anticipo={0} currency-code={...}>.
+   Anticipo queda en 0 hasta confirmar el API name del campo de la Opp
+   (describe pendiente - los campos de pago tienen API en ingles).
+4. isTradeInExpired=true -> banner de aviso y NO restar la retoma.
+5. minimumPrice alimenta el paso 'descuento' (guard del approval).
+
+Hallazgo del describe a resolver aparte: QuoteLineItem.Vehicle__c NO esta
+en la org aunque el DLG lo marca desplegado (v17) - re-verificar el deploy
+del esqueleto antes del mapeo accesorio->vehiculo.
+
 ## Deploy (DevSales)
 
 ```
