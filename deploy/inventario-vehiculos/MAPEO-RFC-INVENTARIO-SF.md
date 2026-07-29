@@ -115,6 +115,54 @@ pegar el log. El script imprime, para Product2 / VehicleDefinition / Vehicle:
 Con ese log se completan las columnas "tipo/tamano/valores permitidos" y
 "ejemplos" que el equipo SAP pidio, sin adivinar.
 
+## RESULTADO DEL DESCRIBE (29/07, log de la org) - vereditos ACTUALIZADOS
+
+El describe corrio sobre Product2 (53 campos), VehicleDefinition (49) y
+Vehicle (85). Actualizaciones sobre las secciones 1-5:
+
+### Hallazgo estructural: Vehicle.AssetId es OBLIGATORIO
+Todo Vehicle requiere un Asset (ademas de VehicleDefinitionId y VIN, tambien
+obligatorios). Consecuencia para el sync: la cadena real es
+`Product2 -> VehicleDefinition -> ASSET -> Vehicle`. El Asset de una unidad
+de STOCK necesita cuenta dueno -> la "cuenta interna por sociedad" (pendiente
+6 de la seccion 6) deja de ser opcional: es PRERREQUISITO del sync. Bonus de
+consistencia: en la venta ya no se crea el Asset - se TRANSFIERE (Asset.
+AccountId + Vehicle.CurrentOwnerId al cliente en Facturado), alineado con la
+asetizacion nativa del ciclo de pedido.
+
+### Nativos encontrados que REEMPLAZAN customs propuestos
+| Campo RFC | Veredito nuevo |
+|---|---|
+| MARCA_VEHICULO | NATIVO confirmado: `Product2.MakeName` (STRING 80) + denormalizado en `Vehicle.MakeName` (40). Mule traduce codigo->nombre. Cero custom. |
+| SERIE | Si es chasis: NATIVO `Vehicle.ChassisNumber` (STRING 255, separado del VIN). La org tiene VIN y chasis como campos distintos - la pendiente con SAP baja de "donde guardarlo" a solo "que significa". |
+| T_VEHICULO | `VehicleDefinition.VehicleType` NO existe en esta version. Destino real: `Product2.Family` (picklist NO restricto, ya sembrado: Autos / Motos / Frotas / Usados / Repuestos / PA / Accesorio) para la taxonomia comercial; `VehicleDefinition.VehicleClass` (STRING) como clasificacion tecnica si SAP distingue mas fino. |
+| Deposito (LGORT) | Candidato NATIVO: `Vehicle.StockCode` (STRING 255) si el negocio acepta un solo codigo de ubicacion de stock; si Centro y Deposito deben viajar separados, se mantiene el custom `StorageLocationCode__c`. Decidir con el equipo SAP. |
+| Identidad SAP | NATIVOS hechos para esto: `Vehicle.SourceSystemName` / `SourceSystemIdentifier` / `ExtlSystemVehicleIdentifier` (STRING 255). El identificador SAP de la unidad vive ahi SIN custom. |
+
+### Lo que el describe CONFIRMA del borrador
+- Ningun campo con flag External Id upsertable en los 3 objetos (el
+  `Product2.ExternalId` standard existe pero NO es llave de upsert) -> los
+  3 External Ids custom de la seccion 2 SIGUEN siendo necesarios. Los
+  nativos de identidad (ExternalReferenceNumber en VehicleDefinition,
+  ExtlSystemVehicleIdentifier en Vehicle) se llenan ADEMAS, para exhibicion.
+- Obligatorios reales en create: Product2 = Name; VehicleDefinition = Name +
+  ProductId; Vehicle = Name + AssetId + VehicleDefinitionId + VIN.
+- `Vehicle.Status` es picklist NO restricto con los valores default del
+  paquete: "En ubicacion de concesionario / En servicio / En reparacion /
+  En fabricacion". Decision de la seccion 3 refinada: sembrar los valores
+  GrupoQ (EnTransito/EnAlistamiento/Disponible/Reservado/Vendido/Baja) y
+  desactivar los default que no se usen - una sola taxonomia, no dos.
+- `Vehicle.CurrentOwnerId` referencia Account (no polimorfico) - compatible
+  con la regla de la seccion 4.
+- BUKRS, F_INGRESO, flags (ALIST/NAC), FLOOR_PLAN y polizas siguen SIN casa
+  nativa -> customs de la seccion 1 confirmados.
+- Campos de precio del Vehicle (MarketPrice, AverageMarketValue...) NO se
+  usan: el precio es del SAP (guard de arquitectura).
+- VehicleDefinition trae ficha tecnica rica nativa (motor, bateria, medidas,
+  consumo, FuelSource/DrivetrainSystem/TransmissionSystem picklists nuevos -
+  los viejos TransmissionType/FuelType estan Deprecated: NO mapear a los
+  deprecated). Si el RFC algun dia manda specs, hay casa nativa.
+
 ## 6. Pendientes que bloquean (para devolver a SAP/negocio)
 
 1. SERIE: que es exactamente? (bloquea la llave del upsert de Vehicle)
@@ -123,5 +171,10 @@ Con ese log se completan las columnas "tipo/tamano/valores permitidos" y
 4. FLOOR_PLAN: el vendedor necesita verlo? (si no: no enviar)
 5. CTG_ANTI: los rangos de antiguedad son regla viva en SAP o fija? (define
    formula en SF vs campo sincronizado)
-6. Negocio: cuenta interna por sociedad para CurrentOwnerId de stock, o
-   vacio?
+6. Negocio: cuenta interna por sociedad para el ASSET de las unidades de
+   stock - PRERREQUISITO del sync (Vehicle.AssetId es obligatorio, ver
+   resultado del describe). Definir la cuenta (una por sociedad BUKRS) antes
+   de la primera carga.
+7. Falta correr la query Tooling de validation rules de los 3 objetos
+   (comentario al final del DESCRIBE-INVENTARIO.apex) para cerrar la
+   seccion "reglas de validacion y excepciones".
