@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>Gerar_Documento_Servico</name>
-        <label>Gerar Documento de Servico</label>
+        <name>Create_Service_Document</name>
+        <label>Create Service Document</label>
         <locationX>176</locationX>
         <locationY>374</locationY>
         <actionName>createServiceDocument</actionName>
         <actionType>createServiceDocument</actionType>
-        <connector><targetReference>Screen_Aguardando</targetReference></connector>
-        <faultConnector><targetReference>Screen_Erro</targetReference></faultConnector>
+        <connector><targetReference>Wait_For_Document_Generation</targetReference></connector>
+        <faultConnector><targetReference>Show_Generation_Error</targetReference></faultConnector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>recordId</name>
@@ -16,11 +16,11 @@
         </inputParameters>
         <inputParameters>
             <name>templateId</name>
-            <value><elementReference>inputTemplateId</elementReference></value>
+            <value><elementReference>documentTemplateId</elementReference></value>
         </inputParameters>
         <inputParameters>
             <name>title</name>
-            <value><elementReference>fTituloDocumento</elementReference></value>
+            <value><elementReference>documentTitle</elementReference></value>
         </inputParameters>
         <nameSegment>createServiceDocument</nameSegment>
         <storeOutputAutomatically>true</storeOutputAutomatically>
@@ -29,19 +29,19 @@
     <apiVersion>66.0</apiVersion>
 
     <decisions>
-        <name>Decision_Config_Valida</name>
-        <label>Config Valida?</label>
+        <name>Are_Inputs_Provided</name>
+        <label>Are Inputs Provided?</label>
         <locationX>176</locationX>
         <locationY>134</locationY>
         <defaultConnector>
-            <targetReference>Screen_Erro_Config</targetReference>
+            <targetReference>Show_Configuration_Error</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Inputs incompletos</defaultConnectorLabel>
+        <defaultConnectorLabel>Missing Inputs</defaultConnectorLabel>
         <rules>
-            <name>Config_OK</name>
+            <name>Inputs_Provided</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>inputTemplateId</leftValueReference>
+                <leftValueReference>documentTemplateId</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue><booleanValue>false</booleanValue></rightValue>
             </conditions>
@@ -51,21 +51,21 @@
                 <rightValue><booleanValue>false</booleanValue></rightValue>
             </conditions>
             <connector><targetReference>Get_Service_Appointment</targetReference></connector>
-            <label>Config OK</label>
+            <label>Inputs Provided</label>
         </rules>
     </decisions>
 
     <decisions>
-        <name>Decision_Doc_Pronto</name>
-        <label>Documento Pronto?</label>
+        <name>Is_Document_Ready</name>
+        <label>Is Document Ready?</label>
         <locationX>176</locationX>
         <locationY>734</locationY>
         <defaultConnector>
-            <targetReference>Screen_Aguardando</targetReference>
+            <targetReference>Wait_For_Document_Generation</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Ainda gerando</defaultConnectorLabel>
+        <defaultConnectorLabel>Still Generating</defaultConnectorLabel>
         <rules>
-            <name>Doc_Disponivel</name>
+            <name>Document_Ready</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
                 <leftValueReference>Get_Service_Report</leftValueReference>
@@ -77,30 +77,30 @@
                 <operator>IsNull</operator>
                 <rightValue><booleanValue>false</booleanValue></rightValue>
             </conditions>
-            <connector><targetReference>Screen_Preview_Documento</targetReference></connector>
-            <label>Doc disponivel</label>
+            <connector><targetReference>Review_Authorization_Document</targetReference></connector>
+            <label>Document Ready</label>
         </rules>
     </decisions>
 
-    <description>Gera a autorizacao de test drive a partir de um Service Appointment usando a acao Create Service Document (Field Service Document Builder) e exibe o PDF gerado na tela com o componente File Preview (Spring 26). A acao retorna pdfReportId (registro Service Report que recebe o PDF de forma assincrona); o flow consulta o ServiceReport ate o campo ContentVersionDocumentId ser preenchido e entao exibe esse ContentDocument. Sem Visualforce e sem Apex.</description>
+    <description>Business purpose: generates the test drive authorization PDF from a Service Appointment so the receptionist can review it, print it, and collect the customer signature before the test drive starts. When used: launched from an action on the Service Appointment record page on the day of the test drive. Dependencies: Field Service Document Builder (createServiceDocument action, permission Document Builder, active Service Document Template built on Service Appointment); the generated PDF is stored in a Service Report record linked to the appointment. Generation is asynchronous, so the flow polls the Service Report until ContentVersionDocumentId is populated. Country considerations: none, template and screen texts handle localization.</description>
     <environments>Default</environments>
 
     <formulas>
-        <description>Titulo do documento gerado.</description>
-        <name>fTituloDocumento</name>
+        <description>Label of the generated service report, shown in the Service Reports related list.</description>
+        <name>documentTitle</name>
         <dataType>String</dataType>
-        <expression>"Autorizacao Test Drive - " &amp; {!Get_Service_Appointment.AppointmentNumber}</expression>
+        <expression>"Test Drive Authorization - " &amp; {!Get_Service_Appointment.AppointmentNumber}</expression>
     </formulas>
 
     <formulas>
-        <description>URL do preview padrao do arquivo gerado.</description>
-        <name>fUrlDocumento</name>
+        <description>Standard file preview URL of the generated document, used until the File Preview screen component name is confirmed.</description>
+        <name>documentUrl</name>
         <dataType>String</dataType>
         <expression>"/lightning/r/ContentDocument/" &amp; {!Get_Service_Report.ContentVersionDocumentId} &amp; "/view"</expression>
     </formulas>
 
-    <interviewLabel>Gerar Autorizacao TestDrive {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Gerar Autorizacao Test Drive</label>
+    <interviewLabel>Generate Test Drive Authorization {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Generate Test Drive Authorization</label>
 
     <processMetadataValues>
         <name>BuilderType</name>
@@ -129,7 +129,7 @@
         <locationX>176</locationX>
         <locationY>254</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Gerar_Documento_Servico</targetReference></connector>
+        <connector><targetReference>Create_Service_Document</targetReference></connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -149,12 +149,12 @@
         <locationX>176</locationX>
         <locationY>614</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Decision_Doc_Pronto</targetReference></connector>
+        <connector><targetReference>Is_Document_Ready</targetReference></connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
-            <value><elementReference>Gerar_Documento_Servico.pdfReportId</elementReference></value>
+            <value><elementReference>Create_Service_Document.pdfReportId</elementReference></value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>ServiceReport</object>
@@ -166,52 +166,35 @@
     <runInMode>DefaultMode</runInMode>
 
     <screens>
-        <name>Screen_Aguardando</name>
-        <label>Gerando Documento</label>
+        <name>Wait_For_Document_Generation</name>
+        <label>Wait for Document Generation</label>
         <locationX>176</locationX>
         <locationY>494</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>TextoAguardando</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;O documento esta sendo gerado.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;A geracao e assincrona e pode levar alguns segundos. Clique em &lt;b&gt;Avancar&lt;/b&gt; para verificar se a autorizacao ja esta disponivel.&lt;/p&gt;</fieldText>
+            <name>GenerationInProgressText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;El documento se esta generando.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;La generacion es asincrona y puede tardar unos segundos. Haga clic en &lt;b&gt;Siguiente&lt;/b&gt; para verificar si la autorizacion ya esta disponible.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <nextOrFinishButtonLabel>Avancar</nextOrFinishButtonLabel>
+        <nextOrFinishButtonLabel>Siguiente</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
         <connector><targetReference>Get_Service_Report</targetReference></connector>
     </screens>
 
     <screens>
-        <name>Screen_Erro</name>
-        <label>Erro na Geracao</label>
-        <locationX>440</locationX>
-        <locationY>494</locationY>
-        <allowBack>false</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <fields>
-            <name>TextoErro</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;Nao foi possivel gerar o documento.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Detalhe tecnico: {!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
-            <fieldType>DisplayText</fieldType>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-
-    <screens>
-        <name>Screen_Erro_Config</name>
-        <label>Configuracao Incompleta</label>
+        <name>Show_Configuration_Error</name>
+        <label>Show Configuration Error</label>
         <locationX>440</locationX>
         <locationY>254</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>TextoErroConfig</name>
-            <fieldText>&lt;p&gt;O flow precisa receber o &lt;b&gt;recordId&lt;/b&gt; do Service Appointment e o &lt;b&gt;inputTemplateId&lt;/b&gt; do template criado no Document Builder (ID que aparece na URL do template depois de &amp;amp;id=). Configure os inputs no botao/acao que chama este flow.&lt;/p&gt;</fieldText>
+            <name>ConfigurationErrorText</name>
+            <fieldText>&lt;p&gt;El flujo necesita recibir el &lt;b&gt;recordId&lt;/b&gt; del Service Appointment y el &lt;b&gt;documentTemplateId&lt;/b&gt; de la plantilla creada en Document Builder (el ID aparece en la URL de la plantilla despues de &amp;amp;id=). Configure las entradas en el boton o accion que llama este flujo.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -219,16 +202,33 @@
     </screens>
 
     <screens>
-        <name>Screen_Preview_Documento</name>
-        <label>Autorizacao de Test Drive</label>
+        <name>Show_Generation_Error</name>
+        <label>Show Generation Error</label>
+        <locationX>440</locationX>
+        <locationY>494</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>GenerationErrorText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;No fue posible generar el documento.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Detalle tecnico: {!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+
+    <screens>
+        <name>Review_Authorization_Document</name>
+        <label>Review Authorization Document</label>
         <locationX>176</locationX>
         <locationY>854</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>TextoConferencia</name>
-            <fieldText>&lt;p&gt;&lt;b&gt;Documento gerado com sucesso.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Confira os dados da autorizacao (veiculo, cliente, datas) antes de imprimir e colher a assinatura.&lt;/p&gt;&lt;p&gt;&lt;a href="{!fUrlDocumento}" target="_blank"&gt;Abrir a autorizacao&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;Nota: quando confirmarmos o nome do componente File Preview (Spring 26), este link sera substituido pelo preview do PDF nesta mesma tela.&lt;/i&gt;&lt;/p&gt;</fieldText>
+            <name>AuthorizationReviewText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;Documento generado con exito.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Verifique los datos de la autorizacion (vehiculo, cliente, fechas) antes de imprimir y recoger la firma.&lt;/p&gt;&lt;p&gt;&lt;a href="{!documentUrl}" target="_blank"&gt;Abrir la autorizacion&lt;/a&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -239,22 +239,22 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Decision_Config_Valida</targetReference>
+            <targetReference>Are_Inputs_Provided</targetReference>
         </connector>
     </start>
 
     <status>Active</status>
 
     <variables>
-        <description>Id do template criado no Document Builder (prefixo 0M0, visivel na URL do template depois de &amp;id=). Informar via input do botao/acao que chama o flow.</description>
-        <name>inputTemplateId</name>
+        <description>Id of the active Service Document Template created in Document Builder (prefix 0M0, visible in the template URL after &amp;id=). Provided as input by the button or action that launches the flow.</description>
+        <name>documentTemplateId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <description>Id do Service Appointment. Preenchido automaticamente quando o flow roda na pagina do registro.</description>
+        <description>Id of the Service Appointment. Populated automatically when the flow runs from a record page.</description>
         <name>recordId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>

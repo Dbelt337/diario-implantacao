@@ -3,32 +3,32 @@
     <apiVersion>66.0</apiVersion>
 
     <decisions>
-        <name>Decision_Tem_Arquivo</name>
-        <label>Tem Arquivo?</label>
+        <name>Has_File</name>
+        <label>Has File?</label>
         <locationX>176</locationX>
         <locationY>254</locationY>
         <defaultConnector>
-            <targetReference>Screen_Sem_Arquivo</targetReference>
+            <targetReference>Show_No_File_Message</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Sem arquivo</defaultConnectorLabel>
+        <defaultConnectorLabel>No File</defaultConnectorLabel>
         <rules>
-            <name>Arquivo_Encontrado</name>
+            <name>File_Found</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Arquivo_Do_Registro</leftValueReference>
+                <leftValueReference>Get_Latest_Content_Document_Link</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue><booleanValue>false</booleanValue></rightValue>
             </conditions>
-            <connector><targetReference>Screen_Preview_Arquivo</targetReference></connector>
-            <label>Arquivo encontrado</label>
+            <connector><targetReference>Preview_File</targetReference></connector>
+            <label>File Found</label>
         </rules>
     </decisions>
 
-    <description>Screen Flow que exibe o preview do arquivo mais recente vinculado a um registro, usando o componente nativo File Preview (Spring 26). Recebe recordId como input (disponivel automaticamente quando executado a partir de uma pagina de registro), busca o ContentDocumentLink mais recente do registro e mostra o arquivo na tela.</description>
+    <description>Business purpose: lets a user review the most recent file attached to any record without leaving the page, using the native File Preview screen component (Spring 26). When used: launched from an action on a record page, for example to re-open a previously generated test drive authorization at the reception desk. Dependencies: File Preview screen component (org must be on Spring 26 or later; running user needs access to the file); reads ContentDocumentLink. Country considerations: none.</description>
     <environments>Default</environments>
 
-    <interviewLabel>Preview Arquivo Registro {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Preview Arquivo Registro</label>
+    <interviewLabel>Preview Record File {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Preview Record File</label>
 
     <processMetadataValues>
         <name>BuilderType</name>
@@ -52,12 +52,12 @@
     <processType>Flow</processType>
 
     <recordLookups>
-        <name>Get_Arquivo_Do_Registro</name>
-        <label>Get Arquivo do Registro</label>
+        <name>Get_Latest_Content_Document_Link</name>
+        <label>Get Latest Content Document Link</label>
         <locationX>176</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Decision_Tem_Arquivo</targetReference></connector>
+        <connector><targetReference>Has_File</targetReference></connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>LinkedEntityId</field>
@@ -74,20 +74,20 @@
     <runInMode>DefaultMode</runInMode>
 
     <screens>
-        <name>Screen_Preview_Arquivo</name>
-        <label>Preview do Arquivo</label>
+        <name>Preview_File</name>
+        <label>Preview File</label>
         <locationX>50</locationX>
         <locationY>374</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>FilePreview</name>
+            <name>RecordFilePreview</name>
             <extensionName>flowruntime:filePreview</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>contentDocumentId</name>
-                <value><elementReference>Get_Arquivo_Do_Registro.ContentDocumentId</elementReference></value>
+                <value><elementReference>Get_Latest_Content_Document_Link.ContentDocumentId</elementReference></value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
@@ -98,16 +98,16 @@
     </screens>
 
     <screens>
-        <name>Screen_Sem_Arquivo</name>
-        <label>Nenhum Arquivo</label>
+        <name>Show_No_File_Message</name>
+        <label>Show No File Message</label>
         <locationX>302</locationX>
         <locationY>374</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>TextoSemArquivo</name>
-            <fieldText>&lt;p&gt;Nenhum arquivo encontrado para este registro. Faca o upload de um arquivo na lista relacionada Files e execute o flow novamente.&lt;/p&gt;</fieldText>
+            <name>NoFileMessageText</name>
+            <fieldText>&lt;p&gt;No se encontro ningun archivo para este registro. Suba un archivo en la lista relacionada Files y ejecute el flujo nuevamente.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -118,14 +118,14 @@
         <locationX>176</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Arquivo_Do_Registro</targetReference>
+            <targetReference>Get_Latest_Content_Document_Link</targetReference>
         </connector>
     </start>
 
     <status>Active</status>
 
     <variables>
-        <description>Id do registro de onde o flow e executado. Preenchido automaticamente quando o flow roda em uma pagina de registro.</description>
+        <description>Id of the record whose latest file is previewed. Populated automatically when the flow runs from a record page.</description>
         <name>recordId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
