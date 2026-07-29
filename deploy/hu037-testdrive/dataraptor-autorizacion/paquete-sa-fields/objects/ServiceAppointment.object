@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>AdvisorName__c</fullName>
+        <label>Asesor del test drive</label>
+        <description>All countries. Display stamp filled at booking time (advisor assigned as Technician resource). Exists because Service Report templates and list views cannot reach data two hops away (AssignedResource to User); also feeds the demo agenda (HU-037 RN 13) without exposing customer name. Not user-editable by process: written by the scheduling flow.</description>
+        <type>Text</type>
+        <length>120</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <unique>false</unique>
+        <externalId>false</externalId>
+    </fields>
+    <fields>
+        <fullName>VehicleDescription__c</fullName>
+        <label>Vehículo del test drive</label>
+        <description>All countries. Display stamp filled at booking time: make, model, plate and VIN of the demo unit assigned as Asset resource. Exists because Service Report templates cannot reach AssignedResource-to-Asset data; also used by the demo agenda (HU-037 RN 13).</description>
+        <type>Text</type>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <unique>false</unique>
+        <externalId>false</externalId>
+    </fields>
+    <fields>
+        <fullName>DriverLicenseNumber__c</fullName>
+        <label>Licencia de conducir</label>
+        <description>All countries. Driver license number validated by DriverLicenseValidation at booking, stamped for the printed authorization document (HU-037 RN 9.2/9.6). PII: restrict FLS to sales/reception profiles only; the license master stays in IdentityDocument.</description>
+        <type>Text</type>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <unique>false</unique>
+        <externalId>false</externalId>
+    </fields>
+</CustomObject>
