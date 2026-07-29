@@ -1,0 +1,52 @@
+<template>
+    <div class="slds-box slds-box_small slds-theme_shade">
+        <h3 class="slds-text-title_caps slds-m-bottom_x-small">Resumen de pago</h3>
+        <dl class="slds-list_horizontal slds-wrap">
+            <dt class="slds-item_label slds-truncate">Precio del vehículo</dt>
+            <dd class="slds-item_detail slds-text-align_right">
+                <lightning-formatted-number value={precioVehiculo}
+                    format-style="currency" currency-code={currencyCode}>
+                </lightning-formatted-number>
+            </dd>
+
+            <dt class="slds-item_label slds-truncate">Accesorios</dt>
+            <dd class="slds-item_detail slds-text-align_right">
+                <lightning-formatted-number value={accesorios}
+                    format-style="currency" currency-code={currencyCode}>
+                </lightning-formatted-number>
+            </dd>
+
+            <dt class="slds-item_label slds-truncate">Impuestos (referencia)</dt>
+            <dd class="slds-item_detail slds-text-align_right">
+                <lightning-formatted-number value={impuestos}
+                    format-style="currency" currency-code={currencyCode}>
+                </lightning-formatted-number>
+            </dd>
+
+            <template lwc:if={hayRetoma}>
+                <dt class="slds-item_label slds-truncate">Retoma (avalúo aceptado)</dt>
+                <dd class="slds-item_detail slds-text-align_right">
+                    <lightning-formatted-number value={retomaNegativa}
+                        format-style="currency" currency-code={currencyCode}>
+                    </lightning-formatted-number>
+                </dd>
+            </template>
+
+            <template lwc:if={hayAnticipo}>
+                <dt class="slds-item_label slds-truncate">Anticipo</dt>
+                <dd class="slds-item_detail slds-text-align_right">
+                    <lightning-formatted-number value={anticipoNegativo}
+                        format-style="currency" currency-code={currencyCode}>
+                    </lightning-formatted-number>
+                </dd>
+            </template>
+
+            <dt class="slds-item_label slds-truncate slds-text-title_bold">Neto a pagar</dt>
+            <dd class="slds-item_detail slds-text-align_right slds-text-title_bold">
+                <lightning-formatted-number value={neto}
+                    format-style="currency" currency-code={currencyCode}>
+                </lightning-formatted-number>
+            </dd>
+        </dl>
+    </div>
+</template>

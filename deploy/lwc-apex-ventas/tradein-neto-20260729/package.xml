@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Quote.TradeInValue__c</members>
+        <members>Quote.NetAmount__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>QuoteOrderService</members>
+        <members>PricingService</members>
+        <members>SapOrderService</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>resumenFinanciero</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <version>63.0</version>
+</Package>

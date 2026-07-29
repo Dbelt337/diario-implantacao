@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>TradeInValue__c</fullName>
+        <label>Monto de retoma</label>
+        <description>All countries. Trade-in value FROZEN at quote creation, copied from Opportunity.TradeInValue__c (stamped by Appraisal After Handler when the appraisal is accepted, HU-036). Frozen on purpose: a later appraisal revision must never change an already negotiated quote; re-applying is an explicit seller action. Operand sent to SAP in the order payload - SAP recomputes the net financially; Salesforce never sends a calculated net.</description>
+        <type>Currency</type>
+        <precision>16</precision>
+        <scale>2</scale>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>NetAmount__c</fullName>
+        <label>Neto a pagar</label>
+        <description>All countries. Display-only reference: quote grand total minus the frozen trade-in value. Deterministic arithmetic over operands so Salesforce and SAP always match by construction; the authoritative financial netting happens in SAP at invoicing.</description>
+        <externalId>false</externalId>
+        <formula>BLANKVALUE(GrandTotal, 0) - BLANKVALUE(TradeInValue__c, 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+</CustomObject>
