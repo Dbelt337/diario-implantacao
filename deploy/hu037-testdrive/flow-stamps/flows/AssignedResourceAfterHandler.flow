@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>RouteByResourceType</name>
+        <label>Resource type?</label>
+        <locationX>176</locationX>
+        <locationY>168</locationY>
+        <defaultConnectorLabel>Other (exit)</defaultConnectorLabel>
+        <rules>
+            <name>IsAdvisor</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.ServiceResource.ResourceType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>T</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>StampAdvisorName</targetReference>
+            </connector>
+            <label>Technician (advisor)</label>
+        </rules>
+        <rules>
+            <name>IsVehicle</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.ServiceResource.ResourceType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>S</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>GetVehicleOfAsset</targetReference>
+            </connector>
+            <label>Asset (vehicle)</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>VehicleFound</name>
+        <label>Vehicle record found?</label>
+        <locationX>176</locationX>
+        <locationY>384</locationY>
+        <defaultConnectorLabel>No vehicle (exit)</defaultConnectorLabel>
+        <rules>
+            <name>YesVehicle</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetVehicleOfAsset.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>StampVehicleDescription</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
+    <description>GQ.AUT.HU037: keeps the ServiceAppointment display stamps in sync with the assigned resources, on EVERY entry channel (booking OmniScript, Modify vehicle swap, future central API). Technician resource stamps AdvisorName__c; Asset resource resolves the Vehicle of the asset and stamps VehicleDescription__c (make model plate VIN). The stamps exist because Service Report templates and list views cannot reach data two hops away; users never edit them. DriverLicenseNumber__c is NOT stamped here: the booking OmniScript already posts to the SA and carries the validated license.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>VehicleDescriptionText</name>
+        <dataType>String</dataType>
+        <expression>TRIM({!GetVehicleOfAsset.MakeName} &amp; " " &amp; {!GetVehicleOfAsset.ModelName}) &amp; " | Placa " &amp; {!GetVehicleOfAsset.VehicleRegistrationNumber} &amp; " | VIN " &amp; {!GetVehicleOfAsset.VehicleIdentificationNumber}</expression>
+    </formulas>
+    <interviewLabel>AssignedResourceAfterHandler {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Assigned Resource After Handler</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>GetVehicleOfAsset</name>
+        <label>Get vehicle of the asset resource</label>
+        <locationX>176</locationX>
+        <locationY>276</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>VehicleFound</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>AssetId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ServiceResource.AssetId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Vehicle</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>MakeName</queriedFields>
+        <queriedFields>ModelName</queriedFields>
+        <queriedFields>VehicleRegistrationNumber</queriedFields>
+        <queriedFields>VehicleIdentificationNumber</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>StampAdvisorName</name>
+        <label>Stamp advisor name on the SA</label>
+        <locationX>50</locationX>
+        <locationY>276</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ServiceAppointmentId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>AdvisorName__c</field>
+            <value>
+                <elementReference>$Record.ServiceResource.Name</elementReference>
+            </value>
+        </inputAssignments>
+        <object>ServiceAppointment</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>StampVehicleDescription</name>
+        <label>Stamp vehicle description on the SA</label>
+        <locationX>50</locationX>
+        <locationY>492</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ServiceAppointmentId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>VehicleDescription__c</field>
+            <value>
+                <elementReference>VehicleDescriptionText</elementReference>
+            </value>
+        </inputAssignments>
+        <object>ServiceAppointment</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>RouteByResourceType</targetReference>
+        </connector>
+        <object>AssignedResource</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>10</triggerOrder>
+</Flow>
