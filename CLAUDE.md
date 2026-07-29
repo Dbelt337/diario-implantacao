@@ -3,6 +3,9 @@
 ## Comunicação
 - NUNCA usar emoji em nada: respostas de chat, mensagens de commit, arquivos,
   documentos, PRs — nenhum artefato. (Preferência do usuário, 2026-07-21.)
+- NÃO enviar arquivos/anexos por iniciativa própria: conteúdo vai no chat;
+  arquivo (zip, doc, script) só quando o Diego pedir explicitamente.
+  Commitar no repositório continua normal. (Preferência do usuário, 2026-07-29.)
 
 ## Processo de validação de HUs (compromisso com a Melisa, 2026-07-22)
 - Diego SEMPRE valida as histórias ANTES de subirem para o Jira/refinamento,
