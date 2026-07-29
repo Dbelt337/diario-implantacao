@@ -13,6 +13,14 @@ Ambos sistemas hacen la misma aritmetica trivial sobre los mismos operandos:
 neto = precio + accesorios + impuestos - retoma - anticipo. SAP hace el
 neteo financiero real en la facturacion (compra del usado + venta del nuevo).
 
+Base verificada (describe 23/07, registrado en MODELAGEM-AVALUO.md y en la
+description del campo de la opp): NO existe columna nativa de trade-in en
+Opportunity ni en Quote en esta org - por eso los campos custom. En el
+Appraisal el valor final es FORMULA nativa (FinalAppraisalValue =
+TotalItemFinalValue + TotalAdjustmentValue, updateable=false): el valuador
+no digita, y lo que la quote congela es el resultado de esa formula ya
+aceptado (Status = Aceptado, picklist sembrado por HU-036).
+
 ## Cadena ya entregada que este paquete consume
 
 1. HU-036: Appraisal After Handler estampa FinalAppraisalValue en
@@ -39,8 +47,10 @@ neteo financiero real en la facturacion (compra del usado + venta del nuevo).
    (Annex). Alta formal igual que HU-039 antes de activar el envio.
 2. REPARTO MULTI-VEHICULO: con mas de un vehiculo en la opp, a que quote va
    la retoma? Hoy: primera quote (documentado en codigo). Definir con negocio.
-3. VIGENCIA DEL AVALUO: si el negocio define validez (15-30 dias), el gate
-   entra en el paso de aplicar retoma del flujo guiado. Pregunta a GrupoQ.
+3. VIGENCIA DEL AVALUO: el campo NATIVO Appraisal.ValidityEndDate ya existe
+   (describe 23/07, MODELAGEM-AVALUO). El gate del paso "aplicar retoma" es
+   ValidityEndDate &gt;= TODAY, sin campo custom. Falta solo que GrupoQ defina
+   el plazo estandar que el valuador estampa.
 4. AVALUO QUE DEJA DE ESTAR ACEPTADO tras congelarse en una quote: alertar a
    la opp (flow en VehicleAppraisal), nunca deshacer solo. Evolucion aparte.
 
