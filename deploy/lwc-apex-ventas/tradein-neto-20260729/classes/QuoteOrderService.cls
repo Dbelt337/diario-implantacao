@@ -4,8 +4,6 @@
  * of the business line (Venta Vehículo / Contraventa Repuestos / PA / Usados).
  * Bulkified DML; no SOQL or DML inside loops. Order lifecycle: Borrador ->
  * Enviado a SAP -> Confirmado SAP -> Facturado (assetization only on Facturado).
- * Trade-in (retoma): payment composition, never a price discount - the frozen
- * appraisal value travels to SAP as an operand and SAP nets it at invoicing.
  */
 public with sharing class QuoteOrderService {
 
@@ -20,6 +18,9 @@ public with sharing class QuoteOrderService {
     // TODO: accessory must map to the correct vehicle quote (consider using a future new field on the OppLineItem)
         //quotePayloadJson not used yet -> map accessory here(?)
         //selectedVehicles not used yet -> map discount here
+
+
+    //future developement note: flow changed -> only a single quote will be created here and by using the interface the user must create a new quote and follow the same process for each vehicle (one quote per vehicle
     public static List<Quote> createQuotesSingleVehicle(Id opportunityId, String quotePayloadJson, String selectedVehicles) {
 
 
@@ -43,8 +44,9 @@ public with sharing class QuoteOrderService {
         Opportunity opp = opps[0];
 
         if (opp.Pricebook2Id == null) {
-            System.debug('La oportunidad no tiene Pricebook: ' + opportunityId);
-            throw new QuoteOrderServiceException('La oportunidad necesita un Pricebook');
+            // TODO: resolve by sociedad map (pending catalog decision with GrupoQ)
+            opp.Pricebook2Id = resolveDefaultPricebookId();
+            update opp;
         }
 
         //include custom field mapping to vehicle here (Vehicle__c) -> accessory X belong to the vehicle Y
@@ -61,6 +63,16 @@ public with sharing class QuoteOrderService {
         ];
 
         List<VehicleDTO> vehiclesDTO = (List<VehicleDTO>) JSON.deserialize(selectedVehicles, List<VehicleDTO>.class);
+
+        if (vehicles.isEmpty()) {
+            OpportunityLineItem vehicleLine = buildVehicleLineFromSelection(opp, vehiclesDTO);
+            insert vehicleLine;
+            vehicles = [
+                SELECT Id, PricebookEntryId, Quantity, UnitPrice, CurrencyIsoCode, Product2Id, Product2.Name
+                FROM OpportunityLineItem
+                WHERE Id = :vehicleLine.Id
+            ];
+        }
 
         //IMPORTANT: call a method here to update the Opportunity Line Items to match the selected vehicles/accessories (vehiclesDTO) -> a different vehicle might be (un)selected
         //updateOppLineItemsVehiclesAndAccessories();
@@ -79,11 +91,30 @@ public with sharing class QuoteOrderService {
             mapOppLineItemsByVehicleId.put(vehicle.Product2Id, new List<OpportunityLineItem>{vehicle});
             //Create Quote
             //change Name to Name + SKU?
+
+
+            /*        if (v.disponibilidad?.cantidad) {
+            v.disponibilidad.fuente === 'recepcion_futura'
+                ? { label: 'Crear cotización futura', variant: 'neutral' }
+                : { label: 'Crear cotización con unidad en tránsito', variant: 'brand' };
+        }
+
+        { label: 'Crear cotización y solicitar unidad', variant: 'neutral' };
+        */
+        VehicleDTO v = (vehiclesDTO != null && !vehiclesDTO.isEmpty()) ? vehiclesDTO.get(0) : null;
+
+        String quoteStatus = (v == null) ? null : safeQuoteStatus(
+            (v.stockCentral != 0 || v.stockDealer != 0) ? 'Pendiente' :
+            (v.disponibilidad?.fuente == 'recepcion_futura' ? 'Pedido futuro' : 'En tránsito'));
+
             Quote quote = new Quote(
                 Name = (opp.Name + ' ' + vehicle.Product2.Name),
                 OpportunityId = opp.Id,
                 Pricebook2Id = opp.Pricebook2Id
             );
+            if (quoteStatus != null) {
+                quote.Status = quoteStatus;
+            }
             //substring(0, 80)
             if (quote.name != null && quote.name.length() > 80) {
                 quote.name = quote.name.substring(0, 80);
@@ -129,14 +160,92 @@ public with sharing class QuoteOrderService {
     }
 
     /**
+     * Default pricebook when the opportunity has none: first active custom
+     * pricebook (sociedad catalog), standard as fallback. The seller never
+     * chooses a catalog; the sociedad->pricebook map replaces this default
+     * once GrupoQ defines the catalog per sociedad.
+     */
+    private static Id resolveDefaultPricebookId() {
+        List<Pricebook2> pbs = [
+            SELECT Id FROM Pricebook2
+            WHERE IsActive = true AND IsStandard = false
+            ORDER BY Name LIMIT 1
+        ];
+        if (pbs.isEmpty()) {
+            pbs = [SELECT Id FROM Pricebook2 WHERE IsActive = true AND IsStandard = true LIMIT 1];
+        }
+        if (pbs.isEmpty()) {
+            throw new QuoteOrderServiceException('No hay Pricebook activo en la org.');
+        }
+        return pbs[0].Id;
+    }
+
+    /**
+     * Fallback when the opportunity has no vehicle line yet: builds it from
+     * the vehicle selected in the guided flow (match by model name against
+     * the pricebook), first vehicle entry of the pricebook as last resort.
+     * Currency must match the opportunity (multicurrency org).
+     */
+    private static OpportunityLineItem buildVehicleLineFromSelection(Opportunity opp, List<VehicleDTO> vehiclesDTO) {
+        List<PricebookEntry> pbes = new List<PricebookEntry>();
+        if (vehiclesDTO != null && !vehiclesDTO.isEmpty() && String.isNotBlank(vehiclesDTO[0].modelo)) {
+            String modelPattern = '%' + vehiclesDTO[0].modelo + '%';
+            pbes = [
+                SELECT Id, UnitPrice FROM PricebookEntry
+                WHERE Pricebook2Id = :opp.Pricebook2Id AND IsActive = true
+                  AND CurrencyIsoCode = :opp.CurrencyIsoCode
+                  AND Product2.Name LIKE :modelPattern
+                  AND Product2Id IN (SELECT ProductId FROM VehicleDefinition)
+                LIMIT 1
+            ];
+        }
+        if (pbes.isEmpty()) {
+            pbes = [
+                SELECT Id, UnitPrice FROM PricebookEntry
+                WHERE Pricebook2Id = :opp.Pricebook2Id AND IsActive = true
+                  AND CurrencyIsoCode = :opp.CurrencyIsoCode
+                  AND Product2Id IN (SELECT ProductId FROM VehicleDefinition)
+                LIMIT 1
+            ];
+        }
+        if (pbes.isEmpty()) {
+            throw new QuoteOrderServiceException(
+                'El pricebook de la oportunidad no tiene vehiculos activos en la moneda ' + opp.CurrencyIsoCode + '.');
+        }
+        return new OpportunityLineItem(
+            OpportunityId = opp.Id,
+            PricebookEntryId = pbes[0].Id,
+            Quantity = 1,
+            UnitPrice = pbes[0].UnitPrice
+        );
+    }
+
+    /**
+     * Applies the availability->status mapping ONLY when the value exists in
+     * the active Quote.Status picklist: the org still ships the default
+     * statuses (Draft, Presented, Accepted...), so writing an unknown value
+     * fails the insert with INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST.
+     * TODO (Davi): add En tránsito / Pedido futuro / Pendiente in Setup >
+     * Quote Statuses + Record Types NewVehicle/UsedVehicle; this guard then
+     * becomes a no-op and the mapping takes effect without redeploy.
+     */
+    private static String safeQuoteStatus(String candidate) {
+        for (Schema.PicklistEntry pe : Quote.Status.getDescribe().getPicklistValues()) {
+            if (pe.isActive() && pe.getValue() == candidate) {
+                return candidate;
+            }
+        }
+        System.debug('Quote.Status "' + candidate + '" no existe en el picklist activo; se deja el default.');
+        return null;
+    }
+
+    /**
      * Converts an accepted quote into an order in Borrador state.
      * @param quoteId accepted quote
      * @return created Order Id
      */
     public static Id createOrderFromQuote(Id quoteId) {
         // TODO: native quote-to-order; Record Type from the quote business line
-        // TODO: carry Quote.TradeInValue__c into the order context so
-        //       SapOrderService can build the tradeIn block of the payload
         return null;
     }
 
