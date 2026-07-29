@@ -92,6 +92,13 @@
         <expression>"Autorizacao Test Drive - " &amp; {!Get_Service_Appointment.AppointmentNumber}</expression>
     </formulas>
 
+    <formulas>
+        <description>URL do preview padrao do arquivo gerado.</description>
+        <name>fUrlDocumento</name>
+        <dataType>String</dataType>
+        <expression>"/lightning/r/ContentDocument/" &amp; {!Get_Service_Report.ContentVersionDocumentId} &amp; "/view"</expression>
+    </formulas>
+
     <interviewLabel>Gerar Autorizacao TestDrive {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Gerar Autorizacao Test Drive</label>
 
@@ -221,20 +228,8 @@
         <allowPause>false</allowPause>
         <fields>
             <name>TextoConferencia</name>
-            <fieldText>&lt;p&gt;Confira os dados da autorizacao (veiculo, cliente, datas) antes de imprimir e colher a assinatura.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;b&gt;Documento gerado com sucesso.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Confira os dados da autorizacao (veiculo, cliente, datas) antes de imprimir e colher a assinatura.&lt;/p&gt;&lt;p&gt;&lt;a href="{!fUrlDocumento}" target="_blank"&gt;Abrir a autorizacao&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;i&gt;Nota: quando confirmarmos o nome do componente File Preview (Spring 26), este link sera substituido pelo preview do PDF nesta mesma tela.&lt;/i&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
-        </fields>
-        <fields>
-            <name>FilePreviewAutorizacao</name>
-            <extensionName>flowruntime:filePreview</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>contentDocumentId</name>
-                <value><elementReference>Get_Service_Report.ContentVersionDocumentId</elementReference></value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
