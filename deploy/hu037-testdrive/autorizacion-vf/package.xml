@@ -10,11 +10,16 @@
         <name>ApexPage</name>
     </types>
     <types>
+        <members>GenerateTestDriveAuthorization</members>
+        <name>Flow</name>
+    </types>
+    <types>
         <members>generateAuthorization</members>
         <name>LightningComponentBundle</name>
     </types>
     <types>
         <members>ServiceAppointment.GenerateAuthorization</members>
+        <members>ServiceAppointment.GenerateAuthorizationFlow</members>
         <name>QuickAction</name>
     </types>
     <version>63.0</version>

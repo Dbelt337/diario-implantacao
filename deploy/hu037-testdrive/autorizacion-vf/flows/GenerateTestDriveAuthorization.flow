@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>63.0</apiVersion>
+    <actionCalls>
+        <name>GenerateAuthorizationPdf</name>
+        <label>Action: Generate Authorization PDF</label>
+        <locationX>176</locationX>
+        <locationY>120</locationY>
+        <actionName>TestDriveAuthorizationCont</actionName>
+        <actionType>apex</actionType>
+        <connector>
+            <targetReference>ShowGeneratedAuthorization</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>ShowGenerationError</targetReference>
+        </faultConnector>
+        <inputParameters>
+            <name>serviceAppointmentIds</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>contentDocumentId</assignToReference>
+            <name>output</name>
+        </outputParameters>
+    </actionCalls>
+    <description>All countries. GQ.AUT.HU037 RN 9: screen flow surface of the test drive authorization generator. Quick action on the ServiceAppointment (reception): calls TestDriveAuthorizationCont (Visualforce renderAs PDF into the record Files) and shows the result. Generation is the FIRST element on purpose: getContentAsPDF is callout-like and cannot run after DML in the same transaction. Enhancement available on Spring 26 orgs: add the standard File Preview screen component bound to contentDocumentId to show the PDF inline.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>fileUrl</name>
+        <dataType>String</dataType>
+        <expression>'/lightning/r/ContentDocument/' &amp; {!contentDocumentId} &amp; '/view'</expression>
+    </formulas>
+    <interviewLabel>GenerateTestDriveAuthorization {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Generate Test Drive Authorization</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>ShowGeneratedAuthorization</name>
+        <label>Screen: Show Generated Authorization</label>
+        <locationX>176</locationX>
+        <locationY>240</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>GeneratedText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;Autorizaci&#243;n generada.&lt;/b&gt; El PDF qued&#243; guardado en los archivos de la cita.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;{!fileUrl}&quot; target=&quot;_blank&quot;&gt;Abrir la autorizaci&#243;n (PDF) para imprimir&lt;/a&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>ShowGenerationError</name>
+        <label>Screen: Show Generation Error</label>
+        <locationX>440</locationX>
+        <locationY>240</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>ErrorText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;No se pudo generar la autorizaci&#243;n.&lt;/b&gt; Intent&#225; de nuevo; si persiste, avis&#225; al administrador con este detalle:&lt;/p&gt;&lt;p&gt;{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>GenerateAuthorizationPdf</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>contentDocumentId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>
