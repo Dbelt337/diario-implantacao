@@ -4,7 +4,7 @@
         <name>Gerar_Documento_Servico</name>
         <label>Gerar Documento de Servico</label>
         <locationX>176</locationX>
-        <locationY>494</locationY>
+        <locationY>374</locationY>
         <actionName>createServiceDocument</actionName>
         <actionType>createServiceDocument</actionType>
         <connector><targetReference>Screen_Aguardando</targetReference></connector>
@@ -15,7 +15,7 @@
             <value><elementReference>recordId</elementReference></value>
         </inputParameters>
         <inputParameters>
-            <name>serviceDocumentTemplateId</name>
+            <name>templateId</name>
             <value><elementReference>inputTemplateId</elementReference></value>
         </inputParameters>
         <inputParameters>
@@ -23,6 +23,7 @@
             <value><elementReference>fTituloDocumento</elementReference></value>
         </inputParameters>
         <nameSegment>createServiceDocument</nameSegment>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
     </actionCalls>
 
     <apiVersion>66.0</apiVersion>
@@ -35,7 +36,7 @@
         <defaultConnector>
             <targetReference>Screen_Erro_Config</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Template nao informado</defaultConnectorLabel>
+        <defaultConnectorLabel>Inputs incompletos</defaultConnectorLabel>
         <rules>
             <name>Config_OK</name>
             <conditionLogic>and</conditionLogic>
@@ -58,38 +59,31 @@
         <name>Decision_Doc_Pronto</name>
         <label>Documento Pronto?</label>
         <locationX>176</locationX>
-        <locationY>854</locationY>
+        <locationY>734</locationY>
         <defaultConnector>
             <targetReference>Screen_Aguardando</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Ainda gerando</defaultConnectorLabel>
         <rules>
-            <name>Doc_Novo_Disponivel</name>
+            <name>Doc_Disponivel</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>Get_Doc_Atual</leftValueReference>
+                <leftValueReference>Get_Service_Report</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue><booleanValue>false</booleanValue></rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>fDocMudou</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue><booleanValue>true</booleanValue></rightValue>
+                <leftValueReference>Get_Service_Report.ContentVersionDocumentId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
             </conditions>
             <connector><targetReference>Screen_Preview_Documento</targetReference></connector>
-            <label>Doc novo disponivel</label>
+            <label>Doc disponivel</label>
         </rules>
     </decisions>
 
-    <description>Gera a autorizacao de test drive a partir de um Service Appointment usando a acao Create Service Document (Field Service Document Builder) e exibe o PDF gerado na tela com o componente File Preview (Spring 26). Como a geracao e assincrona, o flow compara o arquivo mais recente antes e depois da chamada e oferece uma tela de atualizacao ate o novo documento chegar aos Files do registro. Sem Visualforce e sem Apex.</description>
+    <description>Gera a autorizacao de test drive a partir de um Service Appointment usando a acao Create Service Document (Field Service Document Builder) e exibe o PDF gerado na tela com o componente File Preview (Spring 26). A acao retorna pdfReportId (registro Service Report que recebe o PDF de forma assincrona); o flow consulta o ServiceReport ate o campo ContentVersionDocumentId ser preenchido e entao exibe esse ContentDocument. Sem Visualforce e sem Apex.</description>
     <environments>Default</environments>
-
-    <formulas>
-        <description>True quando o arquivo mais recente do registro mudou em relacao ao snapshot tirado antes da geracao.</description>
-        <name>fDocMudou</name>
-        <dataType>Boolean</dataType>
-        <expression>IF(ISBLANK({!Get_Doc_Antes.ContentDocumentId}), true, {!Get_Doc_Atual.ContentDocumentId} &lt;&gt; {!Get_Doc_Antes.ContentDocumentId})</expression>
-    </formulas>
 
     <formulas>
         <description>Titulo do documento gerado.</description>
@@ -123,52 +117,12 @@
     <processType>Flow</processType>
 
     <recordLookups>
-        <name>Get_Doc_Antes</name>
-        <label>Get Doc Antes</label>
-        <locationX>176</locationX>
-        <locationY>374</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Gerar_Documento_Servico</targetReference></connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>LinkedEntityId</field>
-            <operator>EqualTo</operator>
-            <value><elementReference>recordId</elementReference></value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>ContentDocumentLink</object>
-        <sortField>SystemModstamp</sortField>
-        <sortOrder>Desc</sortOrder>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-
-    <recordLookups>
-        <name>Get_Doc_Atual</name>
-        <label>Get Doc Atual</label>
-        <locationX>176</locationX>
-        <locationY>734</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Decision_Doc_Pronto</targetReference></connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>LinkedEntityId</field>
-            <operator>EqualTo</operator>
-            <value><elementReference>recordId</elementReference></value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>ContentDocumentLink</object>
-        <sortField>SystemModstamp</sortField>
-        <sortOrder>Desc</sortOrder>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-
-    <recordLookups>
         <name>Get_Service_Appointment</name>
         <label>Get Service Appointment</label>
         <locationX>176</locationX>
         <locationY>254</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Get_Doc_Antes</targetReference></connector>
+        <connector><targetReference>Gerar_Documento_Servico</targetReference></connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -182,13 +136,33 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
 
+    <recordLookups>
+        <name>Get_Service_Report</name>
+        <label>Get Service Report</label>
+        <locationX>176</locationX>
+        <locationY>614</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Decision_Doc_Pronto</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>Gerar_Documento_Servico.pdfReportId</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceReport</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
     <runInMode>DefaultMode</runInMode>
 
     <screens>
         <name>Screen_Aguardando</name>
         <label>Gerando Documento</label>
         <locationX>176</locationX>
-        <locationY>614</locationY>
+        <locationY>494</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -200,14 +174,14 @@
         <nextOrFinishButtonLabel>Avancar</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
-        <connector><targetReference>Get_Doc_Atual</targetReference></connector>
+        <connector><targetReference>Get_Service_Report</targetReference></connector>
     </screens>
 
     <screens>
         <name>Screen_Erro</name>
         <label>Erro na Geracao</label>
         <locationX>440</locationX>
-        <locationY>614</locationY>
+        <locationY>494</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -230,7 +204,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>TextoErroConfig</name>
-            <fieldText>&lt;p&gt;O flow precisa receber o &lt;b&gt;recordId&lt;/b&gt; do Service Appointment e o &lt;b&gt;inputTemplateId&lt;/b&gt; do template de documento (Document Builder). Configure os inputs no botao/acao que chama este flow.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;O flow precisa receber o &lt;b&gt;recordId&lt;/b&gt; do Service Appointment e o &lt;b&gt;inputTemplateId&lt;/b&gt; do template criado no Document Builder (ID que aparece na URL do template depois de &amp;amp;id=). Configure os inputs no botao/acao que chama este flow.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -241,13 +215,13 @@
         <name>Screen_Preview_Documento</name>
         <label>Autorizacao de Test Drive</label>
         <locationX>176</locationX>
-        <locationY>974</locationY>
+        <locationY>854</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
             <name>TextoConferencia</name>
-            <fieldText>&lt;p&gt;Confira os dados da autorizacao antes de imprimir e colher a assinatura do cliente.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;Confira os dados da autorizacao (veiculo, cliente, datas) antes de imprimir e colher a assinatura.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -256,7 +230,7 @@
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
                 <name>contentDocumentId</name>
-                <value><elementReference>Get_Doc_Atual.ContentDocumentId</elementReference></value>
+                <value><elementReference>Get_Service_Report.ContentVersionDocumentId</elementReference></value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
@@ -277,7 +251,7 @@
     <status>Active</status>
 
     <variables>
-        <description>Id do template de documento criado no Document Builder (Field Service). Informar via input do botao/acao que chama o flow.</description>
+        <description>Id do template criado no Document Builder (prefixo 0M0, visivel na URL do template depois de &amp;id=). Informar via input do botao/acao que chama o flow.</description>
         <name>inputTemplateId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
