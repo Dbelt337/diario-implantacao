@@ -103,14 +103,14 @@
         <description>True when a template is available from the flow input or from the Service Document Template field on the Service Appointment.</description>
         <name>isTemplateAvailable</name>
         <dataType>Boolean</dataType>
-        <expression>OR(NOT(ISBLANK({!documentTemplateId})), NOT(ISBLANK({!Get_Service_Appointment.ServiceDocumentTemplateId})))</expression>
+        <expression>OR(NOT(ISBLANK({!documentTemplateId})), NOT(ISBLANK({!Get_Service_Appointment.ServiceDocumentTemplate})))</expression>
     </formulas>
 
     <formulas>
         <description>Template used for generation: the flow input when provided (override), otherwise the Service Document Template field on the Service Appointment, kept current by automation when the vehicle or advisor changes.</description>
         <name>resolvedTemplateId</name>
         <dataType>String</dataType>
-        <expression>IF(ISBLANK({!documentTemplateId}), {!Get_Service_Appointment.ServiceDocumentTemplateId}, {!documentTemplateId})</expression>
+        <expression>IF(ISBLANK({!documentTemplateId}), {!Get_Service_Appointment.ServiceDocumentTemplate}, {!documentTemplateId})</expression>
     </formulas>
 
     <interviewLabel>Generate Test Drive Authorization {!$Flow.CurrentDateTime}</interviewLabel>
