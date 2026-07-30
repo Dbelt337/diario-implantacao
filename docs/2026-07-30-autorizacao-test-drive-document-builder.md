@@ -16,7 +16,7 @@ No dia da prueba, a recepção imprime a autorização (cliente, carro, asesor, 
 |---|---|
 | `deploy/flows/Generate_Test_Drive_Authorization.flow` | Screen flow: valida template → `createServiceDocument` (inputs `recordId`, `templateId`, `title`) → tela de espera com re-consulta (geração é **assíncrona**) → poll no `ServiceReport` (output `pdfReportId`) até `ContentVersionDocumentId` preencher → tela de conferência. Fault path com `$Flow.FaultMessage`. |
 | Resolução de template | Campo padrão **`ServiceDocumentTemplate`** do SA (sem sufixo "Id"!), com input `documentTemplateId` como override. Permite template por sucursal/Work Type via automação, sem tocar no flow. |
-| `deploy/flows/Preview_Record_File.flow` | Utilitário: preview do arquivo mais recente de qualquer registro (File Preview Spring '26). **Ainda não deployável** — ver pendência 1. |
+| ~~`Preview_Record_File.flow`~~ | Utilitário descartado em 30/07 — a funcionalidade de preview será embutida na tela final do flow principal quando o nome do componente File Preview for confirmado (pendência 1). |
 | Template de teste | Document Builder → `Test Drive Authorization` sobre ServiceAppointment, ativado e org default. ID de teste: `0M0WK000000OeKT0A0`. |
 
 Nomenclatura conforme **GRPQM Naming Conventions** (metadata em inglês, elementos em Natural Text, resources camelCase, textos de tela em espanhol).
