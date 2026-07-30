@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+
+    <assignments>
+        <name>Add_Alert_To_Creation_List</name>
+        <label>Add Alert to Creation List</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Loop_Through_Expired_Quotes</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>newAlerts</assignToReference>
+            <operator>Add</operator>
+            <value><elementReference>newAlert</elementReference></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Deactivate_Stale_Alert</name>
+        <label>Set Alert to Inactive</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Loop_Through_Active_Alerts</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>Loop_Through_Active_Alerts.IsActive</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>Loop_Through_Active_Alerts.ValidUntilDate</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>$Flow.CurrentDateTime</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>staleAlerts</assignToReference>
+            <operator>Add</operator>
+            <value><elementReference>Loop_Through_Active_Alerts</elementReference></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Reset_Alert_Found</name>
+        <label>Set alertFound to False</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Loop_Through_Alerts_For_Match</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>alertFound</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Reset_Quote_Found</name>
+        <label>Set quoteFound to False</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Loop_Through_Quotes_For_Match</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>quoteFound</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Set_Alert_Found</name>
+        <label>Set alertFound to True</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Loop_Through_Alerts_For_Match</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>alertFound</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Set_New_Alert_Fields</name>
+        <label>Set New Alert Fields</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Add_Alert_To_Creation_List</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>newAlert.ParentId</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>Loop_Through_Expired_Quotes.OpportunityId</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAlert.RecordAlertCategoryId</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>Get_Record_Alert_Category.Id</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAlert.Subject</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>expiredQuoteSubject</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAlert.Description</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>expiredQuoteDescription</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAlert.EffectiveDate</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>$Flow.CurrentDateTime</elementReference></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>newAlert.IsActive</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <assignments>
+        <name>Set_Quote_Found</name>
+        <label>Set quoteFound to True</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Loop_Through_Quotes_For_Match</targetReference></connector>
+        <assignmentItems>
+            <assignToReference>quoteFound</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </assignmentItems>
+    </assignments>
+
+    <decisions>
+        <name>Any_Alerts_To_Create</name>
+        <label>Any Alerts to Create?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector><targetReference>Loop_Through_Active_Alerts</targetReference></defaultConnector>
+        <defaultConnectorLabel>Nothing to Create</defaultConnectorLabel>
+        <rules>
+            <name>Alerts_To_Create</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>newAlerts</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Create_Quote_Alerts</targetReference></connector>
+            <label>Alerts to Create</label>
+        </rules>
+    </decisions>
+
+    <decisions>
+        <name>Any_Alerts_To_Update</name>
+        <label>Any Alerts to Update?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Nothing to Update</defaultConnectorLabel>
+        <rules>
+            <name>Alerts_To_Update</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>staleAlerts</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Update_Stale_Alerts</targetReference></connector>
+            <label>Alerts to Update</label>
+        </rules>
+    </decisions>
+
+    <decisions>
+        <name>Does_Alert_Match_Quote</name>
+        <label>Does Alert Match Quote?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector><targetReference>Loop_Through_Alerts_For_Match</targetReference></defaultConnector>
+        <defaultConnectorLabel>No Match</defaultConnectorLabel>
+        <rules>
+            <name>Alert_Matches_Quote</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Loop_Through_Alerts_For_Match.Subject</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><elementReference>expiredQuoteSubject</elementReference></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Loop_Through_Alerts_For_Match.ParentId</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><elementReference>Loop_Through_Expired_Quotes.OpportunityId</elementReference></rightValue>
+            </conditions>
+            <connector><targetReference>Set_Alert_Found</targetReference></connector>
+            <label>Alert Matches Quote</label>
+        </rules>
+    </decisions>
+
+    <decisions>
+        <name>Does_Quote_Match_Alert</name>
+        <label>Does Quote Match Alert?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector><targetReference>Loop_Through_Quotes_For_Match</targetReference></defaultConnector>
+        <defaultConnectorLabel>No Match</defaultConnectorLabel>
+        <rules>
+            <name>Quote_Matches_Alert</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Loop_Through_Active_Alerts.Subject</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><elementReference>matchQuoteSubject</elementReference></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Loop_Through_Active_Alerts.ParentId</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><elementReference>Loop_Through_Quotes_For_Match.OpportunityId</elementReference></rightValue>
+            </conditions>
+            <connector><targetReference>Set_Quote_Found</targetReference></connector>
+            <label>Quote Matches Alert</label>
+        </rules>
+    </decisions>
+
+    <decisions>
+        <name>Is_Alert_Still_Relevant</name>
+        <label>Is Alert Still Relevant?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector><targetReference>Loop_Through_Active_Alerts</targetReference></defaultConnector>
+        <defaultConnectorLabel>Still Relevant</defaultConnectorLabel>
+        <rules>
+            <name>Alert_No_Longer_Relevant</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>quoteFound</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Deactivate_Stale_Alert</targetReference></connector>
+            <label>No Longer Relevant</label>
+        </rules>
+    </decisions>
+
+    <decisions>
+        <name>Is_Category_Configured</name>
+        <label>Is Category Configured?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Missing Category</defaultConnectorLabel>
+        <rules>
+            <name>Category_Configured</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Record_Alert_Category</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Get_Expired_Quotes</targetReference></connector>
+            <label>Category Configured</label>
+        </rules>
+    </decisions>
+
+    <decisions>
+        <name>Was_Alert_Found</name>
+        <label>Was Alert Found?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector><targetReference>Set_New_Alert_Fields</targetReference></defaultConnector>
+        <defaultConnectorLabel>Not Found — Create</defaultConnectorLabel>
+        <rules>
+            <name>Alert_Already_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>alertFound</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><booleanValue>true</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Loop_Through_Expired_Quotes</targetReference></connector>
+            <label>Alert Already Exists</label>
+        </rules>
+    </decisions>
+
+    <description>Business purpose: surfaces expired quotes as Record Alerts on the Opportunity page so sellers see the expiration with context (Gaston's request, replaces misuse of the activity timeline error pattern). When used: scheduled daily. Creates one active RecordAlert per expired quote that still lacks one (dedupe by Subject + ParentId), and deactivates alerts whose quote is no longer expired and open (accepted, renewed, or deleted). Dependencies: RecordAlertCategory with DeveloperName QuoteExpiration must exist; Record Alerts component on the Opportunity page; Read permission on RecordAlert for sales users. Sized for tens of expired quotes/alerts per day (nested-loop matching); if volume grows, migrate dedupe to SourceSystemIdentifier. Country considerations: alert texts in Spanish.</description>
+    <environments>Default</environments>
+
+    <formulas>
+        <description>Alert subject for the quote being evaluated in the creation loop; also the dedupe key together with ParentId.</description>
+        <name>expiredQuoteSubject</name>
+        <dataType>String</dataType>
+        <expression>"Cotización " &amp; {!Loop_Through_Expired_Quotes.QuoteNumber} &amp; " vencida"</expression>
+    </formulas>
+
+    <formulas>
+        <description>Alert description with the expiration date.</description>
+        <name>expiredQuoteDescription</name>
+        <dataType>String</dataType>
+        <expression>"La cotización " &amp; {!Loop_Through_Expired_Quotes.QuoteNumber} &amp; " venció el " &amp; TEXT({!Loop_Through_Expired_Quotes.ExpirationDate}) &amp; ". Genere una nueva versión o actualice la vigencia antes de continuar la negociación."</expression>
+    </formulas>
+
+    <formulas>
+        <description>Expected subject for the quote evaluated in the cleanup matching loop.</description>
+        <name>matchQuoteSubject</name>
+        <dataType>String</dataType>
+        <expression>"Cotización " &amp; {!Loop_Through_Quotes_For_Match.QuoteNumber} &amp; " vencida"</expression>
+    </formulas>
+
+    <interviewLabel>Flag Expired Quotes {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Flag Expired Quotes</label>
+
+    <loops>
+        <name>Loop_Through_Active_Alerts</name>
+        <label>Loop Through Active Alerts</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>Get_Active_Quote_Alerts</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector><targetReference>Reset_Quote_Found</targetReference></nextValueConnector>
+        <noMoreValuesConnector><targetReference>Any_Alerts_To_Update</targetReference></noMoreValuesConnector>
+    </loops>
+
+    <loops>
+        <name>Loop_Through_Alerts_For_Match</name>
+        <label>Loop Through Alerts for Match</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>Get_Active_Quote_Alerts</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector><targetReference>Does_Alert_Match_Quote</targetReference></nextValueConnector>
+        <noMoreValuesConnector><targetReference>Was_Alert_Found</targetReference></noMoreValuesConnector>
+    </loops>
+
+    <loops>
+        <name>Loop_Through_Expired_Quotes</name>
+        <label>Loop Through Expired Quotes</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>Get_Expired_Quotes</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector><targetReference>Reset_Alert_Found</targetReference></nextValueConnector>
+        <noMoreValuesConnector><targetReference>Any_Alerts_To_Create</targetReference></noMoreValuesConnector>
+    </loops>
+
+    <loops>
+        <name>Loop_Through_Quotes_For_Match</name>
+        <label>Loop Through Quotes for Match</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <collectionReference>Get_Expired_Quotes</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector><targetReference>Does_Quote_Match_Alert</targetReference></nextValueConnector>
+        <noMoreValuesConnector><targetReference>Is_Alert_Still_Relevant</targetReference></noMoreValuesConnector>
+    </loops>
+
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value><stringValue>FREE_FORM_CANVAS</stringValue></value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+
+    <processType>AutoLaunchedFlow</processType>
+
+    <recordCreates>
+        <name>Create_Quote_Alerts</name>
+        <label>Create Quote Alerts</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Loop_Through_Active_Alerts</targetReference></connector>
+        <inputReference>newAlerts</inputReference>
+    </recordCreates>
+
+    <recordLookups>
+        <name>Get_Active_Quote_Alerts</name>
+        <label>Get Active Quote Alerts</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Loop_Through_Expired_Quotes</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>RecordAlertCategoryId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>Get_Record_Alert_Category.Id</elementReference></value>
+        </filters>
+        <filters>
+            <field>IsActive</field>
+            <operator>EqualTo</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>RecordAlert</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
+    <recordLookups>
+        <name>Get_Expired_Quotes</name>
+        <label>Get Expired Quotes</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Get_Active_Quote_Alerts</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>ExpirationDate</field>
+            <operator>LessThan</operator>
+            <value><elementReference>$Flow.CurrentDate</elementReference></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>NotEqualTo</operator>
+            <value><stringValue>Accepted</stringValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Quote</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
+    <recordLookups>
+        <name>Get_Record_Alert_Category</name>
+        <label>Get Record Alert Category</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>Is_Category_Configured</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>QuoteExpiration</stringValue></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>RecordAlertCategory</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+
+    <recordUpdates>
+        <name>Update_Stale_Alerts</name>
+        <label>Update Stale Alerts</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputReference>staleAlerts</inputReference>
+    </recordUpdates>
+
+    <runInMode>SystemModeWithoutSharing</runInMode>
+
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector><targetReference>Get_Record_Alert_Category</targetReference></connector>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2026-07-31</startDate>
+            <startTime>06:00:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+
+    <status>Active</status>
+
+    <variables>
+        <description>True when the quote being evaluated already has an active alert.</description>
+        <name>alertFound</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value><booleanValue>false</booleanValue></value>
+    </variables>
+    <variables>
+        <description>Alert record being built for an expired quote.</description>
+        <name>newAlert</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>RecordAlert</objectType>
+    </variables>
+    <variables>
+        <description>Alerts to create in bulk at the end of the creation loop.</description>
+        <name>newAlerts</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>RecordAlert</objectType>
+    </variables>
+    <variables>
+        <description>True when the alert being evaluated still has a matching expired quote.</description>
+        <name>quoteFound</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value><booleanValue>false</booleanValue></value>
+    </variables>
+    <variables>
+        <description>Alerts deactivated because their quote is no longer expired and open.</description>
+        <name>staleAlerts</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>RecordAlert</objectType>
+    </variables>
+
+</Flow>
