@@ -16,7 +16,7 @@
         </inputParameters>
         <inputParameters>
             <name>templateId</name>
-            <value><elementReference>documentTemplateId</elementReference></value>
+            <value><elementReference>resolvedTemplateId</elementReference></value>
         </inputParameters>
         <inputParameters>
             <name>title</name>
@@ -29,29 +29,29 @@
     <apiVersion>66.0</apiVersion>
 
     <decisions>
-        <name>Are_Inputs_Provided</name>
-        <label>Are Inputs Provided?</label>
+        <name>Is_Template_Available</name>
+        <label>Is Template Available?</label>
         <locationX>176</locationX>
-        <locationY>134</locationY>
+        <locationY>254</locationY>
         <defaultConnector>
             <targetReference>Show_Configuration_Error</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>Missing Inputs</defaultConnectorLabel>
+        <defaultConnectorLabel>No Template</defaultConnectorLabel>
         <rules>
-            <name>Inputs_Provided</name>
+            <name>Template_Available</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>documentTemplateId</leftValueReference>
+                <leftValueReference>Get_Service_Appointment</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue><booleanValue>false</booleanValue></rightValue>
             </conditions>
             <conditions>
-                <leftValueReference>recordId</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue><booleanValue>false</booleanValue></rightValue>
+                <leftValueReference>isTemplateAvailable</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><booleanValue>true</booleanValue></rightValue>
             </conditions>
-            <connector><targetReference>Get_Service_Appointment</targetReference></connector>
-            <label>Inputs Provided</label>
+            <connector><targetReference>Create_Service_Document</targetReference></connector>
+            <label>Template Available</label>
         </rules>
     </decisions>
 
@@ -82,7 +82,7 @@
         </rules>
     </decisions>
 
-    <description>Business purpose: generates the test drive authorization PDF from a Service Appointment so the receptionist can review it, print it, and collect the customer signature before the test drive starts. When used: launched from an action on the Service Appointment record page on the day of the test drive. Dependencies: Field Service Document Builder (createServiceDocument action, permission Document Builder, active Service Document Template built on Service Appointment); the generated PDF is stored in a Service Report record linked to the appointment. Generation is asynchronous, so the flow polls the Service Report until ContentVersionDocumentId is populated. Country considerations: none, template and screen texts handle localization.</description>
+    <description>Business purpose: generates the test drive authorization PDF from a Service Appointment so the receptionist can review it, print it, and collect the customer signature before the test drive starts. When used: launched from an action on the Service Appointment record page on the day of the test drive. Dependencies: Field Service Document Builder (createServiceDocument action; Document Builder user permission via the Field Service Standard permission set license; active Service Document Template built on Service Appointment). The template comes from the Service Document Template field on the appointment, with the documentTemplateId flow input as an optional override. The generated PDF is stored in a Service Report record linked to the appointment; generation is asynchronous, so the flow polls the Service Report until ContentVersionDocumentId is populated. Country considerations: none, template and screen texts handle localization.</description>
     <environments>Default</environments>
 
     <formulas>
@@ -97,6 +97,20 @@
         <name>documentUrl</name>
         <dataType>String</dataType>
         <expression>"/lightning/r/ContentDocument/" &amp; {!Get_Service_Report.ContentVersionDocumentId} &amp; "/view"</expression>
+    </formulas>
+
+    <formulas>
+        <description>True when a template is available from the flow input or from the Service Document Template field on the Service Appointment.</description>
+        <name>isTemplateAvailable</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(NOT(ISBLANK({!documentTemplateId})), NOT(ISBLANK({!Get_Service_Appointment.ServiceDocumentTemplateId})))</expression>
+    </formulas>
+
+    <formulas>
+        <description>Template used for generation: the flow input when provided (override), otherwise the Service Document Template field on the Service Appointment, kept current by automation when the vehicle or advisor changes.</description>
+        <name>resolvedTemplateId</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!documentTemplateId}), {!Get_Service_Appointment.ServiceDocumentTemplateId}, {!documentTemplateId})</expression>
     </formulas>
 
     <interviewLabel>Generate Test Drive Authorization {!$Flow.CurrentDateTime}</interviewLabel>
@@ -127,9 +141,9 @@
         <name>Get_Service_Appointment</name>
         <label>Get Service Appointment</label>
         <locationX>176</locationX>
-        <locationY>254</locationY>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>Create_Service_Document</targetReference></connector>
+        <connector><targetReference>Is_Template_Available</targetReference></connector>
         <filterLogic>and</filterLogic>
         <filters>
             <field>Id</field>
@@ -194,7 +208,7 @@
         <allowPause>false</allowPause>
         <fields>
             <name>ConfigurationErrorText</name>
-            <fieldText>&lt;p&gt;El flujo necesita recibir el &lt;b&gt;recordId&lt;/b&gt; del Service Appointment y el &lt;b&gt;documentTemplateId&lt;/b&gt; de la plantilla creada en Document Builder (el ID aparece en la URL de la plantilla despues de &amp;amp;id=). Configure las entradas en el boton o accion que llama este flujo.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;No se encontro una plantilla de documento para esta cita de servicio. Complete el campo &lt;b&gt;Service Document Template&lt;/b&gt; del Service Appointment (o del Work Type), o informe el &lt;b&gt;documentTemplateId&lt;/b&gt; como entrada del flujo. La plantilla debe estar creada y activada en Document Builder.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -239,14 +253,14 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Are_Inputs_Provided</targetReference>
+            <targetReference>Get_Service_Appointment</targetReference>
         </connector>
     </start>
 
     <status>Active</status>
 
     <variables>
-        <description>Id of the active Service Document Template created in Document Builder (prefix 0M0, visible in the template URL after &amp;id=). Provided as input by the button or action that launches the flow.</description>
+        <description>Optional override for the Service Document Template Id (prefix 0M0, visible in the Document Builder template URL after &amp;id=). When blank, the flow uses the Service Document Template field on the Service Appointment, which automation keeps current.</description>
         <name>documentTemplateId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
