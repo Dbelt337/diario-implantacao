@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_ARCFOX</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>ARCFOX</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of ARCFOX leads to the ARCFOX brand team (public group PG_Marca_ARCFOX), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand ARCFOX</label>
+        <sharedTo>
+            <group>PG_Marca_ARCFOX</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Cadillac</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Cadillac</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Cadillac leads to the Cadillac brand team (public group PG_Marca_Cadillac), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Cadillac</label>
+        <sharedTo>
+            <group>PG_Marca_Cadillac</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Chery</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Chery</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Chery leads to the Chery brand team (public group PG_Marca_Chery), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Chery</label>
+        <sharedTo>
+            <group>PG_Marca_Chery</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Chevrolet</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Chevrolet</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Chevrolet leads to the Chevrolet brand team (public group PG_Marca_Chevrolet), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Chevrolet</label>
+        <sharedTo>
+            <group>PG_Marca_Chevrolet</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Ford</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Ford</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Ford leads to the Ford brand team (public group PG_Marca_Ford), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Ford</label>
+        <sharedTo>
+            <group>PG_Marca_Ford</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Forland</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Forland</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Forland leads to the Forland brand team (public group PG_Marca_Forland), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Forland</label>
+        <sharedTo>
+            <group>PG_Marca_Forland</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_GWM</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>GWM</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of GWM leads to the GWM brand team (public group PG_Marca_GWM), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand GWM</label>
+        <sharedTo>
+            <group>PG_Marca_GWM</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Honda</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Honda</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Honda leads to the Honda brand team (public group PG_Marca_Honda), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Honda</label>
+        <sharedTo>
+            <group>PG_Marca_Honda</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Hyundai</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Hyundai</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Hyundai leads to the Hyundai brand team (public group PG_Marca_Hyundai), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Hyundai</label>
+        <sharedTo>
+            <group>PG_Marca_Hyundai</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Isuzu</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Isuzu</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Isuzu leads to the Isuzu brand team (public group PG_Marca_Isuzu), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Isuzu</label>
+        <sharedTo>
+            <group>PG_Marca_Isuzu</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Jeep</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Jeep</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Jeep leads to the Jeep brand team (public group PG_Marca_Jeep), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Jeep</label>
+        <sharedTo>
+            <group>PG_Marca_Jeep</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Mazda</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Mazda</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Mazda leads to the Mazda brand team (public group PG_Marca_Mazda), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Mazda</label>
+        <sharedTo>
+            <group>PG_Marca_Mazda</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Nissan</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Nissan</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Nissan leads to the Nissan brand team (public group PG_Marca_Nissan), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Nissan</label>
+        <sharedTo>
+            <group>PG_Marca_Nissan</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Peugeot</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Peugeot</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Peugeot leads to the Peugeot brand team (public group PG_Marca_Peugeot), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Peugeot</label>
+        <sharedTo>
+            <group>PG_Marca_Peugeot</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Porsche</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Porsche</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Porsche leads to the Porsche brand team (public group PG_Marca_Porsche), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Porsche</label>
+        <sharedTo>
+            <group>PG_Marca_Porsche</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Ram</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Ram</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Ram leads to the Ram brand team (public group PG_Marca_Ram), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Ram</label>
+        <sharedTo>
+            <group>PG_Marca_Ram</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Lead_Brand_Usados</fullName>
+        <accessLevel>Read</accessLevel>
+        <criteriaItems>
+            <field>Brand__c</field>
+            <operation>equals</operation>
+            <value>Usados</value>
+        </criteriaItems>
+        <description>Business purpose: with Lead OWD Private, opens Read Only visibility of Usados leads to the Usados brand team (public group PG_Marca_Usados), including the brand manager, whose role has no subordinates in the hierarchy. When used: evaluated automatically on lead create/update. Country considerations: applies across all countries; territorial visibility comes from the role hierarchy.</description>
+        <label>Lead Brand Usados</label>
+        <sharedTo>
+            <group>PG_Marca_Usados</group>
+        </sharedTo>
+    </sharingCriteriaRules>
+</SharingRules>
