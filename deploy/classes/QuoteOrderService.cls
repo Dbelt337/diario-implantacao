@@ -53,24 +53,14 @@ public with sharing class QuoteOrderService {
             : (List<VehicleDTO>) JSON.deserialize(selectedVehicles, List<VehicleDTO>.class);
 
         if (vehicles.isEmpty()) {
-            OpportunityLineItem vehicleLine = buildVehicleLineFromSelection(opp, vehiclesDTO);
-            insert vehicleLine;
+            List<OpportunityLineItem> vehicleLines = buildVehicleLinesFromSelection(opp, vehiclesDTO);
+            insert vehicleLines;
             vehicles = [
                 SELECT Id, PricebookEntryId, Quantity, UnitPrice, CurrencyIsoCode, Product2Id, Product2.Name
                 FROM OpportunityLineItem
-                WHERE Id = :vehicleLine.Id
+                WHERE Id IN :vehicleLines
             ];
         }
-
-        VehicleDTO v = vehiclesDTO.isEmpty() ? null : vehiclesDTO.get(0);
-
-        // estado por disponibilidad (HU-044): con stock = Pendiente; transito /
-        // recepcion futura cotizan contra la ETA; safeQuoteStatus evita el
-        // INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST mientras el picklist no
-        // tenga los valores nuevos (TODO Davi en Setup > Quote Statuses)
-        String quoteStatus = (v == null) ? null : safeQuoteStatus(
-            (v.stockCentral != 0 || v.stockDealer != 0) ? 'Pendiente' :
-            (v.disponibilidad?.fuente == 'recepcion_futura' ? 'Pedido futuro' : 'En tránsito'));
 
         // vigencia: alimenta Flag_Expired_Quotes (alerta de cotizacion vencida
         // en la oportunidad) — sin ExpirationDate la cotizacion nunca vence
@@ -80,12 +70,21 @@ public with sharing class QuoteOrderService {
         Map<Id, Integer> quoteIndexByVehicleProduct = new Map<Id, Integer>();
 
         for (OpportunityLineItem vehicle : vehicles) {
+            // DTO del vehiculo de ESTA quote: estado por disponibilidad (HU-044)
+            // y accesorios/descripcion por vehiculo; safeQuoteStatus evita el
+            // INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST mientras el picklist no
+            // tenga los valores nuevos (TODO Davi en Setup > Quote Statuses)
+            VehicleDTO v = matchDto(vehiclesDTO, vehicle.Product2.Name);
+            String quoteStatus = (v == null) ? null : safeQuoteStatus(
+                (v.stockCentral != 0 || v.stockDealer != 0) ? 'Pendiente' :
+                (v.disponibilidad?.fuente == 'recepcion_futura' ? 'Pedido futuro' : 'En tránsito'));
+
             Quote quote = new Quote(
                 Name = (opp.Name + ' ' + vehicle.Product2.Name),
                 OpportunityId = opp.Id,
                 Pricebook2Id = opp.Pricebook2Id,
                 ExpirationDate = vigencia,
-                Description = buildQuoteDescription(payload)
+                Description = buildQuoteDescription(payload, v == null ? vehicle.Product2.Name : v.modelo)
             );
             if (quoteStatus != null) {
                 quote.Status = quoteStatus;
@@ -150,17 +149,36 @@ public with sharing class QuoteOrderService {
     }
 
     /**
+     * Matches the DTO of the vehicle backing one quote by model name
+     * (contains, both directions) — mock stage correlation until the real
+     * flow carries Product2Id/VehicleDefinitionId end to end.
+     */
+    private static VehicleDTO matchDto(List<VehicleDTO> vehiclesDTO, String productName) {
+        if (vehiclesDTO == null || vehiclesDTO.isEmpty()) {
+            return null;
+        }
+        String nombre = productName == null ? '' : productName.toLowerCase();
+        for (VehicleDTO dto : vehiclesDTO) {
+            String modelo = dto.modelo == null ? '' : dto.modelo.toLowerCase();
+            if (modelo != '' && (nombre.contains(modelo) || modelo.contains(nombre))) {
+                return dto;
+            }
+        }
+        return vehiclesDTO.get(0);
+    }
+
+    /**
      * Trazabilidad comercial en la propia cotizacion: descuento (y su estado),
-     * forma de pago y accesorios elegidos en la venta guiada. Sustituye al
+     * forma de pago y accesorios DEL VEHICULO de esta quote. Sustituye al
      * campo custom mientras el modelo de descuento (HU-038) no se cierre.
      */
-    private static String buildQuoteDescription(QuotePayload payload) {
+    private static String buildQuoteDescription(QuotePayload payload, String modelo) {
         List<String> lineas = new List<String>{ 'Venta guiada' + (String.isBlank(payload.ventaTipo) ? '' : ' — ' + payload.ventaTipo) };
         if (payload.descuento != null && payload.descuento > 0) {
             String estado = payload.descuentoRequiereAprobacion == true
                 ? (payload.descuentoAprobado == true ? 'enviado a aprobación del Gerente' : 'PENDIENTE de aprobación')
                 : 'dentro del margen';
-            lineas.add('Descuento solicitado: ' + payload.descuento.format() + ' (' + estado + ')');
+            lineas.add('Descuento solicitado (total de la venta): ' + payload.descuento.format() + ' (' + estado + ')');
         }
         if (String.isNotBlank(payload.formaPago)) {
             String pago = payload.formaPago == 'financiado'
@@ -168,9 +186,18 @@ public with sharing class QuoteOrderService {
                 : 'Contado';
             lineas.add('Forma de pago: ' + pago);
         }
-        if (payload.accesorios != null && !payload.accesorios.isEmpty()) {
+        VehiculoAccesoriosDTO delVehiculo = null;
+        if (payload.accesoriosPorVehiculo != null && String.isNotBlank(modelo)) {
+            for (VehiculoAccesoriosDTO va : payload.accesoriosPorVehiculo) {
+                if (va.modelo != null && (modelo.containsIgnoreCase(va.modelo) || va.modelo.containsIgnoreCase(modelo))) {
+                    delVehiculo = va;
+                    break;
+                }
+            }
+        }
+        if (delVehiculo != null && delVehiculo.items != null && !delVehiculo.items.isEmpty()) {
             List<String> nombres = new List<String>();
-            for (AccesorioDTO a : payload.accesorios) {
+            for (AccesorioDTO a : delVehiculo.items) {
                 nombres.add(a.nombre);
             }
             lineas.add('Accesorios (' + nombres.size() + '): ' + String.join(nombres, ', '));
@@ -200,43 +227,57 @@ public with sharing class QuoteOrderService {
     }
 
     /**
-     * Fallback when the opportunity has no vehicle line yet: builds it from
-     * the vehicle selected in the guided flow (match by model name against
-     * the pricebook), first vehicle entry of the pricebook as last resort.
-     * Currency must match the opportunity (multicurrency org).
+     * Fallback when the opportunity has no vehicle line yet: builds ONE line
+     * per vehicle selected in the guided flow. Single query for the active
+     * vehicle entries of the pricebook, in-memory match by model name
+     * (contains, both directions); first unused entry as last resort so a
+     * multi-selection never collapses into one product. Currency must match
+     * the opportunity (multicurrency org).
      */
-    private static OpportunityLineItem buildVehicleLineFromSelection(Opportunity opp, List<VehicleDTO> vehiclesDTO) {
-        List<PricebookEntry> pbes = new List<PricebookEntry>();
-        if (vehiclesDTO != null && !vehiclesDTO.isEmpty() && String.isNotBlank(vehiclesDTO[0].modelo)) {
-            String modelPattern = '%' + vehiclesDTO[0].modelo + '%';
-            pbes = [
-                SELECT Id, UnitPrice FROM PricebookEntry
-                WHERE Pricebook2Id = :opp.Pricebook2Id AND IsActive = true
-                  AND CurrencyIsoCode = :opp.CurrencyIsoCode
-                  AND Product2.Name LIKE :modelPattern
-                  AND Product2Id IN (SELECT ProductId FROM VehicleDefinition)
-                LIMIT 1
-            ];
-        }
-        if (pbes.isEmpty()) {
-            pbes = [
-                SELECT Id, UnitPrice FROM PricebookEntry
-                WHERE Pricebook2Id = :opp.Pricebook2Id AND IsActive = true
-                  AND CurrencyIsoCode = :opp.CurrencyIsoCode
-                  AND Product2Id IN (SELECT ProductId FROM VehicleDefinition)
-                LIMIT 1
-            ];
-        }
+    private static List<OpportunityLineItem> buildVehicleLinesFromSelection(Opportunity opp, List<VehicleDTO> vehiclesDTO) {
+        List<PricebookEntry> pbes = [
+            SELECT Id, UnitPrice, Product2.Name FROM PricebookEntry
+            WHERE Pricebook2Id = :opp.Pricebook2Id AND IsActive = true
+              AND CurrencyIsoCode = :opp.CurrencyIsoCode
+              AND Product2Id IN (SELECT ProductId FROM VehicleDefinition)
+            LIMIT 200
+        ];
         if (pbes.isEmpty()) {
             throw new QuoteOrderServiceException(
                 'El pricebook de la oportunidad no tiene vehiculos activos en la moneda ' + opp.CurrencyIsoCode + '.');
         }
-        return new OpportunityLineItem(
-            OpportunityId = opp.Id,
-            PricebookEntryId = pbes[0].Id,
-            Quantity = 1,
-            UnitPrice = pbes[0].UnitPrice
-        );
+
+        Integer lineasNecesarias = (vehiclesDTO == null || vehiclesDTO.isEmpty()) ? 1 : vehiclesDTO.size();
+        Set<Id> usados = new Set<Id>();
+        List<OpportunityLineItem> lineas = new List<OpportunityLineItem>();
+
+        for (Integer i = 0; i < lineasNecesarias; i++) {
+            String modelo = (vehiclesDTO != null && i < vehiclesDTO.size() && vehiclesDTO[i].modelo != null)
+                ? vehiclesDTO[i].modelo : '';
+            PricebookEntry elegido = null;
+            for (PricebookEntry pbe : pbes) {
+                if (usados.contains(pbe.Id)) continue;
+                if (modelo != '' && pbe.Product2.Name != null
+                        && (pbe.Product2.Name.containsIgnoreCase(modelo) || modelo.containsIgnoreCase(pbe.Product2.Name))) {
+                    elegido = pbe;
+                    break;
+                }
+            }
+            if (elegido == null) {
+                for (PricebookEntry pbe : pbes) {
+                    if (!usados.contains(pbe.Id)) { elegido = pbe; break; }
+                }
+            }
+            if (elegido == null) break; // mas vehiculos seleccionados que productos activos
+            usados.add(elegido.Id);
+            lineas.add(new OpportunityLineItem(
+                OpportunityId = opp.Id,
+                PricebookEntryId = elegido.Id,
+                Quantity = 1,
+                UnitPrice = elegido.UnitPrice
+            ));
+        }
+        return lineas;
     }
 
     /**
@@ -301,7 +342,13 @@ public with sharing class QuoteOrderService {
         public Decimal prima { get; set; }
         public String plazo { get; set; }
         public Integer vigenciaDias { get; set; }
-        public List<AccesorioDTO> accesorios { get; set; }
+        public List<VehiculoAccesoriosDTO> accesoriosPorVehiculo { get; set; }
+    }
+
+    public class VehiculoAccesoriosDTO {
+        public String vehicleId { get; set; }
+        public String modelo { get; set; }
+        public List<AccesorioDTO> items { get; set; }
     }
 
     public class AccesorioDTO {

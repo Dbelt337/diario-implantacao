@@ -18,13 +18,17 @@ import createQuote from '@salesforce/apex/GuidedSellingController.createQuote';
  * ("Vehiculos y accesorios"); model compatibility pending business input.
  * Future-order states (stock / in transit / none) drive the final button
  * label per the no-stock quotation user story.
+ * MULTI-VEHICLE (prototipo Gaston 31/07): the seller picks one or MORE
+ * vehicles; the accessories step shows a vertical tab per vehicle with its
+ * compatible catalog and a right panel summarizing the selection. One
+ * native quote per vehicle at the end (QuoteOrderService already loops).
  */
 
 const STEPS = ['tipo', 'seleccion', 'accesorios', 'precio', 'descuento', 'pago', 'cotizacion'];
 
 const STEP_TITULOS = {
     tipo: '¿Qué vas a vender?',
-    seleccion: 'Selección del vehículo',
+    seleccion: 'Selección de vehículos',
     accesorios: 'Accesorios',
     precio: 'Precio y stock',
     descuento: 'Descuentos',
@@ -35,8 +39,6 @@ const STEP_TITULOS = {
 const VIGENCIA_DIAS = 15;
 
 // ------- parametros SIMULADOS (los reemplazan BRE / frente financiera) -------
-const TOTAL_NUEVO = 24631000;
-const TOTAL_USADO = 14927000;
 const MAX_DESCUENTO_DIRECTO = 700000;
 const TASA_ANUAL_REFERENCIA = 9.5;
 
@@ -51,7 +53,8 @@ export default class VentaGuiadaModal extends LightningModal {
 
     currentStep = 'tipo';
     ventaTipo = '';
-    selectedVehicle;
+    selectedVehicles = [];
+    activeVehicleId;
     searchTerm = '';
     filtroMarca = '';
     filtroAnio = '';
@@ -70,36 +73,36 @@ export default class VentaGuiadaModal extends LightningModal {
     vehiclesNuevos = [
         { id: 'V1', marca: 'Hyundai', modelo: 'Hyundai Tucson GLS 2.0', anio: '2026',
           color: 'Blanco Polar', colorInt: 'Negro',
-          precio: 'CRC 21.500.000', stockCentral: 3, stockDealer: 1 },
+          precio: 'CRC 21.500.000', precioNum: 21500000, stockCentral: 3, stockDealer: 1 },
         { id: 'V2', marca: 'Hyundai', modelo: 'Hyundai Tucson Limited', anio: '2026',
           color: 'Gris Titanio', colorInt: 'Beige',
-          precio: 'CRC 24.900.000', stockCentral: 1, stockDealer: 0 },
+          precio: 'CRC 24.900.000', precioNum: 24900000, stockCentral: 1, stockDealer: 0 },
         { id: 'V3', marca: 'Hyundai', modelo: 'Hyundai Creta GL 1.5', anio: '2026',
           color: 'Rojo Fuego', colorInt: 'Negro',
-          precio: 'CRC 16.800.000', stockCentral: 5, stockDealer: 2 },
+          precio: 'CRC 16.800.000', precioNum: 16800000, stockCentral: 5, stockDealer: 2 },
         { id: 'V4', marca: 'Hyundai', modelo: 'Hyundai Tucson Híbrida', anio: '2026',
           color: 'Azul Océano', colorInt: 'Gris',
-          precio: 'CRC 27.900.000', stockCentral: 0, stockDealer: 0,
+          precio: 'CRC 27.900.000', precioNum: 27900000, stockCentral: 0, stockDealer: 0,
           disponibilidad: { cantidad: 2, eta: '15/09/2026', fuente: 'pedido_importacion' } },
         { id: 'V5', marca: 'Hyundai', modelo: 'Hyundai Santa Fe', anio: '2027',
           color: 'Negro Fantasma', colorInt: 'Marrón',
-          precio: 'CRC 32.500.000', stockCentral: 0, stockDealer: 0,
+          precio: 'CRC 32.500.000', precioNum: 32500000, stockCentral: 0, stockDealer: 0,
           disponibilidad: { cantidad: 2, eta: '29/08/2026', fuente: 'recepcion_futura' } },
         { id: 'V6', marca: 'Chevrolet', modelo: 'Chevrolet Groove LT', anio: '2026',
           color: 'Plata Estelar', colorInt: 'Negro',
-          precio: 'CRC 15.900.000', stockCentral: 4, stockDealer: 1 },
+          precio: 'CRC 15.900.000', precioNum: 15900000, stockCentral: 4, stockDealer: 1 },
         { id: 'V7', marca: 'Hyundai', modelo: 'Hyundai Ioniq 6', anio: '2027',
           color: 'Blanco Lunar', colorInt: 'Negro',
-          precio: 'CRC 38.900.000', stockCentral: 0, stockDealer: 0 }
+          precio: 'CRC 38.900.000', precioNum: 38900000, stockCentral: 0, stockDealer: 0 }
     ];
 
     vehiclesUsados = [
         { id: 'U1', marca: 'Hyundai', modelo: 'Hyundai Accent 1.6', anio: '2022', km: '45.000 km',
-          vin: '3KPC24...4885', precio: 'CRC 12.900.000', ubicacion: 'La Uruca' },
+          vin: '3KPC24...4885', precio: 'CRC 12.900.000', precioNum: 12900000, ubicacion: 'La Uruca' },
         { id: 'U2', marca: 'Hyundai', modelo: 'Hyundai Tucson GLS', anio: '2021', km: '62.000 km',
-          vin: 'KM8J33...1207', precio: 'CRC 16.500.000', ubicacion: 'Lindora' },
+          vin: 'KM8J33...1207', precio: 'CRC 16.500.000', precioNum: 16500000, ubicacion: 'Lindora' },
         { id: 'U3', marca: 'Chevrolet', modelo: 'Chevrolet Onix LT', anio: '2023', km: '28.000 km',
-          vin: '9BGKS48...3341', precio: 'CRC 11.800.000', ubicacion: 'La Uruca' }
+          vin: '9BGKS48...3341', precio: 'CRC 11.800.000', precioNum: 11800000, ubicacion: 'La Uruca' }
     ];
 
     /**
@@ -126,18 +129,17 @@ export default class VentaGuiadaModal extends LightningModal {
         { id: 'A8', nombre: 'Sensor de parqueo delantero', categoria: 'Seguridad', precio: 110000,
           modelos: ['V3', 'V5', 'V6', 'U1', 'U3'] }
     ];
+    // seleccion de accesorios POR VEHICULO: { vehicleId: { accesorioId: true } }
     accesoriosSel = {};
 
-    priceBreakdownNuevo = [
-        { id: 'p1', concepto: 'Precio de lista (PricebookEntry, sociedad C101)', valor: 'CRC 21.500.000' },
+    gastosExtrasNuevo = [
         { id: 'p2', concepto: 'Gastos (matrícula + entrega)', valor: 'CRC 850.000' },
         { id: 'p3', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valor: 'CRC 2.795.000' },
         { id: 'p4', concepto: 'Cashback vigente', valor: '- CRC 500.000' },
         { id: 'p5', concepto: 'Valor de trade-in (avalúo aceptado)', valor: '- CRC 14.000' }
     ];
 
-    priceBreakdownUsado = [
-        { id: 'u1', concepto: 'Precio publicado del usado (gestión propia)', valor: 'CRC 12.900.000' },
+    gastosExtrasUsado = [
         { id: 'u2', concepto: 'Gastos de traspaso', valor: 'CRC 350.000' },
         { id: 'u3', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valor: 'CRC 1.677.000' }
     ];
@@ -173,7 +175,7 @@ export default class VentaGuiadaModal extends LightningModal {
 
     get nextDisabled() {
         if (this.isStepTipo) return !this.ventaTipo;
-        if (this.isStepSeleccion) return !this.selectedVehicle;
+        if (this.isStepSeleccion) return this.selectedVehicles.length === 0;
         if (this.isStepDescuento) return this.descuentoRequiereAprobacion && !this.descuentoAprobado;
         if (this.isStepPago) return !this.formaPago;
         return this.isStepCotizacion;
@@ -194,7 +196,8 @@ export default class VentaGuiadaModal extends LightningModal {
     setTipo(tipo) {
         if (this.ventaTipo !== tipo) {
             this.ventaTipo = tipo;
-            this.selectedVehicle = undefined;
+            this.selectedVehicles = [];
+            this.activeVehicleId = undefined;
             this.descuento = 0;
             this.descuentoAprobado = false;
             this.formaPago = '';
@@ -209,7 +212,7 @@ export default class VentaGuiadaModal extends LightningModal {
     get tipoNuevoClass() { return this.esNuevo ? 'tipo-card tipo-card-selected' : 'tipo-card'; }
     get tipoUsadoClass() { return this.esUsado ? 'tipo-card tipo-card-selected' : 'tipo-card'; }
 
-    // ------- paso Vehiculo -------
+    // ------- paso Vehiculos (seleccion multiple, prototipo Gaston) -------
     get vehiclesActuales() {
         return this.esUsado ? this.vehiclesUsados : this.vehiclesNuevos;
     }
@@ -231,6 +234,9 @@ export default class VentaGuiadaModal extends LightningModal {
         return [{ label: 'Todos los años', value: '' },
             ...anios.map(a => ({ label: a, value: a }))];
     }
+    isSelected(vehicleId) {
+        return this.selectedVehicles.some(v => v.id === vehicleId);
+    }
     get vehicleOptions() {
         const term = (this.searchTerm || '').toLowerCase();
         return this.vehiclesActuales
@@ -239,15 +245,16 @@ export default class VentaGuiadaModal extends LightningModal {
                 && (!term || `${v.modelo} ${v.color || ''} ${v.vin || ''}`.toLowerCase().includes(term)))
             .map((vehicle) => ({
                 ...vehicle,
-                rowClass: vehicle.id === this.selectedVehicle?.id
+                rowClass: this.isSelected(vehicle.id)
                     ? 'slds-hint-parent selected-row'
                     : 'slds-hint-parent'
             }));
     }
     get leyendaSeleccion() {
+        const base = 'Selecciona una o más filas (clic marca y desmarca).';
         return this.esUsado
-            ? 'Selecciona una fila para continuar. (Real: inventario PROPIO en Vehicle — SOQL directo, sin SAP. Ficha del usado de la historia de inventario de usados.)'
-            : 'Selecciona una fila para continuar. (Real: busqueda sobre el CODIGO ACTIVO — Product2.IsActive — via MaterialSearchService; se cotiza aun sin existencia. Stock 0 con tránsito o sin unidades cambia el botón final.)';
+            ? base + ' (Real: inventario PROPIO en Vehicle — SOQL directo, sin SAP. Ficha del usado de la historia de inventario de usados.)'
+            : base + ' (Real: busqueda sobre el CODIGO ACTIVO — Product2.IsActive — via MaterialSearchService; se cotiza aun sin existencia. Stock 0 con tránsito o sin unidades cambia el botón final.)';
     }
     handleSearchChange(event) {
         // TODO real: GuidedSellingController.getSelectionPageData con debounce
@@ -255,75 +262,137 @@ export default class VentaGuiadaModal extends LightningModal {
     }
     handleFiltroMarca(event) { this.filtroMarca = event.detail.value; }
     handleFiltroAnio(event) { this.filtroAnio = event.detail.value; }
+    // clic alterna el vehiculo dentro/fuera de la seleccion; quitarlo limpia
+    // sus accesorios (el catalogo compatible es por vehiculo)
     handleSelectVehicle(event) {
-        const previo = this.selectedVehicle?.id;
-        this.selectedVehicle = this.vehiclesActuales.find(
-            (el) => el.id === event.currentTarget.dataset.id
-        );
-        // cambiar de vehiculo cambia el catalogo compatible: se limpia la seleccion
-        if (previo !== this.selectedVehicle?.id) this.accesoriosSel = {};
-    }
-
-    // ------- barra de marca (logo + contexto del vehiculo) -------
-    get logoUrl() { return GRUPOQ_LOGO; }
-    get tieneVehiculo() { return !!this.selectedVehicle; }
-    get vehiculoChip() {
-        const v = this.selectedVehicle;
-        if (!v) return '';
-        return this.esUsado ? `${v.modelo} ${v.anio} — VIN ${v.vin}` : `${v.modelo} ${v.anio}`;
-    }
-
-    // ------- paso Accesorios (catalogo asociado al vehiculo) -------
-    get accesoriosDisponibles() {
-        const v = this.selectedVehicle;
-        if (!v) return [];
-        return this.accesoriosCatalogo.filter(a => a.modelos.includes(v.id));
-    }
-    get accesorioCategorias() {
-        const cats = [];
-        this.accesoriosDisponibles.forEach(a => {
-            const item = { ...a, precioFmt: crc(a.precio), sel: !!this.accesoriosSel[a.id] };
-            let cat = cats.find(c => c.nombre === a.categoria);
-            if (!cat) {
-                cat = { nombre: a.categoria, items: [] };
-                cats.push(cat);
+        const id = event.currentTarget.dataset.id;
+        if (this.isSelected(id)) {
+            this.selectedVehicles = this.selectedVehicles.filter(v => v.id !== id);
+            const sel = { ...this.accesoriosSel };
+            delete sel[id];
+            this.accesoriosSel = sel;
+            if (this.activeVehicleId === id) {
+                this.activeVehicleId = this.selectedVehicles[0]?.id;
             }
-            cat.items.push(item);
+        } else {
+            const vehicle = this.vehiclesActuales.find(v => v.id === id);
+            this.selectedVehicles = [...this.selectedVehicles, vehicle];
+            if (!this.activeVehicleId) this.activeVehicleId = id;
+        }
+    }
+
+    // ------- barra de marca (logo + contexto de la seleccion) -------
+    get logoUrl() { return GRUPOQ_LOGO; }
+    get tieneVehiculo() { return this.selectedVehicles.length > 0; }
+    get vehiculoChip() {
+        const n = this.selectedVehicles.length;
+        if (n === 0) return '';
+        if (n === 1) {
+            const v = this.selectedVehicles[0];
+            return this.esUsado ? `${v.modelo} ${v.anio} — VIN ${v.vin}` : `${v.modelo} ${v.anio}`;
+        }
+        return `${n} vehículos seleccionados`;
+    }
+
+    // ------- paso Accesorios (tab vertical por vehiculo + panel derecho) -------
+    accesoriosDeVehiculo(vehicleId) {
+        return this.accesoriosCatalogo.filter(a => a.modelos.includes(vehicleId));
+    }
+    accesoriosSeleccionadosDe(vehicleId) {
+        const sel = this.accesoriosSel[vehicleId] || {};
+        return this.accesoriosDeVehiculo(vehicleId).filter(a => sel[a.id]);
+    }
+    totalAccesoriosDe(vehicleId) {
+        return this.accesoriosSeleccionadosDe(vehicleId).reduce((sum, a) => sum + a.precio, 0);
+    }
+    /** ViewModel de las pestañas: una por vehiculo con su catalogo por categoria. */
+    get vehiculosTabs() {
+        return this.selectedVehicles.map(v => {
+            const sel = this.accesoriosSel[v.id] || {};
+            const cats = [];
+            this.accesoriosDeVehiculo(v.id).forEach(a => {
+                const item = { ...a, precioFmt: crc(a.precio), sel: !!sel[a.id] };
+                let cat = cats.find(c => c.nombre === a.categoria);
+                if (!cat) {
+                    cat = { nombre: a.categoria, items: [] };
+                    cats.push(cat);
+                }
+                cat.items.push(item);
+            });
+            const nSel = this.accesoriosSeleccionadosDe(v.id).length;
+            return {
+                ...v,
+                etiquetaTab: `${v.modelo} (${nSel})`,
+                titulo: `Catálogo compatible con ${v.modelo}`,
+                categorias: cats,
+                totalFmt: crc(this.totalAccesoriosDe(v.id))
+            };
         });
-        return cats;
     }
-    get tituloAccesorios() {
-        const v = this.selectedVehicle;
-        const n = this.accesoriosDisponibles.length;
-        return v ? `Catálogo compatible con ${v.modelo} (${n} piezas)` : 'Catálogo de accesorios';
+    /** Panel derecho del prototipo: resumen de los vehiculos seleccionados. */
+    get vehiculosPanel() {
+        return this.selectedVehicles.map(v => {
+            const stock = (v.stockCentral || 0) + (v.stockDealer || 0);
+            let badge = 'Disponible';
+            if (this.esNuevo && stock === 0) {
+                badge = v.disponibilidad?.cantidad
+                    ? (v.disponibilidad.fuente === 'recepcion_futura' ? 'Recepción futura' : 'En tránsito')
+                    : 'Sin stock';
+            }
+            return {
+                id: v.id,
+                titulo: `${v.anio} - ${v.modelo}`,
+                precio: v.precio,
+                stock: this.esUsado ? v.ubicacion : String(stock).padStart(2, '0'),
+                stockLabel: this.esUsado ? 'Ubicación' : 'Stock',
+                color: v.color || '-',
+                badge,
+                accesoriosFmt: crc(this.totalAccesoriosDe(v.id))
+            };
+        });
     }
-    get accesoriosSeleccionados() {
-        return this.accesoriosDisponibles.filter(a => this.accesoriosSel[a.id]);
+    get tituloPanelVehiculos() {
+        return `Vehículos seleccionados (${this.selectedVehicles.length})`;
     }
     get accesoriosTotal() {
-        return this.accesoriosSeleccionados.reduce((sum, a) => sum + a.precio, 0);
+        return this.selectedVehicles.reduce((sum, v) => sum + this.totalAccesoriosDe(v.id), 0);
     }
     get accesoriosTotalFmt() { return crc(this.accesoriosTotal); }
     get tieneAccesorios() { return this.accesoriosTotal > 0; }
+    handleTabActive(event) {
+        this.activeVehicleId = event.target.value;
+    }
     handleToggleAccesorio(event) {
+        const vehicleId = event.currentTarget.dataset.vehicle;
         const id = event.currentTarget.dataset.id;
-        this.accesoriosSel = { ...this.accesoriosSel, [id]: event.target.checked };
+        const porVehiculo = { ...(this.accesoriosSel[vehicleId] || {}), [id]: event.target.checked };
+        this.accesoriosSel = { ...this.accesoriosSel, [vehicleId]: porVehiculo };
     }
 
     // ------- paso Precio -------
     get priceBreakdown() {
-        const base = this.esUsado ? this.priceBreakdownUsado : this.priceBreakdownNuevo;
-        if (!this.tieneAccesorios) return base;
-        return [...base, {
-            id: 'acc',
-            concepto: `Accesorios seleccionados (${this.accesoriosSeleccionados.length})`,
-            valor: this.accesoriosTotalFmt
-        }];
+        const rows = this.selectedVehicles.map(v => ({
+            id: 'veh-' + v.id,
+            concepto: this.esUsado
+                ? `Precio publicado — ${v.modelo} (gestión propia)`
+                : `Precio de lista — ${v.modelo} (PricebookEntry, sociedad C101)`,
+            valor: v.precio
+        }));
+        rows.push(...(this.esUsado ? this.gastosExtrasUsado : this.gastosExtrasNuevo));
+        if (this.tieneAccesorios) {
+            rows.push({
+                id: 'acc',
+                concepto: 'Accesorios seleccionados (todos los vehículos)',
+                valor: this.accesoriosTotalFmt
+            });
+        }
+        return rows;
     }
 
     // ------- paso Descuentos -------
     get baseTotal() {
-        return (this.esUsado ? TOTAL_USADO : TOTAL_NUEVO) + this.accesoriosTotal;
+        const vehiculos = this.selectedVehicles.reduce((sum, v) => sum + (v.precioNum || 0), 0);
+        return vehiculos + this.accesoriosTotal;
     }
     get totalReferenciaFmt() { return crc(this.baseTotal); }
     get maxDescuentoDirectoFmt() { return crc(MAX_DESCUENTO_DIRECTO); }
@@ -413,47 +482,49 @@ export default class VentaGuiadaModal extends LightningModal {
 
     // ------- paso Cotizacion -------
     get vehiculoResumen() {
-        const v = this.selectedVehicle;
-        if (!v) return '-';
-        return this.esUsado
+        return this.selectedVehicles.map(v => this.esUsado
             ? `${v.modelo} — ${v.anio} — ${v.km} — VIN ${v.vin} (USADO)`
-            : `${v.modelo} — ${v.anio} — ${v.color}`;
+            : `${v.modelo} — ${v.anio} — ${v.color}`
+        ).join(' | ') || '-';
     }
     /**
      * Estados de la cotizacion segun disponibilidad (aporte Davi, HU-044):
      * UNA estructura unica "disponibilidad" { cantidad, eta, fuente } — la
-     * fuente distingue transito de recepcion futura (unificacion acordada
-     * con Davi 28/07, reemplaza disponibilidadFutura). Estados: con stock =
-     * cotizacion normal; en transito = cotizacion contra ETA; recepcion
-     * futura = cotizacion futura contra la fecha; sin nada = la cotizacion
-     * SOLICITA la unidad (HU-044: si no lo encuentra, lo solicita).
-     * Usados siempre cotizan la unidad disponible.
+     * fuente distingue transito de recepcion futura. Con seleccion multiple
+     * se crea UNA COTIZACION POR VEHICULO (QuoteOrderService); el boton
+     * refleja el caso mas restrictivo de la seleccion.
      */
     get createQuoteBtn() {
-        if (this.esUsado) return { label: 'Crear cotización', variant: 'brand' };
-        const v = this.selectedVehicle;
-        if (!v) return { label: 'Crear cotización', variant: 'brand' };
-        if (v.stockDealer || v.stockCentral) {
-            return { label: 'Crear cotización', variant: 'brand' };
-        }
-        // verificar si vamos utilizar este flujo separado de 'Crear cotizacion' default
-        if (v.disponibilidad?.cantidad) {
-            return v.disponibilidad.fuente === 'recepcion_futura'
-                ? { label: 'Crear cotización futura', variant: 'neutral' }
-                : { label: 'Crear cotización con unidad en tránsito', variant: 'brand' };
-        }
-        return { label: 'Crear cotización y solicitar unidad', variant: 'neutral' };
+        const n = this.selectedVehicles.length;
+        const labelBase = n > 1 ? `Crear cotizaciones (${n})` : 'Crear cotización';
+        if (this.esUsado || n === 0) return { label: labelBase, variant: 'brand' };
+        const sinStock = this.selectedVehicles.filter(v => !v.stockDealer && !v.stockCentral);
+        if (sinStock.length === 0) return { label: labelBase, variant: 'brand' };
+        const sinNada = sinStock.some(v => !v.disponibilidad?.cantidad);
+        if (sinNada) return { label: labelBase + ' y solicitar unidades', variant: 'neutral' };
+        const futura = sinStock.some(v => v.disponibilidad?.fuente === 'recepcion_futura');
+        return futura
+            ? { label: labelBase + ' (incluye recepción futura)', variant: 'neutral' }
+            : { label: labelBase + ' (incluye unidad en tránsito)', variant: 'brand' };
     }
 
     get quoteSummary() {
         const rows = [
-            { id: 'q1', etiqueta: 'Cliente', valor: 'Vendedor- (Cuenta de prueba)' },
-            { id: 'q2', etiqueta: 'Vehículo', valor: this.vehiculoResumen },
-            { id: 'q3', etiqueta: 'Total de referencia', valor: this.totalReferenciaFmt }
+            { id: 'q1', etiqueta: 'Cliente', valor: 'Vendedor- (Cuenta de prueba)' }
         ];
-        this.accesoriosSeleccionados.forEach((a, idx) => {
-            rows.push({ id: 'acc' + idx, etiqueta: 'Accesorio: ' + a.nombre, valor: crc(a.precio) });
+        this.selectedVehicles.forEach((v, i) => {
+            rows.push({
+                id: 'veh' + i,
+                etiqueta: `Vehículo ${this.selectedVehicles.length > 1 ? (i + 1) : ''}`.trim(),
+                valor: this.esUsado
+                    ? `${v.modelo} — ${v.anio} — ${v.km} — VIN ${v.vin} (USADO)`
+                    : `${v.modelo} — ${v.anio} — ${v.color}`
+            });
+            this.accesoriosSeleccionadosDe(v.id).forEach((a, j) => {
+                rows.push({ id: `acc${i}-${j}`, etiqueta: '· Accesorio: ' + a.nombre, valor: crc(a.precio) });
+            });
         });
+        rows.push({ id: 'q3', etiqueta: 'Total de referencia', valor: this.totalReferenciaFmt });
         if (this.descuentoNum > 0) {
             const sufijo = this.descuentoRequiereAprobacion ? ' (aprobado por Gerente — simulado)' : ' (dentro del margen)';
             rows.push({ id: 'q4', etiqueta: 'Descuento comercial', valor: '- ' + crc(this.descuentoNum) + sufijo });
@@ -466,27 +537,31 @@ export default class VentaGuiadaModal extends LightningModal {
         } else if (this.isContado) {
             rows.push({ id: 'q6', etiqueta: 'Forma de pago', valor: 'Contado' });
         }
-        const v = this.selectedVehicle;
-        if (this.esNuevo && v && !v.stockDealer && !v.stockCentral) {
-            let dispo;
-            if (v.disponibilidad?.cantidad) {
-                dispo = v.disponibilidad.fuente === 'recepcion_futura'
-                    ? `Sin stock — recepción futura: ${v.disponibilidad.cantidad} unidades el ${v.disponibilidad.eta} (HU-044)`
-                    : `Sin stock — ${v.disponibilidad.cantidad} unidades en tránsito, ETA ${v.disponibilidad.eta}`;
-            } else {
-                dispo = 'Sin stock ni tránsito — la cotización registra la solicitud de la unidad (HU-044)';
-            }
-            rows.push({ id: 'q11', etiqueta: 'Disponibilidad', valor: dispo });
+        if (this.esNuevo) {
+            this.selectedVehicles.filter(v => !v.stockDealer && !v.stockCentral).forEach((v, i) => {
+                let dispo;
+                if (v.disponibilidad?.cantidad) {
+                    dispo = v.disponibilidad.fuente === 'recepcion_futura'
+                        ? `${v.modelo}: recepción futura — ${v.disponibilidad.cantidad} unidades el ${v.disponibilidad.eta} (HU-044)`
+                        : `${v.modelo}: ${v.disponibilidad.cantidad} unidades en tránsito, ETA ${v.disponibilidad.eta}`;
+                } else {
+                    dispo = `${v.modelo}: sin stock ni tránsito — la cotización registra la solicitud de la unidad (HU-044)`;
+                }
+                rows.push({ id: 'q11-' + i, etiqueta: 'Disponibilidad', valor: dispo });
+            });
         }
-        rows.push({ id: 'q9', etiqueta: 'Vigencia de la cotización', valor: '15 días' });
+        rows.push({ id: 'q9', etiqueta: 'Vigencia de la cotización', valor: VIGENCIA_DIAS + ' días' });
         rows.push({ id: 'q10', etiqueta: 'Precio definitivo',
             valor: this.esUsado ? 'Facturación del usado: definición pendiente (SAP o local)' : 'Lo certifica SAP al facturar' });
         return rows;
     }
     get leyendaCotizacion() {
-        return this.esUsado
+        const porVehiculo = this.selectedVehicles.length > 1
+            ? ' Se crea UNA cotización por vehículo seleccionado.'
+            : '';
+        return (this.esUsado
             ? 'Real: QuoteOrderService crea la cotización nativa. Al facturar, la assetización CIERRA el asset del dueño anterior y crea el del comprador (misma unidad Vehicle, historial completo).'
-            : 'Real: QuoteOrderService crea la cotización nativa; el pedido viaja al SAP en segundo plano y el resultado vuelve por platform event. Accesorios = líneas del pricebook Vehículos y accesorios.';
+            : 'Real: QuoteOrderService crea la cotización nativa; el pedido viaja al SAP en segundo plano y el resultado vuelve por platform event. Accesorios = líneas del pricebook Vehículos y accesorios.') + porVehiculo;
     }
 
     async handleCreateQuote() {
@@ -496,9 +571,9 @@ export default class VentaGuiadaModal extends LightningModal {
             totalFmt: this.totalConDescuentoFmt
         });
         if (result === 'confirmar') {
-            // payload real para QuoteOrderService: accesorios, descuento (con su
-            // estado de aprobacion), forma de pago y vigencia; el vehiculo viaja
-            // aparte en selectedVehicles (contrato existente)
+            // payload real para QuoteOrderService: accesorios POR VEHICULO,
+            // descuento (con su estado de aprobacion), forma de pago y vigencia;
+            // los vehiculos viajan aparte en selectedVehicles (contrato existente)
             const payload = {
                 ventaTipo: this.ventaTipo,
                 descuento: this.descuentoNum,
@@ -508,18 +583,23 @@ export default class VentaGuiadaModal extends LightningModal {
                 prima: this.isFinanciado ? this.primaValue : null,
                 plazo: this.isFinanciado ? this.plazo : null,
                 vigenciaDias: VIGENCIA_DIAS,
-                accesorios: this.accesoriosSeleccionados.map(a => ({
-                    id: a.id, nombre: a.nombre, precio: a.precio
+                accesoriosPorVehiculo: this.selectedVehicles.map(v => ({
+                    vehicleId: v.id,
+                    modelo: v.modelo,
+                    items: this.accesoriosSeleccionadosDe(v.id).map(a => ({
+                        id: a.id, nombre: a.nombre, precio: a.precio
+                    }))
                 }))
             };
             try {
                 await createQuote({
                     opportunityId: this.recordId,
                     quotePayloadJson: JSON.stringify(payload),
-                    selectedVehicles: JSON.stringify([this.selectedVehicle])
+                    selectedVehicles: JSON.stringify(this.selectedVehicles)
                 });
+                const n = this.selectedVehicles.length;
                 this.dispatchEvent(new ShowToastEvent({
-                    title: 'Cotización creada',
+                    title: n > 1 ? `${n} cotizaciones creadas` : 'Cotización creada',
                     message: `Vigencia de ${VIGENCIA_DIAS} días registrada en la oportunidad.`,
                     variant: 'success'
                 }));

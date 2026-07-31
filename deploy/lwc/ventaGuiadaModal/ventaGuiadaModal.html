@@ -146,39 +146,67 @@
                 <template lwc:if={isStepAccesorios}>
                     <div class="step-anim">
                     <lightning-layout multiple-rows>
-                        <lightning-layout-item size="7" padding="around-small">
+                        <lightning-layout-item size="8" padding="around-small">
                             <div class="slds-box slds-box_small">
-                                <h3 class="slds-text-heading_small slds-m-bottom_small">{tituloAccesorios}</h3>
-                                <template for:each={accesorioCategorias} for:item="cat">
-                                    <div key={cat.nombre} class="slds-m-bottom_small">
-                                        <p class="categoria-titulo slds-m-bottom_xx-small">{cat.nombre}</p>
-                                        <template for:each={cat.items} for:item="acc">
-                                            <div key={acc.id} class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
-                                                <lightning-input type="checkbox" label={acc.nombre}
-                                                    checked={acc.sel} data-id={acc.id}
-                                                    onchange={handleToggleAccesorio}></lightning-input>
-                                                <span class="slds-text-title_bold">{acc.precioFmt}</span>
+                                <lightning-tabset variant="vertical">
+                                    <template for:each={vehiculosTabs} for:item="veh">
+                                        <lightning-tab key={veh.id} label={veh.etiquetaTab} value={veh.id} onactive={handleTabActive}>
+                                            <h3 class="slds-text-heading_small slds-m-bottom_small">{veh.titulo}</h3>
+                                            <template for:each={veh.categorias} for:item="cat">
+                                                <div key={cat.nombre} class="slds-m-bottom_small">
+                                                    <p class="categoria-titulo slds-m-bottom_xx-small">{cat.nombre}</p>
+                                                    <template for:each={cat.items} for:item="acc">
+                                                        <div key={acc.id} class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
+                                                            <lightning-input type="checkbox" label={acc.nombre}
+                                                                checked={acc.sel} data-id={acc.id} data-vehicle={veh.id}
+                                                                onchange={handleToggleAccesorio}></lightning-input>
+                                                            <span class="slds-text-title_bold">{acc.precioFmt}</span>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row slds-m-top_small">
+                                                <span class="slds-text-heading_small">Total accesorios del vehículo</span>
+                                                <span class="slds-text-heading_small">{veh.totalFmt}</span>
                                             </div>
-                                        </template>
-                                    </div>
-                                </template>
-                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row slds-m-top_small">
-                                    <span class="slds-text-heading_small">Total accesorios</span>
-                                    <span class="slds-text-heading_small">{accesoriosTotalFmt}</span>
-                                </div>
+                                        </lightning-tab>
+                                    </template>
+                                </lightning-tabset>
                             </div>
                         </lightning-layout-item>
-                        <lightning-layout-item size="5" padding="around-small">
+                        <lightning-layout-item size="4" padding="around-small">
                             <div class="slds-box slds-box_small">
-                                <h3 class="slds-text-heading_small slds-m-bottom_small">Cómo funciona en real</h3>
-                                <p class="slds-text-body_small slds-p-vertical_xx-small">
-                                    Catálogo asociado al vehículo: materiales SAP del pricebook <strong>Vehículos y accesorios</strong> de la sociedad, filtrados por la matriz de compatibilidad accesorio x modelo (insumo GrupoQ; aquí simulada).
-                                </p>
-                                <p class="slds-text-body_small slds-p-vertical_xx-small">
-                                    Cada pieza marcada entra como línea adicional de la cotización (QuoteLineItem). Cambiar de vehículo recarga el catálogo y limpia la selección.
-                                </p>
-                                <p class="slds-text-body_small slds-p-vertical_xx-small">
-                                    Este paso es opcional: Siguiente sin marcar nada continúa solo con el vehículo.
+                                <h3 class="slds-text-heading_small slds-m-bottom_small">{tituloPanelVehiculos}</h3>
+                                <template for:each={vehiculosPanel} for:item="veh">
+                                    <div key={veh.id} class="slds-box slds-box_x-small slds-m-bottom_x-small">
+                                        <div class="slds-grid slds-grid_align-spread">
+                                            <span class="slds-text-title_bold">{veh.titulo}</span>
+                                            <lightning-badge label={veh.badge}></lightning-badge>
+                                        </div>
+                                        <div class="slds-grid slds-grid_align-spread slds-p-top_xx-small">
+                                            <span class="slds-text-body_small">Precio de lista</span>
+                                            <span class="slds-text-body_small">{veh.precio}</span>
+                                        </div>
+                                        <div class="slds-grid slds-grid_align-spread">
+                                            <span class="slds-text-body_small">{veh.stockLabel}</span>
+                                            <span class="slds-text-body_small">{veh.stock}</span>
+                                        </div>
+                                        <div class="slds-grid slds-grid_align-spread">
+                                            <span class="slds-text-body_small">Color externo</span>
+                                            <span class="slds-text-body_small">{veh.color}</span>
+                                        </div>
+                                        <div class="slds-grid slds-grid_align-spread">
+                                            <span class="slds-text-body_small">Accesorios</span>
+                                            <span class="slds-text-body_small">{veh.accesoriosFmt}</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row">
+                                    <span class="slds-text-title_bold">Total accesorios</span>
+                                    <span class="slds-text-title_bold">{accesoriosTotalFmt}</span>
+                                </div>
+                                <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
+                                    Real: materiales SAP del pricebook <strong>Vehículos y accesorios</strong> de la sociedad, filtrados por la matriz de compatibilidad accesorio x modelo. Cada pieza marcada entra como QuoteLineItem del vehículo de su pestaña. Paso opcional.
                                 </p>
                             </div>
                         </lightning-layout-item>
