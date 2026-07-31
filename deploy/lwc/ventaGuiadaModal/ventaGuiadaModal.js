@@ -305,32 +305,40 @@ export default class VentaGuiadaModal extends LightningModal {
     totalAccesoriosDe(vehicleId) {
         return this.accesoriosSeleccionadosDe(vehicleId).reduce((sum, a) => sum + a.precio, 0);
     }
-    /** ViewModel de las pestañas: una por vehiculo con su catalogo por categoria. */
-    get vehiculosTabs() {
-        return this.selectedVehicles.map(v => {
-            const sel = this.accesoriosSel[v.id] || {};
-            const cats = [];
-            this.accesoriosDeVehiculo(v.id).forEach(a => {
-                const item = { ...a, precioFmt: crc(a.precio), sel: !!sel[a.id] };
-                let cat = cats.find(c => c.nombre === a.categoria);
-                if (!cat) {
-                    cat = { nombre: a.categoria, items: [] };
-                    cats.push(cat);
-                }
-                cat.items.push(item);
-            });
-            const nSel = this.accesoriosSeleccionadosDe(v.id).length;
-            return {
-                ...v,
-                etiquetaTab: `${v.modelo} (${nSel})`,
-                titulo: `Catálogo compatible con ${v.modelo}`,
-                categorias: cats,
-                totalFmt: crc(this.totalAccesoriosDe(v.id))
-            };
+    /**
+     * Catalogo del vehiculo ACTIVO (variante Davi 31/07: todo en una
+     * pantalla — los cards de la izquierda seleccionan, el catalogo de la
+     * derecha muestra el compatible del card activo).
+     */
+    get vehiculoActivo() {
+        const id = this.activeVehicleId || this.selectedVehicles[0]?.id;
+        const v = this.selectedVehicles.find(x => x.id === id);
+        if (!v) return undefined;
+        const sel = this.accesoriosSel[v.id] || {};
+        const cats = [];
+        this.accesoriosDeVehiculo(v.id).forEach(a => {
+            const item = { ...a, precioFmt: crc(a.precio), sel: !!sel[a.id],
+                rowClass: sel[a.id] ? 'line-row acc-row acc-row-sel' : 'line-row acc-row' };
+            let cat = cats.find(c => c.nombre === a.categoria);
+            if (!cat) {
+                cat = { nombre: a.categoria, items: [] };
+                cats.push(cat);
+            }
+            cat.items.push(item);
         });
+        return {
+            ...v,
+            titulo: `Catálogo compatible con ${v.modelo}`,
+            categorias: cats,
+            totalFmt: crc(this.totalAccesoriosDe(v.id))
+        };
     }
     /** Panel derecho del prototipo: resumen de los vehiculos seleccionados. */
     get vehiculosPanel() {
+        const ESTADO_CLASE = {
+            'Disponible': 'ok', 'En tránsito': 'transito',
+            'Recepción futura': 'futura', 'Sin stock': 'sin'
+        };
         return this.selectedVehicles.map(v => {
             const stock = (v.stockCentral || 0) + (v.stockDealer || 0);
             let badge = 'Disponible';
@@ -339,6 +347,8 @@ export default class VentaGuiadaModal extends LightningModal {
                     ? (v.disponibilidad.fuente === 'recepcion_futura' ? 'Recepción futura' : 'En tránsito')
                     : 'Sin stock';
             }
+            const estado = ESTADO_CLASE[badge];
+            const activo = v.id === (this.activeVehicleId || this.selectedVehicles[0]?.id);
             return {
                 id: v.id,
                 titulo: `${v.anio} - ${v.modelo}`,
@@ -347,9 +357,15 @@ export default class VentaGuiadaModal extends LightningModal {
                 stockLabel: this.esUsado ? 'Ubicación' : 'Stock',
                 color: v.color || '-',
                 badge,
+                activo,
+                badgeClass: 'veh-badge badge-' + estado,
+                cardClass: 'veh-card veh-card-' + estado + (activo ? ' veh-card-activa' : ''),
                 accesoriosFmt: crc(this.totalAccesoriosDe(v.id))
             };
         });
+    }
+    handleCardClick(event) {
+        this.activeVehicleId = event.currentTarget.dataset.id;
     }
     get tituloPanelVehiculos() {
         return `Vehículos seleccionados (${this.selectedVehicles.length})`;
@@ -359,9 +375,6 @@ export default class VentaGuiadaModal extends LightningModal {
     }
     get accesoriosTotalFmt() { return crc(this.accesoriosTotal); }
     get tieneAccesorios() { return this.accesoriosTotal > 0; }
-    handleTabActive(event) {
-        this.activeVehicleId = event.target.value;
-    }
     handleToggleAccesorio(event) {
         const vehicleId = event.currentTarget.dataset.vehicle;
         const id = event.currentTarget.dataset.id;

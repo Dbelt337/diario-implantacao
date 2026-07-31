@@ -146,69 +146,68 @@
                 <template lwc:if={isStepAccesorios}>
                     <div class="step-anim">
                     <lightning-layout multiple-rows>
-                        <lightning-layout-item size="8" padding="around-small">
-                            <div class="slds-box slds-box_small">
-                                <lightning-tabset variant="vertical">
-                                    <template for:each={vehiculosTabs} for:item="veh">
-                                        <lightning-tab key={veh.id} label={veh.etiquetaTab} value={veh.id} onactive={handleTabActive}>
-                                            <h3 class="slds-text-heading_small slds-m-bottom_small">{veh.titulo}</h3>
-                                            <template for:each={veh.categorias} for:item="cat">
-                                                <div key={cat.nombre} class="slds-m-bottom_small">
-                                                    <p class="categoria-titulo slds-m-bottom_xx-small">{cat.nombre}</p>
-                                                    <template for:each={cat.items} for:item="acc">
-                                                        <div key={acc.id} class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
-                                                            <lightning-input type="checkbox" label={acc.nombre}
-                                                                checked={acc.sel} data-id={acc.id} data-vehicle={veh.id}
-                                                                onchange={handleToggleAccesorio}></lightning-input>
-                                                            <span class="slds-text-title_bold">{acc.precioFmt}</span>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                            </template>
-                                            <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row slds-m-top_small">
-                                                <span class="slds-text-heading_small">Total accesorios del vehículo</span>
-                                                <span class="slds-text-heading_small">{veh.totalFmt}</span>
-                                            </div>
-                                        </lightning-tab>
-                                    </template>
-                                </lightning-tabset>
-                            </div>
-                        </lightning-layout-item>
                         <lightning-layout-item size="4" padding="around-small">
-                            <div class="slds-box slds-box_small">
-                                <h3 class="slds-text-heading_small slds-m-bottom_small">{tituloPanelVehiculos}</h3>
+                            <div class="slds-box slds-box_small panel-vehiculos">
+                                <h3 class="slds-text-heading_small slds-m-bottom_small panel-titulo">{tituloPanelVehiculos}</h3>
                                 <template for:each={vehiculosPanel} for:item="veh">
-                                    <div key={veh.id} class="slds-box slds-box_x-small slds-m-bottom_x-small">
-                                        <div class="slds-grid slds-grid_align-spread">
-                                            <span class="slds-text-title_bold">{veh.titulo}</span>
-                                            <lightning-badge label={veh.badge}></lightning-badge>
+                                    <div key={veh.id} class={veh.cardClass} data-id={veh.id} onclick={handleCardClick}>
+                                        <template lwc:if={veh.activo}>
+                                            <span class="veh-card-tag">Seleccionado</span>
+                                        </template>
+                                        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                            <span class="veh-card-titulo">{veh.titulo}</span>
+                                            <lightning-badge label={veh.badge} class={veh.badgeClass}></lightning-badge>
                                         </div>
-                                        <div class="slds-grid slds-grid_align-spread slds-p-top_xx-small">
-                                            <span class="slds-text-body_small">Precio de lista</span>
-                                            <span class="slds-text-body_small">{veh.precio}</span>
-                                        </div>
-                                        <div class="slds-grid slds-grid_align-spread">
-                                            <span class="slds-text-body_small">{veh.stockLabel}</span>
-                                            <span class="slds-text-body_small">{veh.stock}</span>
-                                        </div>
-                                        <div class="slds-grid slds-grid_align-spread">
-                                            <span class="slds-text-body_small">Color externo</span>
-                                            <span class="slds-text-body_small">{veh.color}</span>
+                                        <div class="slds-grid slds-grid_align-spread slds-p-top_x-small">
+                                            <span class="veh-card-etiqueta">Precio de lista</span>
+                                            <span class="veh-card-valor veh-card-precio">{veh.precio}</span>
                                         </div>
                                         <div class="slds-grid slds-grid_align-spread">
-                                            <span class="slds-text-body_small">Accesorios</span>
-                                            <span class="slds-text-body_small">{veh.accesoriosFmt}</span>
+                                            <span class="veh-card-etiqueta">{veh.stockLabel}</span>
+                                            <span class="veh-card-valor">{veh.stock}</span>
+                                        </div>
+                                        <div class="slds-grid slds-grid_align-spread">
+                                            <span class="veh-card-etiqueta">Color externo</span>
+                                            <span class="veh-card-valor">{veh.color}</span>
+                                        </div>
+                                        <div class="slds-grid slds-grid_align-spread">
+                                            <span class="veh-card-etiqueta">Accesorios</span>
+                                            <span class="veh-card-valor">{veh.accesoriosFmt}</span>
                                         </div>
                                     </div>
                                 </template>
-                                <div class="slds-grid slds-grid_align-spread slds-p-vertical_x-small total-row">
-                                    <span class="slds-text-title_bold">Total accesorios</span>
-                                    <span class="slds-text-title_bold">{accesoriosTotalFmt}</span>
+                                <div class="slds-grid slds-grid_align-spread total-band">
+                                    <span>Total accesorios</span>
+                                    <span>{accesoriosTotalFmt}</span>
                                 </div>
                                 <p class="slds-text-body_small slds-m-top_small slds-text-color_weak">
-                                    Real: materiales SAP del pricebook <strong>Vehículos y accesorios</strong> de la sociedad, filtrados por la matriz de compatibilidad accesorio x modelo. Cada pieza marcada entra como QuoteLineItem del vehículo de su pestaña. Paso opcional.
+                                    Real: materiales SAP del pricebook <strong>Vehículos y accesorios</strong> de la sociedad, filtrados por la matriz de compatibilidad accesorio x modelo. Cada pieza marcada entra como QuoteLineItem del vehículo del card seleccionado. Paso opcional.
                                 </p>
                             </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="8" padding="around-small">
+                            <template lwc:if={vehiculoActivo}>
+                                <div class="slds-box slds-box_small catalogo-box">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">{vehiculoActivo.titulo}</h3>
+                                    <template for:each={vehiculoActivo.categorias} for:item="cat">
+                                        <div key={cat.nombre} class="slds-m-bottom_small">
+                                            <p class="categoria-titulo slds-m-bottom_xx-small">{cat.nombre}</p>
+                                            <template for:each={cat.items} for:item="acc">
+                                                <div key={acc.id} class={acc.rowClass}>
+                                                    <lightning-input type="checkbox" label={acc.nombre}
+                                                        checked={acc.sel} data-id={acc.id} data-vehicle={vehiculoActivo.id}
+                                                        onchange={handleToggleAccesorio}></lightning-input>
+                                                    <span class="acc-precio">{acc.precioFmt}</span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <div class="slds-grid slds-grid_align-spread total-band slds-m-top_small">
+                                        <span>Total accesorios del vehículo</span>
+                                        <span>{vehiculoActivo.totalFmt}</span>
+                                    </div>
+                                </div>
+                            </template>
                         </lightning-layout-item>
                     </lightning-layout>
                     </div>
