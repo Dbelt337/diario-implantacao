@@ -42,11 +42,11 @@
         </inputParameters>
         <inputParameters>
             <name>body</name>
-            <value><elementReference>alertaTexto</elementReference></value>
+            <value><elementReference>alertaTextoNotificacion</elementReference></value>
         </inputParameters>
         <inputParameters>
             <name>targetId</name>
-            <value><elementReference>$Record.Id</elementReference></value>
+            <value><elementReference>Get_Cross_Duplicate.Id</elementReference></value>
         </inputParameters>
         <nameSegment>customNotificationAction</nameSegment>
     </actionCalls>
@@ -108,10 +108,24 @@
     <environments>Default</environments>
 
     <formulas>
-        <description>Alert message with the first matching lead. Phone match is exact text; formatting differences are not normalized in this version.</description>
+        <description>Org base URL derived from the API endpoint, so links work in any sandbox or production without hardcoding the domain.</description>
+        <name>fBaseUrl</name>
+        <dataType>String</dataType>
+        <expression>LEFT({!$Api.Partner_Server_URL_560}, FIND("/services", {!$Api.Partner_Server_URL_560}) - 1)</expression>
+    </formulas>
+
+    <formulas>
+        <description>Chatter message with the full clickable link to the matching lead. Phone match is exact text; formatting differences are not normalized in this version.</description>
         <name>alertaTexto</name>
         <dataType>String</dataType>
-        <expression>"Posible duplicado: este lead comparte email o teléfono (campos cruzados) con el lead \"" &amp; {!Get_Cross_Duplicate.Name} &amp; "\". Revíselo antes de continuar: /lightning/r/Lead/" &amp; {!Get_Cross_Duplicate.Id} &amp; "/view"</expression>
+        <expression>"Posible duplicado: este lead comparte email o teléfono (campos cruzados) con el lead \"" &amp; {!Get_Cross_Duplicate.Name} &amp; "\". Revíselo antes de continuar: " &amp; {!fBaseUrl} &amp; "/lightning/r/Lead/" &amp; {!Get_Cross_Duplicate.Id} &amp; "/view"</expression>
+    </formulas>
+
+    <formulas>
+        <description>Notification body: no URL needed, clicking the notification opens the matching lead (targetId).</description>
+        <name>alertaTextoNotificacion</name>
+        <dataType>String</dataType>
+        <expression>"Posible duplicado: este lead comparte email o teléfono (campos cruzados) con el lead \"" &amp; {!Get_Cross_Duplicate.Name} &amp; "\". Haga clic en esta notificación para abrir el lead coincidente."</expression>
     </formulas>
 
     <formulas>
