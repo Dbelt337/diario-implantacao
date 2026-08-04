@@ -6,6 +6,11 @@
 - Fazer somente o que foi pedido, sem tarefas extras não solicitadas. Oferecer sugestões apenas se perguntado.
 - Respostas breves e diretas, em português.
 
+## Processo de trabalho (regra permanente, Diego 05/08/2026)
+- AVALIAR ANTES DE FAZER: antes de propor/criar qualquer metadata, verificar o que existe — describe dos objetos (FieldDefinition), valores de picklist (PicklistValueInfo), object reference oficial e customs já criados pelo time. Só criar campo/componente quando comprovadamente não houver nativo ou existente que sirva.
+- SEGUIR SEMPRE o GRPQM Naming Conventions: API names em inglês Pascal/camel sem underscores (exceto sufixos padrão da org como _EC), labels em espanhol, flows em natural text ("Screen Flow: ...", "Scheduled: ..."), validation rules em natural text, record types iniciando pelo processo de negócio, descriptions estruturadas e com no máximo 255 caracteres (validar o tamanho antes de gerar pacote).
+- Permission sets seguem o padrão de fato da org: label "PS <Nome>".
+
 ## Contexto do projeto
 - Implantação Salesforce do GrupoQ (Automotive Cloud, multi-país). Sandbox de trabalho: DevSales.
 - Todo metadata segue o GRPQM Naming Conventions: metadata em inglês, textos user-facing em espanhol, descriptions estruturadas.
