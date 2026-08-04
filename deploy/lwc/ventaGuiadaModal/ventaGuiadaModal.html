@@ -44,6 +44,15 @@
 
             <div class="slds-p-vertical_medium">
                 <template lwc:if={isStepTipo}>
+                    <template lwc:if={ventaNoDisponible}>
+                        <div class="slds-p-around_x-large slds-text-align_center">
+                            <h3 class="slds-text-heading_medium slds-m-bottom_small">Venta guiada no disponible</h3>
+                            <p class="slds-text-body_regular slds-text-color_weak">
+                                La venta guiada para este tipo de oportunidad estará disponible en una próxima versión.
+                            </p>
+                        </div>
+                    </template>
+                    <template lwc:else>
                     <h3 class="slds-text-heading_small slds-m-bottom_medium slds-text-align_center">¿Qué vas a vender?</h3>
                     <lightning-layout horizontal-align="center">
                         <lightning-layout-item size="4" padding="around-small">
@@ -72,8 +81,9 @@
                         </lightning-layout-item>
                     </lightning-layout>
                     <p class="slds-text-body_small slds-m-top_small slds-text-color_weak slds-text-align_center">
-                        Real: el router del padre decide por el Record Type de la Opportunity; esta pantalla demuestra los dos caminos.
+                        El router decide por el Record Type de la Opportunity; esta pantalla aparece cuando el tipo no se resuelve solo.
                     </p>
+                    </template>
                 </template>
 
                 <template lwc:if={isStepSeleccion}>

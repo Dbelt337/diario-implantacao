@@ -49,18 +49,18 @@ const STEP_TITULOS_REPUESTOS = {
 };
 
 /**
- * Router por Record Type de la Opportunity (acuerdo 04/08): si el nombre del
- * record type identifica la linea de negocio, el paso "tipo" se resuelve solo.
- * Match tolerante por contains para no acoplarse al DeveloperName exacto.
+ * Router por Record Type de la Opportunity: mapa deterministico por
+ * DeveloperName (inmune a traduccion de labels). Tipos NO mapeados bloquean
+ * la venta guiada con un aviso amigable en lugar de caer en "nuevo".
  */
-function tipoDesdeRecordType(nombreRt) {
-    const rt = (nombreRt || '').toLowerCase();
-    if (!rt) return '';
-    if (rt.includes('usad') || rt.includes('used')) return 'usado';
-    if (rt.includes('repuest') || rt.includes('parts') || rt.includes(' pa') || rt.includes('accesor')) return 'repuestos';
-    if (rt.includes('nuev') || rt.includes('new') || rt.includes('vehic') || rt.includes('auto') || rt.includes('moto')) return 'nuevo';
-    return '';
-}
+const TIPO_POR_RECORD_TYPE = {
+    GQOpportunitiesAutos: 'nuevo',
+    GQOpportunitiesMotos: 'nuevo',
+    GQOpportunitiesUsados: 'usado',
+    GQOpportunitiesRepuestosPA: 'repuestos'
+    // GQOpportunitiesFlotas: 'nuevo', // RELEASE 2 - no entregar en R1 (decision 04/08/2026)
+    // GQOpportunitiesMayorista: ...,  // experiencia pendiente de definicion de negocio
+};
 
 const VIGENCIA_DIAS = 15;
 
@@ -100,6 +100,8 @@ export default class VentaGuiadaModal extends LightningModal {
     // Repuestos: seleccion { partId: true } y cantidades { partId: n }
     repuestosSel = {};
     repuestosCant = {};
+    // Record type fuera del alcance R1 (Flotas/Mayorista): bloquea el paso tipo
+    ventaNoDisponible = false;
 
     /**
      * Router por Record Type: lee el record type de la Opportunity via UI API
@@ -107,14 +109,20 @@ export default class VentaGuiadaModal extends LightningModal {
      * venta, saltando el paso "tipo". Si el record type no identifica la
      * linea, la pantalla de tipo se muestra normalmente.
      */
-    @wire(getRecord, { recordId: '$recordId', fields: ['Opportunity.Name', 'Opportunity.CurrencyIsoCode'] })
+    @wire(getRecord, { recordId: '$recordId', fields: ['Opportunity.Name', 'Opportunity.CurrencyIsoCode', 'Opportunity.RecordType.DeveloperName'] })
     wiredOpp({ data }) {
         if (!data) return;
         // moneda de la cotizacion = moneda de la Opportunity (multimoneda)
         this.monedaIso = data.fields?.CurrencyIsoCode?.value || 'CRC';
         if (this.ventaTipo) return;
         this.recordTypeNombre = data.recordTypeInfo?.name || '';
-        const tipo = tipoDesdeRecordType(this.recordTypeNombre);
+        const devName = data.fields?.RecordType?.value?.fields?.DeveloperName?.value || '';
+        const tipo = TIPO_POR_RECORD_TYPE[devName];
+        if (devName && !tipo && this.currentStep === 'tipo') {
+            // Flotas (R2) / Mayorista (sin definicion): bloquear con aviso
+            this.ventaNoDisponible = true;
+            return;
+        }
         if (tipo && this.currentStep === 'tipo') {
             this.setTipo(tipo);
             this.tipoAutomatico = true;
