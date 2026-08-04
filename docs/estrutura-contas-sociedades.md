@@ -3,6 +3,12 @@
 Fonte: query SOQL executada por Diego no Workbench (Account WHERE Name LIKE '%Grupo Q%' / '%GrupoQ%').
 Todas com record type `BusinessAccount`, campo `Type` vazio.
 
+## Modelo confirmado por Diego (04/08/2026)
+
+Ramificação por `Account.ParentId` em 4 níveis: **holding → país → sociedade → dealer**.
+Cada dealer tem um registro de **BusinessProfile** com `BusinessPartnerType = Sales Dealer`
+(é aqui que a classificação de dealer vive — não no Account).
+
 ## Níveis identificados pelo nome
 
 **Holding**
@@ -40,11 +46,9 @@ Todas com record type `BusinessAccount`, campo `Type` vazio.
 
 ## Pendências de captura
 
-- Hierarquia (`ParentId`) das contas — a query não trouxe; capturar para confirmar
-  holding → sociedade → sucursal.
-- Campo External Id com o código da sociedade (existe? qual API name?).
-- Objeto `Seller` (Automotive Cloud): Diego lembra que as contas foram marcadas como
-  "sales dealer" fora do objeto Account — provável registro Seller por conta
-  (SellerType = Dealer). Query enviada, aguardando resultado.
-- Assets / Vehicles / AssetAccountParticipant existentes (queries 2–4 enviadas em
+- Campo External Id com o código da sociedade (existe? qual API name?) — necessário
+  para o Mule resolver a conta na carga de inventário sem depender do nome.
+- Assets / Vehicles / AssetAccountParticipant existentes (queries enviadas em
   04/08, aguardando resultado).
+- Confirmar API names exatos do BusinessProfile usado (objeto e campo
+  BusinessPartnerType) para referência em automações e relatórios.
