@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Country Currency</label>
+    <pluralLabel>Country Currencies</pluralLabel>
+    <visibility>Public</visibility>
+    <description>Business purpose: single source of the country to allowed-currencies map used by the currency validation rules across Sales and Financial (agreement of 04/08/2026). Maintained by: business administrators; changing a country&apos;s currencies is a record edit, no deploy. Used by: validation rules via $CustomMetadata and, in the future, by the governed currency-change action. Country considerations: one record per country, DeveloperName = ISO country code.</description>
+    <fields>
+        <fullName>AllowedCurrencies__c</fullName>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <label>Allowed Currencies</label>
+        <length>100</length>
+        <required>true</required>
+        <type>Text</type>
+        <description>Semicolon-separated ISO currency codes allowed for the country, e.g. CRC;USD. Compared with CONTAINS in the validation rules.</description>
+    </fields>
+    <fields>
+        <fullName>CountryName__c</fullName>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <label>Country Name</label>
+        <length>80</length>
+        <required>true</required>
+        <type>Text</type>
+        <description>User-facing country name in Spanish.</description>
+    </fields>
+</CustomObject>
