@@ -11,6 +11,7 @@
 - Todo metadata segue o GRPQM Naming Conventions: metadata em inglês, textos user-facing em espanhol, descriptions estruturadas.
 - Deploys via Workbench com zips gerados a partir de `deploy/` (package.xml + flows/).
 - Restrição de arquitetura: NÃO criar objetos custom. Usar catálogo standard (Product2/Pricebook2/PricebookEntry), campos custom em objetos standard, Decision Matrix/Expression Set (OmniStudio/BRE, licenciado) e Custom Metadata — nenhum desses conta como objeto custom.
+- Business Rules Engine: HABILITADO na DevSales (confirmado por Diego, 04/08/2026). Motor do cálculo de preços/impostos/floors da HU-038: Decision Matrices (GQ_TaxMatrix, GQ_PriceFloorMatrix, GQ_ChannelPolicyMatrix) + Expression Set GQ_VehiclePricing, chamadas com effective date = data da cotización; permissões Rule Engine Designer (admins/analistas) e Rule Engine Runtime (perfis de venda).
 
 ## Arquitetura do domínio de preços (decidida em 30/07/2026, enviada à Melisa/OSF)
 - Híbrida, definida por quem é mestre do preço:
