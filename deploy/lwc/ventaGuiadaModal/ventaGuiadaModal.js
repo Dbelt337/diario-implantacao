@@ -1,5 +1,6 @@
-import { api } from 'lwc';
+import { api, wire } from 'lwc';
 import LightningModal from 'lightning/modal';
+import { getRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import GRUPOQ_LOGO from '@salesforce/resourceUrl/GrupoQLogo';
 import hasViewInventoryQuantities from '@salesforce/customPermission/ViewInventoryQuantities';
@@ -25,6 +26,8 @@ import createQuote from '@salesforce/apex/GuidedSellingController.createQuote';
  */
 
 const STEPS = ['tipo', 'seleccion', 'accesorios', 'precio', 'descuento', 'pago', 'cotizacion'];
+// Repuestos y PA: sin paso de accesorios (los repuestos SON las lineas)
+const STEPS_REPUESTOS = ['tipo', 'seleccion', 'precio', 'descuento', 'pago', 'cotizacion'];
 
 const STEP_TITULOS = {
     tipo: '¿Qué vas a vender?',
@@ -35,6 +38,29 @@ const STEP_TITULOS = {
     pago: 'Forma de pago',
     cotizacion: 'Cotización'
 };
+
+const STEP_TITULOS_REPUESTOS = {
+    tipo: '¿Qué vas a vender?',
+    seleccion: 'Selección de repuestos',
+    precio: 'Precio en línea (SAP)',
+    descuento: 'Descuentos',
+    pago: 'Forma de pago',
+    cotizacion: 'Cotización'
+};
+
+/**
+ * Router por Record Type de la Opportunity (acuerdo 04/08): si el nombre del
+ * record type identifica la linea de negocio, el paso "tipo" se resuelve solo.
+ * Match tolerante por contains para no acoplarse al DeveloperName exacto.
+ */
+function tipoDesdeRecordType(nombreRt) {
+    const rt = (nombreRt || '').toLowerCase();
+    if (!rt) return '';
+    if (rt.includes('usad') || rt.includes('used')) return 'usado';
+    if (rt.includes('repuest') || rt.includes('parts') || rt.includes(' pa') || rt.includes('accesor')) return 'repuestos';
+    if (rt.includes('nuev') || rt.includes('new') || rt.includes('vehic') || rt.includes('auto') || rt.includes('moto')) return 'nuevo';
+    return '';
+}
 
 const VIGENCIA_DIAS = 15;
 
@@ -53,11 +79,34 @@ export default class VentaGuiadaModal extends LightningModal {
 
     currentStep = 'tipo';
     ventaTipo = '';
+    tipoAutomatico = false;
+    recordTypeNombre = '';
     selectedVehicles = [];
     activeVehicleId;
     searchTerm = '';
     filtroMarca = '';
     filtroAnio = '';
+    // Repuestos: seleccion { partId: true } y cantidades { partId: n }
+    repuestosSel = {};
+    repuestosCant = {};
+
+    /**
+     * Router por Record Type: lee el record type de la Opportunity via UI API
+     * (data.recordTypeInfo, sin campos adicionales) y resuelve el tipo de
+     * venta, saltando el paso "tipo". Si el record type no identifica la
+     * linea, la pantalla de tipo se muestra normalmente.
+     */
+    @wire(getRecord, { recordId: '$recordId', fields: ['Opportunity.Name'] })
+    wiredOpp({ data }) {
+        if (!data || this.ventaTipo) return;
+        this.recordTypeNombre = data.recordTypeInfo?.name || '';
+        const tipo = tipoDesdeRecordType(this.recordTypeNombre);
+        if (tipo && this.currentStep === 'tipo') {
+            this.setTipo(tipo);
+            this.tipoAutomatico = true;
+            this.currentStep = 'seleccion';
+        }
+    }
 
     // paso Descuentos
     descuento = 0;
@@ -144,6 +193,28 @@ export default class VentaGuiadaModal extends LightningModal {
         { id: 'u3', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valor: 'CRC 1.677.000' }
     ];
 
+    /**
+     * Catalogo SIMULADO de repuestos (HU-028, Cenario 1): SAP es el maestro,
+     * el precio NO se persiste en Salesforce — se consulta en linea via
+     * MuleSoft (RFC Get_Price_ZGQREF) al armar la pantalla de precio. Los
+     * combos son SKU propio en SAP. "sinPrecio" simula un material sin
+     * respuesta de SAP (dispara la nota de solicitud de material, HU-039).
+     */
+    repuestosCatalogo = [
+        { id: 'R1', codigo: '04465-0K340', nombre: 'Juego de pastillas de freno delanteras', marca: 'Toyota',
+          precio: 42500, disponibilidad: 'Bodega Central', stock: 24 },
+        { id: 'R2', codigo: '90915-YZZD4', nombre: 'Filtro de aceite', marca: 'Toyota',
+          precio: 6800, disponibilidad: 'Bodega Central', stock: 120 },
+        { id: 'R3', codigo: '28113-2E100', nombre: 'Filtro de aire de motor', marca: 'Hyundai',
+          precio: 9400, disponibilidad: 'Sucursal Lindora', stock: 15 },
+        { id: 'R4', codigo: 'COMBO-FR-TUCSON', nombre: 'Combo frenos Tucson (pastillas + discos + mano de obra)', marca: 'Hyundai',
+          precio: 155000, disponibilidad: 'Bodega Central', stock: 8 },
+        { id: 'R5', codigo: '25212-2W000', nombre: 'Correa de accesorios', marca: 'Hyundai',
+          precio: 18700, disponibilidad: 'En tránsito', stock: 0 },
+        { id: 'R6', codigo: 'ZZ-NO-SAP-001', nombre: 'Kit deflector de capó (material nuevo)', marca: 'Chevrolet',
+          precio: null, disponibilidad: 'Sin código SAP', stock: 0, sinPrecio: true }
+    ];
+
     fichaUsado = [
         { id: 'f1', etiqueta: 'VIN', valor: '3KPC24...4885' },
         { id: 'f2', etiqueta: 'Kilometraje', valor: '45.000 km (capturado en Salesforce)' },
@@ -165,37 +236,57 @@ export default class VentaGuiadaModal extends LightningModal {
 
     get esNuevo() { return this.ventaTipo === 'nuevo'; }
     get esUsado() { return this.ventaTipo === 'usado'; }
+    get esRepuestos() { return this.ventaTipo === 'repuestos'; }
+    get esVehiculo() { return this.esNuevo || this.esUsado; }
+    get stepsActuales() { return this.esRepuestos ? STEPS_REPUESTOS : STEPS; }
     // titulo por paso (acuerdo Gaston 31/07): el header del LightningModal es
     // nuestro, se actualiza con una property reactiva
     get tituloModal() {
         if (this.isStepTipo || !this.ventaTipo) return 'Venta guiada';
+        if (this.esRepuestos) {
+            return `Venta guiada — Repuestos y PA · ${STEP_TITULOS_REPUESTOS[this.currentStep]}`;
+        }
         const base = this.esUsado ? 'Venta guiada — Vehículo usado' : 'Venta guiada — Vehículo nuevo';
         return `${base} · ${STEP_TITULOS[this.currentStep]}`;
+    }
+    // chip informativo cuando el tipo vino del Record Type de la Opportunity
+    get leyendaTipoAutomatico() {
+        return this.tipoAutomatico
+            ? `Tipo definido por el registro: ${this.recordTypeNombre}`
+            : '';
     }
 
     get nextDisabled() {
         if (this.isStepTipo) return !this.ventaTipo;
-        if (this.isStepSeleccion) return this.selectedVehicles.length === 0;
+        if (this.isStepSeleccion) {
+            return this.esRepuestos
+                ? this.repuestosSeleccionados.length === 0
+                : this.selectedVehicles.length === 0;
+        }
         if (this.isStepDescuento) return this.descuentoRequiereAprobacion && !this.descuentoAprobado;
         if (this.isStepPago) return !this.formaPago;
         return this.isStepCotizacion;
     }
 
     handleNext() {
-        const i = STEPS.indexOf(this.currentStep);
-        if (i < STEPS.length - 1) this.currentStep = STEPS[i + 1];
+        const steps = this.stepsActuales;
+        const i = steps.indexOf(this.currentStep);
+        if (i < steps.length - 1) this.currentStep = steps[i + 1];
     }
     handleBack() {
-        const i = STEPS.indexOf(this.currentStep);
-        if (i > 0) this.currentStep = STEPS[i - 1];
+        const steps = this.stepsActuales;
+        const i = steps.indexOf(this.currentStep);
+        if (i > 0) this.currentStep = steps[i - 1];
     }
 
     // ------- paso Tipo -------
     handleTipoNuevo() { this.setTipo('nuevo'); }
     handleTipoUsado() { this.setTipo('usado'); }
+    handleTipoRepuestos() { this.setTipo('repuestos'); }
     setTipo(tipo) {
         if (this.ventaTipo !== tipo) {
             this.ventaTipo = tipo;
+            this.tipoAutomatico = false;
             this.selectedVehicles = [];
             this.activeVehicleId = undefined;
             this.descuento = 0;
@@ -204,6 +295,8 @@ export default class VentaGuiadaModal extends LightningModal {
             this.prima = undefined;
             this.solicitudFinancieroEnviada = false;
             this.accesoriosSel = {};
+            this.repuestosSel = {};
+            this.repuestosCant = {};
             this.searchTerm = '';
             this.filtroMarca = '';
             this.filtroAnio = '';
@@ -211,6 +304,7 @@ export default class VentaGuiadaModal extends LightningModal {
     }
     get tipoNuevoClass() { return this.esNuevo ? 'tipo-card tipo-card-selected' : 'tipo-card'; }
     get tipoUsadoClass() { return this.esUsado ? 'tipo-card tipo-card-selected' : 'tipo-card'; }
+    get tipoRepuestosClass() { return this.esRepuestos ? 'tipo-card tipo-card-selected' : 'tipo-card'; }
 
     // ------- paso Vehiculos (seleccion multiple, prototipo Gaston) -------
     get vehiclesActuales() {
@@ -283,8 +377,14 @@ export default class VentaGuiadaModal extends LightningModal {
 
     // ------- barra de marca (logo + contexto de la seleccion) -------
     get logoUrl() { return GRUPOQ_LOGO; }
-    get tieneVehiculo() { return this.selectedVehicles.length > 0; }
+    get tieneVehiculo() {
+        return this.esRepuestos ? this.repuestosSeleccionados.length > 0 : this.selectedVehicles.length > 0;
+    }
     get vehiculoChip() {
+        if (this.esRepuestos) {
+            const n = this.repuestosSeleccionados.length;
+            return n === 0 ? '' : `${n} repuesto${n > 1 ? 's' : ''} — ${this.repuestosTotalFmt}`;
+        }
         const n = this.selectedVehicles.length;
         if (n === 0) return '';
         if (n === 1) {
@@ -292,6 +392,49 @@ export default class VentaGuiadaModal extends LightningModal {
             return this.esUsado ? `${v.modelo} ${v.anio} — VIN ${v.vin}` : `${v.modelo} ${v.anio}`;
         }
         return `${n} vehículos seleccionados`;
+    }
+
+    // ------- paso Seleccion (Repuestos y PA) -------
+    cantidadDe(partId) {
+        const n = parseInt(this.repuestosCant[partId], 10);
+        return Number.isFinite(n) && n > 0 ? n : 1;
+    }
+    get repuestosOptions() {
+        const term = (this.searchTerm || '').toLowerCase();
+        return this.repuestosCatalogo
+            .filter(r => !term || `${r.codigo} ${r.nombre} ${r.marca}`.toLowerCase().includes(term))
+            .map(r => ({
+                ...r,
+                sel: !!this.repuestosSel[r.id],
+                precioFmt: r.sinPrecio ? 'Consultar SAP' : crc(r.precio),
+                rowClass: this.repuestosSel[r.id] ? 'slds-hint-parent selected-row' : 'slds-hint-parent'
+            }));
+    }
+    get repuestosSeleccionados() {
+        return this.repuestosCatalogo
+            .filter(r => this.repuestosSel[r.id])
+            .map(r => {
+                const cantidad = this.cantidadDe(r.id);
+                const subtotal = r.sinPrecio ? 0 : r.precio * cantidad;
+                return { ...r, cantidad, subtotal,
+                    precioFmt: r.sinPrecio ? '—' : crc(r.precio),
+                    subtotalFmt: r.sinPrecio ? 'Pendiente SAP' : crc(subtotal) };
+            });
+    }
+    get repuestosTotal() {
+        return this.repuestosSeleccionados.reduce((sum, r) => sum + r.subtotal, 0);
+    }
+    get repuestosTotalFmt() { return crc(this.repuestosTotal); }
+    get tieneRepuestoSinPrecio() {
+        return this.repuestosSeleccionados.some(r => r.sinPrecio);
+    }
+    handleToggleRepuesto(event) {
+        const id = event.currentTarget.dataset.id;
+        this.repuestosSel = { ...this.repuestosSel, [id]: !this.repuestosSel[id] };
+    }
+    handleCantidadChange(event) {
+        const id = event.currentTarget.dataset.id;
+        this.repuestosCant = { ...this.repuestosCant, [id]: event.detail.value };
     }
 
     // ------- paso Accesorios (tab vertical por vehiculo + panel derecho) -------
@@ -384,6 +527,15 @@ export default class VentaGuiadaModal extends LightningModal {
 
     // ------- paso Precio -------
     get priceBreakdown() {
+        if (this.esRepuestos) {
+            const rows = this.repuestosSeleccionados.map(r => ({
+                id: 'rep-' + r.id,
+                concepto: `${r.nombre} (${r.codigo}) × ${r.cantidad} — precio en línea SAP`,
+                valor: r.subtotalFmt
+            }));
+            rows.push({ id: 'imp', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valor: crc(this.repuestosTotal * 0.13) });
+            return rows;
+        }
         const rows = this.selectedVehicles.map(v => ({
             id: 'veh-' + v.id,
             concepto: this.esUsado
@@ -404,6 +556,9 @@ export default class VentaGuiadaModal extends LightningModal {
 
     // ------- paso Descuentos -------
     get baseTotal() {
+        if (this.esRepuestos) {
+            return Math.round(this.repuestosTotal * 1.13);
+        }
         const vehiculos = this.selectedVehicles.reduce((sum, v) => sum + (v.precioNum || 0), 0);
         return vehiculos + this.accesoriosTotal;
     }
@@ -417,6 +572,9 @@ export default class VentaGuiadaModal extends LightningModal {
     get descuentoPendiente() { return this.descuentoRequiereAprobacion && !this.descuentoAprobado; }
     get excesoSobreMinimoFmt() { return crc(this.descuentoNum - MAX_DESCUENTO_DIRECTO); }
     get leyendaMinimo() {
+        if (this.esRepuestos) {
+            return 'Repuestos: margen por canal/categoría definido por el negocio (Decision Matrix); el precio base es el de la consulta en línea a SAP y no se persiste.';
+        }
         return this.esUsado
             ? 'Precio mínimo del usado: definido por la Gerencia de Usados por unidad; por debajo, Approval Process nativo.'
             : 'Precio mínimo por modelo/versión: Decision Matrix (BRE), mantenida por el negocio — nunca en Apex.';
@@ -508,6 +666,12 @@ export default class VentaGuiadaModal extends LightningModal {
      * (QuoteOrderService); el boton refleja el caso mas restrictivo.
      */
     get createQuoteBtn() {
+        if (this.esRepuestos) {
+            const n = this.repuestosSeleccionados.length;
+            return this.tieneRepuestoSinPrecio
+                ? { label: 'Crear cotización y solicitar material', variant: 'neutral' }
+                : { label: `Crear cotización (${n} línea${n > 1 ? 's' : ''})`, variant: 'brand' };
+        }
         const n = this.selectedVehicles.length;
         if (this.esUsado || n === 0) {
             return { label: n > 1 ? `Crear cotizaciones (${n})` : 'Crear cotización', variant: 'brand' };
@@ -531,6 +695,26 @@ export default class VentaGuiadaModal extends LightningModal {
         const rows = [
             { id: 'q1', etiqueta: 'Cliente', valor: 'Vendedor- (Cuenta de prueba)' }
         ];
+        if (this.esRepuestos) {
+            this.repuestosSeleccionados.forEach((r, i) => {
+                rows.push({ id: 'rep' + i, etiqueta: `${r.nombre} (${r.codigo}) × ${r.cantidad}`, valor: r.subtotalFmt });
+            });
+            if (this.tieneRepuestoSinPrecio) {
+                rows.push({ id: 'repSol', etiqueta: 'Material sin código SAP',
+                    valor: 'Se genera solicitud de creación de material (HU-039); la línea entra cuando SAP devuelva el MATNR' });
+            }
+            rows.push({ id: 'q3', etiqueta: 'Total de referencia (con impuesto)', valor: this.totalReferenciaFmt });
+            if (this.descuentoNum > 0) {
+                rows.push({ id: 'q4', etiqueta: 'Descuento comercial', valor: '- ' + crc(this.descuentoNum) });
+                rows.push({ id: 'q5', etiqueta: 'Total con descuento', valor: this.totalConDescuentoFmt });
+            }
+            if (this.formaPago) {
+                rows.push({ id: 'q6', etiqueta: 'Forma de pago', valor: this.isContado ? 'Contado' : 'Financiado CrediQ — ' + this.plazo + ' meses' });
+            }
+            rows.push({ id: 'q9', etiqueta: 'Vigencia de la cotización', valor: VIGENCIA_DIAS + ' días' });
+            rows.push({ id: 'q10', etiqueta: 'Precio definitivo', valor: 'Precio en línea de SAP al facturar (sin precio persistido en Salesforce)' });
+            return rows;
+        }
         this.selectedVehicles.forEach((v, i) => {
             rows.push({
                 id: 'veh' + i,
@@ -575,6 +759,9 @@ export default class VentaGuiadaModal extends LightningModal {
         return rows;
     }
     get leyendaCotizacion() {
+        if (this.esRepuestos) {
+            return 'Real: contraventa de Repuestos y PA — el precio se consulta en línea a SAP (Get_Price_ZGQREF) al cotizar y al facturar; nada de precio persistido (HU-028, Cenario 1). Material sin código dispara la solicitud de creación (HU-039).';
+        }
         const porVehiculo = this.selectedVehicles.length > 1
             ? ' Se crea UNA cotización por vehículo seleccionado.'
             : '';
@@ -590,6 +777,19 @@ export default class VentaGuiadaModal extends LightningModal {
             totalFmt: this.totalConDescuentoFmt
         });
         if (result === 'confirmar') {
+            if (this.esRepuestos) {
+                // TODO real: rama de contraventa en QuoteOrderService (lineas de
+                // repuesto por cantidad, precio de la consulta SAP, solicitud de
+                // material HU-039 para lineas sin codigo) — mock hasta cerrar el
+                // contrato del RFC Get_Price_ZGQREF (Pendencia 13)
+                this.dispatchEvent(new ShowToastEvent({
+                    title: 'Mock de presentación',
+                    message: 'Aquí se crea la cotización de repuestos con precio en línea de SAP; las líneas sin código generan la solicitud de material (HU-039).',
+                    variant: 'info'
+                }));
+                this.close('cotizacion-repuestos-mock');
+                return;
+            }
             // payload real para QuoteOrderService: accesorios POR VEHICULO,
             // descuento (con su estado de aprobacion), forma de pago y vigencia;
             // los vehiculos viajan aparte en selectedVehicles (contrato existente)

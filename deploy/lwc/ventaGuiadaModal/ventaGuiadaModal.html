@@ -12,21 +12,38 @@
                 MOCK de presentación — propuesta de experiencia con datos simulados; los servicios SAP/BRE se conectan por etapa.
             </div>
 
-            <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
-                <lightning-progress-step label="Tipo" value="tipo"></lightning-progress-step>
-                <lightning-progress-step label="Vehículo" value="seleccion"></lightning-progress-step>
-                <lightning-progress-step label="Accesorios" value="accesorios"></lightning-progress-step>
-                <lightning-progress-step label="Precio y stock" value="precio"></lightning-progress-step>
-                <lightning-progress-step label="Descuentos" value="descuento"></lightning-progress-step>
-                <lightning-progress-step label="Pago" value="pago"></lightning-progress-step>
-                <lightning-progress-step label="Cotización" value="cotizacion"></lightning-progress-step>
-            </lightning-progress-indicator>
+            <template lwc:if={tipoAutomatico}>
+                <div class="slds-m-bottom_x-small">
+                    <lightning-badge label={leyendaTipoAutomatico} class="veh-badge badge-futura"></lightning-badge>
+                </div>
+            </template>
+            <template lwc:if={esRepuestos}>
+                <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
+                    <lightning-progress-step label="Tipo" value="tipo"></lightning-progress-step>
+                    <lightning-progress-step label="Repuestos" value="seleccion"></lightning-progress-step>
+                    <lightning-progress-step label="Precio en línea" value="precio"></lightning-progress-step>
+                    <lightning-progress-step label="Descuentos" value="descuento"></lightning-progress-step>
+                    <lightning-progress-step label="Pago" value="pago"></lightning-progress-step>
+                    <lightning-progress-step label="Cotización" value="cotizacion"></lightning-progress-step>
+                </lightning-progress-indicator>
+            </template>
+            <template lwc:else>
+                <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
+                    <lightning-progress-step label="Tipo" value="tipo"></lightning-progress-step>
+                    <lightning-progress-step label="Vehículo" value="seleccion"></lightning-progress-step>
+                    <lightning-progress-step label="Accesorios" value="accesorios"></lightning-progress-step>
+                    <lightning-progress-step label="Precio y stock" value="precio"></lightning-progress-step>
+                    <lightning-progress-step label="Descuentos" value="descuento"></lightning-progress-step>
+                    <lightning-progress-step label="Pago" value="pago"></lightning-progress-step>
+                    <lightning-progress-step label="Cotización" value="cotizacion"></lightning-progress-step>
+                </lightning-progress-indicator>
+            </template>
 
             <div class="slds-p-vertical_medium">
                 <template lwc:if={isStepTipo}>
                     <h3 class="slds-text-heading_small slds-m-bottom_medium slds-text-align_center">¿Qué vas a vender?</h3>
                     <lightning-layout horizontal-align="center">
-                        <lightning-layout-item size="5" padding="around-small">
+                        <lightning-layout-item size="4" padding="around-small">
                             <div class={tipoNuevoClass} onclick={handleTipoNuevo}>
                                 <h3 class="slds-text-heading_medium">Vehículo nuevo</h3>
                                 <p class="slds-text-body_small slds-m-top_small">
@@ -34,11 +51,19 @@
                                 </p>
                             </div>
                         </lightning-layout-item>
-                        <lightning-layout-item size="5" padding="around-small">
+                        <lightning-layout-item size="4" padding="around-small">
                             <div class={tipoUsadoClass} onclick={handleTipoUsado}>
                                 <h3 class="slds-text-heading_medium">Vehículo usado</h3>
                                 <p class="slds-text-body_small slds-m-top_small">
                                     Inventario PROPIO en Salesforce (unidades Vehicle con VIN, kilometraje y ficha del usado; precio de gestión propia).
+                                </p>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4" padding="around-small">
+                            <div class={tipoRepuestosClass} onclick={handleTipoRepuestos}>
+                                <h3 class="slds-text-heading_medium">Repuestos y PA</h3>
+                                <p class="slds-text-body_small slds-m-top_small">
+                                    Contraventa: precio consultado EN LÍNEA a SAP al cotizar (sin precio persistido); material sin código genera solicitud de creación.
                                 </p>
                             </div>
                         </lightning-layout-item>
@@ -49,6 +74,72 @@
                 </template>
 
                 <template lwc:if={isStepSeleccion}>
+                    <template lwc:if={esRepuestos}>
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="8" padding="around-small">
+                                <lightning-input type="search" label="Buscar repuesto (código, descripción, marca)"
+                                    placeholder="Ej.: pastillas de freno, 04465" value={searchTerm}
+                                    onchange={handleSearchChange} class="slds-m-bottom_small"></lightning-input>
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th scope="col">Código</th>
+                                            <th scope="col">Descripción</th>
+                                            <th scope="col">Marca</th>
+                                            <th scope="col">Precio (SAP en línea)</th>
+                                            <th scope="col">Disponibilidad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={repuestosOptions} for:item="rep">
+                                            <tr key={rep.id} class={rep.rowClass} data-id={rep.id} onclick={handleToggleRepuesto}>
+                                                <td>{rep.codigo}</td>
+                                                <td>{rep.nombre}</td>
+                                                <td>{rep.marca}</td>
+                                                <td>{rep.precioFmt}</td>
+                                                <td>{rep.disponibilidad}</td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                                <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
+                                    Selecciona una o más filas (clic marca y desmarca). Real: búsqueda con precio consultado EN LÍNEA a SAP (Get_Price_ZGQREF) — sin precio persistido en Salesforce; combos = SKU propio en SAP. Material sin código: genera solicitud de creación (HU-039).
+                                </p>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <div class="slds-box slds-box_small panel-vehiculos">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small panel-titulo">Líneas seleccionadas</h3>
+                                    <template for:each={repuestosSeleccionados} for:item="rep">
+                                        <div key={rep.id} class="veh-card veh-card-ok">
+                                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                                <span class="veh-card-titulo">{rep.nombre}</span>
+                                            </div>
+                                            <div class="slds-grid slds-grid_align-spread slds-p-top_x-small">
+                                                <span class="veh-card-etiqueta">Código</span>
+                                                <span class="veh-card-valor">{rep.codigo}</span>
+                                            </div>
+                                            <div class="slds-grid slds-grid_align-spread">
+                                                <span class="veh-card-etiqueta">Precio unitario</span>
+                                                <span class="veh-card-valor veh-card-precio">{rep.precioFmt}</span>
+                                            </div>
+                                            <lightning-input type="number" label="Cantidad" min="1" step="1"
+                                                value={rep.cantidad} data-id={rep.id}
+                                                onchange={handleCantidadChange} class="slds-m-top_x-small"></lightning-input>
+                                            <div class="slds-grid slds-grid_align-spread slds-p-top_x-small">
+                                                <span class="veh-card-etiqueta">Subtotal</span>
+                                                <span class="veh-card-valor veh-card-precio">{rep.subtotalFmt}</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div class="slds-grid slds-grid_align-spread total-band">
+                                        <span>Total repuestos</span>
+                                        <span>{repuestosTotalFmt}</span>
+                                    </div>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </template>
+                    <template lwc:else>
                     <lightning-layout class="slds-m-bottom_small">
                         <lightning-layout-item size="6" padding="horizontal-small">
                             <lightning-input type="search" label="Buscar vehículo (modelo, versión, color, VIN)"
@@ -64,6 +155,7 @@
                                 value={filtroAnio} onchange={handleFiltroAnio}></lightning-combobox>
                         </lightning-layout-item>
                     </lightning-layout>
+                    </template>
                     <!--Change to LWC Datatable-->
                     <template lwc:if={esNuevo}>
                         <table class="slds-table slds-table_bordered slds-table_cell-buffer">
@@ -138,9 +230,11 @@
                             </tbody>
                         </table>
                     </template>
-                    <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
-                        {leyendaSeleccion}
-                    </p>
+                    <template lwc:if={esVehiculo}>
+                        <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
+                            {leyendaSeleccion}
+                        </p>
+                    </template>
                 </template>
 
                 <template lwc:if={isStepAccesorios}>
@@ -231,6 +325,23 @@
                             </div>
                         </lightning-layout-item>
                         <lightning-layout-item size="5" padding="around-small">
+                            <template lwc:if={esRepuestos}>
+                                <div class="slds-box slds-box_small">
+                                    <h3 class="slds-text-heading_small slds-m-bottom_small">Consulta de precio en línea (SAP vía MuleSoft)</h3>
+                                    <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                        Cada línea consulta el precio al SAP en el momento (RFC <strong>Get_Price_ZGQREF</strong>): lista por sociedad/canal, escalas por cantidad y precio por cliente cuando aplica.
+                                    </p>
+                                    <p class="slds-text-body_small slds-p-vertical_xx-small">
+                                        <strong>Sin precio persistido</strong> en Salesforce (HU-028, Cenario 1): lo que se muestra es la respuesta en línea; SAP certifica el precio al facturar.
+                                    </p>
+                                    <template lwc:if={tieneRepuestoSinPrecio}>
+                                        <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-top_small" role="alert">
+                                            Hay una línea sin código SAP: al crear la cotización se genera la solicitud de creación de material (HU-039) y la línea entra cuando SAP devuelva el MATNR.
+                                        </div>
+                                    </template>
+                                    <lightning-badge label="Consulta SAP simulada — informativa, sin bloqueo" class="slds-m-top_small"></lightning-badge>
+                                </div>
+                            </template>
                             <template lwc:if={esNuevo}>
                                 <div class="slds-box slds-box_small">
                                     <h3 class="slds-text-heading_small slds-m-bottom_small">Disponibilidad en línea (SAP vía MuleSoft)</h3>
