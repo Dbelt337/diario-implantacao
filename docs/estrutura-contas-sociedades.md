@@ -9,6 +9,24 @@ Ramificação por `Account.ParentId` em 4 níveis: **holding → país → socie
 Cada dealer tem um registro de **BusinessProfile** com `BusinessPartnerType = Sales Dealer`
 (é aqui que a classificação de dealer vive — não no Account).
 
+## Hierarquia confirmada por query com ParentId (04/08/2026)
+
+- Nível 1 Holding: GrupoQ Holding
+- Nível 2 País: GrupoQ Costa Rica, GrupoQ Nicaragua
+- Nível 3 Sociedade: C101 e C105 (CR), N105 (NI)
+- Nível 4 Dealer:
+  - C101: Ayarco, Guapiles, La Uruca, Liberia, Lindora, Perez Zeledon, San Carlos,
+    Uruca Flotas, Uruca Usados
+  - C105: Active Motors (Paseo Las Flores, SABANA, Sucursal Central), Forland
+    (Guapiles, La Uruca Sucursal Central, Liberia, Perez Zeledon, San Carlos),
+    Terrazas Lindora, Vehiculos La Uruca, Ventas Guapiles
+  - N105: Active Motors Managua
+
+Anomalia detectada: "GrupoQ La Uruca Repuestos" está no nível 5 (pai = dealer
+GrupoQ La Uruca), enquanto Uruca Usados/Flotas estão no nível 4 (pai = C101).
+Levantado com o chefe de Diego em 04/08 — aguardando definição (departamento do
+dealer ou reparent para C101).
+
 ## Níveis identificados pelo nome
 
 **Holding**
