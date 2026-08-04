@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>AllowedCurrencies__c</field>
-        <value xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">USD;PAB</value>
+        <value xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">USD</value>
     </values>
     <values>
         <field>CountryName__c</field>
