@@ -5,7 +5,7 @@
  * Business rules do not belong here: reference price/tax rules live in the BRE.
  *
  * INTEGRATION MAP (Davi):
- *  - The Named Credential MuleSoftPricesInventory (+ External Credential
+ *  - The Named Credential MuleGateway (+ External Credential
  *    MuleSoft_EC, OAuth client credentials) is deployed with this package.
  *    The Mule endpoint URL and the client id/secret are set in Setup by an
  *    admin — code never changes between environments.
@@ -20,7 +20,7 @@ public with sharing class SapInventoryService {
 
     // Named Credential configured per environment; single prices-and-inventory endpoint
     private static final String PRICES_INVENTORY_ENDPOINT =
-        'callout:MuleSoftPricesInventory/api/v1/prices-and-inventory';
+        'callout:MuleGateway/api/v1/prices-and-inventory';
     private static final Integer TIMEOUT_SECONDS = 60;
 
     /**

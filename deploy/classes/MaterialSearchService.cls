@@ -10,7 +10,7 @@
  *  2. SAP leg (PENDING — MuleSoft Experience API contract with Flavio):
  *     fires ONLY when the local search misses. One GET through the Named
  *     Credential (never a hardcoded URL):
- *       callout:MuleSoftPricesInventory/api/v1/materials/search
+ *       callout:MuleGateway/api/v1/materials/search
  *         ?term={searchTerm}&companyCode={sociedad}&plant={centro}
  *         &page={n}&pageSize=50
  *     Response page: [{ productCode, name, brand, group, stock:[{plant,qty}] }]
@@ -61,7 +61,7 @@ public with sharing class MaterialSearchService {
         // HOW IT WILL WORK (Davi):
         //   if (matches.isEmpty()) {
         //       HttpRequest req = new HttpRequest();
-        //       req.setEndpoint('callout:MuleSoftPricesInventory/api/v1/materials/search'
+        //       req.setEndpoint('callout:MuleGateway/api/v1/materials/search'
         //           + '?term=' + EncodingUtil.urlEncode(sanitized, 'UTF-8')
         //           + '&companyCode=' + companyCode + '&plant=' + plant
         //           + '&page=1&pageSize=50');
