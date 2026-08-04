@@ -501,24 +501,30 @@ export default class VentaGuiadaModal extends LightningModal {
         ).join(' | ') || '-';
     }
     /**
-     * Estados de la cotizacion segun disponibilidad (aporte Davi, HU-044):
-     * UNA estructura unica "disponibilidad" { cantidad, eta, fuente } — la
-     * fuente distingue transito de recepcion futura. Con seleccion multiple
-     * se crea UNA COTIZACION POR VEHICULO (QuoteOrderService); el boton
-     * refleja el caso mas restrictivo de la seleccion.
+     * Estados de la cotizacion (acuerdo Davi + Meli, HU-044): pedido normal =
+     * hay stock en sucursal o central; en transito = sin stock pero con fecha
+     * de stock (disponibilidad.cantidad); pedido futuro = sin stock ninguno.
+     * Con seleccion multiple se crea UNA COTIZACION POR VEHICULO
+     * (QuoteOrderService); el boton refleja el caso mas restrictivo.
      */
     get createQuoteBtn() {
         const n = this.selectedVehicles.length;
-        const labelBase = n > 1 ? `Crear cotizaciones (${n})` : 'Crear cotización';
-        if (this.esUsado || n === 0) return { label: labelBase, variant: 'brand' };
+        if (this.esUsado || n === 0) {
+            return { label: n > 1 ? `Crear cotizaciones (${n})` : 'Crear cotización', variant: 'brand' };
+        }
         const sinStock = this.selectedVehicles.filter(v => !v.stockDealer && !v.stockCentral);
+        if (n === 1) {
+            if (sinStock.length === 0) return { label: 'Crear cotización', variant: 'brand' };
+            return sinStock[0].disponibilidad?.cantidad
+                ? { label: 'Crear cotización en tránsito', variant: 'neutral' }
+                : { label: 'Crear cotización de pedido futuro', variant: 'brand' };
+        }
+        const labelBase = `Crear cotizaciones (${n})`;
         if (sinStock.length === 0) return { label: labelBase, variant: 'brand' };
-        const sinNada = sinStock.some(v => !v.disponibilidad?.cantidad);
-        if (sinNada) return { label: labelBase + ' y solicitar unidades', variant: 'neutral' };
-        const futura = sinStock.some(v => v.disponibilidad?.fuente === 'recepcion_futura');
-        return futura
-            ? { label: labelBase + ' (incluye recepción futura)', variant: 'neutral' }
-            : { label: labelBase + ' (incluye unidad en tránsito)', variant: 'brand' };
+        const pedidoFuturo = sinStock.some(v => !v.disponibilidad?.cantidad);
+        return pedidoFuturo
+            ? { label: labelBase + ' — incluye pedido futuro', variant: 'brand' }
+            : { label: labelBase + ' — incluye en tránsito', variant: 'neutral' };
     }
 
     get quoteSummary() {
