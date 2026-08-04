@@ -4,9 +4,12 @@
         <div class="modal-body">
             <div class="brand-bar slds-m-bottom_small">
                 <img src={logoUrl} alt="GrupoQ" class="brand-logo-img"/>
-                <template lwc:if={tieneVehiculo}>
-                    <span class="vehiculo-chip">{vehiculoChip}</span>
-                </template>
+                <div>
+                    <lightning-badge label={monedaBadge} class="veh-badge badge-futura slds-m-right_x-small"></lightning-badge>
+                    <template lwc:if={tieneVehiculo}>
+                        <span class="vehiculo-chip">{vehiculoChip}</span>
+                    </template>
+                </div>
             </div>
             <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
                 MOCK de presentación — propuesta de experiencia con datos simulados; los servicios SAP/BRE se conectan por etapa.
@@ -183,7 +186,7 @@
                                         <td>{vehicle.anio}</td>
                                         <td>{vehicle.color}</td>
                                         <td>{vehicle.colorInt}</td>
-                                        <td>{vehicle.precio}</td>
+                                        <td>{vehicle.precioFmt}</td>
                                         <template lwc:if={puedeVerCantidades}>
                                             <td>{vehicle.stockCentral}</td>
                                             <td>{vehicle.stockDealer}</td>
@@ -223,7 +226,7 @@
                                         <td>{vehicle.anio}</td>
                                         <td>{vehicle.km}</td>
                                         <td>{vehicle.vin}</td>
-                                        <td>{vehicle.precio}</td>
+                                        <td>{vehicle.precioFmt}</td>
                                         <td>{vehicle.ubicacion}</td>
                                     </tr>
                                 </template>

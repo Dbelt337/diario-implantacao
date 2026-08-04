@@ -83,6 +83,10 @@ public with sharing class QuoteOrderService {
                 Name = (opp.Name + ' ' + vehicle.Product2.Name),
                 OpportunityId = opp.Id,
                 Pricebook2Id = opp.Pricebook2Id,
+                // multimoneda: la Quote debe tener la MISMA moneda de la
+                // Opportunity (regla nativa); explicito para no depender del
+                // default de moneda del usuario de integracion
+                CurrencyIsoCode = opp.CurrencyIsoCode,
                 ExpirationDate = vigencia,
                 Description = buildQuoteDescription(payload, v == null ? vehicle.Product2.Name : v.modelo)
             );

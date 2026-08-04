@@ -68,10 +68,20 @@ const VIGENCIA_DIAS = 15;
 const MAX_DESCUENTO_DIRECTO = 700000;
 const TASA_ANUAL_REFERENCIA = 9.5;
 
-function crc(value) {
-    const n = Math.round(value || 0);
+/**
+ * Moneda de la cotizacion = moneda de la Opportunity (multimoneda nativa: la
+ * Quote hereda la moneda de la oportunidad y cada moneda tiene su propia
+ * PricebookEntry). Los precios MOCK estan en CRC; para demo en USD se
+ * convierten con la tasa de la org. REAL: sin conversion en la UI — el
+ * precio por moneda viene de su PricebookEntry (via GuidedSellingController).
+ */
+const TASAS_MOCK = { CRC: 1, USD: 0.00196 };
+
+function moneda(value, iso) {
+    const tasa = TASAS_MOCK[iso] || 1;
+    const n = Math.round((value || 0) * tasa);
     const sign = n < 0 ? '- ' : '';
-    return sign + 'CRC ' + Math.abs(n).toLocaleString('de-DE');
+    return sign + iso + ' ' + Math.abs(n).toLocaleString('de-DE');
 }
 
 export default class VentaGuiadaModal extends LightningModal {
@@ -81,6 +91,7 @@ export default class VentaGuiadaModal extends LightningModal {
     ventaTipo = '';
     tipoAutomatico = false;
     recordTypeNombre = '';
+    monedaIso = 'CRC';
     selectedVehicles = [];
     activeVehicleId;
     searchTerm = '';
@@ -96,9 +107,12 @@ export default class VentaGuiadaModal extends LightningModal {
      * venta, saltando el paso "tipo". Si el record type no identifica la
      * linea, la pantalla de tipo se muestra normalmente.
      */
-    @wire(getRecord, { recordId: '$recordId', fields: ['Opportunity.Name'] })
+    @wire(getRecord, { recordId: '$recordId', fields: ['Opportunity.Name', 'Opportunity.CurrencyIsoCode'] })
     wiredOpp({ data }) {
-        if (!data || this.ventaTipo) return;
+        if (!data) return;
+        // moneda de la cotizacion = moneda de la Opportunity (multimoneda)
+        this.monedaIso = data.fields?.CurrencyIsoCode?.value || 'CRC';
+        if (this.ventaTipo) return;
         this.recordTypeNombre = data.recordTypeInfo?.name || '';
         const tipo = tipoDesdeRecordType(this.recordTypeNombre);
         if (tipo && this.currentStep === 'tipo') {
@@ -106,6 +120,14 @@ export default class VentaGuiadaModal extends LightningModal {
             this.tipoAutomatico = true;
             this.currentStep = 'seleccion';
         }
+    }
+
+    /** Formatea un monto (mock en CRC) en la moneda de la oportunidad. */
+    m(value) {
+        return moneda(value, this.monedaIso);
+    }
+    get monedaBadge() {
+        return `Moneda: ${this.monedaIso}`;
     }
 
     // paso Descuentos
@@ -182,15 +204,15 @@ export default class VentaGuiadaModal extends LightningModal {
     accesoriosSel = {};
 
     gastosExtrasNuevo = [
-        { id: 'p2', concepto: 'Gastos (matrícula + entrega)', valor: 'CRC 850.000' },
-        { id: 'p3', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valor: 'CRC 2.795.000' },
-        { id: 'p4', concepto: 'Cashback vigente', valor: '- CRC 500.000' },
-        { id: 'p5', concepto: 'Valor de trade-in (avalúo aceptado)', valor: '- CRC 14.000' }
+        { id: 'p2', concepto: 'Gastos (matrícula + entrega)', valorNum: 850000 },
+        { id: 'p3', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valorNum: 2795000 },
+        { id: 'p4', concepto: 'Cashback vigente', valorNum: -500000 },
+        { id: 'p5', concepto: 'Valor de trade-in (avalúo aceptado)', valorNum: -14000 }
     ];
 
     gastosExtrasUsado = [
-        { id: 'u2', concepto: 'Gastos de traspaso', valor: 'CRC 350.000' },
-        { id: 'u3', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valor: 'CRC 1.677.000' }
+        { id: 'u2', concepto: 'Gastos de traspaso', valorNum: 350000 },
+        { id: 'u3', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valorNum: 1677000 }
     ];
 
     /**
@@ -339,6 +361,7 @@ export default class VentaGuiadaModal extends LightningModal {
                 && (!term || `${v.modelo} ${v.color || ''} ${v.vin || ''}`.toLowerCase().includes(term)))
             .map((vehicle) => ({
                 ...vehicle,
+                precioFmt: this.m(vehicle.precioNum),
                 rowClass: this.isSelected(vehicle.id)
                     ? 'slds-hint-parent selected-row'
                     : 'slds-hint-parent'
@@ -406,7 +429,7 @@ export default class VentaGuiadaModal extends LightningModal {
             .map(r => ({
                 ...r,
                 sel: !!this.repuestosSel[r.id],
-                precioFmt: r.sinPrecio ? 'Consultar SAP' : crc(r.precio),
+                precioFmt: r.sinPrecio ? 'Consultar SAP' : this.m(r.precio),
                 rowClass: this.repuestosSel[r.id] ? 'slds-hint-parent selected-row' : 'slds-hint-parent'
             }));
     }
@@ -417,14 +440,14 @@ export default class VentaGuiadaModal extends LightningModal {
                 const cantidad = this.cantidadDe(r.id);
                 const subtotal = r.sinPrecio ? 0 : r.precio * cantidad;
                 return { ...r, cantidad, subtotal,
-                    precioFmt: r.sinPrecio ? '—' : crc(r.precio),
-                    subtotalFmt: r.sinPrecio ? 'Pendiente SAP' : crc(subtotal) };
+                    precioFmt: r.sinPrecio ? '—' : this.m(r.precio),
+                    subtotalFmt: r.sinPrecio ? 'Pendiente SAP' : this.m(subtotal) };
             });
     }
     get repuestosTotal() {
         return this.repuestosSeleccionados.reduce((sum, r) => sum + r.subtotal, 0);
     }
-    get repuestosTotalFmt() { return crc(this.repuestosTotal); }
+    get repuestosTotalFmt() { return this.m(this.repuestosTotal); }
     get tieneRepuestoSinPrecio() {
         return this.repuestosSeleccionados.some(r => r.sinPrecio);
     }
@@ -460,7 +483,7 @@ export default class VentaGuiadaModal extends LightningModal {
         const sel = this.accesoriosSel[v.id] || {};
         const cats = [];
         this.accesoriosDeVehiculo(v.id).forEach(a => {
-            const item = { ...a, precioFmt: crc(a.precio), sel: !!sel[a.id],
+            const item = { ...a, precioFmt: this.m(a.precio), sel: !!sel[a.id],
                 rowClass: sel[a.id] ? 'line-row acc-row acc-row-sel' : 'line-row acc-row' };
             let cat = cats.find(c => c.nombre === a.categoria);
             if (!cat) {
@@ -473,7 +496,7 @@ export default class VentaGuiadaModal extends LightningModal {
             ...v,
             titulo: `Catálogo compatible con ${v.modelo}`,
             categorias: cats,
-            totalFmt: crc(this.totalAccesoriosDe(v.id))
+            totalFmt: this.m(this.totalAccesoriosDe(v.id))
         };
     }
     /** Panel derecho del prototipo: resumen de los vehiculos seleccionados. */
@@ -495,7 +518,7 @@ export default class VentaGuiadaModal extends LightningModal {
             return {
                 id: v.id,
                 titulo: `${v.anio} - ${v.modelo}`,
-                precio: v.precio,
+                precio: this.m(v.precioNum),
                 stock: this.esUsado ? v.ubicacion : String(stock).padStart(2, '0'),
                 stockLabel: this.esUsado ? 'Ubicación' : 'Stock',
                 color: v.color || '-',
@@ -503,7 +526,7 @@ export default class VentaGuiadaModal extends LightningModal {
                 activo,
                 badgeClass: 'veh-badge badge-' + estado,
                 cardClass: 'veh-card veh-card-' + estado + (activo ? ' veh-card-activa' : ''),
-                accesoriosFmt: crc(this.totalAccesoriosDe(v.id))
+                accesoriosFmt: this.m(this.totalAccesoriosDe(v.id))
             };
         });
     }
@@ -516,7 +539,7 @@ export default class VentaGuiadaModal extends LightningModal {
     get accesoriosTotal() {
         return this.selectedVehicles.reduce((sum, v) => sum + this.totalAccesoriosDe(v.id), 0);
     }
-    get accesoriosTotalFmt() { return crc(this.accesoriosTotal); }
+    get accesoriosTotalFmt() { return this.m(this.accesoriosTotal); }
     get tieneAccesorios() { return this.accesoriosTotal > 0; }
     handleToggleAccesorio(event) {
         const vehicleId = event.currentTarget.dataset.vehicle;
@@ -533,17 +556,18 @@ export default class VentaGuiadaModal extends LightningModal {
                 concepto: `${r.nombre} (${r.codigo}) × ${r.cantidad} — precio en línea SAP`,
                 valor: r.subtotalFmt
             }));
-            rows.push({ id: 'imp', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valor: crc(this.repuestosTotal * 0.13) });
+            rows.push({ id: 'imp', concepto: 'Impuesto de referencia 13% (Decision Matrix BRE)', valor: this.m(this.repuestosTotal * 0.13) });
             return rows;
         }
         const rows = this.selectedVehicles.map(v => ({
             id: 'veh-' + v.id,
             concepto: this.esUsado
                 ? `Precio publicado — ${v.modelo} (gestión propia)`
-                : `Precio de lista — ${v.modelo} (PricebookEntry, sociedad C101)`,
-            valor: v.precio
+                : `Precio de lista — ${v.modelo} (PricebookEntry ${this.monedaIso}, sociedad C101)`,
+            valor: this.m(v.precioNum)
         }));
-        rows.push(...(this.esUsado ? this.gastosExtrasUsado : this.gastosExtrasNuevo));
+        rows.push(...(this.esUsado ? this.gastosExtrasUsado : this.gastosExtrasNuevo)
+            .map(g => ({ id: g.id, concepto: g.concepto, valor: this.m(g.valorNum) })));
         if (this.tieneAccesorios) {
             rows.push({
                 id: 'acc',
@@ -562,15 +586,15 @@ export default class VentaGuiadaModal extends LightningModal {
         const vehiculos = this.selectedVehicles.reduce((sum, v) => sum + (v.precioNum || 0), 0);
         return vehiculos + this.accesoriosTotal;
     }
-    get totalReferenciaFmt() { return crc(this.baseTotal); }
-    get maxDescuentoDirectoFmt() { return crc(MAX_DESCUENTO_DIRECTO); }
+    get totalReferenciaFmt() { return this.m(this.baseTotal); }
+    get maxDescuentoDirectoFmt() { return this.m(MAX_DESCUENTO_DIRECTO); }
     get descuentoNum() { return Number(this.descuento) || 0; }
     get totalConDescuento() { return this.baseTotal - this.descuentoNum; }
-    get totalConDescuentoFmt() { return crc(this.totalConDescuento); }
+    get totalConDescuentoFmt() { return this.m(this.totalConDescuento); }
     get descuentoRequiereAprobacion() { return this.descuentoNum > MAX_DESCUENTO_DIRECTO; }
     get descuentoDentroDelMargen() { return this.descuentoNum > 0 && !this.descuentoRequiereAprobacion; }
     get descuentoPendiente() { return this.descuentoRequiereAprobacion && !this.descuentoAprobado; }
-    get excesoSobreMinimoFmt() { return crc(this.descuentoNum - MAX_DESCUENTO_DIRECTO); }
+    get excesoSobreMinimoFmt() { return this.m(this.descuentoNum - MAX_DESCUENTO_DIRECTO); }
     get leyendaMinimo() {
         if (this.esRepuestos) {
             return 'Repuestos: margen por canal/categoría definido por el negocio (Decision Matrix); el precio base es el de la consulta en línea a SAP y no se persiste.';
@@ -589,8 +613,8 @@ export default class VentaGuiadaModal extends LightningModal {
         const result = await AprobacionDescuentoModal.open({
             size: 'small',
             label: 'Aprobación de descuento',
-            descuentoFmt: crc(this.descuentoNum),
-            maxDirectoFmt: crc(MAX_DESCUENTO_DIRECTO),
+            descuentoFmt: this.m(this.descuentoNum),
+            maxDirectoFmt: this.m(MAX_DESCUENTO_DIRECTO),
             excesoFmt: this.excesoSobreMinimoFmt
         });
         if (result === 'enviar') {
@@ -626,9 +650,9 @@ export default class VentaGuiadaModal extends LightningModal {
             ? Math.round(this.totalConDescuento * 0.3)
             : Number(this.prima);
     }
-    get primaFmt() { return crc(this.primaValue); }
+    get primaFmt() { return this.m(this.primaValue); }
     get montoFinanciado() { return Math.max(this.totalConDescuento - this.primaValue, 0); }
-    get montoFinanciadoFmt() { return crc(this.montoFinanciado); }
+    get montoFinanciadoFmt() { return this.m(this.montoFinanciado); }
     get cuotaMensual() {
         const monto = this.montoFinanciado;
         if (monto <= 0) return 0;
@@ -636,7 +660,7 @@ export default class VentaGuiadaModal extends LightningModal {
         const n = parseInt(this.plazo, 10);
         return Math.round((monto * i) / (1 - Math.pow(1 + i, -n)));
     }
-    get cuotaMensualFmt() { return crc(this.cuotaMensual); }
+    get cuotaMensualFmt() { return this.m(this.cuotaMensual); }
 
     handleFormaPagoChange(event) { this.formaPago = event.detail.value; }
     handlePrimaChange(event) { this.prima = event.detail.value; }
@@ -705,7 +729,7 @@ export default class VentaGuiadaModal extends LightningModal {
             }
             rows.push({ id: 'q3', etiqueta: 'Total de referencia (con impuesto)', valor: this.totalReferenciaFmt });
             if (this.descuentoNum > 0) {
-                rows.push({ id: 'q4', etiqueta: 'Descuento comercial', valor: '- ' + crc(this.descuentoNum) });
+                rows.push({ id: 'q4', etiqueta: 'Descuento comercial', valor: '- ' + this.m(this.descuentoNum) });
                 rows.push({ id: 'q5', etiqueta: 'Total con descuento', valor: this.totalConDescuentoFmt });
             }
             if (this.formaPago) {
@@ -724,13 +748,13 @@ export default class VentaGuiadaModal extends LightningModal {
                     : `${v.modelo} — ${v.anio} — ${v.color}`
             });
             this.accesoriosSeleccionadosDe(v.id).forEach((a, j) => {
-                rows.push({ id: `acc${i}-${j}`, etiqueta: '· Accesorio: ' + a.nombre, valor: crc(a.precio) });
+                rows.push({ id: `acc${i}-${j}`, etiqueta: '· Accesorio: ' + a.nombre, valor: this.m(a.precio) });
             });
         });
         rows.push({ id: 'q3', etiqueta: 'Total de referencia', valor: this.totalReferenciaFmt });
         if (this.descuentoNum > 0) {
             const sufijo = this.descuentoRequiereAprobacion ? ' (aprobado por Gerente — simulado)' : ' (dentro del margen)';
-            rows.push({ id: 'q4', etiqueta: 'Descuento comercial', valor: '- ' + crc(this.descuentoNum) + sufijo });
+            rows.push({ id: 'q4', etiqueta: 'Descuento comercial', valor: '- ' + this.m(this.descuentoNum) + sufijo });
             rows.push({ id: 'q5', etiqueta: 'Total con descuento', valor: this.totalConDescuentoFmt });
         }
         if (this.isFinanciado) {
