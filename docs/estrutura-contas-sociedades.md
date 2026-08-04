@@ -22,10 +22,15 @@ Cada dealer tem um registro de **BusinessProfile** com `BusinessPartnerType = Sa
     Terrazas Lindora, Vehiculos La Uruca, Ventas Guapiles
   - N105: Active Motors Managua
 
-Anomalia detectada: "GrupoQ La Uruca Repuestos" está no nível 5 (pai = dealer
-GrupoQ La Uruca), enquanto Uruca Usados/Flotas estão no nível 4 (pai = C101).
-Levantado com o chefe de Diego em 04/08 — aguardando definição (departamento do
-dealer ou reparent para C101).
+Anomalia corrigida em 04/08/2026 (Apex anônimo, log 07LWK00000QO2rK2AT):
+- "GrupoQ La Uruca Repuestos" reparenteada do dealer GrupoQ La Uruca para a
+  sociedade C101 — padronizada no nível 4 com Uruca Usados/Flotas.
+- Country__c (obrigatório universal, estava vazio em TODA a estrutura GrupoQ)
+  preenchido em 27 contas: ramo Costa Rica = CR, ramo Nicaragua = NI, padrão
+  ISO-2 já usado na org (CR 1276 registros, SV 1, NI 1).
+- Pendente: Country__c da GrupoQ Holding (provável SV, aguardando confirmação).
+- Alerta dado ao time de integração: antes da correção, qualquer update nessas
+  contas falhava com REQUIRED_FIELD_MISSING [Country__c].
 
 ## Níveis identificados pelo nome
 
