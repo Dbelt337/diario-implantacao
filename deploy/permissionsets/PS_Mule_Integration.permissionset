@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Grants access to the MuleSoft integration used by the guided selling flow (parts catalog search and SAP price/stock lookup). Dependencies: external credential MuleSoft_EC (grant principal access in this permission set via Setup), named credential MuleGateway.</description>
+    <description>Grants guided selling users access to the MuleSoft integration (parts catalog search and SAP price and stock lookup). Dependencies: MuleSoft_EC external credential, MuleGateway named credential.</description>
     <classAccesses>
         <apexClass>GuidedSellingController</apexClass>
         <enabled>true</enabled>
