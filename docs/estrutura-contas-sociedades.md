@@ -75,3 +75,16 @@ Anomalia corrigida em 04/08/2026 (Apex anônimo, log 07LWK00000QO2rK2AT):
   04/08, aguardando resultado).
 - Confirmar API names exatos do BusinessProfile usado (objeto e campo
   BusinessPartnerType) para referência em automações e relatórios.
+
+## Escopo venta guiada por record type (decisao Diego, 04/08/2026)
+
+Record types reais (query 04/08): Lead GQLeads{Autos,Motos,Flotas,Usados,RepuestosPA};
+Opportunity GQOpportunities{Autos,Motos,Flotas,Mayorista,Usados,RepuestosPA}.
+
+- R1: Autos e Motos (nuevo), Usados (usado), Repuestos & P/A (repuestos).
+- FLOTAS: adiado para Release 2 — fica comentado no roteador do ventaGuiadaModal.
+- MAYORISTA: experiencia a definir com negocio (sem mapeamento ate decisao).
+- Tipos nao mapeados abrem o modal com mensagem "disponible en una proxima version"
+  (nunca cair silenciosamente na experiencia de nuevo).
+- Roteador migra de contains no label para mapa por DeveloperName (deterministico,
+  imune a traducao de labels).
