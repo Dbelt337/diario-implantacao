@@ -3,11 +3,20 @@
     <validationRules>
         <fullName>Currency_Matches_Country</fullName>
         <active>true</active>
-        <description>Blocks a currency that is not allowed for the opportunity country (map maintained in CountryCurrency__mdt, agreement Sales+Financial 04/08/2026). Runs on UI, API and integration loads. Skips records without a country so legacy data does not break. ADJUST BEFORE DEPLOY: replace Sociedad__c with the real country field API name on Opportunity.</description>
+        <description>Blocks a currency that is not allowed for the opportunity country (Pais__c formula, 2-letter codes; map maintained in CountryCurrency__mdt, agreement Sales+Financial 04/08/2026). Runs on UI, API and integration loads. Skips blank, NA and unmapped countries so legacy/test data does not break.</description>
         <errorConditionFormula>AND(
-    NOT(ISBLANK(TEXT(Sociedad__c))),
+    NOT(ISBLANK(Pais__c)),
+    Pais__c &lt;&gt; 'NA',
+    CASE(Pais__c,
+        'CR', $CustomMetadata.CountryCurrency__mdt.CR.AllowedCurrencies__c,
+        'GT', $CustomMetadata.CountryCurrency__mdt.GT.AllowedCurrencies__c,
+        'SV', $CustomMetadata.CountryCurrency__mdt.SV.AllowedCurrencies__c,
+        'HN', $CustomMetadata.CountryCurrency__mdt.HN.AllowedCurrencies__c,
+        'NI', $CustomMetadata.CountryCurrency__mdt.NI.AllowedCurrencies__c,
+        'PA', $CustomMetadata.CountryCurrency__mdt.PA.AllowedCurrencies__c,
+        '') &lt;&gt; '',
     NOT(CONTAINS(
-        CASE(TEXT(Sociedad__c),
+        CASE(Pais__c,
             'CR', $CustomMetadata.CountryCurrency__mdt.CR.AllowedCurrencies__c,
             'GT', $CustomMetadata.CountryCurrency__mdt.GT.AllowedCurrencies__c,
             'SV', $CustomMetadata.CountryCurrency__mdt.SV.AllowedCurrencies__c,
