@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>RequestedParts__c</fullName>
+        <label>Repuestos a cotizar</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+        <inlineHelpText>Texto enviado por el cliente indicando los repuestos o productos que desea cotizar.</inlineHelpText>
+        <description>Business purpose: free text sent by the customer describing the parts or products to quote (Repuestos a cotizar), required by the parts web forms (US-001 follow-up BUG). When used: filled on lead creation by web-to-lead parts forms; shown to advisors on the lead layout. Dependencies: lead convert field mapping (LeadConvertSettings) copies it to Opportunity.RequestedParts__c on conversion. Country considerations: label and help text in Spanish for all countries.</description>
+    </fields>
+</CustomObject>

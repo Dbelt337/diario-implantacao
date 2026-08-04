@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>RequestedParts__c</fullName>
+        <label>Repuestos a cotizar</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>5</visibleLines>
+        <inlineHelpText>Repuestos o productos que el cliente solicitó cotizar, recibidos del lead en la conversión.</inlineHelpText>
+        <description>Business purpose: parts or products the customer asked to quote, received from the lead on conversion (Repuestos a cotizar, US-001 follow-up BUG). When used: reference for advisors and for the Repuestos guided selling flow when building the quote. Dependencies: populated by the lead convert field mapping (LeadConvertSettings) from Lead.RequestedParts__c. Country considerations: label and help text in Spanish for all countries.</description>
+    </fields>
     <validationRules>
         <fullName>Currency_Matches_Country</fullName>
         <active>true</active>
