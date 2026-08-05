@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1260" viewBox="0 0 960 1260" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5c6b7a"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="1260" fill="#ffffff"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#16325c">HU-039 · Solicitud de Creación de Material — Flujo propuesto (Salesforce ↔ MuleSoft ↔ SAP)</text>
+
+  <!-- lanes -->
+  <rect x="16"  y="56" width="448" height="1134" fill="#eef6fe" rx="10"/>
+  <rect x="472" y="56" width="160" height="1134" fill="#f4effc" rx="10"/>
+  <rect x="640" y="56" width="304" height="1134" fill="#fdf4e7" rx="10"/>
+  <rect x="16"  y="56" width="448" height="28" fill="#0176d3" rx="10"/>
+  <rect x="472" y="56" width="160" height="28" fill="#7526e3" rx="10"/>
+  <rect x="640" y="56" width="304" height="28" fill="#b7791f" rx="10"/>
+  <text x="240" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">SALESFORCE</text>
+  <text x="552" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">MULESOFT</text>
+  <text x="792" y="75" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">SAP (Grupo Q)</text>
+
+  <!-- TIEMPO 1 -->
+  <text x="28" y="108" font-size="12" font-weight="700" fill="#5c6b7a" letter-spacing="1">TIEMPO 1 · DURANTE LA VENTA (AUTOMÁTICO, EN SEGUNDOS)</text>
+
+  <!-- S1 busqueda -->
+  <rect x="60" y="118" width="220" height="46" rx="8" fill="#fff" stroke="#0176d3" stroke-width="1.5"/>
+  <text x="170" y="137" text-anchor="middle" font-size="12" fill="#16325c">El asesor busca el material</text>
+  <text x="170" y="153" text-anchor="middle" font-size="12" fill="#16325c">y no está en el catálogo</text>
+  <line x1="170" y1="164" x2="170" y2="190" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- D1 desea crearlo -->
+  <polygon points="170,192 270,226 170,260 70,226" fill="#fff8e1" stroke="#d4a72c" stroke-width="1.5"/>
+  <text x="170" y="222" text-anchor="middle" font-size="12" fill="#5f4b0a">¿Desea crear</text>
+  <text x="170" y="237" text-anchor="middle" font-size="12" fill="#5f4b0a">el código?</text>
+  <line x1="270" y1="226" x2="298" y2="226" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="284" y="218" text-anchor="middle" font-size="11" fill="#5c6b7a">No</text>
+  <rect x="300" y="203" width="150" height="46" rx="8" fill="#f0faf3" stroke="#2e844a" stroke-width="1.5"/>
+  <text x="375" y="222" text-anchor="middle" font-size="12" fill="#1e4620">Continúa la venta</text>
+  <text x="375" y="238" text-anchor="middle" font-size="12" fill="#1e4620">sin solicitud</text>
+  <line x1="170" y1="260" x2="170" y2="290" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="182" y="280" font-size="11" fill="#5c6b7a">Sí</text>
+
+  <!-- C1 consulta -->
+  <rect x="60" y="292" width="220" height="46" rx="8" fill="#fff" stroke="#0176d3" stroke-width="1.5"/>
+  <text x="170" y="311" text-anchor="middle" font-size="12" fill="#16325c">Consulta síncrona del material</text>
+  <text x="170" y="327" text-anchor="middle" font-size="12" fill="#16325c">(sociedad / centro)</text>
+  <rect x="492" y="298" width="120" height="34" rx="17" fill="#fff" stroke="#7526e3" stroke-width="1.5"/>
+  <text x="552" y="319" text-anchor="middle" font-size="12" fill="#3d1a78">API síncrona</text>
+  <line x1="280" y1="315" x2="490" y2="315" stroke="#5c6b7a" stroke-width="1.5" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <line x1="612" y1="315" x2="658" y2="315" stroke="#5c6b7a" stroke-width="1.5" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <rect x="660" y="292" width="264" height="46" rx="8" fill="#fff" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="792" y="311" text-anchor="middle" font-size="12" fill="#5f430a">Verifica Maestro de Materiales</text>
+  <text x="792" y="327" text-anchor="middle" font-size="12" fill="#5f430a">y Maestro de Fábrica</text>
+  <line x1="170" y1="338" x2="170" y2="364" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- D2 existe sociedad/centro -->
+  <polygon points="170,366 280,400 170,434 60,400" fill="#fff8e1" stroke="#d4a72c" stroke-width="1.5"/>
+  <text x="170" y="396" text-anchor="middle" font-size="12" fill="#5f4b0a">¿Existe para la</text>
+  <text x="170" y="411" text-anchor="middle" font-size="12" fill="#5f4b0a">sociedad/centro?</text>
+  <line x1="280" y1="400" x2="298" y2="400" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="289" y="392" text-anchor="middle" font-size="11" fill="#5c6b7a">Sí</text>
+  <rect x="300" y="377" width="150" height="46" rx="8" fill="#f0faf3" stroke="#2e844a" stroke-width="1.5"/>
+  <text x="375" y="396" text-anchor="middle" font-size="12" fill="#1e4620">Upsert del catálogo</text>
+  <text x="375" y="412" text-anchor="middle" font-size="12" fill="#1e4620">La venta continúa</text>
+  <line x1="170" y1="434" x2="170" y2="460" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="182" y="452" font-size="11" fill="#5c6b7a">No</text>
+
+  <!-- D3 existe otro centro -->
+  <polygon points="170,462 280,496 170,530 60,496" fill="#fff8e1" stroke="#d4a72c" stroke-width="1.5"/>
+  <text x="170" y="492" text-anchor="middle" font-size="12" fill="#5f4b0a">¿Existe en</text>
+  <text x="170" y="507" text-anchor="middle" font-size="12" fill="#5f4b0a">otro centro?</text>
+  <line x1="280" y1="496" x2="298" y2="496" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="289" y="488" text-anchor="middle" font-size="11" fill="#5c6b7a">Sí</text>
+  <rect x="300" y="468" width="150" height="58" rx="8" fill="#f0faf3" stroke="#2e844a" stroke-width="1.5"/>
+  <text x="375" y="486" text-anchor="middle" font-size="12" fill="#1e4620">Extensión automática</text>
+  <text x="375" y="501" text-anchor="middle" font-size="11" fill="#1e4620">(PA: traslado a nivel</text>
+  <text x="375" y="515" text-anchor="middle" font-size="11" fill="#1e4620">de pedido)</text>
+  <line x1="170" y1="530" x2="170" y2="556" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="182" y="548" font-size="11" fill="#5c6b7a">No</text>
+
+  <!-- D4 tabla Z -->
+  <polygon points="170,558 280,592 170,626 60,592" fill="#fff8e1" stroke="#d4a72c" stroke-width="1.5"/>
+  <text x="170" y="588" text-anchor="middle" font-size="12" fill="#5f4b0a">¿Está en la tabla Z</text>
+  <text x="170" y="603" text-anchor="middle" font-size="12" fill="#5f4b0a">de fabricantes?</text>
+  <line x1="280" y1="592" x2="658" y2="592" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="330" y="584" text-anchor="middle" font-size="11" fill="#5c6b7a">Sí</text>
+  <text x="470" y="584" text-anchor="middle" font-size="10" fill="#7526e3">RFC vía MuleSoft (a validar)</text>
+  <rect x="660" y="566" width="264" height="52" rx="8" fill="#fff" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="792" y="585" text-anchor="middle" font-size="10.5" font-family="Consolas, monospace" fill="#5f430a">ZHYB_OBM_PRECIO_VTA_NO_MAESTRO</text>
+  <text x="792" y="602" text-anchor="middle" font-size="12" fill="#5f430a">crea el material + precio estimado</text>
+  <polyline points="792,618 792,653 452,653" fill="none" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="300" y="630" width="150" height="46" rx="8" fill="#f0faf3" stroke="#2e844a" stroke-width="1.5"/>
+  <text x="375" y="649" text-anchor="middle" font-size="12" fill="#1e4620">Material creado</text>
+  <text x="375" y="665" text-anchor="middle" font-size="12" fill="#1e4620">La venta continúa</text>
+  <line x1="170" y1="626" x2="170" y2="652" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="182" y="644" font-size="11" fill="#5c6b7a">No</text>
+
+  <!-- S2 solicitud -->
+  <rect x="48" y="654" width="244" height="84" rx="8" fill="#fff" stroke="#0176d3" stroke-width="2.5"/>
+  <text x="170" y="673" text-anchor="middle" font-size="12.5" font-weight="700" fill="#16325c">Se crea la SOLICITUD</text>
+  <text x="170" y="690" text-anchor="middle" font-size="11" fill="#16325c">Product2 · RT Solicitud (Original / Comodín)</text>
+  <text x="170" y="705" text-anchor="middle" font-size="11" fill="#16325c">IsActive = false · Estado: Pendiente</text>
+  <text x="170" y="722" text-anchor="middle" font-size="11" fill="#16325c">La venta continúa sin el ítem</text>
+
+  <!-- separador tiempo 2 -->
+  <line x1="24" y1="756" x2="936" y2="756" stroke="#8aa0b5" stroke-width="1" stroke-dasharray="6 4"/>
+  <text x="28" y="778" font-size="12" font-weight="700" fill="#5c6b7a" letter-spacing="1">TIEMPO 2 · GESTIÓN POSTERIOR</text>
+
+  <line x1="170" y1="738" x2="170" y2="792" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- S3 platform event -->
+  <rect x="60" y="794" width="220" height="46" rx="8" fill="#fff" stroke="#0176d3" stroke-width="1.5"/>
+  <text x="170" y="813" text-anchor="middle" font-size="12" fill="#16325c">Platform Event</text>
+  <text x="170" y="829" text-anchor="middle" font-size="12" fill="#16325c">al crearse la solicitud</text>
+  <rect x="492" y="800" width="120" height="34" rx="17" fill="#fff" stroke="#7526e3" stroke-width="1.5"/>
+  <text x="552" y="821" text-anchor="middle" font-size="12" fill="#3d1a78">Notificación</text>
+  <line x1="280" y1="817" x2="490" y2="817" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="612" y1="817" x2="658" y2="817" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- P2 worklist -->
+  <rect x="660" y="790" width="264" height="58" rx="8" fill="#fff" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="792" y="808" text-anchor="middle" font-size="12" fill="#5f430a">La solicitud llega a la worklist SAP</text>
+  <text x="792" y="823" text-anchor="middle" font-size="11" fill="#5f430a">(tabla Z · workflow · MDG)</text>
+  <text x="792" y="838" text-anchor="middle" font-size="11" font-style="italic" fill="#a05c10">mecanismo a validar con IT GQ</text>
+  <line x1="792" y1="848" x2="792" y2="874" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- P3 analista -->
+  <rect x="660" y="876" width="264" height="64" rx="8" fill="#fff" stroke="#b7791f" stroke-width="1.5"/>
+  <text x="792" y="895" text-anchor="middle" font-size="12" fill="#5f430a">Gestión de Inventarios valida y:</text>
+  <text x="792" y="912" text-anchor="middle" font-size="12" fill="#1e4620">✓ crea el código en el Maestro</text>
+  <text x="792" y="929" text-anchor="middle" font-size="12" fill="#8e1b13">✗ o rechaza (con motivo)</text>
+
+  <!-- PA nota -->
+  <rect x="48" y="876" width="244" height="64" rx="8" fill="#fff" stroke="#0176d3" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="170" y="895" text-anchor="middle" font-size="11.5" font-weight="700" fill="#16325c">PA: aprobación previa en Salesforce</text>
+  <text x="170" y="911" text-anchor="middle" font-size="11.5" fill="#16325c">Catman → Director → Vicepresidente;</text>
+  <text x="170" y="927" text-anchor="middle" font-size="11.5" fill="#16325c">Inventarios carga tras el visto bueno</text>
+  <line x1="292" y1="908" x2="658" y2="908" stroke="#8aa0b5" stroke-width="1.2" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+
+  <!-- callback -->
+  <polyline points="792,940 792,984 626,984" fill="none" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="480" y="960" width="144" height="48" rx="8" fill="#fff" stroke="#7526e3" stroke-width="1.5"/>
+  <text x="552" y="979" text-anchor="middle" font-size="12" fill="#3d1a78">Callback con tipo de</text>
+  <text x="552" y="995" text-anchor="middle" font-size="12" fill="#3d1a78">evento (External ID)</text>
+  <line x1="480" y1="984" x2="276" y2="984" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- D5 tipo evento -->
+  <polygon points="170,952 272,984 170,1016 68,984" fill="#fff8e1" stroke="#d4a72c" stroke-width="1.5"/>
+  <text x="170" y="980" text-anchor="middle" font-size="12" fill="#5f4b0a">¿Tipo de</text>
+  <text x="170" y="995" text-anchor="middle" font-size="12" fill="#5f4b0a">evento?</text>
+  <line x1="170" y1="1016" x2="126" y2="1042" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="120" y="1032" text-anchor="middle" font-size="11" fill="#2e844a">creado</text>
+  <line x1="170" y1="1016" x2="340" y2="1042" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="300" y="1032" text-anchor="middle" font-size="11" fill="#8e1b13">rechazado</text>
+
+  <!-- outcomes -->
+  <rect x="36" y="1044" width="180" height="64" rx="8" fill="#f0faf3" stroke="#2e844a" stroke-width="2"/>
+  <text x="126" y="1063" text-anchor="middle" font-size="12" font-weight="700" fill="#1e4620">MATERIAL CREADO</text>
+  <text x="126" y="1079" text-anchor="middle" font-size="11" fill="#1e4620">MATNR → ProductCode</text>
+  <text x="126" y="1094" text-anchor="middle" font-size="11" fill="#1e4620">IsActive = true · registro activo</text>
+  <rect x="250" y="1044" width="180" height="64" rx="8" fill="#fdf0ef" stroke="#c23934" stroke-width="2"/>
+  <text x="340" y="1063" text-anchor="middle" font-size="12" font-weight="700" fill="#8e1b13">RECHAZADO</text>
+  <text x="340" y="1079" text-anchor="middle" font-size="11" fill="#8e1b13">solicitud cerrada + motivo</text>
+  <text x="340" y="1094" text-anchor="middle" font-size="11" fill="#8e1b13">(IsActive = false)</text>
+
+  <line x1="126" y1="1108" x2="126" y2="1136" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="340" y1="1108" x2="340" y2="1136" stroke="#5c6b7a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="90" y="1138" width="290" height="42" rx="8" fill="#fff" stroke="#0176d3" stroke-width="1.5"/>
+  <text x="235" y="1164" text-anchor="middle" font-size="12" fill="#16325c">Notificación al asesor y seguidores (Follow)</text>
+
+  <!-- footer -->
+  <text x="480" y="1216" text-anchor="middle" font-size="11.5" fill="#5c6b7a">Estados: Pendiente → Material Creado / Rechazado (se elimina «En revisión») · Sin objetos custom · Sin licencias nuevas · Sin e-mail</text>
+  <text x="480" y="1236" text-anchor="middle" font-size="11.5" fill="#5c6b7a">Errores: reintento automático → escalamiento (mecanismo y SLA a definir con Grupo Q) · Duplicados validados por Flow (código + sociedad + centro)</text>
+</svg>
