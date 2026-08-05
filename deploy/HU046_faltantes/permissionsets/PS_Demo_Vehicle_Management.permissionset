@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>PS Demo Vehicle Management</label>
+    <description>HU-046 persona: Gerente de sucursal, Gerente de marca, Director y VP. Gate RequestDemoVehicle + ejecucion del flow Manage Demo Vehicle (solicitar designacion Demo/Exhibicion, asignar/reasignar asesor, solicitar liberacion, cancelar). Patron funcional igual a PS Branch Reception (HU-009). La visibilidad de la pantalla se controla por component visibility con el custom permission.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>RequestDemoVehicle</name>
+    </customPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>SerializedProduct</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Vehicle</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+</PermissionSet>

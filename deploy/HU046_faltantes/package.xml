@@ -183,5 +183,10 @@
         <members>ValidateDemoQuota</members>
         <name>Flow</name>
     </types>
+    <types>
+        <members>PS_Demo_Vehicle_Execution</members>
+        <members>PS_Demo_Vehicle_Management</members>
+        <name>PermissionSet</name>
+    </types>
     <version>62.0</version>
 </Package>
