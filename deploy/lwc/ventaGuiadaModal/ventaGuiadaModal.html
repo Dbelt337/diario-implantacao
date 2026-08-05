@@ -54,8 +54,8 @@
                     </template>
                     <template lwc:else>
                     <h3 class="slds-text-heading_small slds-m-bottom_medium slds-text-align_center">¿Qué vas a vender?</h3>
-                    <lightning-layout horizontal-align="center">
-                        <lightning-layout-item size="4" padding="around-small">
+                    <lightning-layout multiple-rows horizontal-align="center">
+                        <lightning-layout-item size="12" medium-device-size="4" padding="around-small">
                             <div class={tipoNuevoClass} onclick={handleTipoNuevo}>
                                 <h3 class="slds-text-heading_medium">Vehículo nuevo</h3>
                                 <p class="slds-text-body_small slds-m-top_small">
@@ -63,7 +63,7 @@
                                 </p>
                             </div>
                         </lightning-layout-item>
-                        <lightning-layout-item size="4" padding="around-small">
+                        <lightning-layout-item size="12" medium-device-size="4" padding="around-small">
                             <div class={tipoUsadoClass} onclick={handleTipoUsado}>
                                 <h3 class="slds-text-heading_medium">Vehículo usado</h3>
                                 <p class="slds-text-body_small slds-m-top_small">
@@ -71,7 +71,7 @@
                                 </p>
                             </div>
                         </lightning-layout-item>
-                        <lightning-layout-item size="4" padding="around-small">
+                        <lightning-layout-item size="12" medium-device-size="4" padding="around-small">
                             <div class={tipoRepuestosClass} onclick={handleTipoRepuestos}>
                                 <h3 class="slds-text-heading_medium">Repuestos y PA</h3>
                                 <p class="slds-text-body_small slds-m-top_small">
@@ -89,10 +89,11 @@
                 <template lwc:if={isStepSeleccion}>
                     <template lwc:if={esRepuestos}>
                         <lightning-layout multiple-rows>
-                            <lightning-layout-item size="8" padding="around-small">
+                            <lightning-layout-item size="12" medium-device-size="8" padding="around-small">
                                 <lightning-input type="search" label="Buscar repuesto (código, descripción, marca)"
                                     placeholder="Ej.: pastillas de freno, 04465" value={searchTerm}
                                     onchange={handleSearchChange} class="slds-m-bottom_small"></lightning-input>
+                                <div class="table-scroll">
                                 <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                                     <thead>
                                         <tr class="slds-line-height_reset">
@@ -115,11 +116,12 @@
                                         </template>
                                     </tbody>
                                 </table>
+                                </div>
                                 <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
                                     Selecciona una o más filas (clic marca y desmarca). Real: búsqueda con precio consultado EN LÍNEA a SAP (Get_Price_ZGQREF) — sin precio persistido en Salesforce; combos = SKU propio en SAP. Material sin código: genera solicitud de creación (HU-039).
                                 </p>
                             </lightning-layout-item>
-                            <lightning-layout-item size="4" padding="around-small">
+                            <lightning-layout-item size="12" medium-device-size="4" padding="around-small">
                                 <div class="slds-box slds-box_small panel-vehiculos">
                                     <h3 class="slds-text-heading_small slds-m-bottom_small panel-titulo">Líneas seleccionadas</h3>
                                     <template for:each={repuestosSeleccionados} for:item="rep">
@@ -153,17 +155,17 @@
                         </lightning-layout>
                     </template>
                     <template lwc:else>
-                    <lightning-layout class="slds-m-bottom_small">
-                        <lightning-layout-item size="6" padding="horizontal-small">
+                    <lightning-layout multiple-rows class="slds-m-bottom_small">
+                        <lightning-layout-item size="12" medium-device-size="6" padding="horizontal-small">
                             <lightning-input type="search" label="Buscar vehículo (modelo, versión, color, VIN)"
                                 placeholder="Ej.: Tucson 2026" value={searchTerm}
                                 onchange={handleSearchChange}></lightning-input>
                         </lightning-layout-item>
-                        <lightning-layout-item size="3" padding="horizontal-small">
+                        <lightning-layout-item size="6" medium-device-size="3" padding="horizontal-small">
                             <lightning-combobox label="Marca" options={marcaOptions}
                                 value={filtroMarca} onchange={handleFiltroMarca}></lightning-combobox>
                         </lightning-layout-item>
-                        <lightning-layout-item size="3" padding="horizontal-small">
+                        <lightning-layout-item size="6" medium-device-size="3" padding="horizontal-small">
                             <lightning-combobox label="Año" options={anioOptions}
                                 value={filtroAnio} onchange={handleFiltroAnio}></lightning-combobox>
                         </lightning-layout-item>
@@ -171,6 +173,7 @@
                     </template>
                     <!--Change to LWC Datatable-->
                     <template lwc:if={esNuevo}>
+                        <div class="table-scroll">
                         <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                             <thead>
                                 <tr class="slds-line-height_reset">
@@ -215,8 +218,10 @@
                                 </template>
                             </tbody>
                         </table>
+                        </div>
                     </template>
                     <template lwc:if={esUsado}>
+                        <div class="table-scroll">
                         <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                             <thead>
                                 <tr class="slds-line-height_reset">
@@ -242,6 +247,7 @@
                                 </template>
                             </tbody>
                         </table>
+                        </div>
                     </template>
                     <template lwc:if={esVehiculo}>
                         <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak">
@@ -253,7 +259,7 @@
                 <template lwc:if={isStepAccesorios}>
                     <div class="step-anim">
                     <lightning-layout multiple-rows>
-                        <lightning-layout-item size="4" padding="around-small">
+                        <lightning-layout-item size="12" medium-device-size="4" padding="around-small">
                             <div class="slds-box slds-box_small panel-vehiculos">
                                 <h3 class="slds-text-heading_small slds-m-bottom_small panel-titulo">{tituloPanelVehiculos}</h3>
                                 <template for:each={vehiculosPanel} for:item="veh">
@@ -292,7 +298,7 @@
                                 </p>
                             </div>
                         </lightning-layout-item>
-                        <lightning-layout-item size="8" padding="around-small">
+                        <lightning-layout-item size="12" medium-device-size="8" padding="around-small">
                             <template lwc:if={vehiculoActivo}>
                                 <div class="slds-box slds-box_small catalogo-box">
                                     <h3 class="slds-text-heading_small slds-m-bottom_small">{vehiculoActivo.titulo}</h3>
@@ -322,7 +328,7 @@
 
                 <template lwc:if={isStepPrecio}>
                     <lightning-layout multiple-rows>
-                        <lightning-layout-item size="7" padding="around-small">
+                        <lightning-layout-item size="12" medium-device-size="7" padding="around-small">
                             <div class="slds-box slds-box_small">
                                 <h3 class="slds-text-heading_small slds-m-bottom_small">Composición del precio de referencia</h3>
                                 <template for:each={priceBreakdown} for:item="line">
@@ -337,7 +343,7 @@
                                 </div>
                             </div>
                         </lightning-layout-item>
-                        <lightning-layout-item size="5" padding="around-small">
+                        <lightning-layout-item size="12" medium-device-size="5" padding="around-small">
                             <template lwc:if={esRepuestos}>
                                 <div class="slds-box slds-box_small">
                                     <h3 class="slds-text-heading_small slds-m-bottom_small">Consulta de precio en línea (SAP vía MuleSoft)</h3>
@@ -397,7 +403,7 @@
 
                 <template lwc:if={isStepDescuento}>
                     <lightning-layout multiple-rows>
-                        <lightning-layout-item size="7" padding="around-small">
+                        <lightning-layout-item size="12" medium-device-size="7" padding="around-small">
                             <div class="slds-box slds-box_small">
                                 <h3 class="slds-text-heading_small slds-m-bottom_small">Descuento comercial</h3>
                                 <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">
@@ -428,7 +434,7 @@
                                 </div>
                             </div>
                         </lightning-layout-item>
-                        <lightning-layout-item size="5" padding="around-small">
+                        <lightning-layout-item size="12" medium-device-size="5" padding="around-small">
                             <div class="slds-box slds-box_small">
                                 <h3 class="slds-text-heading_small slds-m-bottom_small">Cómo funciona en real</h3>
                                 <p class="slds-text-body_small slds-p-vertical_xx-small">{leyendaMinimo}</p>
@@ -466,7 +472,7 @@
                     </template>
                     <template lwc:if={isFinanciado}>
                         <lightning-layout multiple-rows>
-                            <lightning-layout-item size="6" padding="around-small">
+                            <lightning-layout-item size="12" medium-device-size="6" padding="around-small">
                                 <div class="slds-box slds-box_small">
                                     <h3 class="slds-text-heading_small slds-m-bottom_small">Condiciones (simulación comercial)</h3>
                                     <lightning-input type="number" label="Prima (CRC) — sugerida 30%"
@@ -477,7 +483,7 @@
                                     <p class="slds-text-body_small">Tasa: <strong>{tasaReferenciaFmt}</strong></p>
                                 </div>
                             </lightning-layout-item>
-                            <lightning-layout-item size="6" padding="around-small">
+                            <lightning-layout-item size="12" medium-device-size="6" padding="around-small">
                                 <div class="slds-box slds-box_small">
                                     <h3 class="slds-text-heading_small slds-m-bottom_small">Cálculo estimado</h3>
                                     <div class="slds-grid slds-grid_align-spread slds-p-vertical_xx-small line-row">

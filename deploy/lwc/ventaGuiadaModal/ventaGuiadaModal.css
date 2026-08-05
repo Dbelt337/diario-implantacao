@@ -240,6 +240,32 @@ tbody tr:hover {
     min-height: 3.5rem;
 }
 
+/* ------- responsividad (mobile / pantallas angostas) -------
+   Los lightning-layout-item usan size=12 + medium-device-size=original:
+   telefono apila en una columna, tablet/desktop quedan identicos.
+   Las tablas anchas hacen scroll horizontal en vez de aplastarse. */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.table-scroll table {
+    min-width: 40rem;
+}
+@media (max-width: 47.9375em) {
+    .modal-body {
+        min-height: auto;
+    }
+    .brand-logo-img {
+        height: 2.25rem;
+    }
+    .vehiculo-chip {
+        max-width: 100%;
+    }
+    .catalogo-box {
+        min-height: auto;
+    }
+}
+
 /* Transicion de entrada: anima los contenedores al montar cada paso */
 .tipo-card,
 .modal-body table,
