@@ -53,14 +53,24 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 2. `00647-26175` — Rol Hyundai (KR/USD, segundo factor) → 133,11
 3. `000000000013540923` — Filtro Chevrolet (MX, **FOB em CRC**, testa conversão) → 152,13
 
-### Perguntas pendentes com o GrupoQ (POC)
+### Respostas da Isabella (thread Teams, 05/08 18h51) — mudam o modelo
 
+- A lista é **só um exemplo**: o mestre tem as sociedades **C101 e C105** → parâmetros (FN, marcas, origens) são **por sociedade**; Decision Tables ganham a chave `Sociedad`
+- **"O preço é apenas um, mas os custos variam de centro para centro"** → preço público por sociedade (não varia por centro); centro segmenta custo/disponibilidade — refinar leitura do contrato HU-028
+- **Taxa atualizada todos os dias** → confirma câmbio diário da HU; paridade tem que ser na mesma fecha
+- Zero duplicados: confirmado pelo cliente
+- **"Los orígenes varían por marca"** — ofereceram a **tabla Marca/Origen/Sociedad** → é a fonte da Decision Table de FN. ACEITAR
+- Notas (%FN) e marcas da lista: válidas para C101
+
+### Perguntas ainda pendentes com o GrupoQ (POC)
+
+- [ ] **Receber a tabla Marca/Origen/Sociedad** (oferecida pela Isabella)
 - [ ] **Fecha de precio** da lista (de quando é a tasa 452,51?)
 - [ ] **Grupo/jerarquía de fábrica** que determina o %MK (a lista traz MK por material; a RN-02 diz que vem do grupo — falta a coluna)
 - [ ] Confirmar que "Precio Calculado" (USD) = **ZPRT** devolvido pelo `Get_Price_ZGQREF`
-- [ ] Outlier `000000000023828034` (TRANSEJE CVT): MK 4,687% e **utilidade −12%** — intencional ou erro de cadastro?
-- [ ] Material `000000000086308322` (CONTROL AM/FM): FOB 0, sem moeda — lixo de dados? (bom caso de teste "sin precio" da RN-21)
-- [ ] FN do TH = 55,51 (igual JP): factor é por país de origem ou por marca/rota?
+- [ ] Outlier `000000000023828034` (TRANSEJE CVT): MK 4,687% e **utilidade −12%** — intencional ou erro de cadastro? (perguntado 05/08, sem resposta)
+- [ ] Material `000000000086308322` (CONTROL AM/FM): FOB 0, sem moeda — lixo de dados? (perguntado 05/08, sem resposta)
+- [ ] Parâmetros da **C105** (segunda sociedade) — fora da POC, dimensiona a escala
 
 > A lista original do GrupoQ **não está neste repo** (preços, custos reais e margens = dado sensível). Fonte: thread Teams "HU-028 Pricing REP Y PA", 05/08/2026. Re-análise: `poc-pricing/scripts/analisar_lista_grupoq.py`.
 
