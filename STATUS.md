@@ -62,15 +62,29 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - **"Los orígenes varían por marca"** — ofereceram a **tabla Marca/Origen/Sociedad** → é a fonte da Decision Table de FN. ACEITAR
 - Notas (%FN) e marcas da lista: válidas para C101
 
-### Perguntas ainda pendentes com o GrupoQ (POC)
+### Respostas finais da Isabella (thread 05/08 ~19h) — TODAS as perguntas respondidas
 
-- [ ] **Receber a tabla Marca/Origen/Sociedad** (oferecida pela Isabella)
-- [ ] **Fecha de precio** da lista (de quando é a tasa 452,51?)
-- [ ] **Grupo/jerarquía de fábrica** que determina o %MK (a lista traz MK por material; a RN-02 diz que vem do grupo — falta a coluna)
-- [ ] Confirmar que "Precio Calculado" (USD) = **ZPRT** devolvido pelo `Get_Price_ZGQREF`
-- [ ] Outlier `000000000023828034` (TRANSEJE CVT): MK 4,687% e **utilidade −12%** — intencional ou erro de cadastro? (perguntado 05/08, sem resposta)
-- [ ] Material `000000000086308322` (CONTROL AM/FM): FOB 0, sem moeda — lixo de dados? (perguntado 05/08, sem resposta)
-- [ ] Parâmetros da **C105** (segunda sociedade) — fora da POC, dimensiona a escala
+- ✅ **Q = ZPRT confirmado**: "o preço é aquele da coluna Q, que deve ser refletido e será enviado para a Salesforce"
+- ✅ **Mark-up é por MARCA + FAMÍLIA da peça** (ex.: Isuzu/Manutenção 122%, Isuzu/Freio 146%) — os 73 valores da lista são combinações marca×família. A coluna que falta na lista é a **família**
+- ✅ **Lista é ÚNICA e em USD**; converte-se à moeda local com o **fator de câmbio do dia** (atualizado diariamente) → conversão de saída no fim do waterfall; confirma RN-09
+- ✅ **CONTROL AM/FM (FOB 0)**: "cenário real, erro — criação incompleta; deve ser ESCALADO para ser criado corretamente" → valida o estado "sin precio" (RN-21) e o caminho de escalamiento; ótimo caso de teste real
+- ✅ **TRANSEJE (margem −12%)**: questão de decimais exibidos (MK real 4,687%) E **margens negativas são legítimas**: "temos apenas um preço, mas os custos variam de centro para centro" — mandou o print do código em todos os centros (preço único 4.702,77; custo real varia por centro: 4.228–5.808, algumas margens negativas)
+- 📏 **Escala revelada: o master de materiais da região tem ~150 MIL materiais** → dimensiona HU-030 (sync catálogo), reforça o "não replicar preço" e o argumento da chamada multi-material
+- ⏳ Isabella está montando a **tabla Marca/Origen/Sociedad** ("trabalho no quadro e passo")
+
+### Pendências restantes com o GrupoQ (POC)
+
+- [ ] Receber a **tabla Marca/Origen/Sociedad** (em produção pela Isabella)
+- [ ] **Família de cada um dos 3 materiais** da POC + tabela marca×família → %MK (a regra real do mark-up; para a POC dá para chavear MK por material, mas o modelo fiel é Sociedad+Marca+Família)
+- [ ] **Fecha exata** da lista (tasa 452,51 é de que dia?) — implícito que é "do dia", falta a data
+- [ ] Parâmetros da **C105** — fora da POC, dimensiona a escala
+
+### Implicações no desenho (registradas 05/08)
+
+- Decision Matrix `POC_MK` idealmente chaveada por **Sociedad + Marca + Família** (regra real); fallback POC: por material
+- Waterfall ganha etapa final opcional: **conversão USD → moeda local pelo câmbio do dia** (a lista é única em USD)
+- Margem negativa por centro é cenário legítimo → relevante para HU-065 (pisos/aprovações de desconto) e para não "corrigir" margens no Salesforce
+- 150k materiais na região → volumetria para HU-030/HU-119 e justificativa estrutural da chamada multi-material
 
 > A lista original do GrupoQ **não está neste repo** (preços, custos reais e margens = dado sensível). Fonte: thread Teams "HU-028 Pricing REP Y PA", 05/08/2026. Re-análise: `poc-pricing/scripts/analisar_lista_grupoq.py`.
 
