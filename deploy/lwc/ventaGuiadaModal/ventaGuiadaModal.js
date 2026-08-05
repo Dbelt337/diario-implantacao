@@ -64,6 +64,8 @@ const TIPO_POR_RECORD_TYPE = {
 };
 
 const VIGENCIA_DIAS = 15;
+// busqueda: espera de tecleo antes de filtrar/llamar al servidor
+const SEARCH_DEBOUNCE_MS = 300;
 
 // ------- parametros SIMULADOS (los reemplazan BRE / frente financiera) -------
 const MAX_DESCUENTO_DIRECTO = 700000;
@@ -388,9 +390,23 @@ export default class VentaGuiadaModal extends LightningModal {
             ? base + ' (Real: inventario PROPIO en Vehicle — SOQL directo, sin SAP. Ficha del usado de la historia de inventario de usados.)'
             : base + ' (Real: busqueda sobre el CODIGO ACTIVO — Product2.IsActive — via MaterialSearchService; se cotiza aun sin existencia. Stock 0 con tránsito o sin unidades cambia el botón final.)';
     }
+    /**
+     * Busqueda con DEBOUNCE (300 ms): el filtro corre cuando el usuario deja
+     * de teclear, no en cada tecla. Real: este callback es el punto unico
+     * para llamar GuidedSellingController.getSelectionPageData — con el
+     * debounce ya montado, la migracion a busqueda en servidor no dispara
+     * una llamada Apex por tecla.
+     */
     handleSearchChange(event) {
-        // TODO real: GuidedSellingController.getSelectionPageData con debounce
-        this.searchTerm = event.target.value;
+        const value = event.target.value;
+        window.clearTimeout(this._searchTimer);
+        this._searchTimer = window.setTimeout(() => {
+            this.searchTerm = value;
+        }, SEARCH_DEBOUNCE_MS);
+    }
+    disconnectedCallback() {
+        super.disconnectedCallback?.();
+        window.clearTimeout(this._searchTimer);
     }
     handleFiltroMarca(event) { this.filtroMarca = event.detail.value; }
     handleFiltroAnio(event) { this.filtroAnio = event.detail.value; }

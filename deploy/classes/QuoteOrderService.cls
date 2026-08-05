@@ -17,10 +17,13 @@ public with sharing class QuoteOrderService {
         QuotePayload payload = parsePayload(quotePayloadJson);
 
         //Query Opportunity + OpportunityLineItems
+        // WITH USER_MODE en TODAS las queries de la clase: FLS/CRUD/sharing del
+        // usuario aplicados por la plataforma (recomendacion actual Salesforce)
         Opportunity[] opps = [
             SELECT Id, Name, AccountId, Pricebook2Id, CurrencyIsoCode
             FROM Opportunity
             WHERE Id = :opportunityId
+            WITH USER_MODE
         ];
 
         if (opps.isEmpty()) {
@@ -40,12 +43,14 @@ public with sharing class QuoteOrderService {
             SELECT Id, PricebookEntryId, Quantity, UnitPrice, CurrencyIsoCode, Product2Id, Product2.Name
             FROM OpportunityLineItem
             WHERE OpportunityId = :opportunityId AND (NOT Product2Id IN (SELECT ProductId FROM VehicleDefinition))
+            WITH USER_MODE
         ];
 
         List<OpportunityLineItem> vehicles = [
             SELECT Id, PricebookEntryId, Quantity, UnitPrice, CurrencyIsoCode, Product2Id, Product2.Name
             FROM OpportunityLineItem
             WHERE OpportunityId = :opportunityId AND (Product2Id IN (SELECT ProductId FROM VehicleDefinition))
+            WITH USER_MODE
         ];
 
         List<VehicleDTO> vehiclesDTO = String.isBlank(selectedVehicles)
@@ -59,6 +64,7 @@ public with sharing class QuoteOrderService {
                 SELECT Id, PricebookEntryId, Quantity, UnitPrice, CurrencyIsoCode, Product2Id, Product2.Name
                 FROM OpportunityLineItem
                 WHERE Id IN :vehicleLines
+                WITH USER_MODE
             ];
         }
 
@@ -257,6 +263,7 @@ public with sharing class QuoteOrderService {
             WHERE Pricebook2Id = :opp.Pricebook2Id AND IsActive = true
               AND CurrencyIsoCode = :opp.CurrencyIsoCode
               AND (NOT Product2Id IN (SELECT ProductId FROM VehicleDefinition))
+            WITH USER_MODE
             LIMIT 500
         ];
         for (VehiculoAccesoriosDTO va : payload.accesoriosPorVehiculo) {
@@ -309,10 +316,11 @@ public with sharing class QuoteOrderService {
         List<Pricebook2> pbs = [
             SELECT Id FROM Pricebook2
             WHERE IsActive = true AND IsStandard = false
+            WITH USER_MODE
             ORDER BY Name LIMIT 1
         ];
         if (pbs.isEmpty()) {
-            pbs = [SELECT Id FROM Pricebook2 WHERE IsActive = true AND IsStandard = true LIMIT 1];
+            pbs = [SELECT Id FROM Pricebook2 WHERE IsActive = true AND IsStandard = true WITH USER_MODE LIMIT 1];
         }
         if (pbs.isEmpty()) {
             throw new QuoteOrderServiceException('No hay Pricebook activo en la org.');
@@ -334,6 +342,7 @@ public with sharing class QuoteOrderService {
             WHERE Pricebook2Id = :opp.Pricebook2Id AND IsActive = true
               AND CurrencyIsoCode = :opp.CurrencyIsoCode
               AND Product2Id IN (SELECT ProductId FROM VehicleDefinition)
+            WITH USER_MODE
             LIMIT 200
         ];
         if (pbes.isEmpty()) {

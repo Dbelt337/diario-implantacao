@@ -41,12 +41,15 @@ public with sharing class MaterialSearchService {
         }
 
         // Leg 1 — LOCAL: materials already replicated (SAP -> Mule -> Product2).
+        // WITH USER_MODE: FLS/CRUD del usuario aplicados por la plataforma
+        // (recomendacion actual de Salesforce, sustituye chequeos manuales)
         String sanitized = String.escapeSingleQuotes(searchTerm.trim());
         List<List<SObject>> results = [
             FIND :sanitized IN ALL FIELDS
             RETURNING Product2(Id, ProductCode, Name
                 WHERE IsActive = true
                 LIMIT :MAX_RESULTS)
+            WITH USER_MODE
         ];
         for (Product2 product : (List<Product2>) results[0]) {
             MaterialMatch match = new MaterialMatch();
