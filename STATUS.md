@@ -21,7 +21,7 @@
 |---|---|---|
 | 0 | Acessos + feature ligada (Pricing Settings On, Waterfall + Persistence On, tab Pricing Procedures acessível) | ✅ 05/08 |
 | 1 | Dados reais do GrupoQ | ✅ 05/08 — lista com 2.207 materiais recebida |
-| 2 | Custom objects + 3 Decision Tables (FN por origem, MK, tasa) com dados reais | ⏳ próxima sessão |
+| 2 | **Native-first (sem custom objects):** Price book FOB (PricebookEntry) + 3 Decision Matrices (FN, MK, TC — linhas via CSV, sem objeto-fonte) | ⏳ próxima sessão |
 | 3 | Context Definition (estender SalesTransactionContext) | ⏳ |
 | 4 | Pricing Procedure no builder (clonar Pricing Recipe, montar waterfall **com arredondamento por etapa**) | ⏳ |
 | 5 | Simulação (botão Simulate) + prints do waterfall dos 3 materiais | ⏳ |
@@ -129,6 +129,9 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 ## 5. Próxima sessão — por onde retomar
 
 1. Atribuir PSLs de Pricing ao usuário (sobra da Fase 0)
-2. **Fase 2**: criar `POC_FactorNacionalizacion__c`, `POC_MarkupMaterial__c`, `POC_TipoCambio__c` no Object Manager + carregar valores reais (FN: JP/TH 55,51 · KR 50 · MX 42,61; MK: 193/206/189; tasa 452,51) + Decision Tables usage type Pricing
+2. **Fase 2 (native-first, decidido 05/08 — sem custom objects):**
+   - Price book "POC FOB Repuestos" (Pricebook2 standard) + PricebookEntry USD dos 3 materiais (FOB como list price; Product2 dos 3 materiais se ainda não existirem)
+   - **Decision Matrix** `POC_FN` (entradas Sociedad+Marca/Origen → %FN; 4 linhas via CSV), `POC_MK` (Sociedad+Material → %MK; 3 linhas), `POC_TC` (Sociedad+Moneda → tasa; 1 linha) — Decision Matrices guardam as linhas nelas mesmas, sem objeto-fonte (≠ Decision Tables, que leem de um objeto)
+   - Argumento de governança: a própria RN-10 nomeia "Expression Sets + Decision Matrices" como caminho de escala — a POC nativa testa exatamente o mecanismo previsto
 3. Cobrar GrupoQ: perguntas da seção 1 (fecha, grupo fábrica, outlier) e confirmação do template v2 na thread
 4. Melisa: entregar versão limpa da HU-028 (oferecida) e RN-54 nova da HU-039
