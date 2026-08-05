@@ -178,7 +178,7 @@
         <members>ExecuteDemoRequest</members>
         <members>LogDemoActivity</members>
         <members>ManageDemoVehicle</members>
-        <members>QuoteBeforeHandler</members>
+        <members>OpportunityBeforeHandler</members>
         <members>ReleaseExpiredDemoAssignments</members>
         <members>ValidateDemoQuota</members>
         <name>Flow</name>
