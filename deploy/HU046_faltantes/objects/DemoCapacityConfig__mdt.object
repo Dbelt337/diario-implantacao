@@ -18,9 +18,9 @@
         <label>Codigo de Sucursal</label>
         <type>Text</type>
         <length>40</length>
-        <required>true</required>
+        <required>false</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
-        <description>Codigo de la sucursal (ej. C013)</description>
+        <description>Codigo SAP de la sucursal (ej. C013) - PENDIENTE mapeo nombre-codigo con Grupo Q; el excel de cupos trae el nombre</description>
     </fields>
     <fields>
         <fullName>MaxDemo__c</fullName>
@@ -51,5 +51,32 @@
         <required>false</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
         <description>T12 (GQ-CA-01-127): km maximo antes de transferir la unidad a Demo venta. Valor por politica de negocio (open point 4)</description>
+    </fields>
+    <fields>
+        <fullName>Country__c</fullName>
+        <label>Pais</label>
+        <type>Text</type>
+        <length>2</length>
+        <required>true</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>Codigo de pais (CR, GT, HN, NI, PA, SV)</description>
+    </fields>
+    <fields>
+        <fullName>BranchName__c</fullName>
+        <label>Sucursal</label>
+        <type>Text</type>
+        <length>80</length>
+        <required>true</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>Nombre de la sucursal segun el excel de cupos (ej. Uruca, Ayarco)</description>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <label>Comentarios</label>
+        <type>Text</type>
+        <length>255</length>
+        <required>false</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>Comentarios del excel (ej. Sucursal Cerrada)</description>
     </fields>
 </CustomObject>

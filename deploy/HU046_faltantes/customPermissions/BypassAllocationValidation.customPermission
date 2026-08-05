@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Bypass Allocation Validation</label>
+    <description>HU-046 T11: bypass del custom error del flow before-save en Quote (guarda de venta de unidades Allocated). Asignar SOLO a usuario de integracion y admin.</description>
+    <isLicensed>false</isLicensed>
+</CustomPermission>
