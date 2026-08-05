@@ -8,6 +8,7 @@ import CotizacionConfirmModal from 'c/cotizacionConfirmModal';
 import AprobacionDescuentoModal from 'c/aprobacionDescuentoModal';
 
 import createQuote from '@salesforce/apex/GuidedSellingController.createQuote';
+import getFinancingOptions from '@salesforce/apex/GuidedSellingController.getFinancingOptions';
 
 /**
  * All countries. Large modal with the guided-selling step-by-step. CURRENT
@@ -146,7 +147,12 @@ export default class VentaGuiadaModal extends LightningModal {
     formaPago = '';
     prima;
     plazo = '60';
-    solicitudFinancieroEnviada = false;
+    // Financiamiento (CrediQ): opciones devueltas por la frente financiera y
+    // la eleccion del cliente. Cambiar prima/plazo INVALIDA las opciones
+    // cargadas (oferta calculada sobre otro monto) — se vuelven a consultar.
+    financingOptions = [];
+    financingLoading = false;
+    selectedFinancingId = '';
 
     // ------- datos SIMULADOS (los reemplazan los servicios Apex) -------
     vehiclesNuevos = [
@@ -294,7 +300,8 @@ export default class VentaGuiadaModal extends LightningModal {
                 : this.selectedVehicles.length === 0;
         }
         if (this.isStepDescuento) return this.descuentoRequiereAprobacion && !this.descuentoAprobado;
-        if (this.isStepPago) return !this.formaPago;
+        // Financiado: el cliente debe ELEGIR una opcion de financiamiento
+        if (this.isStepPago) return !this.formaPago || (this.isFinanciado && !this.selectedFinancingId);
         return this.isStepCotizacion;
     }
 
@@ -323,7 +330,7 @@ export default class VentaGuiadaModal extends LightningModal {
             this.descuentoAprobado = false;
             this.formaPago = '';
             this.prima = undefined;
-            this.solicitudFinancieroEnviada = false;
+            this.resetFinanciamiento();
             this.accesoriosSel = {};
             this.repuestosSel = {};
             this.repuestosCant = {};
@@ -670,17 +677,96 @@ export default class VentaGuiadaModal extends LightningModal {
     }
     get cuotaMensualFmt() { return this.m(this.cuotaMensual); }
 
-    handleFormaPagoChange(event) { this.formaPago = event.detail.value; }
-    handlePrimaChange(event) { this.prima = event.detail.value; }
-    handlePlazoChange(event) { this.plazo = event.detail.value; }
-    handleLlamarFinanciero() {
-        // TODO real: lanzar el flow/subflujo de la frente financiera (CrediQ)
-        this.solicitudFinancieroEnviada = true;
-        this.dispatchEvent(new ShowToastEvent({
-            title: 'Mock de presentación',
-            message: 'Aquí se lanza el flujo del financiero (CrediQ) con vehículo, prima y plazo; tasas y aprobación crediticia se resuelven en esa frente.',
-            variant: 'info'
-        }));
+    handleFormaPagoChange(event) {
+        this.formaPago = event.detail.value;
+        this.resetFinanciamiento();
+    }
+    handlePrimaChange(event) {
+        this.prima = event.detail.value;
+        this.resetFinanciamiento();
+    }
+    handlePlazoChange(event) {
+        this.plazo = event.detail.value;
+        this.resetFinanciamiento();
+    }
+    resetFinanciamiento() {
+        this.financingOptions = [];
+        this.selectedFinancingId = '';
+        this.financingLoading = false;
+    }
+
+    /**
+     * Llama a la frente financiera (CrediQ) via el BFF:
+     * GuidedSellingController.getFinancingOptions -> FinancingService (el
+     * CONTRATO con el equipo financiero vive alli, INTEGRATION MAP). Hoy el
+     * servicio responde con productos CrediQ simulados; cuando la frente
+     * conecte su servicio real (FSC / CrediQ via MuleSoft) esta llamada NO
+     * cambia. ALTERNATIVA si la frente entrega un SCREEN FLOW en lugar de
+     * servicio: reemplazar esta llamada por el base component
+     * <lightning-flow flow-api-name="..." flow-input-variables={...}
+     * onstatuschange={...}> y leer event.detail.outputVariables cuando
+     * status === 'FINISHED' (la opcion elegida vuelve como output del flow).
+     */
+    async handleLlamarFinanciero() {
+        this.financingLoading = true;
+        this.financingOptions = [];
+        this.selectedFinancingId = '';
+        try {
+            const request = {
+                opportunityId: this.recordId,
+                montoFinanciar: this.montoFinanciado,
+                prima: this.primaValue,
+                plazoMeses: parseInt(this.plazo, 10),
+                monedaIso: this.monedaIso,
+                descripcionVehiculo: this.vehiculoChip
+            };
+            const options = await getFinancingOptions({ requestJson: JSON.stringify(request) });
+            this.financingOptions = options || [];
+            if (this.financingOptions.length === 0) {
+                this.dispatchEvent(new ShowToastEvent({
+                    title: 'Sin opciones disponibles',
+                    message: 'La frente financiera no devolvió opciones para estas condiciones. Ajusta prima o plazo e intenta de nuevo.',
+                    variant: 'warning'
+                }));
+            }
+        } catch (error) {
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Error al consultar financiamiento',
+                message: error?.body?.message || error?.message || 'Error desconocido',
+                variant: 'error'
+            }));
+        } finally {
+            this.financingLoading = false;
+        }
+    }
+
+    handleSelectFinancing(event) {
+        this.selectedFinancingId = event.currentTarget.dataset.id;
+    }
+    get tieneOpcionesFinanciamiento() { return this.financingOptions.length > 0; }
+    get financiamientoSeleccionado() {
+        return this.financingOptions.find(o => o.optionId === this.selectedFinancingId);
+    }
+    /** Cards de opciones con formato de moneda y estado de seleccion. */
+    get financingOptionsView() {
+        return this.financingOptions.map(o => {
+            const sel = o.optionId === this.selectedFinancingId;
+            return {
+                ...o,
+                titulo: `${o.entidad} ${o.producto}`,
+                tasaFmt: o.tasaAnual.toLocaleString('de-DE') + ' % anual',
+                plazoFmt: o.plazoMeses + ' meses',
+                cuotaFmt: this.m(o.cuotaMensual),
+                montoFmt: this.m(o.montoFinanciado),
+                sel,
+                cardClass: sel ? 'veh-card fin-card fin-card-sel' : 'veh-card fin-card'
+            };
+        });
+    }
+    get leyendaFinanciamiento() {
+        return this.tieneOpcionesFinanciamiento
+            ? 'Selecciona la opción elegida por el cliente para continuar; queda registrada en la cotización.'
+            : 'Consulta las opciones de financiamiento para que el cliente elija.';
     }
 
     // ------- paso Cotizacion -------
@@ -741,7 +827,10 @@ export default class VentaGuiadaModal extends LightningModal {
                 rows.push({ id: 'q5', etiqueta: 'Total con descuento', valor: this.totalConDescuentoFmt });
             }
             if (this.formaPago) {
-                rows.push({ id: 'q6', etiqueta: 'Forma de pago', valor: this.isContado ? 'Contado' : 'Financiado CrediQ — ' + this.plazo + ' meses' });
+                const finRep = this.financiamientoSeleccionado;
+                rows.push({ id: 'q6', etiqueta: 'Forma de pago', valor: this.isContado
+                    ? 'Contado'
+                    : (finRep ? `Financiado ${finRep.entidad} ${finRep.producto} — ${finRep.plazoMeses} meses` : 'Financiado CrediQ — ' + this.plazo + ' meses') });
             }
             rows.push({ id: 'q9', etiqueta: 'Vigencia de la cotización', valor: VIGENCIA_DIAS + ' días' });
             rows.push({ id: 'q10', etiqueta: 'Precio definitivo', valor: 'Precio en línea de SAP al facturar (sin precio persistido en Salesforce)' });
@@ -766,9 +855,16 @@ export default class VentaGuiadaModal extends LightningModal {
             rows.push({ id: 'q5', etiqueta: 'Total con descuento', valor: this.totalConDescuentoFmt });
         }
         if (this.isFinanciado) {
-            rows.push({ id: 'q6', etiqueta: 'Forma de pago', valor: 'Financiado CrediQ — ' + this.plazo + ' meses' });
-            rows.push({ id: 'q7', etiqueta: 'Prima', valor: this.primaFmt });
-            rows.push({ id: 'q8', etiqueta: 'Cuota mensual estimada', valor: this.cuotaMensualFmt + ' (referencia)' });
+            const fin = this.financiamientoSeleccionado;
+            if (fin) {
+                rows.push({ id: 'q6', etiqueta: 'Forma de pago', valor: `Financiado ${fin.entidad} ${fin.producto} — ${fin.plazoMeses} meses` });
+                rows.push({ id: 'q7', etiqueta: 'Prima', valor: this.primaFmt });
+                rows.push({ id: 'q8', etiqueta: 'Cuota mensual (oferta elegida)', valor: this.m(fin.cuotaMensual) + ` — tasa ${fin.tasaAnual.toLocaleString('de-DE')} %` });
+            } else {
+                rows.push({ id: 'q6', etiqueta: 'Forma de pago', valor: 'Financiado CrediQ — ' + this.plazo + ' meses' });
+                rows.push({ id: 'q7', etiqueta: 'Prima', valor: this.primaFmt });
+                rows.push({ id: 'q8', etiqueta: 'Cuota mensual estimada', valor: this.cuotaMensualFmt + ' (referencia)' });
+            }
         } else if (this.isContado) {
             rows.push({ id: 'q6', etiqueta: 'Forma de pago', valor: 'Contado' });
         }
@@ -833,6 +929,9 @@ export default class VentaGuiadaModal extends LightningModal {
                 formaPago: this.formaPago,
                 prima: this.isFinanciado ? this.primaValue : null,
                 plazo: this.isFinanciado ? this.plazo : null,
+                // opcion de financiamiento ELEGIDA por el cliente (oferta de
+                // FinancingService); QuoteOrderService la registra en la quote
+                financiamiento: this.isFinanciado ? (this.financiamientoSeleccionado || null) : null,
                 vigenciaDias: VIGENCIA_DIAS,
                 accesoriosPorVehiculo: this.selectedVehicles.map(v => ({
                     vehicleId: v.id,

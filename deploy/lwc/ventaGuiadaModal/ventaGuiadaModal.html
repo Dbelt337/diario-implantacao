@@ -498,16 +498,47 @@
                                     </div>
                                     <div class="slds-m-top_small">
                                         <lightning-button label="Llamar al flujo del financiero (CrediQ)" variant="brand"
-                                            onclick={handleLlamarFinanciero} disabled={solicitudFinancieroEnviada}></lightning-button>
+                                            onclick={handleLlamarFinanciero} disabled={financingLoading}></lightning-button>
                                     </div>
-                                    <template lwc:if={solicitudFinancieroEnviada}>
-                                        <lightning-badge label="Solicitud enviada — En análisis (simulado)" class="slds-m-top_small"></lightning-badge>
-                                    </template>
                                 </div>
                             </lightning-layout-item>
                         </lightning-layout>
+                        <template lwc:if={financingLoading}>
+                            <div class="fin-loading slds-p-around_medium slds-is-relative">
+                                <lightning-spinner alternative-text="Consultando opciones de financiamiento" size="small"></lightning-spinner>
+                            </div>
+                        </template>
+                        <template lwc:if={tieneOpcionesFinanciamiento}>
+                            <div class="slds-box slds-box_small slds-m-top_small step-anim">
+                                <h3 class="slds-text-heading_small slds-m-bottom_x-small">Opciones de financiamiento — elige con el cliente</h3>
+                                <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">{leyendaFinanciamiento}</p>
+                                <div class="fin-grid">
+                                    <template for:each={financingOptionsView} for:item="fin">
+                                        <div key={fin.optionId} class={fin.cardClass} data-id={fin.optionId} onclick={handleSelectFinancing}>
+                                            <template lwc:if={fin.sel}>
+                                                <span class="veh-card-tag">Elegida</span>
+                                            </template>
+                                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                                <span class="veh-card-titulo">{fin.titulo}</span>
+                                                <lightning-badge label={fin.plazoFmt} class="veh-badge badge-futura"></lightning-badge>
+                                            </div>
+                                            <div class="fin-cuota">{fin.cuotaFmt}<span class="fin-cuota-sufijo"> / mes</span></div>
+                                            <div class="slds-grid slds-grid_align-spread slds-p-top_x-small">
+                                                <span class="veh-card-etiqueta">Tasa</span>
+                                                <span class="veh-card-valor">{fin.tasaFmt}</span>
+                                            </div>
+                                            <div class="slds-grid slds-grid_align-spread">
+                                                <span class="veh-card-etiqueta">Monto financiado</span>
+                                                <span class="veh-card-valor veh-card-precio">{fin.montoFmt}</span>
+                                            </div>
+                                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">{fin.detalle}</p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
                         <p class="slds-text-body_small slds-m-top_x-small slds-text-color_weak slds-p-horizontal_small">
-                            Real: esta pantalla solo LLAMA al flujo de la frente financiera (CrediQ) con vehículo, prima y plazo; tasas, seguros y aprobación crediticia se resuelven allá. La cuota mostrada es una referencia comercial, no una oferta de crédito.
+                            Real: las opciones vienen de la frente financiera (CrediQ) vía FinancingService con monto, prima y plazo; el cliente ELIGE una y queda registrada en la cotización. La aprobación crediticia formal y los seguros se resuelven en esa frente. Hoy: productos CrediQ simulados con el mismo contrato.
                         </p>
                     </template>
                 </template>

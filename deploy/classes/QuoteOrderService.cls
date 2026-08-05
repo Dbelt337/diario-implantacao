@@ -125,6 +125,10 @@ public with sharing class QuoteOrderService {
                 Product2Id = accessory.Product2Id
             ));
         }
+        // accesorios elegidos en la venta guiada: UNA linea por producto en la
+        // quote de SU vehiculo (modelo de datos nativo — cada QuoteLineItem
+        // apunta a su PricebookEntry)
+        quoteLines.addAll(buildAccessoryLinesFromPayload(opp, payload, quotes, vehicles, quoteIndexByVehicleProduct));
         if (!quoteLines.isEmpty()) {
             insert quoteLines;
         }
@@ -185,9 +189,22 @@ public with sharing class QuoteOrderService {
             lineas.add('Descuento solicitado (total de la venta): ' + payload.descuento.format() + ' (' + estado + ')');
         }
         if (String.isNotBlank(payload.formaPago)) {
-            String pago = payload.formaPago == 'financiado'
-                ? 'Financiado CrediQ — plazo ' + payload.plazo + ' meses, prima ' + (payload.prima == null ? '-' : payload.prima.format())
-                : 'Contado';
+            String pago;
+            if (payload.formaPago == 'financiado' && payload.financiamiento != null) {
+                // opcion ELEGIDA por el cliente en la pantalla de pago (oferta
+                // de la frente financiera via FinancingService); persistencia
+                // en campos propios de la Quote = decision pendiente con la
+                // frente financiera — mientras tanto queda trazada aqui
+                FinanciamientoDTO f = payload.financiamiento;
+                pago = 'Financiado ' + f.entidad + ' ' + f.producto
+                    + ' — tasa ' + f.tasaAnual + '% anual, plazo ' + f.plazoMeses
+                    + ' meses, cuota ' + (f.cuotaMensual == null ? '-' : f.cuotaMensual.format())
+                    + ', prima ' + (payload.prima == null ? '-' : payload.prima.format());
+            } else if (payload.formaPago == 'financiado') {
+                pago = 'Financiado CrediQ — plazo ' + payload.plazo + ' meses, prima ' + (payload.prima == null ? '-' : payload.prima.format());
+            } else {
+                pago = 'Contado';
+            }
             lineas.add('Forma de pago: ' + pago);
         }
         VehiculoAccesoriosDTO delVehiculo = null;
@@ -207,6 +224,79 @@ public with sharing class QuoteOrderService {
             lineas.add('Accesorios (' + nombres.size() + '): ' + String.join(nombres, ', '));
         }
         return String.join(lineas, '\n');
+    }
+
+    /**
+     * One QuoteLineItem PER accessory picked in the guided flow, on the quote
+     * of ITS vehicle. The accessory resolves to a PricebookEntry of the
+     * opportunity pricebook by product name (contains, both directions —
+     * same mock-stage correlation as matchDto; the compatibility matrix will
+     * carry Product2Id end to end). Price: the PricebookEntry price (native
+     * catalog), NOT the mock price from the UI. An accessory with no active
+     * entry in the pricebook/currency CANNOT be a QuoteLineItem (native rule:
+     * every line points to a PricebookEntry) — it stays traced in the quote
+     * Description and is logged for the catalog team.
+     */
+    private static List<QuoteLineItem> buildAccessoryLinesFromPayload(Opportunity opp,
+            QuotePayload payload, List<Quote> quotes, List<OpportunityLineItem> vehicles,
+            Map<Id, Integer> quoteIndexByVehicleProduct) {
+        List<QuoteLineItem> lineas = new List<QuoteLineItem>();
+        if (payload.accesoriosPorVehiculo == null || payload.accesoriosPorVehiculo.isEmpty()) {
+            return lineas;
+        }
+        Boolean hayItems = false;
+        for (VehiculoAccesoriosDTO va : payload.accesoriosPorVehiculo) {
+            if (va.items != null && !va.items.isEmpty()) { hayItems = true; break; }
+        }
+        if (!hayItems) {
+            return lineas;
+        }
+        // catalogo de accesorios del pricebook de la oportunidad (no vehiculos)
+        List<PricebookEntry> pbes = [
+            SELECT Id, UnitPrice, Product2Id, Product2.Name FROM PricebookEntry
+            WHERE Pricebook2Id = :opp.Pricebook2Id AND IsActive = true
+              AND CurrencyIsoCode = :opp.CurrencyIsoCode
+              AND (NOT Product2Id IN (SELECT ProductId FROM VehicleDefinition))
+            LIMIT 500
+        ];
+        for (VehiculoAccesoriosDTO va : payload.accesoriosPorVehiculo) {
+            if (va.items == null || va.items.isEmpty()) continue;
+            // quote destino: la del vehiculo del bloque (match por modelo,
+            // mismo criterio de matchDto); fallback a la primera
+            Integer quoteIdx = 0;
+            for (OpportunityLineItem vehicle : vehicles) {
+                String nombre = vehicle.Product2.Name;
+                if (va.modelo != null && nombre != null
+                        && (nombre.containsIgnoreCase(va.modelo) || va.modelo.containsIgnoreCase(nombre))) {
+                    quoteIdx = quoteIndexByVehicleProduct.get(vehicle.Product2Id);
+                    break;
+                }
+            }
+            for (AccesorioDTO a : va.items) {
+                PricebookEntry pbe = null;
+                for (PricebookEntry candidato : pbes) {
+                    String nombre = candidato.Product2.Name;
+                    if (a.nombre != null && nombre != null
+                            && (nombre.containsIgnoreCase(a.nombre) || a.nombre.containsIgnoreCase(nombre))) {
+                        pbe = candidato;
+                        break;
+                    }
+                }
+                if (pbe == null) {
+                    System.debug(LoggingLevel.WARN, 'Accesorio sin PricebookEntry activo en ' +
+                        opp.CurrencyIsoCode + ', queda solo en Description: ' + a.nombre);
+                    continue;
+                }
+                lineas.add(new QuoteLineItem(
+                    QuoteId = quotes[quoteIdx].Id,
+                    Quantity = 1,
+                    UnitPrice = pbe.UnitPrice,
+                    PricebookEntryId = pbe.Id,
+                    Product2Id = pbe.Product2Id
+                ));
+            }
+        }
+        return lineas;
     }
 
     /**
@@ -347,6 +437,18 @@ public with sharing class QuoteOrderService {
         public String plazo { get; set; }
         public Integer vigenciaDias { get; set; }
         public List<VehiculoAccesoriosDTO> accesoriosPorVehiculo { get; set; }
+        public FinanciamientoDTO financiamiento { get; set; }
+    }
+
+    /** Opcion de financiamiento ELEGIDA en la UI (FinancingService.FinancingOption). */
+    public class FinanciamientoDTO {
+        public String optionId { get; set; }
+        public String entidad { get; set; }
+        public String producto { get; set; }
+        public Decimal tasaAnual { get; set; }
+        public Integer plazoMeses { get; set; }
+        public Decimal cuotaMensual { get; set; }
+        public Decimal montoFinanciado { get; set; }
     }
 
     public class VehiculoAccesoriosDTO {

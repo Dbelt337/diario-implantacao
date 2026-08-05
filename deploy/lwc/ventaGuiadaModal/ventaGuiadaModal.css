@@ -209,6 +209,37 @@ tbody tr:hover {
     margin-top: 0.35rem;
 }
 
+/* ------- paso Pago: opciones de financiamiento (CrediQ) ------- */
+.fin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 0.6rem;
+}
+.fin-card {
+    margin-bottom: 0;
+    border-left-color: var(--gq-gris);
+}
+.fin-card-sel {
+    border-left-color: var(--gq-verde);
+    outline: 2px solid var(--gq-azul);
+    background: var(--gq-azul-suave);
+    box-shadow: 0 4px 12px rgba(1, 118, 211, 0.18);
+}
+.fin-cuota {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--gq-azul);
+    margin-top: 0.35rem;
+}
+.fin-cuota-sufijo {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gq-gris);
+}
+.fin-loading {
+    min-height: 3.5rem;
+}
+
 /* Transicion de entrada: anima los contenedores al montar cada paso */
 .tipo-card,
 .modal-body table,
