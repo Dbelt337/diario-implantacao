@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <assignments>
+        <name>SetQuotaToMaxDemo</name>
+        <label>Assignment: Set Quota to Max Demo</label>
+        <locationX>200</locationX><locationY>400</locationY>
+        <assignmentItems>
+            <assignToReference>quotaLimit</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>GetDemoCapacity.MaxDemo__c</elementReference></value>
+        </assignmentItems>
+        <connector><targetReference>IsQuotaAvailable</targetReference></connector>
+    </assignments>
+    <assignments>
+        <name>SetQuotaToMaxExhibition</name>
+        <label>Assignment: Set Quota to Max Exhibition</label>
+        <locationX>400</locationX><locationY>400</locationY>
+        <assignmentItems>
+            <assignToReference>quotaLimit</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>GetDemoCapacity.MaxExhibition__c</elementReference></value>
+        </assignmentItems>
+        <connector><targetReference>IsQuotaAvailable</targetReference></connector>
+    </assignments>
+    <assignments>
+        <name>SetResultAvailable</name>
+        <label>Assignment: Set Result to Available</label>
+        <locationX>200</locationX><locationY>600</locationY>
+        <assignmentItems>
+            <assignToReference>isQuotaAvailable</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>resultMessage</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>availableMessage</elementReference></value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>SetResultQuotaFull</name>
+        <label>Assignment: Set Result to Quota Full</label>
+        <locationX>400</locationX><locationY>600</locationY>
+        <assignmentItems>
+            <assignToReference>isQuotaAvailable</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>resultMessage</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>quotaFullMessage</elementReference></value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>SetResultNotConfigured</name>
+        <label>Assignment: Set Result to Not Configured</label>
+        <locationX>600</locationX><locationY>400</locationY>
+        <assignmentItems>
+            <assignToReference>isQuotaAvailable</assignToReference>
+            <operator>Assign</operator>
+            <value><booleanValue>false</booleanValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>resultMessage</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>No existe parametrización de cupo para la marca/sucursal indicada (Demo Capacity Config). Contacte al administrador.</stringValue></value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>IsQuotaAvailable</name>
+        <label>Decision: Quota Available?</label>
+        <locationX>300</locationX><locationY>500</locationY>
+        <defaultConnector><targetReference>SetResultQuotaFull</targetReference></defaultConnector>
+        <defaultConnectorLabel>Quota Full</defaultConnectorLabel>
+        <rules>
+            <name>QuotaAvailable</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>currentUnitCount</leftValueReference>
+                <operator>LessThan</operator>
+                <rightValue><elementReference>quotaLimit</elementReference></rightValue>
+            </conditions>
+            <connector><targetReference>SetResultAvailable</targetReference></connector>
+            <label>Available</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>IsCapacityConfigured</name>
+        <label>Decision: Capacity Configured?</label>
+        <locationX>300</locationX><locationY>200</locationY>
+        <defaultConnector><targetReference>SetResultNotConfigured</targetReference></defaultConnector>
+        <defaultConnectorLabel>Not Configured</defaultConnectorLabel>
+        <rules>
+            <name>CapacityFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetDemoCapacity</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>IsDemoDesignation</targetReference></connector>
+            <label>Configured</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>IsDemoDesignation</name>
+        <label>Decision: Demo or Exhibition?</label>
+        <locationX>300</locationX><locationY>300</locationY>
+        <defaultConnector><targetReference>SetQuotaToMaxExhibition</targetReference></defaultConnector>
+        <defaultConnectorLabel>Exhibition</defaultConnectorLabel>
+        <rules>
+            <name>DemoDesignation</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>designationType</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>Demo</stringValue></rightValue>
+            </conditions>
+            <connector><targetReference>SetQuotaToMaxDemo</targetReference></connector>
+            <label>Demo</label>
+        </rules>
+    </decisions>
+    <description>Validates the demo/exhibition quota for a brand and branch against Demo Capacity Config (HU-046, RN-8). All countries. Inputs: brandName, branchName, designationType (Demo|Exhibicion), currentUnitCount (counted by the caller with its org-specific filters). Outputs: isQuotaAvailable, quotaLimit, resultMessage. Reused by the management and floor manager screen flows.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>availableMessage</name>
+        <dataType>String</dataType>
+        <expression>'Cupo disponible: ' &amp; TEXT({!currentUnitCount}) &amp; ' de ' &amp; TEXT({!quotaLimit}) &amp; ' en uso para ' &amp; {!brandName} &amp; ' / ' &amp; {!branchName} &amp; ' (' &amp; {!designationType} &amp; ').'</expression>
+    </formulas>
+    <formulas>
+        <name>quotaFullMessage</name>
+        <dataType>String</dataType>
+        <expression>'Cupo lleno: ' &amp; TEXT({!currentUnitCount}) &amp; ' unidades en uso de un máximo de ' &amp; TEXT({!quotaLimit}) &amp; ' para ' &amp; {!brandName} &amp; ' / ' &amp; {!branchName} &amp; ' (' &amp; {!designationType} &amp; ').'</expression>
+    </formulas>
+    <interviewLabel>Validate Demo Quota {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Validate Demo Quota</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>GetDemoCapacity</name>
+        <label>Get Records: Get Demo Capacity</label>
+        <locationX>300</locationX><locationY>100</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>IsCapacityConfigured</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Brand__c</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>brandName</elementReference></value>
+        </filters>
+        <filters>
+            <field>BranchName__c</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>branchName</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>DemoCapacityConfig__mdt</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>300</locationX><locationY>0</locationY>
+        <connector><targetReference>GetDemoCapacity</targetReference></connector>
+    </start>
+    <status>Draft</status>
+    <variables>
+        <name>brandName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>branchName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>currentUnitCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+        <scale>0</scale>
+    </variables>
+    <variables>
+        <name>designationType</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>isQuotaAvailable</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection><isInput>false</isInput><isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>quotaLimit</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection><isInput>false</isInput><isOutput>true</isOutput>
+        <scale>0</scale>
+    </variables>
+    <variables>
+        <name>resultMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection><isInput>false</isInput><isOutput>true</isOutput>
+    </variables>
+</Flow>

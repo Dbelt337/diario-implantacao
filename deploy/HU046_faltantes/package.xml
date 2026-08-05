@@ -175,12 +175,12 @@
         <name>CustomMetadata</name>
     </types>
     <types>
-        <members>HU046_RT_Quote_GuardaVentaDemo</members>
-        <members>HU046_Sched_LiberarAsignacionesVencidas</members>
-        <members>HU046_Screen_EjecutarSolicitudDemo</members>
-        <members>HU046_Screen_GestionarVehiculoDemo</members>
-        <members>HU046_Subflow_RegistrarTrazaDemo</members>
-        <members>HU046_Subflow_ValidarCupoDemo</members>
+        <members>ExecuteDemoRequest</members>
+        <members>LogDemoActivity</members>
+        <members>ManageDemoVehicle</members>
+        <members>QuoteBeforeHandler</members>
+        <members>ReleaseExpiredDemoAssignments</members>
+        <members>ValidateDemoQuota</members>
         <name>Flow</name>
     </types>
     <version>62.0</version>

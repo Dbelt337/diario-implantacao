@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>NotifyFloorManagerDesignation</name>
+        <label>Action: Send Designation Alert</label>
+        <locationX>200</locationX><locationY>800</locationY>
+        <actionName>customNotificationAction</actionName>
+        <actionType>customNotificationAction</actionType>
+        <connector><targetReference>ConfirmationScreen</targetReference></connector>
+        <inputParameters>
+            <name>customNotifTypeId</name>
+            <value><elementReference>GetNotificationType.Id</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>recipientIds</name>
+            <value><elementReference>recipientIds</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>title</name>
+            <value><stringValue>Nueva solicitud de designación Demo/Exhibición</stringValue></value>
+        </inputParameters>
+        <inputParameters>
+            <name>body</name>
+            <value><elementReference>resultMessage</elementReference></value>
+        </inputParameters>
+        <nameSegment>customNotificationAction</nameSegment>
+    </actionCalls>
+    <actionCalls>
+        <name>NotifyFloorManagerRelease</name>
+        <label>Action: Send Release Alert</label>
+        <locationX>800</locationX><locationY>600</locationY>
+        <actionName>customNotificationAction</actionName>
+        <actionType>customNotificationAction</actionType>
+        <connector><targetReference>ConfirmationScreen</targetReference></connector>
+        <inputParameters>
+            <name>customNotifTypeId</name>
+            <value><elementReference>GetNotificationTypeRelease.Id</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>recipientIds</name>
+            <value><elementReference>recipientIds</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>title</name>
+            <value><stringValue>Solicitud de liberación para venta</stringValue></value>
+        </inputParameters>
+        <inputParameters>
+            <name>body</name>
+            <value><stringValue>Hay una nueva solicitud de liberación de unidad Demo/Exhibición pendiente de ejecución.</stringValue></value>
+        </inputParameters>
+        <nameSegment>customNotificationAction</nameSegment>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <assignments>
+        <name>CountUnitsInUse</name>
+        <label>Assignment: Set Current Unit Count</label>
+        <locationX>200</locationX><locationY>500</locationY>
+        <assignmentItems>
+            <assignToReference>currentUnitCount</assignToReference>
+            <operator>AssignCount</operator>
+            <value><elementReference>GetUnitsInTargetStatus</elementReference></value>
+        </assignmentItems>
+        <connector><targetReference>ValidateQuota</targetReference></connector>
+    </assignments>
+    <assignments>
+        <name>SetDesignationRecipients</name>
+        <label>Assignment: Set Designation Recipients</label>
+        <locationX>200</locationX><locationY>700</locationY>
+        <assignmentItems>
+            <assignToReference>recipientIds</assignToReference>
+            <operator>Add</operator>
+            <value><elementReference>floorManagerId</elementReference></value>
+        </assignmentItems>
+        <connector><targetReference>GetNotificationType</targetReference></connector>
+    </assignments>
+    <assignments>
+        <name>SetReleaseRecipients</name>
+        <label>Assignment: Set Release Recipients</label>
+        <locationX>800</locationX><locationY>500</locationY>
+        <assignmentItems>
+            <assignToReference>recipientIds</assignToReference>
+            <operator>Add</operator>
+            <value><elementReference>floorManagerId</elementReference></value>
+        </assignmentItems>
+        <connector><targetReference>GetNotificationTypeRelease</targetReference></connector>
+    </assignments>
+    <choices>
+        <name>ActionAssign</name>
+        <choiceText>Asignar / reasignar a asesor (ventana de 8h hábiles)</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>ASSIGN</stringValue></value>
+    </choices>
+    <choices>
+        <name>ActionCancel</name>
+        <choiceText>Cancelar asignación excepcional (nada cambia de estado/ubicación)</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>CANCEL</stringValue></value>
+    </choices>
+    <choices>
+        <name>ActionRelease</name>
+        <choiceText>Liberar para venta (solicitud al encargado)</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>RELEASE</stringValue></value>
+    </choices>
+    <choices>
+        <name>ActionRequest</name>
+        <choiceText>Solicitar designación Demo / Exhibición</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>REQUEST</stringValue></value>
+    </choices>
+    <choices>
+        <name>TypeDemo</name>
+        <choiceText>Demo</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Demo</stringValue></value>
+    </choices>
+    <choices>
+        <name>TypeExhibition</name>
+        <choiceText>Exhibición</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Exhibicion</stringValue></value>
+    </choices>
+    <decisions>
+        <name>IsQuotaOk</name>
+        <label>Decision: Quota Available?</label>
+        <locationX>200</locationX><locationY>600</locationY>
+        <defaultConnector><targetReference>QuotaFullScreen</targetReference></defaultConnector>
+        <defaultConnectorLabel>Quota full</defaultConnectorLabel>
+        <rules>
+            <name>QuotaOk</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isQuotaAvailable</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><booleanValue>true</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>LogDesignationRequest</targetReference></connector>
+            <label>Available</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>IsUnitFound</name>
+        <label>Decision: Unit Found?</label>
+        <locationX>200</locationX><locationY>200</locationY>
+        <defaultConnector><targetReference>UnitNotFoundScreen</targetReference></defaultConnector>
+        <defaultConnectorLabel>Not found</defaultConnectorLabel>
+        <rules>
+            <name>UnitFound</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetSerializedUnit</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>GetVehicle</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>WhichAction</targetReference></connector>
+            <label>Found</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>WhichAction</name>
+        <label>Decision: Which Action?</label>
+        <locationX>400</locationX><locationY>300</locationY>
+        <defaultConnector><targetReference>CancelScreen</targetReference></defaultConnector>
+        <defaultConnectorLabel>Cancel</defaultConnectorLabel>
+        <rules>
+            <name>DoRequest</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>RequestedAction</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>REQUEST</stringValue></rightValue>
+            </conditions>
+            <connector><targetReference>RequestScreen</targetReference></connector>
+            <label>Request designation</label>
+        </rules>
+        <rules>
+            <name>DoAssign</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>RequestedAction</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>ASSIGN</stringValue></rightValue>
+            </conditions>
+            <connector><targetReference>AssignScreen</targetReference></connector>
+            <label>Assign to advisor</label>
+        </rules>
+        <rules>
+            <name>DoRelease</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>RequestedAction</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>RELEASE</stringValue></rightValue>
+            </conditions>
+            <connector><targetReference>LogReleaseRequest</targetReference></connector>
+            <label>Release for sale</label>
+        </rules>
+    </decisions>
+    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/reassign advisor (SerializedProduct.OwnerId), release for sale (request Task + alert), cancel exceptional assignment (reverts owner, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) default for floorManagerId (per-branch GRP_Sucursal_* groups); (5) AdvisorId/PreviousOwnerId as text inputs - replace with lookups. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented).</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>targetStatus</name>
+        <dataType>String</dataType>
+        <expression>IF({!DesignationType} = 'Demo', 'En demostración', 'En exhibicion')</expression>
+    </formulas>
+    <interviewLabel>Manage Demo Vehicle {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Screen Flow: Manage Demo Vehicle</label>
+    <processType>Flow</processType>
+    <recordLookups>
+        <name>GetNotificationType</name>
+        <label>Get Records: Get Notification Type</label>
+        <locationX>200</locationX><locationY>750</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>NotifyFloorManagerDesignation</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>DemoDesignationAlert</stringValue></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>CustomNotificationType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetNotificationTypeRelease</name>
+        <label>Get Records: Get Notification Type (Release)</label>
+        <locationX>800</locationX><locationY>550</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>NotifyFloorManagerRelease</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>DeveloperName</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>DemoDesignationAlert</stringValue></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>CustomNotificationType</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetSerializedUnit</name>
+        <label>Get Records: Get Serialized Unit</label>
+        <locationX>200</locationX><locationY>100</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>GetVehicle</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>SerialNumber</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>VehicleSerial</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>SerializedProduct</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetUnitsInTargetStatus</name>
+        <label>Get Records: Get Units in Target Status</label>
+        <locationX>200</locationX><locationY>450</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>CountUnitsInUse</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>targetStatus</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Vehicle</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetVehicle</name>
+        <label>Get Records: Get Vehicle</label>
+        <locationX>200</locationX><locationY>150</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>IsUnitFound</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>VehicleSerial</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Vehicle</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>AssignOwnerToAdvisor</name>
+        <label>Update Records: Set Unit Owner to Advisor</label>
+        <locationX>600</locationX><locationY>400</locationY>
+        <connector><targetReference>LogAssignment</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>GetSerializedUnit.Id</elementReference></value>
+        </filters>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value><elementReference>AdvisorId</elementReference></value>
+        </inputAssignments>
+        <object>SerializedProduct</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>RevertOwner</name>
+        <label>Update Records: Revert Unit Owner</label>
+        <locationX>1000</locationX><locationY>400</locationY>
+        <connector><targetReference>LogCancellation</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>GetSerializedUnit.Id</elementReference></value>
+        </filters>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value><elementReference>PreviousOwnerId</elementReference></value>
+        </inputAssignments>
+        <object>SerializedProduct</object>
+    </recordUpdates>
+    <screens>
+        <name>AssignScreen</name>
+        <label>Screen: Assign Advisor</label>
+        <locationX>600</locationX><locationY>350</locationY>
+        <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <connector><targetReference>AssignOwnerToAdvisor</targetReference></connector>
+        <fields>
+            <name>AdvisorId</name>
+            <dataType>String</dataType>
+            <fieldText>Id del asesor (TODO-DAVI: reemplazar por lookup de User)</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>CancelScreen</name>
+        <label>Screen: Cancel Assignment</label>
+        <locationX>1000</locationX><locationY>350</locationY>
+        <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <connector><targetReference>RevertOwner</targetReference></connector>
+        <fields>
+            <name>PreviousOwnerId</name>
+            <dataType>String</dataType>
+            <fieldText>Id del owner a restaurar (TODO-DAVI: derivar de la traza)</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>ConfirmationScreen</name>
+        <label>Screen: Show Confirmation</label>
+        <locationX>500</locationX><locationY>900</locationY>
+        <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <fields>
+            <name>ConfirmationText</name>
+            <fieldText>&lt;p&gt;Acción registrada correctamente. La traza quedó en la Task vinculada al Vehicle.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>MenuScreen</name>
+        <label>Screen: Select Action and Unit</label>
+        <locationX>200</locationX><locationY>50</locationY>
+        <allowBack>false</allowBack><allowFinish>false</allowFinish><allowPause>false</allowPause>
+        <connector><targetReference>GetSerializedUnit</targetReference></connector>
+        <fields>
+            <name>RequestedAction</name>
+            <choiceReferences>ActionRequest</choiceReferences>
+            <choiceReferences>ActionAssign</choiceReferences>
+            <choiceReferences>ActionRelease</choiceReferences>
+            <choiceReferences>ActionCancel</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>¿Qué desea hacer?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>VehicleSerial</name>
+            <dataType>String</dataType>
+            <fieldText>VIN / Número de serie de la unidad (TODO-DAVI: evolucionar a búsqueda CBSF)</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>QuotaFullScreen</name>
+        <label>Screen: Show Quota Full</label>
+        <locationX>400</locationX><locationY>700</locationY>
+        <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <fields>
+            <name>QuotaFullText</name>
+            <fieldText>&lt;p&gt;{!resultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>RequestScreen</name>
+        <label>Screen: Collect Designation Request</label>
+        <locationX>200</locationX><locationY>400</locationY>
+        <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <connector><targetReference>GetUnitsInTargetStatus</targetReference></connector>
+        <fields>
+            <name>DesignationType</name>
+            <choiceReferences>TypeDemo</choiceReferences>
+            <choiceReferences>TypeExhibition</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Tipo de designación</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>BrandName</name>
+            <dataType>String</dataType>
+            <fieldText>Marca (TODO-DAVI: derivar del Vehicle)</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>BranchName</name>
+            <dataType>String</dataType>
+            <fieldText>Sucursal (TODO-DAVI: derivar del Vehicle; usar el nombre del excel de cupos)</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>UnitNotFoundScreen</name>
+        <label>Screen: Show Unit Not Found</label>
+        <locationX>0</locationX><locationY>300</locationY>
+        <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <fields>
+            <name>UnitNotFoundText</name>
+            <fieldText>&lt;p&gt;No se encontró la unidad con el VIN/serial informado. Verifique el dato e intente de nuevo (botón Anterior).&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>200</locationX><locationY>0</locationY>
+        <connector><targetReference>MenuScreen</targetReference></connector>
+    </start>
+    <status>Draft</status>
+    <subflows>
+        <name>LogAssignment</name>
+        <label>Subflow: Log Demo Activity (Assignment)</label>
+        <locationX>600</locationX><locationY>500</locationY>
+        <connector><targetReference>ConfirmationScreen</targetReference></connector>
+        <flowName>LogDemoActivity</flowName>
+        <inputAssignments>
+            <name>actionType</name>
+            <value><stringValue>Asignación</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>activityDetails</name>
+            <value><stringValue>Asignación excepcional de unidad demo a asesor (ventana de 8h hábiles). La Task abierta es el marcador del vencimiento.</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>taskOwnerId</name>
+            <value><elementReference>$User.Id</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>taskStatus</name>
+            <value><stringValue>Not Started</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>vehicleId</name>
+            <value><elementReference>GetVehicle.Id</elementReference></value>
+        </inputAssignments>
+    </subflows>
+    <subflows>
+        <name>LogCancellation</name>
+        <label>Subflow: Log Demo Activity (Cancellation)</label>
+        <locationX>1000</locationX><locationY>500</locationY>
+        <connector><targetReference>ConfirmationScreen</targetReference></connector>
+        <flowName>LogDemoActivity</flowName>
+        <inputAssignments>
+            <name>actionType</name>
+            <value><stringValue>Cancelación</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>activityDetails</name>
+            <value><stringValue>Cancelación de la asignación excepcional. Estado y ubicación sin cambios (Esc.11).</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>taskOwnerId</name>
+            <value><elementReference>$User.Id</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>taskStatus</name>
+            <value><stringValue>Completed</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>vehicleId</name>
+            <value><elementReference>GetVehicle.Id</elementReference></value>
+        </inputAssignments>
+    </subflows>
+    <subflows>
+        <name>LogDesignationRequest</name>
+        <label>Subflow: Log Demo Activity (Designation Request)</label>
+        <locationX>200</locationX><locationY>650</locationY>
+        <connector><targetReference>SetDesignationRecipients</targetReference></connector>
+        <flowName>LogDemoActivity</flowName>
+        <inputAssignments>
+            <name>actionType</name>
+            <value><stringValue>Solicitud de designación</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>activityDetails</name>
+            <value><elementReference>resultMessage</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>taskOwnerId</name>
+            <value><elementReference>floorManagerId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>taskStatus</name>
+            <value><stringValue>Not Started</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>vehicleId</name>
+            <value><elementReference>GetVehicle.Id</elementReference></value>
+        </inputAssignments>
+    </subflows>
+    <subflows>
+        <name>LogReleaseRequest</name>
+        <label>Subflow: Log Demo Activity (Release Request)</label>
+        <locationX>800</locationX><locationY>400</locationY>
+        <connector><targetReference>SetReleaseRecipients</targetReference></connector>
+        <flowName>LogDemoActivity</flowName>
+        <inputAssignments>
+            <name>actionType</name>
+            <value><stringValue>Solicitud de liberación</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>activityDetails</name>
+            <value><stringValue>Solicitud de liberación para venta. Pendiente de ejecución por el encargado de piso (Esc.7).</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>taskOwnerId</name>
+            <value><elementReference>floorManagerId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>taskStatus</name>
+            <value><stringValue>Not Started</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>vehicleId</name>
+            <value><elementReference>GetVehicle.Id</elementReference></value>
+        </inputAssignments>
+    </subflows>
+    <subflows>
+        <name>ValidateQuota</name>
+        <label>Subflow: Validate Demo Quota</label>
+        <locationX>200</locationX><locationY>550</locationY>
+        <connector><targetReference>IsQuotaOk</targetReference></connector>
+        <flowName>ValidateDemoQuota</flowName>
+        <inputAssignments>
+            <name>brandName</name>
+            <value><elementReference>BrandName</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>branchName</name>
+            <value><elementReference>BranchName</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>currentUnitCount</name>
+            <value><elementReference>currentUnitCount</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <name>designationType</name>
+            <value><elementReference>DesignationType</elementReference></value>
+        </inputAssignments>
+        <outputAssignments>
+            <assignToReference>isQuotaAvailable</assignToReference>
+            <name>isQuotaAvailable</name>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>resultMessage</assignToReference>
+            <name>resultMessage</name>
+        </outputAssignments>
+    </subflows>
+    <variables>
+        <name>currentUnitCount</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection><isInput>false</isInput><isOutput>false</isOutput>
+        <scale>0</scale>
+    </variables>
+    <variables>
+        <name>floorManagerId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection><isInput>false</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>isQuotaAvailable</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection><isInput>false</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>recipientIds</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection><isInput>false</isInput><isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>resultMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection><isInput>false</isInput><isOutput>false</isOutput>
+    </variables>
+</Flow>

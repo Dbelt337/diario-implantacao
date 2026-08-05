@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <assignments>
+        <name>CollectExpiredAssignment</name>
+        <label>Assignment: Collect Expired Assignment</label>
+        <locationX>400</locationX><locationY>400</locationY>
+        <assignmentItems>
+            <assignToReference>LoopAssignments.Status</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>Completed</stringValue></value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>expiredAssignments</assignToReference>
+            <operator>Add</operator>
+            <value><elementReference>LoopAssignments</elementReference></value>
+        </assignmentItems>
+        <connector><targetReference>LoopAssignments</targetReference></connector>
+    </assignments>
+    <decisions>
+        <name>AnyExpiredAssignments</name>
+        <label>Decision: Any Expired Assignments?</label>
+        <locationX>200</locationX><locationY>500</locationY>
+        <defaultConnectorLabel>Nothing to release</defaultConnectorLabel>
+        <rules>
+            <name>HasExpired</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>expiredAssignments</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>CloseExpiredTasks</targetReference></connector>
+            <label>Has expired</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>IsAssignmentExpired</name>
+        <label>Decision: Assignment Expired?</label>
+        <locationX>300</locationX><locationY>300</locationY>
+        <defaultConnector><targetReference>LoopAssignments</targetReference></defaultConnector>
+        <defaultConnectorLabel>Still valid</defaultConnectorLabel>
+        <rules>
+            <name>AssignmentExpired</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>isExpired</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><booleanValue>true</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>CollectExpiredAssignment</targetReference></connector>
+            <label>Expired</label>
+        </rules>
+    </decisions>
+    <description>Releases expired exceptional demo assignments (HU-046, RN-4/Esc.5, decision D9a - zero Apex). All countries. The open "[Demo] Asignación" Task is the assignment marker; the 8-business-hours window is simplified to "expires at the same time on the next business day" (WEEKDAY formula, no holidays). Closing the Task ends the assignment. DESIGN NOTES: (1) scheduled flows only support Once/Daily/Weekly - task T10 asked for hourly, which does not exist natively; daily run at 06:00 UTC, validate the up-to-one-day slack with the business; (2) TODO-DAVI: add the SerializedProduct.OwnerId reversal once the Vehicle-to-SerializedProduct link field is confirmed, and the notification to the assignee; (3) SerializedProduct.Status pivot: no status change here (system picklist, see Quote Before Handler notes).</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>isExpired</name>
+        <dataType>Boolean</dataType>
+        <expression>NOW() &gt; ({!LoopAssignments.CreatedDate} + CASE(WEEKDAY(DATEVALUE({!LoopAssignments.CreatedDate})), 6, 3, 7, 2, 1))</expression>
+    </formulas>
+    <interviewLabel>Release Expired Demo Assignments {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Scheduled: Release Expired Demo Assignments</label>
+    <loops>
+        <name>LoopAssignments</name>
+        <label>Loop: Loop Through Open Assignments</label>
+        <locationX>200</locationX><locationY>200</locationY>
+        <collectionReference>GetOpenAssignments</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector><targetReference>IsAssignmentExpired</targetReference></nextValueConnector>
+        <noMoreValuesConnector><targetReference>AnyExpiredAssignments</targetReference></noMoreValuesConnector>
+    </loops>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>GetOpenAssignments</name>
+        <label>Get Records: Get Open Assignment Tasks</label>
+        <locationX>200</locationX><locationY>100</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>LoopAssignments</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Subject</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>[Demo] Asignación</stringValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>NotEqualTo</operator>
+            <value><stringValue>Completed</stringValue></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>CloseExpiredTasks</name>
+        <label>Update Records: Close Expired Tasks</label>
+        <locationX>200</locationX><locationY>600</locationY>
+        <inputReference>expiredAssignments</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>200</locationX><locationY>0</locationY>
+        <connector><targetReference>GetOpenAssignments</targetReference></connector>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2026-08-10</startDate>
+            <startTime>06:00:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+    <status>Draft</status>
+    <variables>
+        <name>expiredAssignments</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection><isInput>false</isInput><isOutput>false</isOutput>
+        <objectType>Task</objectType>
+    </variables>
+</Flow>

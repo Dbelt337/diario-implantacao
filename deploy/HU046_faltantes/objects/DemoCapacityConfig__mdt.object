@@ -3,80 +3,80 @@
     <label>Demo Capacity Config</label>
     <pluralLabel>Demo Capacity Configs</pluralLabel>
     <visibility>Public</visibility>
-    <description>HU-046 T04: cupos de vehiculos Demo/Exhibicion por marca y sucursal. Carga inicial desde el excel de cupos de Grupo Q (open point 1). Mantenimiento via Setup por el perfil designado por la marca.</description>
+    <description>Demo/Exhibition vehicle quotas per brand and branch. Applies to all countries (CR, GT, HN, NI, PA, SV). Initial load from the GrupoQ quota spreadsheet (HU-046, open point 1). Maintained via Setup by the profile designated by each brand. Consumed by the Validate Demo Quota flow.</description>
     <fields>
         <fullName>Brand__c</fullName>
-        <label>Marca</label>
+        <label>Brand</label>
         <type>Text</type>
         <length>80</length>
         <required>true</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
-        <description>Marca del vehiculo (ej. CHEVROLET, ISUZU, HYUNDAI)</description>
+        <description>Vehicle brand (e.g. CHEVROLET, ISUZU, HYUNDAI). All countries. Used as lookup key for demo quota validation (HU-046).</description>
     </fields>
     <fields>
         <fullName>BranchCode__c</fullName>
-        <label>Codigo de Sucursal</label>
+        <label>Branch Code</label>
         <type>Text</type>
         <length>40</length>
         <required>false</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
-        <description>Codigo SAP de la sucursal (ej. C013) - PENDIENTE mapeo nombre-codigo con Grupo Q; el excel de cupos trae el nombre</description>
+        <description>SAP branch code (e.g. C013). All countries. PENDING name-to-code mapping from GrupoQ; the quota spreadsheet provides names only (HU-046).</description>
     </fields>
     <fields>
         <fullName>MaxDemo__c</fullName>
-        <label>Cupo Demo</label>
+        <label>Max Demo</label>
         <type>Number</type>
         <precision>18</precision>
         <scale>0</scale>
         <required>true</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
-        <description>Maximo de unidades en estado En demostracion para la marca+sucursal</description>
+        <description>Maximum number of units in demo status for the brand+branch combination. All countries. Business rule RN-8 (HU-046).</description>
     </fields>
     <fields>
         <fullName>MaxExhibition__c</fullName>
-        <label>Cupo Exhibicion</label>
+        <label>Max Exhibition</label>
         <type>Number</type>
         <precision>18</precision>
         <scale>0</scale>
         <required>true</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
-        <description>Maximo de unidades en estado En exhibicion para la marca+sucursal</description>
+        <description>Maximum number of units in exhibition status for the brand+branch combination. All countries. Business rule RN-8 (HU-046).</description>
     </fields>
     <fields>
         <fullName>MaxDemoMileage__c</fullName>
-        <label>Kilometraje Maximo Demo</label>
+        <label>Max Demo Mileage</label>
         <type>Number</type>
         <precision>18</precision>
         <scale>0</scale>
         <required>false</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
-        <description>T12 (GQ-CA-01-127): km maximo antes de transferir la unidad a Demo venta. Valor por politica de negocio (open point 4)</description>
+        <description>Maximum mileage before the unit is transferred to demo-sale status (GQ-CA-01-127). All countries. Values pending business policy (HU-046, open point 4).</description>
     </fields>
     <fields>
         <fullName>Country__c</fullName>
-        <label>Pais</label>
+        <label>Country</label>
         <type>Text</type>
         <length>2</length>
         <required>true</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
-        <description>Codigo de pais (CR, GT, HN, NI, PA, SV)</description>
+        <description>ISO-style country code (CR, GT, HN, NI, PA, SV). Quotas are defined per country (HU-046).</description>
     </fields>
     <fields>
         <fullName>BranchName__c</fullName>
-        <label>Sucursal</label>
+        <label>Branch Name</label>
         <type>Text</type>
         <length>80</length>
         <required>true</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
-        <description>Nombre de la sucursal segun el excel de cupos (ej. Uruca, Ayarco)</description>
+        <description>Branch name as provided in the GrupoQ quota spreadsheet (e.g. Uruca, Ayarco). All countries. Lookup key for demo quota validation (HU-046).</description>
     </fields>
     <fields>
         <fullName>Comments__c</fullName>
-        <label>Comentarios</label>
+        <label>Comments</label>
         <type>Text</type>
         <length>255</length>
         <required>false</required>
         <fieldManageability>SubscriberControlled</fieldManageability>
-        <description>Comentarios del excel (ej. Sucursal Cerrada)</description>
+        <description>Comments carried over from the GrupoQ quota spreadsheet (e.g. closed branch). Traceability only (HU-046).</description>
     </fields>
 </CustomObject>

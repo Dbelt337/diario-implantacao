@@ -122,6 +122,8 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - [ ] Frequência/backoff de reintentos + mecanismo e SLA de escalamiento (HU-119)
 - [ ] Performance HU-028: 3s com 20 materiais; reconsulta multi-material ao trocar moeda
 
+**⚠️ MUDANÇA DE DESENHO 05/08 (HU-046):** print provou que `SerializedProduct.Status` é picklist de SISTEMA — página do campo SEM seção de valores/botão New → "Allocated" NÃO pode ser criado. Pivô aplicado nos flows: máquina de estados única em `Vehicle.Status` (En demostración / En exhibicion / Demo venta — valores já criados pelo Diego); janela 8h = SP.OwnerId + Task aberta "[Demo] Asignación" como marcador; guarda de venta checa Vehicle.Status. Alternativa descartada por ora: campo custom no SP. **Meli precisa saber: a redação da HU muda de novo** (não é SP.Status+Allocated). Pacote reescrito 100% na convenção GRPQM (metadata EN, flows sem prefixo de projeto: ValidateDemoQuota, LogDemoActivity, QuoteBeforeHandler, ReleaseExpiredDemoAssignments, ManageDemoVehicle, ExecuteDemoRequest; textos de usuário ES).
+
 **Ajuste documental pendente:** reescrever RN-54 (aviso por integração, não "fuera del sistema") + cenário da notificação de ida.
 
 **Dúvidas do cliente já respondidas por chat (05/08):** cotización por correo/WhatsApp → história de comunicações (WhatsApp = Digital Engagement, licença à parte); N códigos em 1 cotización → 1 registro por material, UX agrupa; SLA por estado → parametrizar junto com escalamiento.
