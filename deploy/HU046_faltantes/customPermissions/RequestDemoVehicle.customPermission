@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Request Demo Vehicle</label>
+    <description>HU-046 T05: habilita la entrada a la pantalla de gerencia (Screen Flow Gestionar Vehiculo Demo). Asignar a los Permission Sets de Gerente de sucursal, Gerente de marca, Director y VP. Sin approval process.</description>
+    <isLicensed>false</isLicensed>
+</CustomPermission>

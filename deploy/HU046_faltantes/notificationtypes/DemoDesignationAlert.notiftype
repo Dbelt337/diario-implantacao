@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>DemoDesignationAlert</customNotifTypeName>
+    <masterLabel>Demo Designation Alert</masterLabel>
+    <description>HU-046 T09: aviso al encargado de piso de la sucursal ante nueva solicitud de designacion Demo/Exhibicion (patron T14 de la HU-045). Desktop + Mobile.</description>
+    <desktop>true</desktop>
+    <mobile>true</mobile>
+</CustomNotificationType>

@@ -128,6 +128,13 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 
 ---
 
+## 3b. HU-046 — Auto Demo/Exhibición (frente do Davi, 05/08)
+
+- **Tarefas v2 sólidas** (planilha no Teams): zero objeto custom, zero campo custom, zero Apex novo (com D9a); CBSF nativo + Vehicle Transfer + 2 screen flows + 2 subflows + CMDT de cupos + custom error em Quote
+- **Dúvida do Davi (AllocationStatus)**: o campo EXISTE no Object Manager (contradiz o describe da D1), mas ele não consegue gravar valor → diagnóstico via describe (isUpdateable/picklist values) definido; decisão: se não gravável, mantém D1/T03 (Status + "Allocated"); se gravável, HU volta ao texto original
+- **Pacote deploy criado**: `deploy/HU046_faltantes/` (+ zip) — DemoCapacityConfig__mdt (5 campos), CustomPermission RequestDemoVehicle, CustomNotificationType DemoDesignationAlert, 1 registro CMDT de exemplo; BusinessHours fora de propósito (D9a recomendada; dado de Setup)
+- Pós-deploy manual: valores de picklist standard (T03), permission nos PS de gerência, FLS do CMDT, carga real de cupos
+
 ## 4. Inventário de artefatos deste repo
 
 | Caminho | Conteúdo |

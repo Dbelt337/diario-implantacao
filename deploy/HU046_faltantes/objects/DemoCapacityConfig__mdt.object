@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Demo Capacity Config</label>
+    <pluralLabel>Demo Capacity Configs</pluralLabel>
+    <visibility>Public</visibility>
+    <description>HU-046 T04: cupos de vehiculos Demo/Exhibicion por marca y sucursal. Carga inicial desde el excel de cupos de Grupo Q (open point 1). Mantenimiento via Setup por el perfil designado por la marca.</description>
+    <fields>
+        <fullName>Brand__c</fullName>
+        <label>Marca</label>
+        <type>Text</type>
+        <length>80</length>
+        <required>true</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>Marca del vehiculo (ej. CHEVROLET, ISUZU, HYUNDAI)</description>
+    </fields>
+    <fields>
+        <fullName>BranchCode__c</fullName>
+        <label>Codigo de Sucursal</label>
+        <type>Text</type>
+        <length>40</length>
+        <required>true</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>Codigo de la sucursal (ej. C013)</description>
+    </fields>
+    <fields>
+        <fullName>MaxDemo__c</fullName>
+        <label>Cupo Demo</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <required>true</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>Maximo de unidades en estado En demostracion para la marca+sucursal</description>
+    </fields>
+    <fields>
+        <fullName>MaxExhibition__c</fullName>
+        <label>Cupo Exhibicion</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <required>true</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>Maximo de unidades en estado En exhibicion para la marca+sucursal</description>
+    </fields>
+    <fields>
+        <fullName>MaxDemoMileage__c</fullName>
+        <label>Kilometraje Maximo Demo</label>
+        <type>Number</type>
+        <precision>18</precision>
+        <scale>0</scale>
+        <required>false</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>T12 (GQ-CA-01-127): km maximo antes de transferir la unidad a Demo venta. Valor por politica de negocio (open point 4)</description>
+    </fields>
+</CustomObject>
