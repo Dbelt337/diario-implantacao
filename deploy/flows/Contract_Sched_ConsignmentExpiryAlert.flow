@@ -44,7 +44,6 @@
         <nameSegment>customNotificationAction</nameSegment>
     </actionCalls>
     <apiVersion>62.0</apiVersion>
-    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Set_Recipients</name>
         <label>Destinatario: grupo Gerente de Usados</label>
