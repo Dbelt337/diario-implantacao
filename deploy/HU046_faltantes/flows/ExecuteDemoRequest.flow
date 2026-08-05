@@ -260,7 +260,7 @@
         <name>SelectionScreen</name>
         <label>Screen: Select Request and Action</label>
         <locationX>200</locationX><locationY>50</locationY>
-        <allowBack>false</allowBack><allowFinish>false</allowFinish><allowPause>false</allowPause>
+        <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <connector><targetReference>GetVehicleExec</targetReference></connector>
         <fields>
             <name>SelectedRequest</name>

@@ -371,7 +371,7 @@
         <name>MenuScreen</name>
         <label>Screen: Select Action and Unit</label>
         <locationX>200</locationX><locationY>50</locationY>
-        <allowBack>false</allowBack><allowFinish>false</allowFinish><allowPause>false</allowPause>
+        <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <connector><targetReference>GetSerializedUnit</targetReference></connector>
         <fields>
             <name>RequestedAction</name>

@@ -45,6 +45,7 @@
             <field>WhatId</field>
             <value><elementReference>vehicleId</elementReference></value>
         </inputAssignments>
+        <object>Task</object>
     </recordCreates>
     <start>
         <locationX>200</locationX><locationY>0</locationY>

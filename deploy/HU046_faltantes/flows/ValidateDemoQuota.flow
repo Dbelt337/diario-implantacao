@@ -10,7 +10,7 @@
             <operator>Assign</operator>
             <value><elementReference>GetDemoCapacity.MaxDemo__c</elementReference></value>
         </assignmentItems>
-        <connector><targetReference>IsQuotaAvailable</targetReference></connector>
+        <connector><targetReference>EvaluateQuota</targetReference></connector>
     </assignments>
     <assignments>
         <name>SetQuotaToMaxExhibition</name>
@@ -21,7 +21,7 @@
             <operator>Assign</operator>
             <value><elementReference>GetDemoCapacity.MaxExhibition__c</elementReference></value>
         </assignmentItems>
-        <connector><targetReference>IsQuotaAvailable</targetReference></connector>
+        <connector><targetReference>EvaluateQuota</targetReference></connector>
     </assignments>
     <assignments>
         <name>SetResultAvailable</name>
@@ -69,7 +69,7 @@
         </assignmentItems>
     </assignments>
     <decisions>
-        <name>IsQuotaAvailable</name>
+        <name>EvaluateQuota</name>
         <label>Decision: Quota Available?</label>
         <locationX>300</locationX><locationY>500</locationY>
         <defaultConnector><targetReference>SetResultQuotaFull</targetReference></defaultConnector>
