@@ -136,6 +136,8 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - Pós-deploy manual: valores de picklist standard (T03), permission nos PS de gerência, FLS do CMDT
 - **Estratégia de empacotamento (05/08)**: quase tudo é empacotável via retrieve→editar→deploy (flows, PS, FHT nos .object, BusinessHoursSettings se D9b). **Única exceção real: picklists standard T03** (Vehicle.Status / SerializedProduct.Status fora da lista de StandardValueSet) → passo manual do runbook. Fluxo: deploy do zip → Davi constrói flows → retrieve final consolidado versionado aqui = artefato de promoção QA/UAT/Prod
 - ⚠️ Armadilha encontrada: package.xml do Davi veio com tags TRADUZIDAS pelo auto-translate (tipos/membros/nome) — XML copiado de tela traduzida não sobe; usar sempre o package.xml do zip
+- **6 FLOWS CONSTRUÍDOS 05/08 (status Draft, no pacote)**: 2 subflows (ValidarCupo — recebe a contagem do caller; RegistrarTraza — Task padronizada), RT Quote guarda de venta (custom error + bypass; wire do campo Quote→unidade em A_TODO_SetUnidad), Scheduled liberar vencidas (D9a WEEKDAY; ATENÇÃO: scheduled flow só roda Once/Daily/Weekly — 'horário' do T10 não existe nativamente, corrida diária), 2 screen flows (gerência 4 ramas + encargado). TODOs-DAVI concentrados e documentados na description de cada flow
+- ⚠️ **T03 executado com API names inconsistentes**: "En exhibicion" criado SEM acento vs existentes COM acento ("En demostración"). Flows usam os valores EXATOS criados; se renomearem, atualizar as fórmulas fx_Estado*. T12 (fin de ciclo) não construído — bloqueado pela D6 (campo de km)
 
 ## 4. Inventário de artefatos deste repo
 
