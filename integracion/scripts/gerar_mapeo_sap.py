@@ -110,7 +110,8 @@ h_cuentas=tab('Cuentas (sociedades, dealers, clientes)',cuentas,'Describe comple
 
 # ---- Hoja 3: Vehículo + Asset ----
 veh=[
- (['VLCVEHICLE-VIN','Vehicle.Name','Name','VIN 17 chars (ISO 3779); el punto (.) del re-ingreso queda SOLO en SAP','CLAVE DE UPSERT (unique en la org)','LISTO','identidad de la unidad'],False),
+ (['VLCVEHICLE-VIN','Vehicle.VehicleIdentificationNumber','Text','VIN 17 chars (ISO 3779); el punto (.) del re-ingreso queda SOLO en SAP','CLAVE DE UPSERT (unicidad de la unidad)','LISTO','CORRECCION 07/08: el VIN vive en VehicleIdentificationNumber (standard), NO en Name'],False),
+ (['descripcion de la unidad','Vehicle.Name','Name','nombre descriptivo (marca+modelo) o el VIN, a definir en la carga','busqueda por nombre en las pantallas HU-046','DEFINIR','las pantallas buscan VIN O Name'],True),
  (['nº inventario VMS','Vehicle.StockCode','Text','número de inventario SAP','por VIN','LISTO','re-ingreso usado = MISMO Vehicle, StockCode nuevo (HU-045 D2)'],False),
  (['id origen','Vehicle.SourceSystemIdentifier','Text','id del registro en SAP','—','LISTO','T18 HU-045'],False),
  (['WERKS del stock','Vehicle.CurrentOwnerId','Lookup(Account)','resolver dealer por código de centro','vía AccountNumber/External ID','PENDIENTE códigos','posesión operativa; alimenta cupos demo HU-046'],True),
