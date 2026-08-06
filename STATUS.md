@@ -164,6 +164,10 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - 🔒 NÃO construído POR DESIGN (bloqueado por dados/decisão, não por dev): T12 fin de ciclo (espera D6: km máximo + campo odômetro), wire B v2 derivação marca/sucursal (espera carga real de inventário + códigos SAP), rollout GT/HN/NI/PA.
 - O resto do runbook é clique de Setup/ativação (Davi), não desenvolvimento.
 
+### Estado de fechamento da HU-046 (06/08, fim do dia)
+- **Planilhas de dados ENVIADAS AO CLIENTE pelo Diego** (mapeo cupos×cuentas + códigos SAP de centros). QUANDO O CLIENTE RESPONDER: preencher BranchCode__c dos 158 cupos + regerar CMDT + fechar o de-para → **a HU termina** (restam cliques de Setup do runbook + execução do teste).
+- **Roteiro de teste unitário em TEXTO**: `hu046/ROTEIRO_TESTE_UNITARIO.md` — 6 etapas (~75 min): 0 pré-condições (subir 2 zips, ativar na ordem, dados DEMO-TEST, 4 usuários), 1 guarda OBH primeiro (7 verificações), 2 ciclo feliz solicitar→designar→liberar→Opp com Vehiculo__c, 3 limites (cupo cheio/sem cupo/VIN errado/asignar-cancelar), 4 scheduled via Debug + permissões, 5 regressão HU-025+Repuestos (não pular). Avisos: Debug de tela faz DML real; rollback mode p/ handler; acentos literais; prod sobe inativo; limpar DEMO-TEST ao final.
+
 ### Plan de pruebas HU-046 (06/08) — `hu046/GrupoQ_HU046_Plan_de_Pruebas.xlsx`
 - 36 casos em 9 suítes: PRE (setup), MDV (tela gerência, 8), EDR (tela encargado, 6), OBH (guarda Opportunity, 9 — incl. RT Repuestos isento, bypass x2, não-redisparo, liberação não bloqueada), SCH (scheduled WEEKDAY, 3), LOG (traza), PSV (permissões 3), REG (regressão VR HU-025 + fluxo Repuestos, 3), FHT.
 - Hoja Preparación: dados DEMO-TEST-001..004 (4 status), CMDT TEST MaxDemo=1 p/ cupo lleno, usuários U1 gerente/U2 encargado/U3 sem PS/U4 bypass; guia de como testar flow sem Apex (Debug de tela executa DML REAL; record-triggered com rollback mode; scheduled via Debug); ordem de ativação; nota de release (deploy ativo em prod exige flow test coverage 75% — default é inativo).
