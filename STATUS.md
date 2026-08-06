@@ -202,6 +202,18 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 | 16 | Data fix: espaço duplo em "GrupoQ Active Motors  Managua" | Admin GQ | — |
 | 17 | Congelar API names de picklist ("En exhibicion" sem acento); se renomear, atualizar fórmulas dos flows | Davi/Meli | decisão |
 
+## 3c. HU-045 — Auto Registro de Vehículo Usado (frente do Santiago Pelaez, 06/08)
+
+- **Estado (msg Santiago 06/08)**: T03/T04/T05/T06/T08/T14 + Platform Event T20 construídos e testados em DEV. Bloqueado para o T10 (screen flow de alta) por 4 definições. Planilha de referência: HU045_Tarefas_Tecnicas_v3_1.xlsx (22 tarefas, decisões D1-D12, saldo 1-3 campos custom).
+- **Achado do Santiago**: cadeia real de criação Product2 → VehicleDefinition → Asset → Vehicle (AssetId e VehicleDefinitionId nillable=false; confirma D8 master-detail). Catálogo tem 224 VD só de marcas NOVAS.
+- **RESPOSTAS DADAS (06/08)**:
+  1. **VD para usados = Op.2 (genérico)**: 1 VehicleDefinition "Used Vehicle" + 1 Product2 "Used Vehicle" compartilhados; marca/modelo/ano reais nos campos NATIVOS do Vehicle (Make/Model/ModelYear — D7). Nuance RN5: unidade ex-GQ (demo→usado, re-ingreso) MANTÉM a VD real (D2 atualiza o MESMO Vehicle) — o genérico é só para terceiros fora do catálogo. Evolução reversível p/ genérico-por-marca se relatório por marca de usados virar requisito (manteria cadeia BusinessBrand).
+  2. **Appraisal**: ReferenceRecordId = Account do vendedor/consignante (capturada na tela; não CurrentOwnerId pós-transferência); unidade via AppraisalItem.ReferenceRecordId = Vehicle (RN3 ok). PurposeType: TESTAR alta de valor (1 clic, como D11) — se restricted, morre a Opção A do T01 e reforça D4=B. Reuso: buscar Appraisal vigente (ValidityEndDate>=hoje) via AppraisalItem→Vehicle; criar só se não existe (trade-in já vem do HU-036).
+  3. **D4 = Opção B** (Vehicle.AcquisitionType): requisito literal GQ-CA-01-153 (list view não cruza objetos), tipo de aquisição é propriedade da UNIDADE (não do evento de avaliação), PurposeType possivelmente restricted. Valores: Compra directa/Trade-in/Consignacion.
+  4. **D6 = campo CommissionRate (Percent)** recomendado — comissão de consignação é número de liquidação (calculável/reportável); SpecialTerms como complemento textual. Pergunta única p/ Meli: "¿la comisión se calcula/reporta o solo se registra?".
+  5. **T09**: lista de almacenes por sociedad = dado do cliente (Location referenciada por Asset.LocationId) — pedir junto com as outras 2 planilhas na thread GrupoQ (sociedad, nombre, código SAP si existe).
+- Sinergia com HU-046: mesma malha (Vehicle.Status, Accounts dealer/sociedade, Bypass_Gates_Automacao, padrão de gates HU-025); T15 (baja al cerrar venta) usa o padrão do OpportunityBeforeHandler.
+
 ## 4. Inventário de artefatos deste repo
 
 | Caminho | Conteúdo |
