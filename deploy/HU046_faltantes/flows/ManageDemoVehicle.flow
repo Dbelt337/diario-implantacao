@@ -201,7 +201,22 @@
             <label>Release for sale</label>
         </rules>
     </decisions>
-    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/reassign advisor (SerializedProduct.OwnerId), release for sale (request Task + alert), cancel exceptional assignment (reverts owner, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) default for floorManagerId (per-branch GRP_Sucursal_* groups); (5) AdvisorId/PreviousOwnerId as text inputs - replace with lookups. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented).</description>
+    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/reassign advisor (SerializedProduct.OwnerId), release for sale (request Task + alert), cancel exceptional assignment (reverts owner, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) default for floorManagerId (per-branch GRP_Sucursal_* groups); (5) RESOLVED 06/08: AdvisorId/PreviousOwnerId are User dropdowns (ActiveUserChoices, IsActive=true sorted by Name) - refine the filter later (e.g., sales profile/role or branch) if the user list grows. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented).</description>
+    <dynamicChoiceSets>
+        <name>ActiveUserChoices</name>
+        <dataType>String</dataType>
+        <displayField>Name</displayField>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>IsActive</field>
+            <operator>EqualTo</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
+        <object>User</object>
+        <sortField>Name</sortField>
+        <sortOrder>Asc</sortOrder>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
         <name>targetStatus</name>
@@ -333,9 +348,10 @@
         <connector><targetReference>AssignOwnerToAdvisor</targetReference></connector>
         <fields>
             <name>AdvisorId</name>
+            <choiceReferences>ActiveUserChoices</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Id del asesor (User Id)</fieldText>
-            <fieldType>InputField</fieldType>
+            <fieldText>Asesor (seleccione el usuario)</fieldText>
+            <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter><showHeader>true</showHeader>
@@ -348,9 +364,10 @@
         <connector><targetReference>RevertOwner</targetReference></connector>
         <fields>
             <name>PreviousOwnerId</name>
+            <choiceReferences>ActiveUserChoices</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Id del owner a restaurar (User Id)</fieldText>
-            <fieldType>InputField</fieldType>
+            <fieldText>Owner a restaurar (seleccione el usuario)</fieldText>
+            <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
         <showFooter>true</showFooter><showHeader>true</showHeader>
