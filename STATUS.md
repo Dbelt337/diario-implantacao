@@ -165,6 +165,7 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - O resto do runbook é clique de Setup/ativação (Davi), não desenvolvimento.
 
 ### Estado de fechamento da HU-046 (06/08, fim do dia)
+- **Acabamento pré-validação (06/08)**: TODO-DAVI removidos dos LABELS visíveis da tela ManageDemoVehicle (5 fieldText: marca, sucursal, VIN, asesor, owner — agora com dica de formato p/ o usuário; as notas de evolução v2 continuam na description do flow). Zip standalone `HU046_flow_manage.zip`. REGRA: nota de dev vai na description, nunca no fieldText.
 - **Planilhas de dados ENVIADAS AO CLIENTE pelo Diego** (mapeo cupos×cuentas + códigos SAP de centros). QUANDO O CLIENTE RESPONDER: preencher BranchCode__c dos 158 cupos + regerar CMDT + fechar o de-para → **a HU termina** (restam cliques de Setup do runbook + execução do teste).
 - **Roteiro de teste unitário em TEXTO**: `hu046/ROTEIRO_TESTE_UNITARIO.md` — 6 etapas (~75 min): 0 pré-condições (subir 2 zips, ativar na ordem, dados DEMO-TEST, 4 usuários), 1 guarda OBH primeiro (7 verificações), 2 ciclo feliz solicitar→designar→liberar→Opp com Vehiculo__c, 3 limites (cupo cheio/sem cupo/VIN errado/asignar-cancelar), 4 scheduled via Debug + permissões, 5 regressão HU-025+Repuestos (não pular). Avisos: Debug de tela faz DML real; rollback mode p/ handler; acentos literais; prod sobe inativo; limpar DEMO-TEST ao final.
 
