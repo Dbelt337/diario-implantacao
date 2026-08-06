@@ -16,6 +16,10 @@
             <value><elementReference>recipientIds</elementReference></value>
         </inputParameters>
         <inputParameters>
+            <name>targetId</name>
+            <value><elementReference>GetVehicle.Id</elementReference></value>
+        </inputParameters>
+        <inputParameters>
             <name>title</name>
             <value><stringValue>Nueva solicitud de designación Demo/Exhibición</stringValue></value>
         </inputParameters>
@@ -39,6 +43,10 @@
         <inputParameters>
             <name>recipientIds</name>
             <value><elementReference>recipientIds</elementReference></value>
+        </inputParameters>
+        <inputParameters>
+            <name>targetId</name>
+            <value><elementReference>GetVehicle.Id</elementReference></value>
         </inputParameters>
         <inputParameters>
             <name>title</name>
