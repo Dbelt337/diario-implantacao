@@ -1,0 +1,56 @@
+﻿Pais;Marca(CMDT);Sucursal(CMDT);Account dealer proposta;Sociedade;Status;Observacao
+CR;CADILLAC;Ayarco;GrupoQ Ayarco;C101;OK;
+CR;CHEVROLET;Ayarco;GrupoQ Ayarco;C101;OK;
+CR;HYUNDAI;Ayarco;GrupoQ Ayarco;C101;OK;
+CR;CHEVROLET;Guapiles;GrupoQ Guapiles;C101;OK;
+CR;FORLAND;Guapiles;GrupoQ Forland Guapiles;C105;OK;conta dedicada da marca
+CR;HYUNDAI;Guapiles;GrupoQ Guapiles;C101;OK;
+CR;ISUZU;Guapiles;GrupoQ Guapiles;C101;OK;
+CR;CHEVROLET;Liberia;GrupoQ Liberia;C101;OK;
+CR;FORLAND;Liberia;GrupoQ Forland Liberia;C105;OK;conta dedicada da marca
+CR;GWM;Liberia;???;?;AMBIGUO;"sem conta GWM; candidatas: GrupoQ Liberia (C101) ou GrupoQ Forland Liberia (C105)"
+CR;HYUNDAI;Liberia;GrupoQ Liberia;C101;OK;
+CR;ISUZU;Liberia;GrupoQ Liberia;C101;OK;
+CR;CADILLAC;Lindora;GrupoQ Lindora;C101;OK;
+CR;CHEVROLET;Lindora;GrupoQ Lindora;C101;OK;
+CR;HYUNDAI;Lindora;GrupoQ Lindora;C101;OK;
+CR;CHEVROLET;PerezZeledon;GrupoQ Perez Zeledon;C101;OK;
+CR;FORLAND;PerezZeledon;GrupoQ Forland Perez Zeledon;C105;OK;conta dedicada da marca
+CR;HYUNDAI;PerezZeledon;GrupoQ Perez Zeledon;C101;OK;
+CR;ISUZU;PerezZeledon;GrupoQ Perez Zeledon;C101;OK;
+CR;CHEVROLET;SanCarlos;GrupoQ San Carlos;C101;OK;
+CR;FORLAND;SanCarlos;GrupoQ Forland San Carlos;C105;OK;conta dedicada da marca
+CR;HYUNDAI;SanCarlos;GrupoQ San Carlos;C101;OK;
+CR;ISUZU;SanCarlos;GrupoQ San Carlos;C101;OK;
+CR;ARCFOX;Terrazas;GrupoQ Terrazas Lindora;C105;PROPOSTO;showroom Terrazas fica em Lindora? confirmar
+CR;GWM;Terrazas;GrupoQ Terrazas Lindora;C105;PROPOSTO;showroom Terrazas fica em Lindora? confirmar
+CR;CADILLAC;Uruca;GrupoQ La Uruca;C101;OK;
+CR;CHEVROLET;Uruca;GrupoQ La Uruca;C101;OK;
+CR;FORLAND;Uruca;GrupoQ Forland La Uruca Sucursal Central;C105;OK;conta dedicada da marca
+CR;HYUNDAI;Uruca;GrupoQ La Uruca;C101;OK;
+CR;ISUZU;Uruca;GrupoQ La Uruca;C101;OK;
+NI;CHERY;Managua;GrupoQ Active Motors  Managua;N105;PROPOSTO;"única conta NI; multi-marca? confirmar (nome tem espaço duplo)"
+NI;CHEVROLET;Managua;GrupoQ Active Motors  Managua;N105;PROPOSTO;"única conta NI; multi-marca? confirmar (nome tem espaço duplo)"
+NI;FORLAND;Managua;GrupoQ Active Motors  Managua;N105;PROPOSTO;"única conta NI; multi-marca? confirmar (nome tem espaço duplo)"
+NI;NISSAN;Managua;GrupoQ Active Motors  Managua;N105;PROPOSTO;"única conta NI; multi-marca? confirmar (nome tem espaço duplo)"
+NI;CHERY;Chinandega;SEM CONTA;-;GAP;criar Account dealer no rollout
+NI;CHEVROLET;Chinandega;SEM CONTA;-;GAP;criar Account dealer no rollout
+NI;FORLAND;Chinandega;SEM CONTA;-;GAP;criar Account dealer no rollout
+NI;NISSAN;Chinandega;SEM CONTA;-;GAP;criar Account dealer no rollout
+NI;CHEVROLET;Esteli;SEM CONTA;-;GAP;criar Account dealer no rollout
+NI;NISSAN;Esteli;SEM CONTA;-;GAP;criar Account dealer no rollout
+GT;(todas);(todas);SEM CONTA;-;GAP;33 cupos sem Account dealer — rollout
+HN;(todas);(todas);SEM CONTA;-;GAP;26 cupos sem Account dealer — rollout
+PA;(todas);(todas);SEM CONTA;-;GAP;26 cupos sem Account dealer — rollout
+SV;(todas);(todas);SEM CONTA;-;GAP;33 cupos sem Account dealer — rollout
+
+--- CONTAS DEALER SEM LINHA DE CUPO ---
+Account;Sociedade;Observacao
+GrupoQ La Uruca Repuestos;C101;repuestos — fora do escopo demo (só veículos novos)
+GrupoQ Uruca Flotas;C101;flotas — fora do escopo demo? confirmar
+GrupoQ Uruca Usados;C101;usados — fora do escopo (demo é veículo novo)
+GrupoQ Active Motors Paseo Las Flores;C105;SEM linha de cupo no excel — GrupoQ confirmar se faz demo
+GrupoQ Active Motors SABANA;C105;SEM linha de cupo no excel — confirmar
+GrupoQ Active Motors Sucursal Central;C105;SEM linha de cupo no excel — confirmar
+GrupoQ Vehiculos La Uruca;C105;qual marca/linha? SEM cupo — confirmar
+GrupoQ Ventas Guapiles;C105;qual marca/linha? SEM cupo — confirmar
