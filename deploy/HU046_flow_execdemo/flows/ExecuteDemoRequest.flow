@@ -111,7 +111,7 @@
     <formulas>
         <name>opportunityName</name>
         <dataType>String</dataType>
-        <expression>'Venta unidad demo ' &amp; {!UnitSerial}</expression>
+        <expression>'Venta unidad demo ' &amp; {!GetVehicleExec.VehicleIdentificationNumber}</expression>
     </formulas>
     <interviewLabel>Execute Demo Request {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Screen Flow: Execute Demo Request</label>
@@ -165,21 +165,32 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <name>GetSelectedTask</name>
+        <label>Get Records: Get Selected Request Task</label>
+        <locationX>200</locationX><locationY>75</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>GetVehicleExec</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>SelectedRequest</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>GetVehicleExec</name>
         <label>Get Records: Get Vehicle</label>
         <locationX>200</locationX><locationY>100</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>IsUnitFoundExec</targetReference></connector>
-        <filterLogic>or</filterLogic>
+        <filterLogic>and</filterLogic>
         <filters>
-            <field>VehicleIdentificationNumber</field>
+            <field>Id</field>
             <operator>EqualTo</operator>
-            <value><elementReference>UnitSerial</elementReference></value>
-        </filters>
-        <filters>
-            <field>Name</field>
-            <operator>EqualTo</operator>
-            <value><elementReference>UnitSerial</elementReference></value>
+            <value><elementReference>GetSelectedTask.WhatId</elementReference></value>
         </filters>
         <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Vehicle</object>
@@ -275,7 +286,7 @@
         <label>Screen: Select Request and Action</label>
         <locationX>200</locationX><locationY>50</locationY>
         <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
-        <connector><targetReference>GetVehicleExec</targetReference></connector>
+        <connector><targetReference>GetSelectedTask</targetReference></connector>
         <fields>
             <name>SelectionScreenTitle</name>
             <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Ejecutar solicitud Demo / Exhibición&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
@@ -299,52 +310,38 @@
             <isRequired>true</isRequired>
         </fields>
         <fields>
-            <name>UnitSerialSection</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>UnitSerialSectionCol1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>UnitSerial</name>
-                    <dataType>String</dataType>
-                    <fieldText>VIN o nombre de la unidad</fieldText>
-                    <fieldType>InputField</fieldType>
-                    <helpText>&lt;p&gt;Busca por VIN (17 caracteres) o por el nombre exacto de la unidad.&lt;/p&gt;</helpText>
-                    <isRequired>true</isRequired>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value><stringValue>4</stringValue></value>
-                </inputParameters>
-            </fields>
-            <fields>
-                <name>UnitSerialSectionCol2</name>
-                <fieldType>Region</fieldType>
-                <inputParameters>
-                    <name>width</name>
-                    <value><stringValue>8</stringValue></value>
-                </inputParameters>
-            </fields>
-            <isRequired>false</isRequired>
-            <regionContainerType>SectionWithoutHeader</regionContainerType>
-        </fields>
-        <fields>
             <name>SelectedType</name>
             <choiceReferences>TypeDemoExec</choiceReferences>
             <choiceReferences>TypeExhibitionExec</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Si es designación: tipo</fieldText>
+            <fieldText>Tipo de designación</fieldText>
             <fieldType>RadioButtons</fieldType>
             <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>SelectedAction</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue><stringValue>DESIGNATE</stringValue></rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <fields>
             <name>ReleaseStatus</name>
             <choiceReferences>StatusDealer</choiceReferences>
             <choiceReferences>StatusDemoSale</choiceReferences>
             <dataType>String</dataType>
-            <fieldText>Si es liberación: estado destino del Vehicle (decisión D4)</fieldText>
+            <fieldText>Estado destino del Vehicle (decisión D4)</fieldText>
             <fieldType>RadioButtons</fieldType>
             <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>SelectedAction</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue><stringValue>RELEASE</stringValue></rightValue>
+                </conditions>
+            </visibilityRule>
         </fields>
         <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
@@ -360,7 +357,7 @@
         </fields>
         <fields>
             <name>UnitNotFoundExecText</name>
-            <fieldText>&lt;p&gt;No se encontró la unidad con el VIN/serial informado. Vuelva atrás y verifique.&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;La solicitud seleccionada no está vinculada a una unidad válida. Vuelva atrás y verifique la Task.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter><showHeader>false</showHeader>
