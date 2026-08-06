@@ -158,6 +158,17 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - **VALIDATION RULE LIDA (06/08) — desenho 100% confirmado e alinhado**: `Opp_Retail_Vehiculo_Cotizacion` (HU-025 R1 B3.7, Santiago Pelaez): AND(RT=GQOpportunitiesAutos, NOT($Permission.Bypass_Gates_Automacao), OR(Cotización Confirmada sem OLI, **Reserva Confirmada com Vehiculo__c em branco**)). Aprendizados: (1) em Autos a cotización é NÍVEL MODELO (exige OpportunityLineItem) e a UNIDADE entra na **Reserva Confirmada** — exatamente o padrão indústria (quote modelo, VIN no desking); é aí que a guarda morde; (2) a VR usa o MESMO scoping por RT que a guarda v2 — consistente; (3) **a org já tem padrão de bypass: custom permission `Bypass_Gates_Automacao`** → OpportunityBeforeHandler v3: decisão de bypass agora aceita BypassAllocationValidation (demo-específico) OU Bypass_Gates_Automacao (padrão org) — quem já bypassa os gates da HU-025 bypassa o nosso também, sem novo setup de integração. Cadeia final para a HU (Meli): CBSF filtra seleção → guarda bloqueia link de unidade demo (RT Autos) → VR exige unidade na Reserva Confirmada.
 - **Exposição das telas (respondido 05/08)**: App Page "Vehículos Demo" (App Builder) com componente Flow → Manage Demo Vehicle + component visibility `{!$Permission.RequestDemoVehicle}`; 2ª App Page/tab para Execute Demo Request; Quick Action tipo Flow no Vehicle fica para v2 (junto com CBSF/T01). Personas: Manage = gerente de sucursal/marca, director, VP (PS_Demo_Vehicle_Management); Execute = encargado de piso (PS_Demo_Vehicle_Execution).
 
+### Balanço de DESENVOLVIMENTO da HU-046 (06/08) — TUDO CONSTRUÍDO
+- ✅ Construído e NA ORG: CMDT DemoCapacityConfig (8 campos) + 158 cupos, 2 custom permissions, notification type, 2 PS (com cadeia de dependências), 6 flows, destructives aplicados (MaxNum__c, QuoteBeforeHandler).
+- ⏳ Na org mas em versão anterior (zips na mão do Diego, é só subir): OpportunityBeforeHandler v3 (RT Autos + bypass Bypass_Gates_Automacao) e ExecuteDemoRequest (Vehiculo__c) — revertidos pelo rollbackOnError.
+- 🔒 NÃO construído POR DESIGN (bloqueado por dados/decisão, não por dev): T12 fin de ciclo (espera D6: km máximo + campo odômetro), wire B v2 derivação marca/sucursal (espera carga real de inventário + códigos SAP), rollout GT/HN/NI/PA.
+- O resto do runbook é clique de Setup/ativação (Davi), não desenvolvimento.
+
+### Planilhas cliente geradas (06/08) — `hu046/`
+- `GrupoQ_HU046_Mapeo_Cupos_x_Cuentas.xlsx` (ES, 4 hojas: Instrucciones, 5 Preguntas clave, Mapeo CR+NI 40 filas com SÍ/NO+Corrección, 8 Cuentas sin cupo) — responde item #10 da tabela.
+- `GrupoQ_HU046_Codigos_SAP_Centros.xlsx` (ES, 2 hojas: Instrucciones, 22 dealers com coluna amarela "Código SAP del centro" + fila ejemplo) — responde item #11; código vai para AccountNumber + BranchCode__c.
+- Gerador versionado: `hu046/scripts/gerar_planilhas_cliente.py` (OOXML à mão; openpyxl/pip indisponíveis).
+
 ### Pendências HU-046 consolidadas com owner (06/08)
 
 | # | Pendência | Owner | Depende de |
