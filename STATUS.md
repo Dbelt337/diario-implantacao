@@ -158,6 +158,28 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - **VALIDATION RULE LIDA (06/08) — desenho 100% confirmado e alinhado**: `Opp_Retail_Vehiculo_Cotizacion` (HU-025 R1 B3.7, Santiago Pelaez): AND(RT=GQOpportunitiesAutos, NOT($Permission.Bypass_Gates_Automacao), OR(Cotización Confirmada sem OLI, **Reserva Confirmada com Vehiculo__c em branco**)). Aprendizados: (1) em Autos a cotización é NÍVEL MODELO (exige OpportunityLineItem) e a UNIDADE entra na **Reserva Confirmada** — exatamente o padrão indústria (quote modelo, VIN no desking); é aí que a guarda morde; (2) a VR usa o MESMO scoping por RT que a guarda v2 — consistente; (3) **a org já tem padrão de bypass: custom permission `Bypass_Gates_Automacao`** → OpportunityBeforeHandler v3: decisão de bypass agora aceita BypassAllocationValidation (demo-específico) OU Bypass_Gates_Automacao (padrão org) — quem já bypassa os gates da HU-025 bypassa o nosso também, sem novo setup de integração. Cadeia final para a HU (Meli): CBSF filtra seleção → guarda bloqueia link de unidade demo (RT Autos) → VR exige unidade na Reserva Confirmada.
 - **Exposição das telas (respondido 05/08)**: App Page "Vehículos Demo" (App Builder) com componente Flow → Manage Demo Vehicle + component visibility `{!$Permission.RequestDemoVehicle}`; 2ª App Page/tab para Execute Demo Request; Quick Action tipo Flow no Vehicle fica para v2 (junto com CBSF/T01). Personas: Manage = gerente de sucursal/marca, director, VP (PS_Demo_Vehicle_Management); Execute = encargado de piso (PS_Demo_Vehicle_Execution).
 
+### Pendências HU-046 consolidadas com owner (06/08)
+
+| # | Pendência | Owner | Depende de |
+|---|---|---|---|
+| 1 | Subir `HU046_flow_opphandler.zip` **v3** (guarda RT Autos + bypass Bypass_Gates_Automacao) | Davi/Diego | — |
+| 2 | Confirmar deploy do `HU046_flow_execdemo.zip` (ExecuteDemoRequest c/ Vehiculo__c — revertido no rollback) | Davi | — |
+| 3 | Verificar se já existe outro before-save de Opportunity → merge (1 handler/objeto) | Davi | — |
+| 4 | Atribuir PS (Management→gerentes/director/VP; Execution→encargados; bypass→integração) | Davi | — |
+| 5 | FHT Vehicle + SerializedProduct (Status/Owner) — T13 | Davi | — |
+| 6 | 2 App Pages + tabs (Manage c/ visibility $Permission.RequestDemoVehicle; Execute) — T06 | Davi | — |
+| 7 | CBSF: filtro da busca de VENDA excluir Status demo/exh — T01/T02 | Davi | — |
+| 8 | TODO-DAVI telas: floorManagerId via GroupMembers, lookups de User, VIN→CBSF (v2) | Davi | — |
+| 9 | Ativar flows na ordem: subflows → handler → scheduled → telas | Davi | #1-#8 |
+| 10 | De-para cupos×Accounts: GWM Liberia, Terrazas, NI Managua, contas C105 sem cupo, Flotas/Usados fora | GrupoQ (Isabella/Andrea) | CSV enviado |
+| 11 | Código SAP do centro → AccountNumber das contas dealer; eu preencho BranchCode__c dos 158 e regero CMDT | GrupoQ → eu | #10 |
+| 12 | MaxDemoMileage (valores por política) + campo do odômetro → eu construo T12 (fin de ciclo) | GrupoQ → eu | D6 |
+| 13 | Wire B v2 (derivar marca via BusinessBrand e sucursal via CurrentOwnerId nas telas) | eu | carga real de inventário (premissa: Vehicle.CurrentOwnerId = Account dealer) |
+| 14 | Rollout GT/HN/NI/PA: Accounts dealer + grupos GRP_Sucursal_* + membros | Admin/rollout | — |
+| 15 | Reescrever HU-046: pivot Vehicle.Status + cadeia de enforcement (CBSF→guarda→VR Reserva Confirmada) + Repuestos/PA isento | Meli | evidências prontas no STATUS |
+| 16 | Data fix: espaço duplo em "GrupoQ Active Motors  Managua" | Admin GQ | — |
+| 17 | Congelar API names de picklist ("En exhibicion" sem acento); se renomear, atualizar fórmulas dos flows | Davi/Meli | decisão |
+
 ## 4. Inventário de artefatos deste repo
 
 | Caminho | Conteúdo |
