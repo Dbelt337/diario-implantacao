@@ -10,7 +10,7 @@
 | Componente | Estado | Observação |
 |---|---|---|
 | Flow `ManageDemoVehicle` (tela gerência) | **Ativa a última versão** (vários redeploys hoje — usar sempre a de maior número) | Ver mudanças de desenho na seção 2 |
-| Flow `ExecuteDemoRequest` (tela encargado) | Ativa (busca dupla VIN/nome) | |
+| Flow `ExecuteDemoRequest` (tela encargado) | Ativa a última versão | UX 06/08: SEM campo de VIN — a unidade é derivada da Task selecionada (`Task.WhatId`); campos Tipo/Estado destino aparecem só conforme a ação (visibility rule) |
 | Subflows `ValidateDemoQuota` + `LogDemoActivity` | Ativos | |
 | `OpportunityBeforeHandler` | Ativo (v3: só RT GQOpportunitiesAutos; bypass BypassAllocationValidation OU Bypass_Gates_Automacao) | |
 | Scheduled `ReleaseExpiredDemoAssignments` | Ativo (diário 06:00 UTC, fórmula WEEKDAY) | |
