@@ -222,6 +222,14 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - **Efeitos colaterais do achado em OUTRAS frentes**: (1) HU-028 RN-19 "LWC único" — verificar se a UX de pricing deve plugar no CrearCotizacion (OmniScript de cotización JÁ EXISTE e está ativo!); (2) HU-039 anti-dup = LeadDedup IP (evidência do padrão citado na RN1 da HU-045); (3) test drive da org é OmniStudio — se alguma HU futura tocar test drive, a stack é essa.
 - Sinergia com HU-046: mesma malha (Vehicle.Status, Accounts dealer/sociedade, Bypass_Gates_Automacao, padrão de gates HU-025); T15 (baja al cerrar venta) usa o padrão do OpportunityBeforeHandler.
 
+## 3d. CONVENÇÃO TRANSVERSAL: código SAP nas Accounts (decidida 06-07/08)
+
+- **`Account.AccountNumber` = código SAP do nível**: sociedade (3º nível) = código de sociedad (C101/C105/N105); dealer (4º nível) = código SAP do CENTRO. Chave nativa, indexável, filtrável, sobrevive a sandbox→prod (Id não!). Consulta padrão: `SELECT Id FROM Account WHERE AccountNumber = 'C101'`.
+- **Estado**: ⏳ 3 sociedades = preencher JÁ (códigos conhecidos, edição manual — Diego); ⏳ 22 dealers = quando o GrupoQ devolver `GrupoQ_HU046_Codigos_SAP_Centros.xlsx`; na mesma leva eu preencho BranchCode__c dos 158 cupos + regero CMDT (fecha wire B do join por código).
+- **Quem consome**: HU-046 (cupo da unidade via CurrentOwner→AccountNumber), HU-045 T10 (Asset.AccountId da sociedade), MuleSoft (resolver conta pelo CompanyCode/centro do payload SAP), Flavio/estoque (Id C101 confirmado: 001WK00002EjOWaYAN — mas a chave oficial é AccountNumber, nunca Id fixo).
+- **NÃO existe `Sociedad__c` na Account** (confirmado 07/08 — Flavio tentou e não existe); identificação era só estrutural (nome+hierarquia) até esta convenção.
+- Pendente de data fix junto: espaço duplo em "GrupoQ Active Motors  Managua" (rename ao editar as contas).
+
 ## 4. Inventário de artefatos deste repo
 
 | Caminho | Conteúdo |
