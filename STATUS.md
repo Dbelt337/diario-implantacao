@@ -228,6 +228,7 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - **Estado**: ⏳ 3 sociedades = preencher JÁ (códigos conhecidos, edição manual — Diego); ⏳ 22 dealers = quando o GrupoQ devolver `GrupoQ_HU046_Codigos_SAP_Centros.xlsx`; na mesma leva eu preencho BranchCode__c dos 158 cupos + regero CMDT (fecha wire B do join por código).
 - **Quem consome**: HU-046 (cupo da unidade via CurrentOwner→AccountNumber), HU-045 T10 (Asset.AccountId da sociedade), MuleSoft (resolver conta pelo CompanyCode/centro do payload SAP), Flavio/estoque (Id C101 confirmado: 001WK00002EjOWaYAN — mas a chave oficial é AccountNumber, nunca Id fixo).
 - **NÃO existe `Sociedad__c` na Account** (confirmado 07/08 — Flavio tentou e não existe); identificação era só estrutural (nome+hierarquia) até esta convenção.
+- **Premissa de carga SAP formalizada (07/08, pergunta do Alisson)**: a carga de veículos vinda do SAP DEVE preencher `Vehicle.CurrentOwnerId` — em estoque = Account do DEALER/sucursal (resolvida via código do centro → AccountNumber, esta convenção); na venda, a propriedade transfere para a Account do cliente (histórico via AssetAccountParticipant + par Asset). Doc oficial: Vehicle.CurrentOwnerId = "the account that currently owns the vehicle" (developer guide, sforce_api_objects_vehicle). Sem essa coluna na carga, o wire B da HU-046 (cupo por sucursal) e o modelo de posse da HU-045 não funcionam.
 - Pendente de data fix junto: espaço duplo em "GrupoQ Active Motors  Managua" (rename ao editar as contas).
 
 ## 4. Inventário de artefatos deste repo
