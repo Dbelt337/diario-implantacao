@@ -63,15 +63,20 @@
             <name>VehicleLinkChanged</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>GQOpportunitiesAutos</stringValue></rightValue>
+            </conditions>
+            <conditions>
                 <leftValueReference>$Record.Vehiculo__c</leftValueReference>
                 <operator>NotEqualTo</operator>
                 <rightValue><elementReference>$Record__Prior.Vehiculo__c</elementReference></rightValue>
             </conditions>
             <connector><targetReference>GetLinkedVehicle</targetReference></connector>
-            <label>New or changed</label>
+            <label>Autos sale, new or changed</label>
         </rules>
     </decisions>
-    <description>Sales guard for demo/exhibition vehicles, no Apex (HU-046, Esc.10 - visible but not sellable). All countries. Before-save on Opportunity create/update when Vehiculo__c (existing org lookup Opportunity-to-Vehicle, confirmed by describe 05/08) is set or changed: if the linked unit has Vehicle.Status = En demostración or En exhibicion, a custom error blocks the save. Replaces the earlier Quote Before Handler draft - Quote and QuoteLineItem have NO unit lookup in this org (describes 05/08), so Opportunity.Vehiculo__c is the only native anchor. Bypass via BypassAllocationValidation custom permission (grants integration/admin). Fires only when the link is new or changed ($Record__Prior comparison), so unrelated Opportunity edits are untouched. Release-for-sale is unaffected: Execute Demo Request releases Vehicle.Status BEFORE creating the VIN Opportunity. TODO-DAVI: if an Opportunity before-save handler flow already exists in the org, MERGE this logic into it (one before-handler per object, per GRPQM conventions). Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented).</description>
+    <description>Sales guard for demo/exhibition vehicles, no Apex (HU-046, Esc.10 - visible but not sellable). All countries. Before-save on Opportunity create/update when Vehiculo__c (existing org lookup Opportunity-to-Vehicle, confirmed by describe 05/08) is set or changed: if the linked unit has Vehicle.Status = En demostración or En exhibicion, a custom error blocks the save. Replaces the earlier Quote Before Handler draft - Quote and QuoteLineItem have NO unit lookup in this org (describes 05/08), so Opportunity.Vehiculo__c is the only native anchor. Bypass via BypassAllocationValidation custom permission (grants integration/admin). Fires only for record type GQOpportunitiesAutos (vehicle SALES) and only when the link is new or changed ($Record__Prior comparison) - Vehiculo__c was created for Repuestos/PA opportunities (field description: the customer's vehicle receiving parts, populated by the vehicle search), where linking a demo unit is LEGITIMATE (e.g., accessories for a demo car), so RepuestosPA and other record types are exempt by design. Release-for-sale is unaffected: Execute Demo Request releases Vehicle.Status BEFORE creating the VIN Opportunity. TODO-DAVI: if an Opportunity before-save handler flow already exists in the org, MERGE this logic into it (one before-handler per object, per GRPQM conventions). Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented).</description>
     <environments>Default</environments>
     <interviewLabel>Opportunity Before Handler {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Flow Trigger: Opportunity Before Handler</label>
