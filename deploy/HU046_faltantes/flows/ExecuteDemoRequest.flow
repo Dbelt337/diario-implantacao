@@ -307,13 +307,13 @@
                     <helpText>&lt;p&gt;VIN completo: 17 caracteres (sin I, O, Q).&lt;/p&gt;</helpText>
                     <isRequired>true</isRequired>
                     <validationRule>
-                        <errorMessage>&lt;p&gt;El VIN tiene máximo 17 caracteres.&lt;/p&gt;</errorMessage>
-                        <formulaExpression>LEN({!UnitSerial}) &lt;= 17</formulaExpression>
+                        <errorMessage>&lt;p&gt;VIN inválido: debe tener exactamente 17 caracteres (letras y números, sin I, O ni Q) — ISO 3779.&lt;/p&gt;</errorMessage>
+                        <formulaExpression>REGEX(UPPER({!UnitSerial}), "[A-HJ-NPR-Z0-9]{17}")</formulaExpression>
                     </validationRule>
                 </fields>
                 <inputParameters>
                     <name>width</name>
-                    <value><stringValue>5</stringValue></value>
+                    <value><stringValue>4</stringValue></value>
                 </inputParameters>
             </fields>
             <fields>
@@ -321,7 +321,7 @@
                 <fieldType>Region</fieldType>
                 <inputParameters>
                     <name>width</name>
-                    <value><stringValue>7</stringValue></value>
+                    <value><stringValue>8</stringValue></value>
                 </inputParameters>
             </fields>
             <isRequired>false</isRequired>
