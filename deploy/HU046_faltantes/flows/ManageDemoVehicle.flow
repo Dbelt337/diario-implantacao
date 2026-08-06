@@ -69,7 +69,7 @@
         <assignmentItems>
             <assignToReference>recipientIds</assignToReference>
             <operator>Add</operator>
-            <value><elementReference>floorManagerId</elementReference></value>
+            <value><elementReference>EncargadoPick</elementReference></value>
         </assignmentItems>
         <connector><targetReference>GetNotificationType</targetReference></connector>
     </assignments>
@@ -80,7 +80,7 @@
         <assignmentItems>
             <assignToReference>recipientIds</assignToReference>
             <operator>Add</operator>
-            <value><elementReference>floorManagerId</elementReference></value>
+            <value><elementReference>EncargadoPick</elementReference></value>
         </assignmentItems>
         <connector><targetReference>GetNotificationTypeRelease</targetReference></connector>
     </assignments>
@@ -196,7 +196,7 @@
             <label>Release for sale</label>
         </rules>
     </decisions>
-    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/reassign advisor (Asset.OwnerId - Vehicle has NO OwnerId field; the Asset pair 1:1 carries ownership), release for sale (request Task + alert), cancel exceptional assignment (reverts owner, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) default for floorManagerId (per-branch GRP_Sucursal_* groups); (5) RESOLVED 06/08: AdvisorId/PreviousOwnerId are User dropdowns (ActiveUserChoices, IsActive=true sorted by Name) - refine the filter later (e.g., sales profile/role or branch) if the user list grows. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented). DESIGN FIX 06/08: SerializedProduct leg REMOVED (legacy of the old HU premises) - unit identity is the Vehicle (VehicleIdentificationNumber), per the Automotive Cloud model; advisor assignment now writes Asset.OwnerId (via GetVehicle.AssetId; Vehicle itself has no OwnerId). Search matches VIN OR Name (filterLogic or).</description>
+    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/reassign advisor (Asset.OwnerId - Vehicle has NO OwnerId field; the Asset pair 1:1 carries ownership), release for sale (request Task + alert), cancel exceptional assignment (reverts owner, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) RESOLVED 06/08: floor manager is now a required User dropdown (EncargadoPick) on the menu screen - evolve later to a per-branch GRP_Sucursal_* default; (5) RESOLVED 06/08: AdvisorId/PreviousOwnerId are User dropdowns (ActiveUserChoices, IsActive=true sorted by Name) - refine the filter later (e.g., sales profile/role or branch) if the user list grows. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented). DESIGN FIX 06/08: SerializedProduct leg REMOVED (legacy of the old HU premises) - unit identity is the Vehicle (VehicleIdentificationNumber), per the Automotive Cloud model; advisor assignment now writes Asset.OwnerId (via GetVehicle.AssetId; Vehicle itself has no OwnerId). Search matches VIN OR Name (filterLogic or).</description>
     <dynamicChoiceSets>
         <name>ActiveUserChoices</name>
         <dataType>String</dataType>
@@ -435,6 +435,15 @@
             <isRequired>false</isRequired>
             <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
+        <fields>
+            <name>EncargadoPick</name>
+            <choiceReferences>ActiveUserChoices</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Encargado de piso (recibirá la solicitud)</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <helpText>&lt;p&gt;Usuario que ejecutará la solicitud en la pantalla "Ejecutar Solicitudes Demo". Será el dueño de la Task y recibirá la alerta.&lt;/p&gt;</helpText>
+            <isRequired>true</isRequired>
+        </fields>
         <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <screens>
@@ -582,7 +591,7 @@
         </inputAssignments>
         <inputAssignments>
             <name>taskOwnerId</name>
-            <value><elementReference>floorManagerId</elementReference></value>
+            <value><elementReference>EncargadoPick</elementReference></value>
         </inputAssignments>
         <inputAssignments>
             <name>taskStatus</name>
@@ -609,7 +618,7 @@
         </inputAssignments>
         <inputAssignments>
             <name>taskOwnerId</name>
-            <value><elementReference>floorManagerId</elementReference></value>
+            <value><elementReference>EncargadoPick</elementReference></value>
         </inputAssignments>
         <inputAssignments>
             <name>taskStatus</name>
@@ -656,11 +665,6 @@
         <dataType>Number</dataType>
         <isCollection>false</isCollection><isInput>false</isInput><isOutput>false</isOutput>
         <scale>0</scale>
-    </variables>
-    <variables>
-        <name>floorManagerId</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection><isInput>false</isInput><isOutput>false</isOutput>
     </variables>
     <variables>
         <name>isQuotaAvailable</name>
