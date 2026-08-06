@@ -10,8 +10,9 @@ Versão 1.0 · 07/08/2026 · aplica a HU-045, HU-046, HU-119, sync de estoque (F
 | Conceito SAP | Objeto/campo SAP | Salesforce | Chave |
 |---|---|---|---|
 | Sociedad | BUKRS (company code, ej. C101) | Account nível 3 da hierarquia | AccountNumber (visível) + SAPCode__c External ID (proposto) |
-| Centro | WERKS (plant) | Account dealer (nível 4) | idem (código do centro) |
-| Almacén | LGORT (storage location) | Location (Asset.LocationId) — consignação/T09 | nome/código |
+| Centro | WERKS (plant) | — (repete entre sucursais; ex. C011 = todas as C101) | usado SOZINHO só na interface de reserva SAP (confirmado Luis Chavarría 04/06) |
+| **Sucursal/patio** | **WERKS+LGORT (composto, ex. C0111200)** | **Account dealer (nível 4) — AccountNumber = composto** | "la llave que identifica el patio"; um patio pode servir 2 sucursais QRM (Lindora+Santa Ana; Uruca+Flotas) → composto NÃO é único entre contas |
+| Almacén | LGORT (storage location) | Location (Asset.LocationId) — consignação/T09 | nome/código; de-para completo em integracion/data/sucursales_qrm_completo.csv (596 linhas, todos os países) |
 | Material veículo (modelo) | MATNR configurável (MARA) | Product2 → VehicleDefinition (→ BusinessBrand) | ProductCode/MATNR |
 | **Unidade física (VIN)** | **VLCVEHICLE (SAP VMS)**: VIN, plant, storage loc., customer | **Par Vehicle + Asset** (master-detail, obrigatório) | **VIN (unique na org)** |
 | Nº inventário SAP | nº interno VMS | Vehicle.StockCode | por VIN |

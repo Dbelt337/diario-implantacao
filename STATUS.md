@@ -277,6 +277,12 @@ Tudo abaixo foi FEITO pelo Diego, clicando na org (sandbox DevSales). Este é o 
 - Não acessível via proxy (403) — Diego abrir: Automotive Cloud Implementation/Admin guide (help.salesforce.com auto_cloud), Vehicle & Asset Appraisals data model page, sforce_api_objects_asset (campo Price), release notes recentes de Appraisals.
 - Indústria: preço por UNIDADE (stock number) é o padrão dealer (vAuto/KBB Instant Cash Offer: reference book ≠ appraisal ≠ asking price); portal web consome preço do DMS/CRM por feed — nunca digitado no site.
 
+## CÓDIGOS SAP RECEBIDOS (06/08 noite) — pendência #11 DESTRAVADA
+- Cliente enviou `Sucursales_QRM_4.xlsx` (596 linhas, TODOS os países: C/G/H/N/P/S) + gravação "Sucursales activas" (Luis Chavarría 04/06). Versionado: `integracion/data/sucursales_qrm_completo.csv` (de-para mestre do rollout + almacén→Location).
+- **DECISÃO VALIDADA PELO CLIENTE (áudio)**: sucursal/patio = **Centro+Almacén (WERKS+LGORT, ex. C0111200)** — "la llave que identifica el patio". Centro repete (C011 = todas C101); almacén repete entre sociedades (1200 em C101/C105/N105/N101). BranchCode__c e AccountNumber dealer = composto.
+- **Nuances da gravação**: (1) interface de reserva SAP pedirá SÓ o centro (novos e usados) — payload Flavio = WERKS; (2) um patio serve 2 sucursais QRM (Lindora+SantaAna=C0111210; Uruca+Flotas=C0111200; ForlandCentral+ActiveCentral=C3111200) → **AccountNumber não é único** → chave de upsert de conta segue SourceSystemIdentifier/SAPCode__c (decisão pendente); (3) CR não vende mais motos → sucursais C105 motos (Autopits/GOLLO/Curacao) serão INATIVADAS, lista depurada vem da Vanessa; (4) marcas sociedades "5": Forland/Chery/GWM/Arcfox/GAC.
+- **EXECUTADO**: 37/40 cupos CR+NI com BranchCode__c preenchido (`deploy/HU046_cmdt_branchcodes.zip`, join via data_mapping por conta); `integracion/data/fix4_accountnumber_centros.csv` (21 contas dealer, Id+AccountNumber composto — NÃO rerodar fix1 depois). 3 cupos sem código + 4 perguntas ao cliente em `hu046/PERGUNTAS_CLIENTE_CODIGOS.md` (Forland PZ C211×C311; GWM Liberia; NI marcas×sociedades; Uruca Usados C817 sem almacén).
+
 ## 3d. CONVENÇÃO TRANSVERSAL: código SAP nas Accounts (decidida 06-07/08)
 
 - **`Account.AccountNumber` = código SAP do nível**: sociedade (3º nível) = código de sociedad (C101/C105/N105); dealer (4º nível) = código SAP do CENTRO. Chave nativa e filtrável, sobrevive a sandbox→prod (Id não!). Consulta padrão: `SELECT Id FROM Account WHERE AccountNumber = 'C101'`.

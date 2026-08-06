@@ -1,0 +1,596 @@
+﻿Sociedad;Sucursal_QRM;Centro_SAP_WERKS;Almacen_SAP_LGORT;Codigo_Composto;Ubicacion
+C101;La Uruca;C011;1200;C0111200;Frente a la plaza de deportes Uruca, San José
+C101;Liberia;C011;1209;C0111209;"Diagonal al Hotel ""El Sitio"""
+C101;San Carlos;C011;1211;C0111211;600 Norte del Hospital San Carlos, Ciudad Quesada
+C101;Lindora;C011;1210;C0111210;Pozos de Santa Ana, Radial Lindora- Belén Contiguo a Porcerámica
+C101;Ayarco;C011;1223;C0111223;Curridabat, Lomas de Ayarco, 150 metros este de Gasolinera Ayarco
+C101;Santa Ana Comercial;C011;1210;C0111210;Pozos de Santa Ana, contiguo a Porcerámica
+C101;Uruca Usados;C817;;C817;
+C101;Uruca Flotas;C011;1200;C0111200;Frente Plaza de Deportes Uruca
+C101;Guapiles;C011;1273;C0111273;500 m este de la Estación de Servicio Santa Clara
+C101;Perez Zeledon;C011;1272;C0111272;Contiguo a Gasolinera el Jorón, Perez Zeledón.
+C105;Active Motors Sucursal Central;C311;1200;C3111200;Contiguo a edificio FEMSA, La Uruca, San José, Costa Rica
+C105;Forland Liberia;C211;1201;C2111201;"Diagonal al Hotel ""El Sitio"""
+C105;Forland Pérez Zeledón;C211;1202;C2111202;Carretera a Palmares, continuo a Estación de servicio el Jorón. Perez Zeledón.
+C105;Forland San Carlos;C211;1203;C2111203;600m al norte del Hospital de San Carlos, Ciudad Quesada
+C105;Forland Guápiles;C211;1204;C2111204;500m este del Servicentro Santa Clara
+C105;Multirepuestos Prado Castro;C211;1232;C2111232;140 metros este del Salón Parroquial barrio San Martín, Buenos Aires
+C105;Forland La Uruca Sucursal Central;C311;1200;C3111200;
+C105;Autopits Alajuela;C211;1252;C2111252;Alajuela centro, contiguo Plaza Ferias
+C105;Autopits Santa Ana;C211;1250;C2111250;Santa Ana, Pozos, Radial Belén, contiguo a Hyundai Lindora.
+C105;Autopis Cariari;C211;1251;C2111251;80 metros este del Real Cariari, frente a la bomba UNO
+C105;Autopits Cartago;C211;1253;C2111253;Diagonal al Cementerio General
+C105;Autopits Desamparados;C211;1254;C2111254;Diagonal a Pizza Hut, CC Decosure
+C105;Autopits San Pedro;C211;1255;C2111255;
+C105;Autopits Sabana;C211;1256;C2111256;Sabana, a un costado de Soda Tapia
+C105;Autopits Moravia;C211;1257;C2111257;
+C105;Autopits Heredia;C211;1258;C2111258;Heredia 100 metros oeste y 100 metros sur de la estación Shell Pirro.
+C105;Autopits Pinares;C211;1259;C2111259;
+C105;Autopits Uruca;C211;1260;C2111260;
+C105;Autopits Escazu;C211;1261;C2111261;
+C105;Autopits Guadalupe;C211;1262;C2111262;
+C105;Autopits Guápiles;C211;1263;C2111263;
+C105;Autopits Perez Zeledon;C211;1264;C2111264;
+C105;Autopits Liberia;C211;1265;C2111265;
+C105;Autopits San Carlos;C211;1266;C2111266;
+C105;Moto repuestos Jicaral;C211;1233;C2111233;Contiguo al Banco Nacional de Jicaral
+C105;Moto Repuestos Zamora;C211;1234;C2111234;Frente a los tribunales de justicia de Upala Centro
+C105;Ariana Maldonado Liberia;C211;1235;C2111235;Barrio los Ángeles 75 mts oeste de Correos de Costa Rica
+C105;Loco Moto;C211;1236;C2111236;Contiguo al restaurante los Antojitos Paso Canoas
+C105;Leonardo Gomez Cubillo / Parrita;C211;1237;C2111237;
+C105;Construhogar S.A. / Monteverde;C211;1238;C2111238;
+C105;Melvin Gaitan Artavia / Chiles;C211;1239;C2111239;
+C105;Moto Repuestos Gonar;C211;1241;C2111241;250 mts este Banco Nacional, Puerto Viejo
+C105;Kenneth Umaña Naranjo / Perez Z;C211;1242;C2111242;
+C105;Moto respuestos Lucas;C211;1243;C2111243;25 metros sur este de la guardia rural de Pejibaye de Perez Zeledón
+C105;Moto Repuestos Mata;C211;1244;C2111244;Costado oeste del BCR de San Ramón de Alajuela
+C105;Moto Repuestos La Anexión;C211;1245;C2111245;100 mts norte Hospital la Anexión, Nicoya
+C105;Moto Dynasty;C211;1246;C2111246;Diagonal a la Iglesia del Carmen Heredia
+C105;Servi Repuestos de Motos el Hogar S.A. / Guapiles;C211;1247;C2111247;
+C105;Evelyn Rodriguez Cartín / San Jose Guadalupe;C211;1237;C2111237;
+C105;CR Motos Punto Com Sociedad Anónima /Heredia Central;C211;1238;C2111238;
+C105;Bryan Guillén Alvarado / Heredia Central;C211;1240;C2111240;
+C105;Bastro Motors;C211;1267;C2111267;Barrio la Trinidad, Junto a Grupo Diasa, Alajuela
+C105;Tana Moto Repuestos;C211;1269;C2111269;400 Oeste De la Cruz Roja, Santa Ana
+C105;Ciclo Kike;C211;1270;C2111270;Costado del parque de la Cuesta
+C105;Moto repuestos Gonar;C211;1268;C2111268;
+C105;Multirepuestos R y A;C211;1271;C2111271;Del Banco Nacional 200 metros oeste, San Joaquín Heredia
+C105;Servi Repuestos de Motos el Hogar S.A. / Bribri;C211;1272;C2111272;
+C105;Moto Repuestos La Ruta Orotina;C211;1274;C2111274;Costado Sur de la iglesia Católica de Orotina
+C105;Multimarca Jicaral / Puntarenas;C211;1275;C2111275;
+C105;Almacén Misael Solís;C211;1276;C2111276;Sata Rosa de Pocosol Centro
+C105;Motoservicios / Guanacaste;C211;1277;C2111277;
+C105;Motos Parini;C211;1278;C2111278;
+C105;Jorge Amador;C211;1279;C2111279;
+C105;Sylvia Calvo Chavez;C211;1280;C2111280;
+C105;Deyker Ruiz García;C211;1281;C2111281;
+C105;Active Motors SABANA;C211;1212;C2111212;
+C105;GOLLO LIMON 05;C211;1282;C2111282;
+C105;GOLLO PUNTARENAS 11;C211;1283;C2111283;
+C105;GOLLO TURRIALBA 15;C211;1284;C2111284;
+C105;GOLLO OROTINA 18;C211;1285;C2111285;
+C105;GOLLO JACO 22;C211;1286;C2111286;
+C105;GOLLO QUEPOS 31;C211;1287;C2111287;
+C105;GOLLO GUAPILES 32;C211;1288;C2111288;
+C105;GOLLO NICOYA 38;C211;1289;C2111289;
+C105;GOLLO ROBLE PUNTARENAS 48;C211;1290;C2111290;
+C105;GOLLO SANTA CRUZ 50;C211;1291;C2111291;
+C105;GOLLO LIMÓN ACON 56;C211;1292;C2111292;
+C105;GOLLO CÓBANO 65;C211;1293;C2111293;
+C105;GOLLO BATAAN 67;C211;1294;C2111294;
+C105;GOLLO CARIARI 82;C211;1295;C2111295;
+C105;GOLLO ORITINA 110;C211;1296;C2111296;
+C105;GOLLO LIMÓN REMATES 127;C211;1297;C2111297;
+C105;GOLLO PALMAR NORTE 312;C211;1298;C2111298;
+C105;GOLLO GOLLO MOTORS ALAJUELA 401;C211;1299;C2111299;
+C105;CURACAO CURACAO NICOYA 517;C211;1300;C2111300;
+C105;CURACAO CURACAO PUNTARENAS 529;C211;1301;C2111301;
+C105;CURACAO CURACAO QUEPOS 534;C211;1302;C2111302;
+C105;CURACAO CURACAO EL ROBLE 537;C211;1303;C2111303;
+C105;Servimotos Guanacaste;C211;1307;C2111307;
+C105;Flexi Motors Palmares;C211;1306;C2111306;
+C105;Tico Motos - Diego Vargas;C211;1308;C2111308;
+C105;Moto Mundo Limón;C211;1309;C2111309;
+C105;Moto World;C211;1304;C2111304;
+C105;Viviana Alvarado;C211;1305;C2111305;
+C105;Deyker Ruiz / Moto Mundo Limon;C211;1309;C2111309;
+C105;GOLLO MORAZAN 06;C211;1480;C2111480;
+C105;GOLLO UVITA 301;C211;1481;C2111481;
+C105;Paola Vindas / DCANAS;C211;1277;C2111277;
+C105;Motos  Florencia / San Carlos;C211;1482;C2111482;
+C105;Lima Espinoza;C211;1483;C2111483;
+C105;Flexi Motors - San Ramon;C211;1490;C2111490;
+C105;Kimberly Solis / San Jose Central;C211;1491;C2111491;
+C105;IMPULSA -T;C211;1494;C2111494;
+C105;Vehiculos La Uruca;C311;1220;C3111220;
+C105;Active Motors Paseo Las Flores;C211;1524;C2111524;
+C105;Terrazas Lindora;C311;1222;C3111222;Primer piso, Centro Comercial Terrazas Lindora.
+C105;AXL HUANG;C211;1546;C2111546;
+C105;Forland Perez Zeledon;C311;1202;C3111202;
+C105;Ventas Guápiles;C311;1237;C3111237;Contiguo a Bomba Eusse, Ruta 32. Guápiles.
+G101;Sucursal Pradera Concepcion;G021;1216;G0211216;Km. 15.5 Carretera a El Salvador, Condado Concepción
+G101;Sucursal Aguilar Batres;G021;1274;G0211274;Calzada Aguilar Batres 27-98, Zona 11
+G101;Edificio Zenit  20 Calle;G021;1231;G0211231;9a 10-61 Zona 10
+G101;Carretera a El Salvador;G021;1200;G0211200;Km 15.8 Carretera a El Salvador
+G101;Sucursal Roosevelt;G021;1215;G0211215;Calzada Roosevelt 18-23, Zona 11
+G101;Sucursal Carretera a El Salvador 2;G021;1216;G0211216;Parque Automotriz, KM. 16.5 Carretera a El Salvador 1era. Calle 1-72 Aldea Don Justo Santa Catarina Pinula, 01073
+G101;Sucursal Zona 9;G021;1217;G0211217;1A Calle 7-69, Zona 9. Edificio Mazda Grupo Q. Ciudad de Guatemala 01009
+G101;Sucursal Majadas;G021;1218;G0211218;Plaza Automotriz Majadas, 28 Av 5-20, Ciudad de Guatemala 01011
+G101;Sucursal Zacapa;G021;1219;G0211219;Río Hondo KM. 127, Ruta al Atlántico Zacapa, 19003
+G101;Vehículos 19 Calle Z10;G021;1221;G0211221;
+G101;Sucursal Xela;G021;1222;G0211222;Diagonal 2 33-18, Zona 8. Xela, Quetzaltenango, 09008
+G101;Taller Caes 2;G085;2300;G0852300;
+G101;Taller 1a Calle Z9;G095;2300;G0952300;
+G101;Taller Majadas Z11;G115;2300;G1152300;
+G101;Taller Zacapa;G155;2300;G1552300;
+G101;Taller 19 Calle Z10;G185;300;G185300;
+G101;Taller Xela;G195;2300;G1952300;
+G101;Taller Vistares;G515;2300;G5152300;
+G101;Taller Santa Lucia;G525;2300;G5252300;
+G101;Talleres - Roosvelt;G075;2300;G0752300;
+G101;Talleres - Petapa Zona 12;G175;2300;G1752300;
+G101;CDA Amatitlan;G535;1241;G5351241;
+G101;Sucursal Roosevelt Empresa Y Gobierno;G021;1215;G0211215;Calzada Roosevelt 18-23, Zona 11
+G101;Sucursal Reforma;G021;1225;G0211225;Avenida Reforma 3-00, Zona 9
+G101;Sucursal Reforma Empresa Y Gobierno;G021;1232;G0211232;Avenida Reforma 3-00, Zona 9
+G101;NO DISP CDA AMAT;G021;1226;G0211226;
+G101;CDA AMATITLAN;G021;1227;G0211227;
+G101;MICHATOYA;G021;1252;G0211252;
+G101;7a Avenida;G021;1265;G0211265;
+G101;Xela 2;G021;1275;G0211275;Plaza Muluá, Diagonal 5, Zona 8, Quetzaltenango.
+G101;Huehuetenango - SubDistribuidor Autorizado IMPOCAR;G021;1332;G0211332;7ma. Calle 12-36, Plaza 7. Zona 4, Huehuetenango
+G101;Chiquimula - SubDistribuidor Autorizado IMPOCAR;G021;1334;G0211334;Km. 173 CA-10, Centro Comercial Paseo Lucía. Ruta a Esquipulas, Chiquimula.
+G101;Peten - SubDistribuidor Autorizado QAUTOS;G021;1336;G0211336;Zona 2, Santa Elena, Flores Petén. Frente a Gasolinera Puma, a un costado del Centro de Salud.
+G101;Poptun - SubDistribuidor Autorizado QAUTOS;G021;1339;G0211339;Barrio El Porvenir, Calzada Guatemala. Zona 4, Poptún
+G101;Sucursal Cobán;G021;1340;G0211340;Visítanos en 1ra. Calle 16-47, Zona 1. Cobán, Alta Verapaz
+H101;Sercor TGU Tegucigalpa;H121;1200;H1211200;Boulevard Centroamérica, Frente a Plaza Miraflores
+H101;Sercor SPS San Pedro Sula;H121;1209;H1211209;Col. Altamira, Boulevard del Sur, entre 20-21 calle.
+H101;Tegucigalpa;H121;1200;H1211200;Boulevard Centroamérica, Frente a Plaza Miraflores
+H101;San Pedro Sula;H121;1209;H1211209;Col. Altamira, Boulevard del Sur, entre 20-21 calle.
+H101;La Ceiba;H121;1211;H1211211;Bo. Mejía, frente a Boulevard La Amistad, contiguo a Tabacalera Hondureña, salida a Tela
+H101;Online;HN01;HN00;HN01HN00;Boulevard Centroamérica, Frente a Plaza Miraflores
+H101;Choluteca;H121;1238;H1211238;Colonia Iberia, Blvd Chorotega frente a rotonda reloj solar contiguo a Unimall
+H101;Roatán;H121;1230;H1211230;Dolphin plaza coxen hole, roatan, isla de la bahia
+H101;Sercor La Ceiba;H121;1211;H1211211;
+H101;Sercor Roatan;H121;1230;H1211230;
+H105;Active Motors - Oficinas Grupo Q;H211;1200;H2111200;Dentro de Complejo Grupo Q, Frente a Plaza Miraflores, Blvd. Centroamerica, Tegucigalpa, Honduras.
+H105;Motos San Pedro Sula;H121;1201;H1211201;San Pedro Sula: En la 3era. Ave. Barrio las Acasias entre 10 y 11 calle Noroeste, local No. 9 Junto a Americanos Autoparts. Frente a gasolinera Texaco.
+H105;Motos La Ceiba;H211;1202;H2111202;Dentro de complejo Grupo Q: Boulevard Mejia, salida, Carr. A Tela, La Ceiba
+H105;Motos Choluteca;H211;1203;H2111203;Choluteca
+H105;Forland Tegucigalpa;H311;1200;H3111200;Tegucigalpa
+H105;Forland San Pedro Sula;H311;1201;H3111201;San Pedro Sula
+H105;Forland La Ceiba;H311;1202;H3111202;La Ceiba
+H105;Forland Choluteca;H311;1203;H3111203;Choluteca
+H105;Autopits Morazan;H211;1250;H2111250;Bulevar Morazán Tegucigalpa, contiguo a La Casa del Café.
+H105;Autopits Jardines;H211;1251;H2111251;Bulevar UNAH, San Pedro Sula
+H105;Autopits Circunvalación;H211;1252;H2111252;Circunvalación
+H105;Jessica Mateo / Comayagua 1;H211;1230;H2111230;
+H105;Jessica Mateo / Comayagua 2;H211;1231;H2111231;
+H105;Carlos Padilla / Tocoa 1;H211;1232;H2111232;
+H105;Distribuciones Globales/La Esperanza;H211;1239;H2111239;Entrada principal a La Esperanza Intibuca a 20 mts de Plaza Venecia
+H105;MB Motos/Juticalpa;H211;1240;H2111240;Barrio de Jesus, contiguo a Hotel Patuca, costado Oeste de la Despensa Familiar.
+H105;Red Motos/Danli;H211;1241;H2111241;
+H105;Motocentro S.De.R.L/Trojes;H211;1244;H2111244;
+H105;Inversiones Rodriguez/Sabanagrande;H211;1242;H2111242;
+H105;Inversiones La Zavana/El Porvenir;H211;1249;H2111249;
+H105;Motocentro S.De.R.L/El Paraiso;H211;1243;H2111243;
+H105;Motopartes El Centro/Tocoa;H211;1270;H2111270;
+H105;Distribuidora Alondra/San Marcos;H211;1288;H2111288;
+H105;RemotosCar/La Ceiba;H211;1271;H2111271;Colonia Miraflores, CA 13, 300 metros delante de restaurante Goden Palace, La Ceiba, Atlantida
+H105;Inversiones La Zavana/Guaimaca;H211;1245;H2111245;
+H105;Lagos Motors/Arizona;H211;1272;H2111272;
+H105;Walter Mateo Mejia / Comayagua;H211;1233;H2111233;
+H105;Repuestos y Accesorios Victoria/Oalnchito;H211;1289;H2111289;Barrio el centro, calle principal ,frente a la Curacao, Olanchito Yoro
+H105;Lagos Motors/Tela;H211;1273;H2111273;
+H105;Grupo Inmasa/San Marcos2;H211;1284;H2111284;
+H105;Inversiones La Zavana/Campamento;H211;1246;H2111246;
+H105;Repuestos y Accesorios Victoria/Saba;H211;1290;H2111290;
+H105;Distribuidora Alondra/Santa Barbara;H211;1285;H2111285;
+H105;Distribuidora Alondra/Azacualpa;H211;1286;H2111286;
+H105;Walter Mateo / Siguatepeque;H211;1234;H2111234;
+H105;Distribuidora Alondra/Pinalejo;H211;1287;H2111287;
+H105;Inversiones La Zavana/Talanga;H211;1247;H2111247;
+H105;Walter Mateo / La Paz;H211;1235;H2111235;
+H105;Inversiones La Zavana/Orica;H211;1248;H2111248;
+H105;Walter Mateo /Santa Cruz;H211;1237;H2111237;
+H105;Moto Master/Choluteca;H211;1238;H2111238;Barrio La Libertad una cuadra de Ferreteria Herco Centro 1 al Oeste
+H105;Taller de motos y accesorios Montoya/Morazan;H211;1274;H2111274;
+H105;Taller de motos y accesorios Montoya/San Juan Pueblo;H211;1275;H2111275;
+H105;Motos y Repuestos S de R.L/El Progreso;H211;1276;H2111276;
+H105;Motocenter/Cuyamel;H211;1279;H2111279;
+H105;Walter Mateo /Yoro;H211;1236;H2111236;
+H105;Motocenter/Puerto Cortes;H211;1301;H2111301;
+H105;Motocenter/Tegucigalpita;H211;1280;H2111280;
+H105;Grupo Inmasa/Garcias1;H211;1281;H2111281;
+H105;Grupo Inmasa/Garcias2;H211;1282;H2111282;
+H105;Grupo Inmasa/San Marcos1;H211;1283;H2111283;
+H105;Motocenter/Omoa;H211;1278;H2111278;
+H105;Inversiones La Zavana/Teupasenti;H211;1291;H2111291;
+H105;Muebleria Ariana/Catacamas;H211;1292;H2111292;
+H105;Interamericana de Motos/Catacamas;H211;1293;H2111293;
+H105;Interamericana de Motos/San Esteban;H211;1294;H2111294;
+H105;Interamericana de Motos/Dulce Nombre de Culmi;H211;1295;H2111295;
+H105;Interamericana de Motos/Gualaco;H211;1296;H2111296;
+H105;Grupo Hondumotos S.A.;H211;1297;H2111297;
+H105;Cristian Noe Calix Borjas / El Negrito;H211;1298;H2111298;
+H105;Cristian Noe Calix Borjas / Peña Blanca;H211;1299;H2111299;
+H105;Motocentro S.De.R.L/DAN;H211;1300;H2111300;
+H105;Motos Morazan;H211;1253;H2111253;
+H105;Motocenter / Cortes;H211;1277;H2111277;
+H105;Inversiones Mas y Alimentos S DE R.L. / San Lorenzo;H211;1302;H2111302;
+H105;Inversiones Mas y Alimentos S DE R.L. / Nacaome;H211;1303;H2111303;
+H105;Graciela Maria Sanabria Vidal / Santa Rosa;H211;1304;H2111304;
+H105;Graciela Maria Sanabria Vidal / Lepaera;H211;1305;H2111305;
+H105;Graciela Maria Sanabria Vidal / Ocotepeque;H211;1306;H2111306;
+H105;Inversiones Discua / Gracias;H211;1307;H2111307;
+H105;Inversiones Discua / San Juan;H211;1308;H2111308;
+H105;Inversiones Discua / Peña Blanca;H211;1309;H2111309;
+H105;Motofacil / Colon;H211;1310;H2111310;
+H105;Inversiones Mas y Alimentos S DE R.L. / Monjaras;H211;1311;H2111311;
+H105;Suyapa Martinez Montalvan;H211;1312;H2111312;
+H105;Gerson Morga / Centro;H211;1313;H2111313;
+H105;Forland Roatan;H311;1247;H3111247;
+H105;INDUREP / Comayagua;H211;1314;H2111314;
+H105;Inversiones Hermanos Flores / El Porvenir;H211;1315;H2111315;
+H105;Motomarina / Villanueva;H211;1319;H2111319;
+H105;Motocenter / Progreso;H211;1318;H2111318;
+H105;Walter Mateo / La Paz 2;H211;1317;H2111317;
+H105;Walter Mateo Mejia / Comayagua 2;H211;1316;H2111316;
+H105;Inversiones La Zavana/Salama;H211;1321;H2111321;
+H105;Moto Market Centro;H211;1323;H2111323;
+H105;Distribuidora Alondra/Naco;H211;1322;H2111322;
+H105;Distribuidora Alondra/Juticalpa;H211;1324;H2111324;
+H105;Inversiones San Francisco/Orica;H211;1325;H2111325;
+H105;RemotosCar / Choloma;H211;1326;H2111326;
+H105;Motocentro S.De.R.L/Terminal;H211;1327;H2111327;
+H105;Inversiones La Zavana/Olancho;H211;1328;H2111328;
+H105;Motocentro S.De.R.L/Danli;H211;1329;H2111329;
+H105;Taller de motos y accesorios Montoya/Masica;H211;1330;H2111330;
+H105;Inversiones La Zavana/La Union;H211;1331;H2111331;
+N101;Chinandega.;N021;1210;N0211210;KM 129 carretera Chinandega salida hacia león contiguo a Ferromax
+N101;Estelí;N021;1231;N0211231;KM 144 Carretera Panamericana Norte, Tienda Multi Hogar.
+N101;Jean Paul Genie;N021;1200;N0211200;Avenida Jean Paul Genie contiguo a Procredit, Managua
+N101;Los Robles;N021;1217;N0211217;Del Hotel Hilton Princess, 200 metros al Este, contiguo a La Unión
+N105;Active Motors  Managua;N121;1200;N1211200;De Distribuidora el Gigante, 200 mts al Norte, Managua, Nicaragua
+N105;Motos Esteli;N121;1231;N1211231;Kilometro 4.5 carretera norte a Managua. Contiguo a Rolter
+N105;Edwing Olivas / Iniser;N121;1232;N1211232;De Iniser 1/2C al Norte
+N105;Edwing Olivas / Transito;N121;1233;N1211233;
+N105;Edwing Olivas / El Rosario;N121;1234;N1211234;
+N105;Edwing Olivas / La Concordia;N121;1235;N1211235;
+N105;Maria Traña / Masaya;N121;1236;N1211236;
+N105;Maria Traña / Las Flores;N121;1237;N1211237;
+N105;Delia Ruiz / Ivan Montenegro;N121;1238;N1211238;
+N105;Mauricio Robelo / UCA;N121;1239;N1211239;
+N105;Rosa Erlinda García / Altagracia;N121;1240;N1211240;
+N105;Julissa Espinoza / EMMSUR;N121;1243;N1211243;
+N105;Andres Guerra / Motor City;N121;1244;N1211244;
+N105;Julie González / Jinotega;N121;1245;N1211245;
+N105;Julie González / El Cúa;N121;1246;N1211246;
+N105;Julie González / Wiwili;N121;1247;N1211247;
+N105;Julio Lazo / Juigalpa;N121;1248;N1211248;
+N105;Belkis Rios / El Rama;N121;1249;N1211249;
+N105;Arlen Marenco / Nueva Guinea;N121;1250;N1211250;
+N105;Nelson Hernández / Ocotal;N121;1252;N1211252;
+N105;Filomena Guido / León;N121;1253;N1211253;
+N105;Deyling González / Chinandega;N121;1254;N1211254;
+N105;Maria Traña / Vetrasa;N121;1255;N1211255;
+N105;Rosa Erlinda García / Diriamba;N121;1256;N1211256;
+N105;Julie González / MotoMundo;N121;1257;N1211257;
+N105;Julie González / Keduard;N121;1258;N1211258;
+N105;JPG Managua;N121;1221;N1211221;Kilometro 4.5 carretera norte a Managua.
+N105;Belksi Ríos / Rama 2;N121;1259;N1211259;
+N105;Rosa Erlinda García / Jinotepe;N121;1340;N1211340;Kilometro 4.5 carretera norte a Managua.
+N105;Ricardo Melendez / Carretera Norte;N121;1260;N1211260;
+N105;Alvaro Moncada / Sébaco;N121;1261;N1211261;
+N105;CURACAO LA VIRGEN;N121;1262;N1211262;
+N105;CURACAO CENTRO COMERCIAL;N121;1263;N1211263;
+N105;CURACAO METROCENTRO;N121;1264;N1211264;
+N105;CURACAO LINDA VISTA;N121;1264;N1211264;
+N105;CURACAO CORPORATIVA;N121;1265;N1211265;
+N105;CURACAO INTERNET;N121;1267;N1211267;
+N105;CURACAO PUERTO CABEZAS;N121;1285;N1211285;
+N105;CURACAO RIO BLANCO;N121;1273;N1211273;
+N105;TROPIGAS IVAN MONTENEGRO;N121;1297;N1211297;
+N105;CURACAO LEON 2;N121;1274;N1211274;
+N105;CURACAO ESTELI;N121;1279;N1211279;
+N105;CURACAO PZA LAS AMERICAS;N121;1268;N1211268;
+N105;CURACAO GRANADA 2;N121;1291;N1211291;
+N105;CURACAO MASAYA 2;N121;1275;N1211275;
+N105;CURACAO SANTO TOMAS;N121;1286;N1211286;
+N105;CURACAO LEON;N121;1269;N1211269;
+N105;TROPIGAS NUEVA GUINEA;N121;1315;N1211315;
+N105;CURACAO MATAGALPA;N121;1280;N1211280;
+N105;TROPIGAS CIUDAD JARDIN;N121;1298;N1211298;
+N105;CURACAO SAN CARLOS;N121;1292;N1211292;
+N105;CURACAO EL RAMA;N121;1287;N1211287;
+N105;CURACAO JUIGALPA;N121;1276;N1211276;
+N105;CURAC CHI1;N121;1270;N1211270;
+N105;TROPIGAS MULTICTRO L AMER;N121;1299;N1211299;
+N105;CURACAO TIPITAPA;N121;1288;N1211288;
+N105;CURACAO NUEVA GUINEA;N121;1277;N1211277;
+N105;CURACAO JINOTEPE;N121;1289;N1211289;
+N105;CURACAO CAMOAPA;N121;1293;N1211293;
+N105;CURACAO BOACO;N121;1278;N1211278;
+N105;TROPIGAS CIUDAD SANDINO;N121;1300;N1211300;
+N105;CURACAO NAGAROTE;N121;1271;N1211271;
+N105;CURACAO OCOTAL;N121;1281;N1211281;
+N105;TROPIGAS BOACO;N121;1316;N1211316;
+N105;CURACAO RIVAS;N121;1290;N1211290;
+N105;CURACAO CONDEGA;N121;1272;N1211272;
+N105;CURACAO JINOTEGA;N121;1282;N1211282;
+N105;CURACAO MATAGALPA 2;N121;1294;N1211294;
+N105;CURACAO SOMOTO;N121;1283;N1211283;
+N105;TROPIGAS CARRETERA NORTE;N121;1301;N1211301;
+N105;CURACAO BLUEFIELDS;N121;1284;N1211284;
+N105;CURACAO JALAPA;N121;1295;N1211295;
+N105;TROPIGAS MERCADO ROBERT H;N121;1302;N1211302;
+N105;TROPIGAS NEJAPA;N121;1296;N1211296;
+N105;TROPIGAS SEBACO;N121;1321;N1211321;
+N105;TROPIGAS JINOTEPE;N121;1327;N1211327;
+N105;TROPIGAS TIPITAPA;N121;1328;N1211328;
+N105;TROPIGAS JINOTEGA;N121;1322;N1211322;
+N105;TROPIGAS SN RAFAEL D SUR;N121;1329;N1211329;
+N105;TROPIGAS MASATEPE;N121;1330;N1211330;
+N105;TROPIGAS MASAYA 2;N121;1331;N1211331;
+N105;TROPIGAS SIUNA;N121;1317;N1211317;
+N105;TROPIGAS DIRIAMBA;N121;1324;N1211324;
+N105;TROPIGAS ESTELI;N121;1318;N1211318;
+N105;TROPIGAS LEON 2;N121;1309;N1211309;
+N105;TROPIGAS PLAZA INTER;N121;1303;N1211303;
+N105;TROPIGAS GRANADA;N121;1325;N1211325;
+N105;TROPIGAS MOTORS ESTELI;N121;1332;N1211332;
+N105;TROPIGAS MATAGALPA;N121;1319;N1211319;
+N105;TROPIGAS LEON;N121;1310;N1211310;
+N105;TROPIGAS RIO BLANCO;N121;1320;N1211320;
+N105;TROPIGAS RIVAS;N121;1326;N1211326;
+N105;TROPIGAS CHINANDEGA;N121;1311;N1211311;
+N105;TROPIGAS CTRO COMERCIAL M;N121;1304;N1211304;
+N105;TROPIGAS CHICHIGALPA;N121;1312;N1211312;
+N105;TROPIGAS LINDA VISTA;N121;1305;N1211305;
+N105;TROPIGAS OCOTAL;N121;1313;N1211313;
+N105;TROPIGAS ROSITA;N121;1323;N1211323;
+N105;TROPIGAS JUIGALPA;N121;1314;N1211314;
+N105;TROPIGAS SANTO TOMAS;N121;1306;N1211306;
+N105;TROPIGAS METRO CENTRO;N121;1307;N1211307;
+N105;TROPIGAS JALAPA;N121;1308;N1211308;
+N105;CURACAO CHINANDEGA;N121;1270;N1211270;
+N105;Forland Nicaragua;N131;1200;N1311200;
+N105;Nancy Flores / El Nancite;N121;1333;N1211333;
+N105;Nancy Flores / El Gigante;N121;1334;N1211334;
+N105;Adonis Rodriguez / Boaco;N121;1335;N1211335;
+N105;Handley Quiñonez / Jalapa;N121;1336;N1211336;
+N105;Alvaro Moncada / Matagalpa;N121;1337;N1211337;
+N105;Nancy Flores / Tola;N121;1338;N1211338;
+N105;Nancy Flores / Nandaime;N121;1239;N1211239;
+N105;Rosa Erlinda García / EXPICA;N121;1341;N1211341;
+N105;Reyna Medina / San Carlos;N121;1342;N1211342;
+N105;Maria Gutierrez / La Concha;N121;1343;N1211343;
+N105;Deyling Gonzalez / Somotillo;N121;1344;N1211344;
+N105;Julie Gonzalez / Ayapal;N121;1345;N1211345;
+N105;Nelson Hernandez / San Juan de Rio Coco;N121;1346;N1211346;
+N105;Motos Chevrolet;N121;1228;N1211228;
+N105;Motos Nissan;N121;1229;N1211229;
+N105;Rosa Erlinda García / León;N121;1351;N1211351;
+N105;Kbra Motors / Carretera Norte;N121;1350;N1211350;
+N105;Delmis Rodriguez / Matagalpa;N121;1352;N1211352;
+N105;Marilyn Calero / Masatepe;N121;1353;N1211353;
+N105;Institucional / Pácifico;N121;1354;N1211354;
+N105;Alexander Guillen / Rivas;N121;1356;N1211356;
+N105;Rosa Erlinda García / Mayoreo;N121;1357;N1211357;
+N105;Maria Traña / Monimbo;N121;1360;N1211360;
+N105;Andres Guerra / San Juan Del Sur;N121;1361;N1211361;
+N105;Juan Zuniga / Wiwili;N121;1358;N1211358;
+N105;Juan Zuniga / Jinotega;N121;1359;N1211359;
+N105;Grupo Monge / Managua;N121;1355;N1211355;
+N105;Meylin Medrano / Linda Vista;N121;1362;N1211362;
+N105;Eloisa Ruiz / Ciudad Dario;N121;1363;N1211363;
+N105;Delmis Rodriguez / Sebaco;N121;1364;N1211364;
+N105;Marilyn Calero / El Dorado;N121;1365;N1211365;
+N105;TROPIGAS ZUMEN;N121;1366;N1211366;
+N105;Marilyn Calero / Granada;N121;1367;N1211367;
+N105;Alexander Guillen / Rivas 2;N121;1368;N1211368;
+N105;Delmis Rodriguez / Matiaguas;N121;1369;N1211369;
+N105;Delmis Rodriguez / Esquipulas;N121;1370;N1211370;
+N105;Delmis Rodriguez / La Dalia;N121;1371;N1211371;
+N105;Handley Quiñonez / Jalapa 2;N121;1372;N1211372;
+N105;Handley Quiñonez / Quilalí;N121;1373;N1211373;
+N105;Kbra Motors / Sebaco;N121;1374;N1211374;
+N105;Super Moto Nicaragua / Bolonia;N121;1375;N1211375;
+N105;Edgar Jacir / Managua;N121;1376;N1211376;
+N105;Kbra Motors / Rivas;N121;1377;N1211377;
+N105;Motos Bolonia / Managua;N121;1213;N1211213;
+N105;Jose Segura / El Sauce;N121;1378;N1211378;
+N105;TV OFFER / ALTAMIRA;N121;1379;N1211379;
+N105;TV OFFER / METROCENTRO;N121;1380;N1211380;
+N105;TV OFFER / GALERIAS SANTO DOMINGO;N121;1381;N1211381;
+N105;Marilyn Calero / Sebaco;N121;1382;N1211382;
+N105;SANDERS CASTILLO / ESQUIPULAS;N121;1383;N1211383;
+N105;Yaritza Campos / Managua;N121;1384;N1211384;
+N105;Meylin Medrano / Ciudad Sandino;N121;1385;N1211385;
+N105;Rosa Erlinda García / Chinandega;N121;1386;N1211386;
+N105;Grupo Monge / Jardin;N121;1387;N1211387;
+N105;Grupo Monge / Chinandega;N121;1388;N1211388;
+N105;Grupo Monge / Las Americas;N121;1389;N1211389;
+N105;Grupo Monge / El Zumen;N121;1390;N1211390;
+N105;Grupo Monge / Masaya;N121;1391;N1211391;
+N105;Grupo Monge / Juigalpa;N121;1392;N1211392;
+N105;Grupo Monge / Esteli;N121;1393;N1211393;
+N105;Grupo Monge / Matagalpa;N121;1394;N1211394;
+N105;Grupo Monge / Leon;N121;1395;N1211395;
+N105;Grupo Monge / Granada;N121;1396;N1211396;
+N105;Grupo Monge / Linda Vista;N121;1397;N1211397;
+N105;Grupo Monge / Tipitapa;N121;1398;N1211398;
+N105;Grupo Monge / Rivas;N121;1399;N1211399;
+N105;Grupo Monge / Boaco;N121;1400;N1211400;
+N105;Grupo Monge / Jinotepe;N121;1401;N1211401;
+N105;Grupo Monge / Puerto Cabezas;N121;1402;N1211402;
+N105;Grupo Monge / Jinotega;N121;1403;N1211403;
+N105;Grupo Monge / Ocotal;N121;1404;N1211404;
+N105;Grupo Monge / Bluefields;N121;1405;N1211405;
+N105;Grupo Monge / Diriamba;N121;1406;N1211406;
+N105;Grupo Monge / Nueva Guinea;N121;1407;N1211407;
+N105;Grupo Monge / Rio Blanco;N121;1408;N1211408;
+N105;Grupo Monge / Somoto;N121;1409;N1211409;
+N105;Grupo Monge / Sebaco;N121;1410;N1211410;
+N105;Grupo Monge / Huembes;N121;1411;N1211411;
+N105;Grupo Monge / Multicentro Las Americas;N121;1412;N1211412;
+N105;Grupo Monge / C Sandino;N121;1413;N1211413;
+N105;Grupo Monge / Camoapa;N121;1414;N1211414;
+N105;Grupo Monge / P Inter;N121;1415;N1211415;
+N105;Grupo Monge / Nandaime;N121;1416;N1211416;
+N105;Grupo Monge / S R Sur;N121;1417;N1211417;
+N105;Grupo Monge / Chichigalpa;N121;1418;N1211418;
+N105;Grupo Monge / Matiguas;N121;1419;N1211419;
+N105;Grupo Monge / Viejo;N121;1420;N1211420;
+N105;Grupo Monge / Masatepe;N121;1421;N1211421;
+N105;Grupo Monge / Sto Tomas;N121;1422;N1211422;
+N105;Grupo Monge / Siuna;N121;1423;N1211423;
+N105;Grupo Monge / Nagarote;N121;1424;N1211424;
+N105;Grupo Monge / El Rama;N121;1425;N1211425;
+N105;Grupo Monge / San Carlos;N121;1426;N1211426;
+N105;Grupo Monge / Metrocentro;N121;1427;N1211427;
+N105;Grupo Monge / P Flores;N121;1428;N1211428;
+N105;Grupo Monge / P Once;N121;1429;N1211429;
+N105;Grupo Monge / Somotillo;N121;1430;N1211430;
+N105;Grupo Monge / La Dalia;N121;1431;N1211431;
+N105;Grupo Monge / Jalapa;N121;1432;N1211432;
+N105;Grupo Monge / Bonanza;N121;1433;N1211433;
+N105;Grupo Monge / Ometepe;N121;1434;N1211434;
+N105;Grupo Monge / Ticuantepe;N121;1435;N1211435;
+N105;Grupo Monge / S Miguelito;N121;1436;N1211436;
+N105;Grupo Monge / Wiwili;N121;1437;N1211437;
+N105;Grupo Monge / Condega;N121;1438;N1211438;
+N105;Grupo Monge / El cua;N121;1439;N1211439;
+N105;Grupo Monge / SJR Coco;N121;1440;N1211440;
+N105;Grupo Monge / Quilali;N121;1441;N1211441;
+N105;Grupo Monge / C Dario;N121;1442;N1211442;
+N105;Grupo Monge / Esquipulas;N121;1443;N1211443;
+N105;Grupo Monge / Waslala II;N121;1444;N1211444;
+N105;Grupo Monge / Libertad;N121;1445;N1211445;
+N105;Grupo Monge / P Natura;N121;1446;N1211446;
+N105;Grupo Monge / EV Chinandega;N121;1447;N1211447;
+N105;Grupo Monge / EV Masaya;N121;1448;N1211448;
+N105;Grupo Monge / EV Matagalpa;N121;1449;N1211449;
+N105;Grupo Monge / EV Bluefields;N121;1450;N1211450;
+N105;Grupo Monge / EV Granada;N121;1451;N1211451;
+N105;Grupo Monge / EV Americas;N121;1452;N1211452;
+N105;Grupo Monge / EV Esteli;N121;1453;N1211453;
+N105;Grupo Monge / EV Juigalpa;N121;1454;N1211454;
+N105;Grupo Monge / EV Tipitapa;N121;1455;N1211455;
+N105;Grupo Monge / EV Jinotega;N121;1456;N1211456;
+N105;Grupo Monge / EV Leon;N121;1457;N1211457;
+N105;Grupo Monge / EV Multicentro;N121;1458;N1211458;
+N105;Grupo Monge / EV Jinotepe;N121;1459;N1211459;
+N105;Grupo Monge / EV Rivas;N121;1460;N1211460;
+N105;Grupo Monge / EV Boaco;N121;1461;N1211461;
+N105;Grupo Monge / EV Ocotal;N121;1462;N1211462;
+N105;Grupo Monge / EV Zumen;N121;1463;N1211463;
+N105;Grupo Monge / EV Puerto Cabezas;N121;1464;N1211464;
+N105;Grupo Monge / EV Las Brisas;N121;1465;N1211465;
+N105;Grupo Monge / EV Nueva Guinea;N121;1467;N1211467;
+N105;Grupo Monge / El Sauce;N121;1466;N1211466;
+N105;Grupo Monge / Serp Managua;N121;1468;N1211468;
+N105;Grupo Monge / Serp Masaya;N121;1469;N1211469;
+N105;Grupo Monge / Serp Juigalpa;N121;1470;N1211470;
+N105;Grupo Monge / Serp Chinandega;N121;1471;N1211471;
+N105;Active Motors Multicentro;N121;1472;N1211472;
+N105;JUAN SANCHEZ/ MANAGUA 2;N121;1477;N1211477;
+N105;Handley Quinonez / Ocotal;N121;1479;N1211479;
+N105;LESTHER MARTINEZ/ JINOTEGA;N121;1480;N1211480;
+N105;TROPIGAS/ ALTAGRACIA;N121;1481;N1211481;
+N105;TROPIGAS/ ISLA DE OMETEPE;N121;1482;N1211482;
+N105;JULIET CARVAJAL/ MANAGUA;N121;1483;N1211483;
+N105;Kbra Motors / Managua;N121;1485;N1211485;
+N105;Julio Lazo / Managua;N121;1488;N1211488;
+N105;Edgar Jacir / Rosita;N121;1490;N1211490;
+N105;Rosa Erlinda García / Masaya;N121;1491;N1211491;
+N105;Juan Zuniga / Wiwili Nueva Segovia;N121;1493;N1211493;
+N105;Forland Chinandega;N131;1252;N1311252;
+N105;Orlando Vallecillo / Managua;N121;1492;N1211492;
+N105;Julio Lazo / Santo Tomas;N121;1494;N1211494;
+N105;Meylin Medrano / Nagarote;N121;1495;N1211495;
+N105;Marilyn Calero / Masaya;N121;1500;N1211500;
+P103;Sucursal Punta Pacífica;P121;1212;P1211212;Oceanía Business Plaza, torre 3000, Planta Baja. Blvd. Pacífica. A un costado de Pacífica Salud Hospital Punta Pacífica
+P103;Penonomé;P121;1301;P1211301;Boulevard Penonomé, al lado de Multibank, Local 34A, 34B
+P103;Av. Ricardo J. Alfaro, Villa de la Fuente;P121;1213;P1211213;Tumba Muerto. A un costado de la Gasolinera TERPEL. hacia el Price Smart
+P103;Sucursal Chiriqui Chery;P121;1226;P1211226;Avenida Francisco Clark frente a Electrysol
+P103;Sucursal Chorrera;P121;1229;P1211229;
+P103;Repuestos Tumba Muertos 1;P132;2200;P1322200;
+P103;Repuestos Calle 50 Prival;P152;2200;P1522200;Calle 50 y calle 69, San Francisco
+P103;Repuestos Costa Verde;P162;2200;P1622200;
+P103;Tumba Muerto;P121;1207;P1211207;Tumba Muerto, Dos Mares, Ave Ricardo J. Alfaro.
+P103;Costa del Este;P121;1223;P1211223;Plaza Time Square Center, Avenida del Sol.
+P103;Costa Verde Uniplaza;P121;1218;P1211218;Costa Verde, Uniplaza, en La Chorrera
+P103;Calle 50 AMW;P121;1249;P1211249;Calle 50, diagonal a la iglesia Nuestra Señora de Guadalupe.
+P103;Calle 50;P121;1252;P1211252;
+P103;David;P121;1246;P1211246;Avenida Francisco Clark frente a Electrysol
+P103;Costa Verde Fortune Center;P121;1300;P1211300;Boulevard Costa Verde, Fortune Center, al lado de PriceSmart planta baja local 9,10 y 11
+P103;Distribuidor Via Brasil;P121;1302;P1211302;
+P103;Sucursal Via Tocumen- City Plaza;P121;1258;P1211258;
+P103;Santiago;P121;1300;P1211300;Vía Interamericana, al lado de la estación  Terpel y Cochez
+P103;Chitré;P121;1310;P1211310;
+P105;TM1 - Av. Ricardo J. Alfaro, Villa de la Fuente;P311;1206;P3111206;50 calle
+P105;TM2 - Ricardo J. Alfaro, Dos Mares;P311;1207;P3111207;Ave. Ricardo J. Alfaro, Dos mares
+P105;Repuestos Calle 50 AMW;P312;2200;P3122200;Calle 50 AMW
+P105;Repuestos Tumba Muertos 1;P332;2200;P3322200;Tumba Muertos 1
+P105;Repuestos Tumba Muertos 2;P342;2200;P3422200;Tumba Muertos 2
+P105;Online;PA05;PA00;PA05PA00;
+P105;CDA;P311;1215;P3111215;
+P105;Listo en CDA;P311;1216;P3111216;
+P105;Sucursal Costa Verde;P311;1301;P3111301;Plaza fortune Center , a un costado del Price smart.
+P105;Sucursal Penonome;P311;1300;P3111300;Boulevard penonome, a un costado de Lumicentro.
+P105;Sucursal TM - Plaza Dos Mares;P311;1223;P3111223;
+P105;Repuestos Penonome;P352;2200;P3522200;
+P105;Sucursal Calle 50;P311;1226;P3111226;Frente de iglesia Guadalupe
+P105;Calle 50 AMW;P311;1232;P3111232;
+P105;Sucursal  David;P311;1229;P3111229;Av. Francisco Clark, David, Provincia de Chiriquí
+P105;Sucursal Via Tocumen;P311;1235;P3111235;Av. Domingo Diaz, City plaza.
+P105;Repuestos Calle 50 Prival;P382;2200;P3822200;
+P105;Taller Calle 50 AMW;P312;;P312;
+P105;Sucursal Santiago;P311;1305;P3111305;Via Interamericana
+P105;Costa del Este;P311;1264;P3111264;Plaza Times Square Center
+P105;Sucursal Chitre;P311;1267;P3111267;Av. Roberto Ramírez De Diego, Provincia de Herrera.
+S101;Autopista Sur;S021;1230;S0211230;Autopista Sur y Avenida las Amapolas. Colonia San Mateo, San Salvador
+S101;Grupo Q Santa Elena;S021;1231;S0211231;Blvd. y Urbanización Santa Elena, Apdo.Postal 01-55 Antiguo Cuscatlán, El Salvador
+S101;San Miguel (Multimarca);S021;1232;S0211232;Carretera Panamericana Km 137, San Miguel
+S101;Santa Ana;S021;1233;S0211233;Avenida Santa Ana Califonica y 23 calle poniente, Santa Ana
+S101;Los Proceres;S021;1234;S0211234;Boulevard de Los Proceres, contiguo a CrediQ
+S105;Motos Vento Sucursal Central;S211;1200;S2111200;
+S105;Motos Soco Sucursal Central;S211;1201;S2111201;
+S105;Motos Vento Autopista Sur;S211;1202;S2111202;
+S105;Motos Soco Autopista Sur;S211;1203;S2111203;
+S105;Motos Vento San Miguel;S211;1210;S2111210;
+S105;Motos Soco San Miguel;S211;1211;S2111211;
+S105;Repuestos Motos Los Proceres;S215;2200;S2152200;
+S105;Repuestos Motos Autopista Sur;S222;2200;S2222200;
+S105;Repuestos Motos San Miguel;S252;2200;S2522200;
+S105;Taller Motos Los Proceres;S215;2300;S2152300;
+S105;Taller Motos Autopista Sur;S222;2300;S2222300;
+S105;Taller Motos San Miguel;S252;2300;S2522300;
+S105;Motos Vento Santa Elena;S211;1212;S2111212;
+S105;Motos Soco Santa Elena;S211;1213;S2111213;
+S105;Motos Vento Santa Ana;S211;1214;S2111214;
+S105;Motos Soco Santa Ana;S211;1215;S2111215;
+S105;Repuestos Motos Santa Elena;S232;2200;S2322200;
+S105;Repuestos Motos Santa Ana;S242;2200;S2422200;
+S105;Taller Motos Santa Elena;S232;2300;S2322300;
+S105;Taller Motos Santa Ana;S242;2300;S2422300;
+S105;Vehículos Los Duraznos;S311;1200;S3111200;
+S105;Vehiculos Autopista Sur;S311;1201;S3111201;
+S105;Vehiculos San Miguel;S311;1202;S3111202;
+S105;Vehiculos Santa Elena;S311;1203;S3111203;Bulevar Santa Elena y Calle Alegría, Edificio Interalia 1er Nivel
+S105;Vehiculos Santa Ana;S311;1204;S3111204;
+S105;Repuestos Vehículos Los Proceres;S312;2200;S3122200;
+S105;Repuestos Vehículos Autopista Sur;S322;2200;S3222200;
+S105;Repuestos Vehículos San Miguel;S352;2200;S3522200;
+S105;Repuestos Vehículos Santa Elena;S332;2200;S3322200;
+S105;Repuestos Vehículos Santa Ana;S342;2200;S3422200;
+S105;Taller Vehículos Los Proceres;S315;2300;S3152300;
+S105;Taller Vehículos Autopista Sur;S325;2300;S3252300;
+S105;Taller Vehículos San Miguel;S355;2300;S3552300;
+S105;Taller Vehículos Santa Elena;S335;2300;S3352300;
+S105;Taller Vehículos Santa Ana;S345;2300;S3452300;
+S105;CDA Vehículos;S311;1210;S3111210;
+S206;Santa Elena;S421;1230;S4211230;
+S206;San Miguel;S421;1232;S4211232;Carretera Panamericana Km. 132 y Av. Olomega, GrupoQ, Edificio Automall, San Miguel
+S206;Santa Ana;S421;1233;S4211233;Avenida Santa Ana California y 23 Calle Poniente, Santa Ana
