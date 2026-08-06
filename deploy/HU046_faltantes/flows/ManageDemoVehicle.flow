@@ -422,11 +422,38 @@
             <isRequired>true</isRequired>
         </fields>
         <fields>
-            <name>VehicleSerial</name>
-            <dataType>String</dataType>
-            <fieldText>VIN / Número de serie de la unidad</fieldText>
-            <fieldType>InputField</fieldType>
-            <isRequired>true</isRequired>
+            <name>VehicleSerialSection</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>VehicleSerialSectionCol1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>VehicleSerial</name>
+                    <dataType>String</dataType>
+                    <fieldText>VIN / Número de serie de la unidad</fieldText>
+                    <fieldType>InputField</fieldType>
+                    <helpText>&lt;p&gt;VIN completo: 17 caracteres (sin I, O, Q).&lt;/p&gt;</helpText>
+                    <isRequired>true</isRequired>
+                    <validationRule>
+                        <errorMessage>&lt;p&gt;El VIN tiene máximo 17 caracteres.&lt;/p&gt;</errorMessage>
+                        <formulaExpression>LEN({!VehicleSerial}) &lt;= 17</formulaExpression>
+                    </validationRule>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value><stringValue>5</stringValue></value>
+                </inputParameters>
+            </fields>
+            <fields>
+                <name>VehicleSerialSectionCol2</name>
+                <fieldType>Region</fieldType>
+                <inputParameters>
+                    <name>width</name>
+                    <value><stringValue>7</stringValue></value>
+                </inputParameters>
+            </fields>
+            <isRequired>false</isRequired>
+            <regionContainerType>SectionWithoutHeader</regionContainerType>
         </fields>
         <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
