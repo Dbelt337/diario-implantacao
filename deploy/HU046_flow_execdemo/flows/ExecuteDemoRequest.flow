@@ -170,7 +170,12 @@
         <locationX>200</locationX><locationY>100</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector><targetReference>IsUnitFoundExec</targetReference></connector>
-        <filterLogic>and</filterLogic>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>VehicleIdentificationNumber</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>UnitSerial</elementReference></value>
+        </filters>
         <filters>
             <field>Name</field>
             <operator>EqualTo</operator>
@@ -302,14 +307,10 @@
                 <fields>
                     <name>UnitSerial</name>
                     <dataType>String</dataType>
-                    <fieldText>VIN / Número de serie de la unidad</fieldText>
+                    <fieldText>VIN o nombre de la unidad</fieldText>
                     <fieldType>InputField</fieldType>
-                    <helpText>&lt;p&gt;VIN completo: 17 caracteres (sin I, O, Q).&lt;/p&gt;</helpText>
+                    <helpText>&lt;p&gt;Busca por VIN (17 caracteres) o por el nombre exacto de la unidad.&lt;/p&gt;</helpText>
                     <isRequired>true</isRequired>
-                    <validationRule>
-                        <errorMessage>&lt;p&gt;VIN inválido: debe tener exactamente 17 caracteres (letras y números, sin I, O ni Q) — ISO 3779.&lt;/p&gt;</errorMessage>
-                        <formulaExpression>REGEX(UPPER({!UnitSerial}), "[A-HJ-NPR-Z0-9]{17}")</formulaExpression>
-                    </validationRule>
                 </fields>
                 <inputParameters>
                     <name>width</name>
