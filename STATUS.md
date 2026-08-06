@@ -164,6 +164,11 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 - 🔒 NÃO construído POR DESIGN (bloqueado por dados/decisão, não por dev): T12 fin de ciclo (espera D6: km máximo + campo odômetro), wire B v2 derivação marca/sucursal (espera carga real de inventário + códigos SAP), rollout GT/HN/NI/PA.
 - O resto do runbook é clique de Setup/ativação (Davi), não desenvolvimento.
 
+### Plan de pruebas HU-046 (06/08) — `hu046/GrupoQ_HU046_Plan_de_Pruebas.xlsx`
+- 36 casos em 9 suítes: PRE (setup), MDV (tela gerência, 8), EDR (tela encargado, 6), OBH (guarda Opportunity, 9 — incl. RT Repuestos isento, bypass x2, não-redisparo, liberação não bloqueada), SCH (scheduled WEEKDAY, 3), LOG (traza), PSV (permissões 3), REG (regressão VR HU-025 + fluxo Repuestos, 3), FHT.
+- Hoja Preparación: dados DEMO-TEST-001..004 (4 status), CMDT TEST MaxDemo=1 p/ cupo lleno, usuários U1 gerente/U2 encargado/U3 sem PS/U4 bypass; guia de como testar flow sem Apex (Debug de tela executa DML REAL; record-triggered com rollback mode; scheduled via Debug); ordem de ativação; nota de release (deploy ativo em prod exige flow test coverage 75% — default é inativo).
+- Critério de saída: 36 PASA (ou defeito documentado) ANTES de liberar para validação do cliente/QA. Gerador: `hu046/scripts/gerar_plan_pruebas.py`.
+
 ### Planilhas cliente geradas (06/08) — `hu046/`
 - `GrupoQ_HU046_Mapeo_Cupos_x_Cuentas.xlsx` (ES, 4 hojas: Instrucciones, 5 Preguntas clave, Mapeo CR+NI 40 filas com SÍ/NO+Corrección, 8 Cuentas sin cupo) — responde item #10 da tabela.
 - `GrupoQ_HU046_Codigos_SAP_Centros.xlsx` (ES, 2 hojas: Instrucciones, 22 dealers com coluna amarela "Código SAP del centro" + fila ejemplo) — responde item #11; código vai para AccountNumber + BranchCode__c.
