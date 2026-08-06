@@ -202,9 +202,10 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 | 16 | Data fix: espaço duplo em "GrupoQ Active Motors  Managua" | Admin GQ | — |
 | 17 | Congelar API names de picklist ("En exhibicion" sem acento); se renomear, atualizar fórmulas dos flows | Davi/Meli | decisão |
 
-## 3c. HU-045 — Auto Registro de Vehículo Usado (frente do Santiago Pelaez, 06/08)
+## 3c. HU-045 — Auto Registro de Vehículo Usado (análise NOSSA, executor Santiago Pelaez)
 
-- **Estado (msg Santiago 06/08)**: T03/T04/T05/T06/T08/T14 + Platform Event T20 construídos e testados em DEV. Bloqueado para o T10 (screen flow de alta) por 4 definições. Planilha de referência: HU045_Tarefas_Tecnicas_v3_1.xlsx (22 tarefas, decisões D1-D12, saldo 1-3 campos custom).
+- **AUTORIA**: a análise técnica é do Diego + Claude (sessão anterior, fechada sem querer em 05/08) — as Tarefas Técnicas v2 (22 tarefas, D1-D12, princípio native-first, saldo 1-3 campos custom) foram entregues por nós ao Santiago. A v3_1 é a evolução do Santiago em cima da nossa v2 (ajuste da integração SF-SAP do alta / T20-T21).
+- **Estado (msg Santiago 06/08)**: T03/T04/T05/T06/T08/T14 + Platform Event T20 construídos e testados em DEV. Bloqueado para o T10 (screen flow de alta) por 4 definições que ele pediu a nós (as decisões são nossas — D4/D6/D8 vêm da nossa análise v2).
 - **Achado do Santiago**: cadeia real de criação Product2 → VehicleDefinition → Asset → Vehicle (AssetId e VehicleDefinitionId nillable=false; confirma D8 master-detail). Catálogo tem 224 VD só de marcas NOVAS.
 - **RESPOSTAS DADAS (06/08)**:
   1. **VD para usados = Op.2 (genérico)**: 1 VehicleDefinition "Used Vehicle" + 1 Product2 "Used Vehicle" compartilhados; marca/modelo/ano reais nos campos NATIVOS do Vehicle (Make/Model/ModelYear — D7). Nuance RN5: unidade ex-GQ (demo→usado, re-ingreso) MANTÉM a VD real (D2 atualiza o MESMO Vehicle) — o genérico é só para terceiros fora do catálogo. Evolução reversível p/ genérico-por-marca se relatório por marca de usados virar requisito (manteria cadeia BusinessBrand).
