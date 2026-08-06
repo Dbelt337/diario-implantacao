@@ -254,11 +254,16 @@
         <locationX>300</locationX><locationY>800</locationY>
         <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <fields>
+            <name>DoneScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Ejecución completada&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>DoneText</name>
             <fieldText>&lt;p&gt;Ejecución completada. La Task quedó cerrada con ejecutor y fecha/hora. Si la unidad requiere traslado físico, use la acción Vehicle Transfer de la búsqueda de inventario (T02).&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <screens>
         <name>SelectionScreen</name>
@@ -266,6 +271,11 @@
         <locationX>200</locationX><locationY>50</locationY>
         <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <connector><targetReference>GetVehicleExec</targetReference></connector>
+        <fields>
+            <name>SelectionScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Ejecutar solicitud Demo / Exhibición&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>SelectedRequest</name>
             <choiceReferences>PendingRequests</choiceReferences>
@@ -308,7 +318,7 @@
             <fieldType>RadioButtons</fieldType>
             <isRequired>false</isRequired>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <screens>
         <name>UnitNotFoundExecScreen</name>
@@ -316,11 +326,16 @@
         <locationX>0</locationX><locationY>300</locationY>
         <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <fields>
+            <name>UnitNotFoundExecScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Unidad no encontrada&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>UnitNotFoundExecText</name>
             <fieldText>&lt;p&gt;No se encontró la unidad con el VIN/serial informado. Vuelva atrás y verifique.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <start>
         <locationX>200</locationX><locationY>0</locationY>

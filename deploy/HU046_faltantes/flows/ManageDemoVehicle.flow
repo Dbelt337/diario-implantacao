@@ -347,6 +347,11 @@
         <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <connector><targetReference>AssignOwnerToAdvisor</targetReference></connector>
         <fields>
+            <name>AssignScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Asignar / reasignar asesor&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>AdvisorId</name>
             <choiceReferences>ActiveUserChoices</choiceReferences>
             <dataType>String</dataType>
@@ -354,7 +359,7 @@
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <screens>
         <name>CancelScreen</name>
@@ -363,6 +368,11 @@
         <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <connector><targetReference>RevertOwner</targetReference></connector>
         <fields>
+            <name>CancelScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Cancelar asignación excepcional&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>PreviousOwnerId</name>
             <choiceReferences>ActiveUserChoices</choiceReferences>
             <dataType>String</dataType>
@@ -370,7 +380,7 @@
             <fieldType>DropdownBox</fieldType>
             <isRequired>true</isRequired>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <screens>
         <name>ConfirmationScreen</name>
@@ -378,11 +388,16 @@
         <locationX>500</locationX><locationY>900</locationY>
         <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <fields>
+            <name>ConfirmationScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Confirmación&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>ConfirmationText</name>
             <fieldText>&lt;p&gt;Acción registrada correctamente. La traza quedó en la Task vinculada al Vehicle.&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <screens>
         <name>MenuScreen</name>
@@ -390,6 +405,11 @@
         <locationX>200</locationX><locationY>50</locationY>
         <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <connector><targetReference>GetSerializedUnit</targetReference></connector>
+        <fields>
+            <name>MenuScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Vehículos Demo / Exhibición&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>RequestedAction</name>
             <choiceReferences>ActionRequest</choiceReferences>
@@ -408,7 +428,7 @@
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <screens>
         <name>QuotaFullScreen</name>
@@ -416,11 +436,16 @@
         <locationX>400</locationX><locationY>700</locationY>
         <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <fields>
+            <name>QuotaFullScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Cupo no disponible&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>QuotaFullText</name>
             <fieldText>&lt;p&gt;{!resultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <screens>
         <name>RequestScreen</name>
@@ -428,6 +453,11 @@
         <locationX>200</locationX><locationY>400</locationY>
         <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <connector><targetReference>GetUnitsInTargetStatus</targetReference></connector>
+        <fields>
+            <name>RequestScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Solicitar designación Demo / Exhibición&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
         <fields>
             <name>DesignationType</name>
             <choiceReferences>TypeDemo</choiceReferences>
@@ -451,7 +481,7 @@
             <fieldType>InputField</fieldType>
             <isRequired>true</isRequired>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <screens>
         <name>UnitNotFoundScreen</name>
@@ -459,11 +489,16 @@
         <locationX>0</locationX><locationY>300</locationY>
         <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
         <fields>
+            <name>UnitNotFoundScreenTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Unidad no encontrada&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
             <name>UnitNotFoundText</name>
             <fieldText>&lt;p&gt;No se encontró la unidad con el VIN/serial informado. Verifique el dato e intente de nuevo (botón Anterior).&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
-        <showFooter>true</showFooter><showHeader>true</showHeader>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
     <start>
         <locationX>200</locationX><locationY>0</locationY>
