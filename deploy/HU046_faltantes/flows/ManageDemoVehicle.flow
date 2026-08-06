@@ -148,11 +148,6 @@
             <name>UnitFound</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
-                <leftValueReference>GetSerializedUnit</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue><booleanValue>false</booleanValue></rightValue>
-            </conditions>
-            <conditions>
                 <leftValueReference>GetVehicle</leftValueReference>
                 <operator>IsNull</operator>
                 <rightValue><booleanValue>false</booleanValue></rightValue>
@@ -201,7 +196,7 @@
             <label>Release for sale</label>
         </rules>
     </decisions>
-    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/reassign advisor (SerializedProduct.OwnerId), release for sale (request Task + alert), cancel exceptional assignment (reverts owner, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) default for floorManagerId (per-branch GRP_Sucursal_* groups); (5) RESOLVED 06/08: AdvisorId/PreviousOwnerId are User dropdowns (ActiveUserChoices, IsActive=true sorted by Name) - refine the filter later (e.g., sales profile/role or branch) if the user list grows. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented).</description>
+    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/reassign advisor (Vehicle.OwnerId), release for sale (request Task + alert), cancel exceptional assignment (reverts owner, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) default for floorManagerId (per-branch GRP_Sucursal_* groups); (5) RESOLVED 06/08: AdvisorId/PreviousOwnerId are User dropdowns (ActiveUserChoices, IsActive=true sorted by Name) - refine the filter later (e.g., sales profile/role or branch) if the user list grows. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented). DESIGN FIX 06/08: SerializedProduct leg REMOVED (legacy of the old HU premises) - unit identity is the Vehicle (VehicleIdentificationNumber), per the Automotive Cloud model; advisor assignment now writes Vehicle.OwnerId. Search matches VIN OR Name (filterLogic or).</description>
     <dynamicChoiceSets>
         <name>ActiveUserChoices</name>
         <dataType>String</dataType>
@@ -259,22 +254,6 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>GetSerializedUnit</name>
-        <label>Get Records: Get Serialized Unit</label>
-        <locationX>200</locationX><locationY>100</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector><targetReference>GetVehicle</targetReference></connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>SerialNumber</field>
-            <operator>EqualTo</operator>
-            <value><elementReference>VehicleSerial</elementReference></value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>SerializedProduct</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
         <name>GetUnitsInTargetStatus</name>
         <label>Get Records: Get Units in Target Status</label>
         <locationX>200</locationX><locationY>450</locationY>
@@ -320,13 +299,13 @@
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
-            <value><elementReference>GetSerializedUnit.Id</elementReference></value>
+            <value><elementReference>GetVehicle.Id</elementReference></value>
         </filters>
         <inputAssignments>
             <field>OwnerId</field>
             <value><elementReference>AdvisorId</elementReference></value>
         </inputAssignments>
-        <object>SerializedProduct</object>
+        <object>Vehicle</object>
     </recordUpdates>
     <recordUpdates>
         <name>RevertOwner</name>
@@ -337,13 +316,13 @@
         <filters>
             <field>Id</field>
             <operator>EqualTo</operator>
-            <value><elementReference>GetSerializedUnit.Id</elementReference></value>
+            <value><elementReference>GetVehicle.Id</elementReference></value>
         </filters>
         <inputAssignments>
             <field>OwnerId</field>
             <value><elementReference>PreviousOwnerId</elementReference></value>
         </inputAssignments>
-        <object>SerializedProduct</object>
+        <object>Vehicle</object>
     </recordUpdates>
     <screens>
         <name>AssignScreen</name>
@@ -409,7 +388,7 @@
         <label>Screen: Select Action and Unit</label>
         <locationX>200</locationX><locationY>50</locationY>
         <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
-        <connector><targetReference>GetSerializedUnit</targetReference></connector>
+        <connector><targetReference>GetVehicle</targetReference></connector>
         <fields>
             <name>MenuScreenTitle</name>
             <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Vehículos Demo / Exhibición&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
