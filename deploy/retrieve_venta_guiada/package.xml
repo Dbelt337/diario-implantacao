@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- Apex Classes -->
     <types>
         <members>SapInventoryService</members>
         <members>SapInventoryServiceTest</members>
@@ -16,6 +18,8 @@
         <members>GuidedSellingControllerTest</members>
         <name>ApexClass</name>
     </types>
+
+    <!-- Lightning Web Components -->
     <types>
         <members>ventaGuiadaLauncher</members>
         <members>ventaGuiadaModal</members>
@@ -27,16 +31,25 @@
         <members>ventaPA</members>
         <name>LightningComponentBundle</name>
     </types>
+
+    <!-- Platform Event + Custom Metadata Type -->
     <types>
         <members>SapOrderResponse__e</members>
         <members>CountryCurrency__mdt</members>
         <name>CustomObject</name>
     </types>
+
+    <!-- Custom Fields: Repuestos a cotizar (form web -> lead -> oportunidad) -->
     <types>
         <members>Lead.RequestedParts__c</members>
         <members>Opportunity.RequestedParts__c</members>
         <name>CustomField</name>
     </types>
+
+    <!-- Record Types do fluxo (API names reais, query 04/08/2026).
+         Router do modal por DeveloperName: Autos/Motos=nuevo, Usados=usado,
+         RepuestosPA=repuestos (nao existe RT separado de PA);
+         Flotas=Release 2 (comentado no router), Mayorista pendente -->
     <types>
         <members>Lead.GQLeadsRepuestosPA</members>
         <members>Opportunity.GQOpportunitiesAutos</members>
@@ -45,23 +58,33 @@
         <members>Opportunity.GQOpportunitiesRepuestosPA</members>
         <name>RecordType</name>
     </types>
+
+    <!-- Standard Value Sets (tipo correto: StandardValueSet; membros sem ponto) -->
     <types>
         <members>Product2Family</members>
         <members>QuoteStatus</members>
         <name>StandardValueSet</name>
     </types>
+
+    <!-- Quick Action -->
     <types>
         <members>Opportunity.VentaGuiadaModal</members>
         <name>QuickAction</name>
     </types>
+
+    <!-- Custom Metadata records (pais -> moedas permitidas) -->
     <types>
         <members>CountryCurrency.*</members>
         <name>CustomMetadata</name>
     </types>
+
+    <!-- Validation Rules -->
     <types>
         <members>Opportunity.Currency_Matches_Country</members>
         <name>ValidationRule</name>
     </types>
+
+    <!-- Integracao MuleSoft do fluxo (gateway unico SAP) -->
     <types>
         <members>MuleSoft_EC</members>
         <name>ExternalCredential</name>
@@ -74,9 +97,6 @@
         <members>PS_Mule_Integration</members>
         <name>PermissionSet</name>
     </types>
-    <types>
-        <members>*</members>
-        <name>FlexiPage</name>
-    </types>
+
     <version>63.0</version>
 </Package>
