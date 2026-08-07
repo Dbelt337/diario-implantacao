@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>GenerarPedido</name>
+        <label>Action: Generar pedido SAP desde cotización</label>
+        <locationX>200</locationX><locationY>150</locationY>
+        <actionName>GenerateSapOrderAction</actionName>
+        <actionType>apex</actionType>
+        <connector><targetReference>Exito</targetReference></connector>
+        <inputParameters>
+            <name>quoteId</name>
+            <value><elementReference>recordId</elementReference></value>
+        </inputParameters>
+        <nameSegment>GenerateSapOrderAction</nameSegment>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <decisions>
+        <name>Exito</name>
+        <label>Decision: ¿Pedido generado?</label>
+        <locationX>200</locationX><locationY>300</locationY>
+        <defaultConnector><targetReference>ErrorScreen</targetReference></defaultConnector>
+        <defaultConnectorLabel>Error</defaultConnectorLabel>
+        <rules>
+            <name>Generado</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GenerarPedido.success</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><booleanValue>true</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>SuccessScreen</targetReference></connector>
+            <label>Generado</label>
+        </rules>
+    </decisions>
+    <description>Quick Action de la Quote: dispara la pierna del pedido de la venta guiada (GenerateSapOrderAction — Order Borrador + envío a SAP en segundo plano). Gate funcional: usar en Reserva Confirmada (HU-025 ↔ Z301). Idempotente: repetir el click NO duplica el pedido.</description>
+    <environments>Default</environments>
+    <interviewLabel>Generar Pedido SAP {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Generar Pedido SAP</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value><stringValue>AUTO_LAYOUT_CANVAS</stringValue></value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <screens>
+        <name>SuccessScreen</name>
+        <label>Pedido generado</label>
+        <locationX>0</locationX><locationY>450</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>SuccessText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;Pedido generado y enviado a SAP en segundo plano.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Id del pedido: {!GenerarPedido.orderId}&lt;/p&gt;&lt;p&gt;El estado se actualiza en el campo &lt;b&gt;Estado SAP&lt;/b&gt; del pedido (Borrador → Enviado a SAP → Confirmado SAP → Facturado). El pedido queda en la lista relacionada &lt;b&gt;Pedidos&lt;/b&gt; de esta cotización.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>ErrorScreen</name>
+        <label>No fue posible generar el pedido</label>
+        <locationX>400</locationX><locationY>450</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>ErrorText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;No fue posible generar el pedido.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;{!GenerarPedido.errorMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>200</locationX><locationY>50</locationY>
+        <connector><targetReference>GenerarPedido</targetReference></connector>
+    </start>
+    <status>Draft</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

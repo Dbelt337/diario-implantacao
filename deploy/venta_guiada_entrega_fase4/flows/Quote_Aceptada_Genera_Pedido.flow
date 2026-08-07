@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>GenerarPedidoAuto</name>
+        <label>Action: Generar pedido SAP (automático)</label>
+        <locationX>200</locationX><locationY>250</locationY>
+        <actionName>GenerateSapOrderAction</actionName>
+        <actionType>apex</actionType>
+        <inputParameters>
+            <name>quoteId</name>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </inputParameters>
+        <nameSegment>GenerateSapOrderAction</nameSegment>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <description>Backend automático de la pierna del pedido: cuando la cotización pasa a ACEPTADA, crea el Order (Borrador) y lo envía a SAP en segundo plano — el vendedor no hace nada. Ancla = Status Accepted, NO la creación de la quote: crear en la creación dispararía la Z301 (reserva de stock en SAP) para cada cotización de negociación. Si el negocio decide otro momento (Reserva Confirmada de la oportunidad), cambiar SOLO el criterio de entrada. Idempotente vía GenerateSapOrderAction (nunca duplica pedido).</description>
+    <environments>Default</environments>
+    <interviewLabel>Quote Aceptada Genera Pedido {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Quote Aceptada Genera Pedido</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value><stringValue>AUTO_LAYOUT_CANVAS</stringValue></value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>200</locationX><locationY>50</locationY>
+        <connector><targetReference>GenerarPedidoAuto</targetReference></connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>Accepted</stringValue></value>
+        </filters>
+        <object>Quote</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>
