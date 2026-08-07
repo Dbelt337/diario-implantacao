@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>SAP Sociedad</label>
+    <pluralLabel>SAP Sociedades</pluralLabel>
+    <visibility>Public</visibility>
+    <description>Registry of SAP company codes (sociedades) enabled for integration. Consumed by MuleSoft (inventory sync per sociedad) and any process needing the active sociedad list. Configuration, not data: deploys across orgs (DEV/INT/UAT/PROD) with identical content, requires no data fix, no Account FLS, and is immune to Account table growth. One record per sociedad; enable/disable via IsActive.</description>
+    <fields>
+        <fullName>Code__c</fullName>
+        <label>SAP Code</label>
+        <type>Text</type>
+        <length>10</length>
+        <required>true</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>SAP company code (BUKRS), e.g. C101. The value MuleSoft sends to SAP as the inventory query scope.</description>
+    </fields>
+    <fields>
+        <fullName>Country__c</fullName>
+        <label>Country</label>
+        <type>Text</type>
+        <length>2</length>
+        <required>true</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>ISO country code (CR, NI, GT, HN, PA, SV).</description>
+    </fields>
+    <fields>
+        <fullName>CompanyName__c</fullName>
+        <label>Company Name</label>
+        <type>Text</type>
+        <length>120</length>
+        <required>false</required>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>Legal entity name for humans (e.g. GrupoQ Costa Rica C101).</description>
+    </fields>
+    <fields>
+        <fullName>IsActive__c</fullName>
+        <label>Is Active</label>
+        <type>Checkbox</type>
+        <defaultValue>true</defaultValue>
+        <fieldManageability>SubscriberControlled</fieldManageability>
+        <description>Only active sociedades are returned to integrations. Rollout of a new country = add records and activate.</description>
+    </fields>
+</CustomObject>
