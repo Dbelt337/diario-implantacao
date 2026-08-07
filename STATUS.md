@@ -277,6 +277,14 @@ Tudo abaixo foi FEITO pelo Diego, clicando na org (sandbox DevSales). Este é o 
 - Não acessível via proxy (403) — Diego abrir: Automotive Cloud Implementation/Admin guide (help.salesforce.com auto_cloud), Vehicle & Asset Appraisals data model page, sforce_api_objects_asset (campo Price), release notes recentes de Appraisals.
 - Indústria: preço por UNIDADE (stock number) é o padrão dealer (vAuto/KBB Instant Cash Offer: reference book ≠ appraisal ≠ asking price); portal web consome preço do DMS/CRM por feed — nunca digitado no site.
 
+## ESC.4-6 DA HU (asignación excepcional) IMPLEMENTADOS DE VERDADE (07/08)
+- Diego trouxe o texto real dos cenários: a asignación excepcional é **EXCEÇÃO À GUARDA** — o asesor designado PODE gerenciar a venda da unidade demo/exh durante as 8h hábiles; os demais seguem bloqueados (Esc.4); vencimento libera exclusividade com traza (Esc.5); reasignación troca o asesor com traza (Esc.6).
+- **Guarda v4 (`OpportunityBeforeHandler`)**: quando a unidade está demo/exh, antes de bloquear consulta Task "[Demo] Asignación" ABERTA da unidade com **OwnerId = $User.Id** → achou = permite (a Task é a credencial da janela); não achou = custom error. Vencimento (scheduled fecha a Task) ou cancelación re-armam o bloqueio sozinhos — zero campo novo, zero Apex.
+- **Tela Asignar (Esc.6)**: asignar agora FECHA qualquer asignación aberta anterior da unidade antes de criar a nova (1 asignación ativa por vez; reasignación = swap trazado).
+- **Traza na Opportunity (Esc.4 "exceção registrada na Opp")**: coberta indiretamente (Opp nasce/liga via Vehiculo__c + Task no Vehicle). Before-save não pode criar registros; se o QA exigir traza explícita NA Opp, opções: after-save no handler ou Task na Opp — decidir com a Meli na reescrita.
+- **AMBIGUIDADE Esc.5 para o cliente/Meli**: "unidade fica livre para ser gerenciada por qualquer outro consultor" após vencimento — interpretamos como fim da EXCLUSIVIDADE (guarda volta a valer para todos; vender exige nova asignación ou liberación). A leitura alternativa (venda liberada geral após 8h) contradiria a liberación formal — confirmar.
+- Zips atualizados: `HU046_flow_opphandler.zip` (v4) + `HU046_flow_manage.zip`. Teste novo no plano: asesor com Task aberta vincula unidade demo na Opp RT Autos → SALVA; outro user → bloqueado; fecha a Task → volta a bloquear.
+
 ## CÓDIGOS SAP RECEBIDOS (06/08 noite) — pendência #11 DESTRAVADA
 - Cliente enviou `Sucursales_QRM_4.xlsx` (596 linhas, TODOS os países: C/G/H/N/P/S) + gravação "Sucursales activas" (Luis Chavarría 04/06). Versionado: `integracion/data/sucursales_qrm_completo.csv` (de-para mestre do rollout + almacén→Location).
 - **DECISÃO VALIDADA PELO CLIENTE (áudio)**: sucursal/patio = **Centro+Almacén (WERKS+LGORT, ex. C0111200)** — "la llave que identifica el patio". Centro repete (C011 = todas C101); almacén repete entre sociedades (1200 em C101/C105/N105/N101). BranchCode__c e AccountNumber dealer = composto.
