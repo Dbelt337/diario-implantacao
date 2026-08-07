@@ -243,7 +243,7 @@
             <label>Release for sale</label>
         </rules>
     </decisions>
-    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/reassign advisor (Task-based: the open [Demo] Asignacion Task owned by the ADVISOR is the assignment marker; NO record owner changes - the vehicle belongs to GrupoQ: Asset.AccountId = sociedad, Vehicle.CurrentOwnerId = dealer, both untouched), release for sale (request Task + alert), cancel exceptional assignment (closes the open assignment Task, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). UX 07/08: brand/branch are now cascading dropdowns fed by the CR quota CMDT records (unique brands via dedupe loop; branches filtered by selected brand) - impossible to request a combination without a quota row. TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) RESOLVED 06/08: floor manager is now a required User dropdown (EncargadoPick) on the menu screen - evolve later to a per-branch GRP_Sucursal_* default; (5) RESOLVED 06/08: AdvisorId is a User dropdown (ActiveUserChoices, IsActive=true sorted by Name) - refine the filter later (e.g., sales profile/role or branch) if the user list grows. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented). DESIGN FIX 06/08: SerializedProduct leg REMOVED (legacy of the old HU premises) - unit identity is the Vehicle (VehicleIdentificationNumber), per the Automotive Cloud model; DESIGN FIX 2 (same day, Diego): NO owner write at all - the vehicle belongs to GrupoQ; the assignment lives in the advisor-owned open Task, closed on cancel/expiry. Search matches VIN OR Name (filterLogic or).</description>
+    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/REASSIGN advisor (Esc.6: assigning first CLOSES any prior open assignment Task of the unit, then creates the new advisor-owned Task - single active assignment at a time; Task-based: the open [Demo] Asignacion Task owned by the ADVISOR is the assignment marker; NO record owner changes - the vehicle belongs to GrupoQ: Asset.AccountId = sociedad, Vehicle.CurrentOwnerId = dealer, both untouched), release for sale (request Task + alert), cancel exceptional assignment (closes the open assignment Task, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). UX 07/08: brand/branch are now cascading dropdowns fed by the CR quota CMDT records (unique brands via dedupe loop; branches filtered by selected brand) - impossible to request a combination without a quota row. TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) RESOLVED 06/08: floor manager is now a required User dropdown (EncargadoPick) on the menu screen - evolve later to a per-branch GRP_Sucursal_* default; (5) RESOLVED 06/08: AdvisorId is a User dropdown (ActiveUserChoices, IsActive=true sorted by Name) - refine the filter later (e.g., sales profile/role or branch) if the user list grows. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented). DESIGN FIX 06/08: SerializedProduct leg REMOVED (legacy of the old HU premises) - unit identity is the Vehicle (VehicleIdentificationNumber), per the Automotive Cloud model; DESIGN FIX 2 (same day, Diego): NO owner write at all - the vehicle belongs to GrupoQ; the assignment lives in the advisor-owned open Task, closed on cancel/expiry. Search matches VIN OR Name (filterLogic or).</description>
     <dynamicChoiceSets>
         <name>ActiveUserChoices</name>
         <dataType>String</dataType>
@@ -393,6 +393,33 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordUpdates>
+        <name>CloseBeforeReassign</name>
+        <label>Update Records: Close Prior Open Assignment (Reassign)</label>
+        <locationX>600</locationX><locationY>380</locationY>
+        <connector><targetReference>LogAssignment</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WhatId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>GetVehicle.Id</elementReference></value>
+        </filters>
+        <filters>
+            <field>Subject</field>
+            <operator>StartsWith</operator>
+            <value><stringValue>[Demo] Asignación</stringValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>NotEqualTo</operator>
+            <value><stringValue>Completed</stringValue></value>
+        </filters>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Completed</stringValue></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordUpdates>
+    <recordUpdates>
         <name>CloseOpenAssignment</name>
         <label>Update Records: Close Open Assignment Task</label>
         <locationX>1000</locationX><locationY>400</locationY>
@@ -424,7 +451,7 @@
         <label>Screen: Assign Advisor</label>
         <locationX>600</locationX><locationY>350</locationY>
         <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
-        <connector><targetReference>LogAssignment</targetReference></connector>
+        <connector><targetReference>CloseBeforeReassign</targetReference></connector>
         <fields>
             <name>AssignScreenTitle</name>
             <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Asignar / reasignar asesor&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
