@@ -91,6 +91,16 @@ Falta para a R2: criar o RT `GQOpportunitiesFlotas` + business process; decidir 
 | P4 | FinancingService real (CrediQ) | frente financeira (contrato já documentado na classe) |
 | P5 | Fiação do pedido no modal (`cotizacionConfirmModal` → `createOrderFromQuote` + empApi) | P0 estável |
 
+## 8. Endurecimento pré-produção (a diferença entre "desenho certo" e "robusto em produção")
+O veredito honesto: a arquitetura está correta; estes 6 itens são o que falta para chamá-la de robusta em produção — todos conhecidos, nenhum estrutural:
+1. **Correlação por Id, não por nome**: `matchDto`/acessórios casam por `contains` no NOME do produto (o próprio código marca como "mock-stage correlation"). Antes de produção, o fluxo carrega `Product2Id`/`VehicleDefinitionId` de ponta a ponta — matching por nome quebra com catálogo real (nomes parecidos, acentos, renomeações).
+2. **Retry no envio SAP**: Transaction Finalizer no `SapOrderService` (hoje é tiro único → `Error SAP`); corte nativo em 5 tentativas.
+3. **Log de integração**: objeto custom (payload/response/correlação/tentativa) — sem isso, incidente de pedido vira arqueologia no debug log.
+4. **Cobertura de teste**: a org não tem `QuoteOrderServiceTest` nem testes das classes novas do pedido; sandbox aceita, **produção exige 75%** — escrever com `SapCalloutMockFactory`/`VentasTestDataFactory` que já existem para isso.
+5. **Setup pendente que o código já espera**: Quote Statuses (En tránsito/Pedido futuro/Pendiente — hoje o `safeQuoteStatus` os descarta em silêncio), notification type `SapOrderAlert`, FLS dos 4 campos do Order, ativação dos 2 flows.
+6. **Mobile**: validar a quick action headless + LightningModal no Salesforce mobile app antes de prometer a experiência em celular (suporte a LWC quick action em mobile tem histórico de restrições por release — teste de 10 min na org resolve).
+Volumetria (6 países, milhões de contas) NÃO é risco desta suíte: as queries são por Id/FK indexados e a busca de inventário em massa é domínio da réplica HU-047.
+
 ## Fontes (doc oficial consultada 07/08/2026)
 - Headless quick actions / `invoke()`: developer.salesforce.com/docs/platform/lwc/guide/use-quick-actions-headless.html
 - Quick actions LWC (GA, tipos): .../use-quick-actions.html
