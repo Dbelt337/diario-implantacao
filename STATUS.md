@@ -90,6 +90,9 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 
 ---
 
+## PADRÃO DE ESCOPO HU × INTEGRAÇÃO (07/08, pergunta da Meli sobre HU-028)
+- Meli propôs disclaimer "aspectos de integración fuera del alcance" na HU-028. Resposta dada: separação certa, MAS a fronteira é **comportamento observável = escopo da HU; tubulação = tarefa técnica**. Ficam NA HU: bloqueio sem preço (sem default), mensagem ao usuário em falla/timeout, chamada multi-material única, paridade redondeo por etapa/moeda. Vai pra tarefa técnica: RFC, payloads, retries, manejo técnico de erros, monitoramento. Texto pronto enviado; vira padrão p/ todas as HUs com integração (HU-047 RN-19 já segue).
+
 ## 2. HU-028 — Pricing Repuestos & PA (REV-BA)
 
 **Desenho técnico fechado** (doc `arquitetura/Arquitectura_HU028_HU039.docx`): preço nunca replicado, resolvido online via RFC `Get_Price_ZGQREF` (MuleSoft), LWC único (RN-19), congelamento por fecha de precio em campos da linha, price book técnico com entries placeholder (gotcha PricebookEntry), org multicurrency.
