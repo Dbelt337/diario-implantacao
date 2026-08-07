@@ -37,14 +37,15 @@ Costa Rica · sandbox DevSales · zero Apex, zero objeto custom, zero campo cust
 
 ## 3. COMO TESTAR (estado atual da sandbox)
 
-**Pré-requisito:** subir e ATIVAR os 2 zips pendentes — `HU046_flow_opphandler.zip` (guarda v4.1) e `HU046_flow_manage.zip` (cascata + swap). Sem isso, os testes de exceção/dropdown abaixo não existem na org.
+**Pré-requisito:** subir e ATIVAR os 2 zips pendentes — `HU046_flow_opphandler.zip` (guarda v4.1) e `HU046_flow_manage.zip` (cascata + swap + **gate de elegibilidade**: só "En ubicación de concesionario" pode ser solicitada). Sem isso, os testes de exceção/dropdown abaixo não existem na org.
 
 **Dados atuais:** TEST_TEST_Test no CMDT (TESTMARCA/TestSucursal, MaxDemo 2); Vehicles: Prueba Demo + Hilux(VIN10001, pós-liberación) + Kia(VIN10003) — conferir Status atuais antes de começar.
 
 | # | Teste | Passos | Esperado |
 |---|---|---|---|
-| 1 | Dropdowns em cascata | Solicitar designación > `VIN10002` > Next | Marca = dropdown sem repetição (marcas CR + TESTMARCA); escolhida TESTMARCA → sucursal só TestSucursal |
-| 2 | **Cupo lleno** | Continua o #1 com Demo | Tela de cupo esgotado (unidades "En demostración" ≥ teto 2). Sem Task, sem alerta |
+| 1 | **Elegibilidade** | Solicitar designación > `VIN10002` (CX-5 está "En servicio") > Next | Tela "Unidad no elegible" mostrando o estado atual — só "En ubicación de concesionario" pode virar demo/exh |
+| 1b | Preparar cupo test | Editar o Vehicle CX-5: Status = "En ubicación de concesionario" | — |
+| 2 | Dropdowns + **cupo lleno** | Repetir Solicitar > `VIN10002` > Next > Marca dropdown (sem repetição) > TESTMARCA > sucursal só TestSucursal > Demo | Tela de cupo esgotado (unidades "En demostración" ≥ teto 2). Sem Task, sem alerta |
 | 3 | **Exceção do asesor (Esc.4)** | Asignar `VIN10003` (Kia, En demostración) a VOCÊ mesmo. Depois: Opp nova RT Autos com Vehículo = Kia > salvar | Salva (você tem a credencial). ⚠️ admin com Bypass_Gates_Automacao passa sempre — o teste que vale é com user comum |
 | 4 | **Bloqueio do não-designado (Esc.10)** | Davi (sem Task, sem bypass) tenta a mesma Opp com o Kia | Custom error "unidad designada como Demo/Exhibición..." |
 | 5 | **Cancelación re-arma (Esc.11)** | Cancelar asignación do Kia > repetir o save do #3 | Agora VOCÊ também é bloqueado |
