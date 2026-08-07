@@ -90,6 +90,11 @@ Sem arredondar por etapa, 702 linhas desviam centavos → **o pricing procedure 
 
 ---
 
+## DOC MESTRE DE SERVIÇOS SAP (22/07, recebido 07/08) — `integracion/Servicios_SAP_Cotizar_Pedido.md`
+- PDF do time SAP com TODOS os serviços existentes (herança C4C) p/ cotizar/pedido. ⚠️ PDF continha credenciais SFTP em texto plano — repo recebeu versão SANITIZADA; recomendado rotacionar a senha.
+- **Descobertas-chave**: (1) VEÍCULOS = família ZQEV com ciclo **Z301 (oferta/reserva) → Z300 (pedido)** — Reserva Confirmada ↔ criar Z301; pré-requisitos obrigatórios ZQEV_ASIG_CLIENTE + ZQEV_MONEDA_CLIENTE; (2) REPUESTOS roda no **DBM** (ZHYB_DBM_*) e a **consulta multi-material MASSIVA JÁ EXISTE** (ZHYB_C4C_CONSULTA_MATERIALES request-masivo) → RN-18 da HU-047 viável sem construção SAP; (3) **TDET_SALDOS = PISO − RESERVA, pode ser NEGATIVO** → regra do saldo RN-12 + pergunta nova ao cliente (exibição de negativo); (4) `cod_salesorder_simulate` síncrono = preço calculado no SD → HU-028: SF exibe/congela, paridade de redondeo de graça; (5) tabela de preços de veículos no QRM por sociedad (modelo+año, lista/bruto/exonerado/vendedor/gerente) = fonte da **PRU HU-054**; (6) B2C = avenida separada (XML→SFTP→Mule scheduler→SAP, pedidos+pagamento).
+- 6 decisões/perguntas geradas no doc (amarras C4C, Z301 no desenho da reserva, saldo negativo, cadência descuento vendedor, MATMAS05, simulação como fonte de preço).
+
 ## PADRÃO DE ESCOPO HU × INTEGRAÇÃO (07/08, pergunta da Meli sobre HU-028)
 - Meli propôs disclaimer "aspectos de integración fuera del alcance" na HU-028. Resposta dada: separação certa, MAS a fronteira é **comportamento observável = escopo da HU; tubulação = tarefa técnica**. Ficam NA HU: bloqueio sem preço (sem default), mensagem ao usuário em falla/timeout, chamada multi-material única, paridade redondeo por etapa/moeda. Vai pra tarefa técnica: RFC, payloads, retries, manejo técnico de erros, monitoramento. Texto pronto enviado; vira padrão p/ todas as HUs com integração (HU-047 RN-19 já segue).
 
