@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <description>US-031 v2 (fix RECORD_IN_USE_BY_WORKFLOW / KB 000385353). The SLA wait NO LONGER lives on the Lead: this flow only creates and maintains the marker Task "[SLA] Primera atencion" (ReminderDateTime = SLADeadline__c). The scheduled path moved to flow Lead_SLA_Task_Escalation, anchored ON THE TASK - no pending interview ever locks lead conversion. Attending the lead (Status leaves Nuevo) closes the marker, which cancels the pending schedule. SLADeadlineFormula__c is no longer used as time source.</description>
+    <environments>Default</environments>
+    <interviewLabel>Lead_SLA_Escalation {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_SLA_Escalation</label>
+    <processType>AutoLaunchedFlow</processType>
+    <decisions>
+        <name>Que_Paso</name>
+        <label>Decision: Que paso con el lead?</label>
+        <locationX>200</locationX><locationY>150</locationY>
+        <defaultConnectorLabel>Nada relevante</defaultConnectorLabel>
+        <rules>
+            <name>Creado_Nuevo</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>true</booleanValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>Nuevo</stringValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.SLADeadline__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Crear_Marcador</targetReference></connector>
+            <label>Creado en Nuevo con SLA</label>
+        </rules>
+        <rules>
+            <name>Atendido</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>Nuevo</stringValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue><stringValue>Nuevo</stringValue></rightValue>
+            </conditions>
+            <connector><targetReference>Cerrar_Marcador</targetReference></connector>
+            <label>Primera atencion dada</label>
+        </rules>
+        <rules>
+            <name>Deadline_Cambio</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>Nuevo</stringValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.SLADeadline__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue><elementReference>$Record__Prior.SLADeadline__c</elementReference></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.SLADeadline__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Reanclar_Marcador</targetReference></connector>
+            <label>Deadline cambio (sigue Nuevo)</label>
+        </rules>
+    </decisions>
+    <recordCreates>
+        <name>Crear_Marcador</name>
+        <label>Create: Task marcador SLA</label>
+        <locationX>50</locationX><locationY>300</locationY>
+        <inputAssignments>
+            <field>Subject</field>
+            <value><stringValue>[SLA] Primera atencion</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhoId</field>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value><elementReference>$Record.OwnerId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ReminderDateTime</field>
+            <value><elementReference>$Record.SLADeadline__c</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>IsReminderSet</field>
+            <value><booleanValue>true</booleanValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Description</field>
+            <value><stringValue>Marcador del SLA de primera atencion (US-031). Se cierra solo al atender el lead. El scheduled path de escalada vive en este Task, no en el Lead (fix conversion lock).</stringValue></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordUpdates>
+        <name>Cerrar_Marcador</name>
+        <label>Update: Cerrar marcador abierto</label>
+        <locationX>400</locationX><locationY>300</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WhoId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </filters>
+        <filters>
+            <field>Subject</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>[SLA] Primera atencion</stringValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>NotEqualTo</operator>
+            <value><stringValue>Completed</stringValue></value>
+        </filters>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Completed</stringValue></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Reanclar_Marcador</name>
+        <label>Update: Reanclar deadline del marcador</label>
+        <locationX>700</locationX><locationY>300</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WhoId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </filters>
+        <filters>
+            <field>Subject</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>[SLA] Primera atencion</stringValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>NotEqualTo</operator>
+            <value><stringValue>Completed</stringValue></value>
+        </filters>
+        <inputAssignments>
+            <field>ReminderDateTime</field>
+            <value><elementReference>$Record.SLADeadline__c</elementReference></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordUpdates>
+    <start>
+        <locationX>200</locationX><locationY>0</locationY>
+        <connector><targetReference>Que_Paso</targetReference></connector>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+    <triggerOrder>40</triggerOrder>
+</Flow>
