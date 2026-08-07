@@ -43,3 +43,14 @@ Estratégia (Flavio, 22/07): B2C gera XML → deposita em **SFTP** (Marketing Cl
 4. **Cadência do descuento de vendedor** — scheduler vs por pedido (nota do próprio doc).
 5. MATMAS é **05** (não 01) — ajustar referências de catálogo.
 6. Simulação como fonte do preço → HU-028: SF exibe/congela, não recalcula waterfall (POC vira validação de payload).
+
+
+## E. ENCAIXE NO FLUXO DE VENDAS GUIADO (mapeado 07/08)
+
+**Autos/Motos (`ventaVehiculo`)**: unidade ← inventário replicado (HU-047, fora deste doc) → preço ← `PricingService` → `cod_salesorder_simulate` (síncrono, SD calcula, SF congela na QLI) → desconto ← `aprobacionDescuentoModal` → `ZHYB_DBM_DESCUENTO_DE_VENDEDOR` → **Cotización Confirmada = documento só SF (gate OLI)** → **Reserva Confirmada = `QuoteOrderService`/`SapOrderService`: ZQEV_ASIG_CLIENTE + ZQEV_MONEDA_CLIENTE → `ZQEV_SSA_CREA_ORD_VEH` cria Z301** (payload com CENTRO do dealer) → retorno IDoc → `SapOrderResponse__e` → **venta fechada = `ZQEV_SSA_COPIA_ORD_VEH` Z301→Z300** (mods: `ZQEV_SSA_MOD_ORD_VEH`). **Gates HU-025 ↔ documentos SAP 1:1.**
+
+**Repuestos (`contraventaRepuestos`, DBM)**: buscar ← `MaterialSearchService` → CONSULTA_MATERIALES massivo/GENERAL_MAT; saldo ← TDET_SALDOS + TEXTO_EXISTENCIA; cotizar ← `ZHYB_DBM_COTIZA_REP_RFC`; pedido ← MONEDA+PARAM_CLIENTE → MOD_DET_ORDEN/DBMPOSICIONES.
+
+**PA (`ventaPA`, SD standard)**: PARAM_CLIENTE → simulate (preço) → IDoc SALESORDER_CREATEFROMDAT2 → réplicas/confirmação async → `SapOrderResponse__e`.
+
+**3 PERGUNTAS ABERTAS do encaixe**: (1) Usados: família ZQEV/Z301 serve ou há doc type próprio? (2) `ZHYB_DBM_COTIZA_REP_RFC` cria doc no SAP na cotización — confirmar que NÃO compromete estoque (RN-07 HU-047: cotizar no reserva); (3) momento da Z301: Reserva Confirmada (leitura adotada) ou cotización? — "oferta O reserva", negócio decide.
