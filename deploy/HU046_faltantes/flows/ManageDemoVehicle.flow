@@ -149,13 +149,6 @@
         <dataType>String</dataType>
         <value><stringValue>Exhibicion</stringValue></value>
     </choices>
-    <collectionChoiceSets>
-        <name>UniqueBrandChoices</name>
-        <collectionReference>uniqueBrandRecs</collectionReference>
-        <dataType>String</dataType>
-        <displayField>Brand__c</displayField>
-        <valueField>Brand__c</valueField>
-    </collectionChoiceSets>
     <decisions>
         <name>IsBrandSeen</name>
         <label>Decision: Brand Already Seen?</label>
@@ -285,6 +278,14 @@
         <sortField>BranchName__c</sortField>
         <sortOrder>Asc</sortOrder>
         <valueField>BranchName__c</valueField>
+    </dynamicChoiceSets>
+    <dynamicChoiceSets>
+        <name>UniqueBrandChoices</name>
+        <collectionReference>uniqueBrandRecs</collectionReference>
+        <dataType>String</dataType>
+        <displayField>Brand__c</displayField>
+        <object>DemoCapacityConfig__mdt</object>
+        <valueField>Brand__c</valueField>
     </dynamicChoiceSets>
     <environments>Default</environments>
     <formulas>
