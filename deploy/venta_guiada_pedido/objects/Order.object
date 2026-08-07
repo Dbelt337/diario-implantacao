@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>SapStatus__c</fullName>
+        <description>All countries. Ciclo SAP del pedido de venta guiada: Borrador, Enviado a SAP, Confirmado SAP, Facturado, Error SAP. La factura llega por actualización inbound de MuleSoft; la assetización ocurre SOLO en Facturado.</description>
+        <externalId>false</externalId>
+        <label>Estado SAP</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Borrador</fullName>
+                    <default>true</default>
+                    <label>Borrador</label>
+                </value>
+                <value>
+                    <fullName>Enviado a SAP</fullName>
+                    <default>false</default>
+                    <label>Enviado a SAP</label>
+                </value>
+                <value>
+                    <fullName>Confirmado SAP</fullName>
+                    <default>false</default>
+                    <label>Confirmado SAP</label>
+                </value>
+                <value>
+                    <fullName>Facturado</fullName>
+                    <default>false</default>
+                    <label>Facturado</label>
+                </value>
+                <value>
+                    <fullName>Error SAP</fullName>
+                    <default>false</default>
+                    <label>Error SAP</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>SapOrderNumber__c</fullName>
+        <description>All countries. Número del pedido SAP (Z301/Z300 vehículos, orden SD/DBM). External ID: llave del update inbound de MuleSoft.</description>
+        <externalId>true</externalId>
+        <label>Número de Pedido SAP</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SapInvoiceNumber__c</fullName>
+        <description>All countries. Número de la factura SAP; lo escribe el update inbound de MuleSoft al facturar y dispara el flujo de entrega.</description>
+        <externalId>false</externalId>
+        <label>Número de Factura SAP</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SapInvoiceDate__c</fullName>
+        <description>All countries. Fecha de la factura SAP; la escribe el update inbound de MuleSoft al facturar.</description>
+        <externalId>false</externalId>
+        <label>Fecha de Factura SAP</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+</CustomObject>

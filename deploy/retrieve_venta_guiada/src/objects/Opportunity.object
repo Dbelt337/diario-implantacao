@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <recordTypes>
+        <fullName>GQOpportunitiesAutos</fullName>
+        <active>true</active>
+        <businessProcess>GQOpportunityProcessVarejo</businessProcess>
+        <description>Proceso comercial para Oportunidades de Autos Grupo Q.</description>
+        <label>GQ Oportunidades Autos</label>
+        <picklistValues>
+            <picklist>ForecastCategoryName</picklist>
+            <values>
+                <fullName>Best Case</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Omitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pipeline</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadSource</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canales Terceros</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Employee Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facebook</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ferias</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Google</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Instagram</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Página web GrupoQ</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Página web de la marca</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Referrals</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tiktok</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visitas a sala</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WhatsApp</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Existing Business</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Business</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>GQOpportunitiesMotos</fullName>
+        <active>true</active>
+        <businessProcess>GQOpportunityProcessMotos</businessProcess>
+        <description>Proceso comercial para Oportunidades de Motos Grupo Q.</description>
+        <label>GQ Oportunidades Motos</label>
+        <picklistValues>
+            <picklist>ForecastCategoryName</picklist>
+            <values>
+                <fullName>Best Case</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Omitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pipeline</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadSource</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canales Terceros</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Employee Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facebook</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ferias</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Google</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Instagram</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Página web GrupoQ</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Página web de la marca</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Referrals</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tiktok</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visitas a sala</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WhatsApp</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Existing Business</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Business</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>GQOpportunitiesRepuestosPA</fullName>
+        <active>true</active>
+        <businessProcess>GQOpportunityProcessRepuestosPA</businessProcess>
+        <description>Proceso comercial para Oportunidades de Repuestos y P/A Grupo Q.</description>
+        <label>GQ Oportunidades Repuestos &amp; P/A</label>
+        <picklistValues>
+            <picklist>ForecastCategoryName</picklist>
+            <values>
+                <fullName>Best Case</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Omitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pipeline</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadSource</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canales Terceros</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Employee Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facebook</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ferias</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Google</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Instagram</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Página web GrupoQ</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Página web de la marca</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Referrals</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tiktok</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visitas a sala</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WhatsApp</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Existing Business</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Business</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>GQOpportunitiesUsados</fullName>
+        <active>true</active>
+        <businessProcess>GQOpportunityProcessVarejo</businessProcess>
+        <description>Proceso comercial para Oportunidades de Vehículos Usados Grupo Q.</description>
+        <label>GQ Oportunidades Usados</label>
+        <picklistValues>
+            <picklist>ForecastCategoryName</picklist>
+            <values>
+                <fullName>Best Case</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Omitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pipeline</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadSource</picklist>
+            <values>
+                <fullName>Advertisement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Canales Terceros</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Employee Referral</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facebook</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Ferias</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Google</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Instagram</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Página web GrupoQ</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Página web de la marca</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Referrals</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tiktok</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Visitas a sala</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WhatsApp</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Existing Business</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Business</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <validationRules>
+        <fullName>Currency_Matches_Country</fullName>
+        <active>true</active>
+        <description>Blocks currencies not allowed for the opportunity country (Pais__c; map in CountryCurrency__mdt, Sales+Financial 04/08/2026). Runs on UI, API and loads. Skips blank, NA and unmapped countries.</description>
+        <errorConditionFormula>AND(
+    NOT(ISBLANK(Pais__c)),
+    Pais__c &lt;&gt; &apos;NA&apos;,
+    CASE(Pais__c,
+        &apos;CR&apos;, $CustomMetadata.CountryCurrency__mdt.CR.AllowedCurrencies__c,
+        &apos;GT&apos;, $CustomMetadata.CountryCurrency__mdt.GT.AllowedCurrencies__c,
+        &apos;SV&apos;, $CustomMetadata.CountryCurrency__mdt.SV.AllowedCurrencies__c,
+        &apos;HN&apos;, $CustomMetadata.CountryCurrency__mdt.HN.AllowedCurrencies__c,
+        &apos;NI&apos;, $CustomMetadata.CountryCurrency__mdt.NI.AllowedCurrencies__c,
+        &apos;PA&apos;, $CustomMetadata.CountryCurrency__mdt.PA.AllowedCurrencies__c,
+        &apos;&apos;) &lt;&gt; &apos;&apos;,
+    NOT(CONTAINS(
+        CASE(Pais__c,
+            &apos;CR&apos;, $CustomMetadata.CountryCurrency__mdt.CR.AllowedCurrencies__c,
+            &apos;GT&apos;, $CustomMetadata.CountryCurrency__mdt.GT.AllowedCurrencies__c,
+            &apos;SV&apos;, $CustomMetadata.CountryCurrency__mdt.SV.AllowedCurrencies__c,
+            &apos;HN&apos;, $CustomMetadata.CountryCurrency__mdt.HN.AllowedCurrencies__c,
+            &apos;NI&apos;, $CustomMetadata.CountryCurrency__mdt.NI.AllowedCurrencies__c,
+            &apos;PA&apos;, $CustomMetadata.CountryCurrency__mdt.PA.AllowedCurrencies__c,
+            &apos;&apos;),
+        TEXT(CurrencyIsoCode)
+    ))
+)</errorConditionFormula>
+        <errorMessage>La moneda seleccionada no está permitida para el país de esta oportunidad. Verifique las monedas habilitadas para su sociedad.</errorMessage>
+    </validationRules>
+</CustomObject>

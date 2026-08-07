@@ -1,0 +1,285 @@
+.modal-body {
+    min-height: 60vh;
+    --gq-azul: #0176d3;
+    --gq-azul-suave: #f3f9ff;
+    --gq-verde: #2e844a;
+    --gq-naranja: #dd7a01;
+    --gq-rojo: #ba0517;
+    --gq-gris: #706e6b;
+}
+.selected-row {
+    background-color: var(--gq-azul-suave);
+    outline: 2px solid var(--gq-azul);
+}
+tbody tr {
+    cursor: pointer;
+}
+tbody tr:hover {
+    background-color: #f7fbff;
+}
+.line-row {
+    border-bottom: 1px solid #f3f3f3;
+}
+.total-row {
+    border-top: 2px solid var(--gq-azul);
+    margin-top: 0.25rem;
+}
+.tipo-card {
+    border: 1px solid #d8dde6;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    min-height: 10rem;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.tipo-card:hover {
+    border-color: var(--gq-azul);
+    background-color: var(--gq-azul-suave);
+    box-shadow: 0 4px 12px rgba(1, 118, 211, 0.15);
+    transform: translateY(-2px);
+}
+.tipo-card-selected {
+    border: 2px solid var(--gq-azul);
+    background-color: var(--gq-azul-suave);
+}
+/* Marca: logo oficial via StaticResource GrupoQLogo (SVG vectorial) */
+.brand-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2.5rem;
+}
+.brand-logo-img {
+    height: 3.25rem;
+    width: auto;
+}
+.vehiculo-chip {
+    background-color: var(--gq-azul-suave);
+    border: 1px solid var(--gq-azul);
+    border-radius: 1rem;
+    padding: 0.2rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--gq-azul);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+}
+.categoria-titulo {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gq-gris);
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 0.2rem;
+}
+.categoria-titulo::before {
+    content: '';
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 2px;
+    background: var(--gq-azul);
+    margin-right: 0.4rem;
+}
+
+/* ------- paso Accesorios: cards de vehiculos (izquierda, variante Davi) ------- */
+.panel-titulo {
+    color: var(--gq-azul);
+    font-weight: 700;
+}
+.veh-card {
+    position: relative;
+    border: 1px solid #d8dde6;
+    border-left: 4px solid var(--gq-gris);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    margin-bottom: 0.6rem;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+}
+.veh-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+.veh-card-ok { border-left-color: var(--gq-verde); }
+.veh-card-transito { border-left-color: var(--gq-naranja); }
+.veh-card-futura { border-left-color: var(--gq-azul); }
+.veh-card-sin { border-left-color: var(--gq-rojo); }
+.veh-card-activa {
+    outline: 2px solid var(--gq-azul);
+    background: var(--gq-azul-suave);
+    box-shadow: 0 4px 12px rgba(1, 118, 211, 0.18);
+}
+.veh-card-tag {
+    position: absolute;
+    top: -0.55rem;
+    right: 0.6rem;
+    background: var(--gq-azul);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.1rem 0.5rem;
+    border-radius: 0.6rem;
+}
+.veh-card-titulo {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #032d60;
+}
+.veh-card-etiqueta {
+    font-size: 0.75rem;
+    color: var(--gq-gris);
+}
+.veh-card-valor {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #181818;
+}
+.veh-card-precio {
+    color: var(--gq-azul);
+}
+/* Badges de disponibilidad (styling hooks del lightning-badge) */
+.veh-badge {
+    --slds-c-badge-text-color: #fff;
+    --sds-c-badge-text-color: #fff;
+    font-size: 0.62rem;
+}
+.badge-ok {
+    --slds-c-badge-color-background: var(--gq-verde);
+    --sds-c-badge-color-background: var(--gq-verde);
+}
+.badge-transito {
+    --slds-c-badge-color-background: var(--gq-naranja);
+    --sds-c-badge-color-background: var(--gq-naranja);
+}
+.badge-futura {
+    --slds-c-badge-color-background: var(--gq-azul);
+    --sds-c-badge-color-background: var(--gq-azul);
+}
+.badge-sin {
+    --slds-c-badge-color-background: var(--gq-rojo);
+    --sds-c-badge-color-background: var(--gq-rojo);
+}
+
+/* ------- paso Accesorios: catalogo (derecha) ------- */
+.catalogo-box {
+    min-height: 24rem;
+}
+.acc-row {
+    border-radius: 0.35rem;
+    padding: 0.25rem 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.12s ease;
+}
+.acc-row:hover {
+    background-color: #f7fbff;
+}
+.acc-row-sel {
+    background-color: var(--gq-azul-suave);
+    border-bottom-color: transparent;
+    outline: 1px solid #aacbff;
+}
+.acc-precio {
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: #181818;
+    white-space: nowrap;
+}
+.acc-row-sel .acc-precio {
+    color: var(--gq-azul);
+}
+/* Faixa de total (panel y catalogo) */
+.total-band {
+    background: linear-gradient(90deg, var(--gq-azul-suave), #eaf3ff);
+    border: 1px solid #d0e5ff;
+    border-left: 4px solid var(--gq-azul);
+    border-radius: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    font-weight: 700;
+    color: #032d60;
+    margin-top: 0.35rem;
+}
+
+/* ------- paso Pago: opciones de financiamiento (CrediQ) ------- */
+.fin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 0.6rem;
+}
+.fin-card {
+    margin-bottom: 0;
+    border-left-color: var(--gq-gris);
+}
+.fin-card-sel {
+    border-left-color: var(--gq-verde);
+    outline: 2px solid var(--gq-azul);
+    background: var(--gq-azul-suave);
+    box-shadow: 0 4px 12px rgba(1, 118, 211, 0.18);
+}
+.fin-cuota {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--gq-azul);
+    margin-top: 0.35rem;
+}
+.fin-cuota-sufijo {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gq-gris);
+}
+.fin-loading {
+    min-height: 3.5rem;
+}
+
+/* ------- responsividad (mobile / pantallas angostas) -------
+   Los lightning-layout-item usan size=12 + medium-device-size=original:
+   telefono apila en una columna, tablet/desktop quedan identicos.
+   Las tablas anchas hacen scroll horizontal en vez de aplastarse. */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.table-scroll table {
+    min-width: 40rem;
+}
+@media (max-width: 47.9375em) {
+    .modal-body {
+        min-height: auto;
+    }
+    .brand-logo-img {
+        height: 2.25rem;
+    }
+    .vehiculo-chip {
+        max-width: 100%;
+    }
+    .catalogo-box {
+        min-height: auto;
+    }
+}
+
+/* Transicion de entrada: anima los contenedores al montar cada paso */
+.tipo-card,
+.modal-body table,
+.modal-body .slds-box,
+.step-anim {
+    animation: stepIn 0.25s ease-out;
+}
+@keyframes stepIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}

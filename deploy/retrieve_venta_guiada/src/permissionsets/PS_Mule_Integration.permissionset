@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <apexClass>GuidedSellingController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <description>Grants guided selling users access to the MuleSoft integration (parts catalog search and SAP price and stock lookup). Dependencies: MuleSoft_EC external credential, MuleGateway named credential.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>PS Mule Integration</label>
+</PermissionSet>
