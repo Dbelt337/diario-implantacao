@@ -168,6 +168,24 @@
         </rules>
     </decisions>
     <decisions>
+        <name>IsUnitEligible</name>
+        <label>Decision: Unit Eligible for Designation?</label>
+        <locationX>100</locationX><locationY>280</locationY>
+        <defaultConnector><targetReference>NotEligibleScreen</targetReference></defaultConnector>
+        <defaultConnectorLabel>Not eligible</defaultConnectorLabel>
+        <rules>
+            <name>UnitEligible</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetVehicle.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>En ubicación de concesionario</stringValue></rightValue>
+            </conditions>
+            <connector><targetReference>GetQuotaBrands</targetReference></connector>
+            <label>Eligible (available at dealer)</label>
+        </rules>
+    </decisions>
+    <decisions>
         <name>IsQuotaOk</name>
         <label>Decision: Quota Available?</label>
         <locationX>200</locationX><locationY>600</locationY>
@@ -217,7 +235,7 @@
                 <operator>EqualTo</operator>
                 <rightValue><stringValue>REQUEST</stringValue></rightValue>
             </conditions>
-            <connector><targetReference>GetQuotaBrands</targetReference></connector>
+            <connector><targetReference>IsUnitEligible</targetReference></connector>
             <label>Request designation</label>
         </rules>
         <rules>
@@ -243,7 +261,7 @@
             <label>Release for sale</label>
         </rules>
     </decisions>
-    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/REASSIGN advisor (Esc.6: assigning first CLOSES any prior open assignment Task of the unit, then creates the new advisor-owned Task - single active assignment at a time; Task-based: the open [Demo] Asignacion Task owned by the ADVISOR is the assignment marker; NO record owner changes - the vehicle belongs to GrupoQ: Asset.AccountId = sociedad, Vehicle.CurrentOwnerId = dealer, both untouched), release for sale (request Task + alert), cancel exceptional assignment (closes the open assignment Task, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). UX 07/08: brand/branch are now cascading dropdowns fed by the CR quota CMDT records (unique brands via dedupe loop; branches filtered by selected brand) - impossible to request a combination without a quota row. TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) RESOLVED 06/08: floor manager is now a required User dropdown (EncargadoPick) on the menu screen - evolve later to a per-branch GRP_Sucursal_* default; (5) RESOLVED 06/08: AdvisorId is a User dropdown (ActiveUserChoices, IsActive=true sorted by Name) - refine the filter later (e.g., sales profile/role or branch) if the user list grows. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented). DESIGN FIX 06/08: SerializedProduct leg REMOVED (legacy of the old HU premises) - unit identity is the Vehicle (VehicleIdentificationNumber), per the Automotive Cloud model; DESIGN FIX 2 (same day, Diego): NO owner write at all - the vehicle belongs to GrupoQ; the assignment lives in the advisor-owned open Task, closed on cancel/expiry. Search matches VIN OR Name (filterLogic or).</description>
+    <description>Management screen for the demo vehicle lifecycle (HU-046, RN-3/4/5/6/8/9). All countries. One screen with four branches: request designation (validates quota, creates floor manager Task + alert), assign/REASSIGN advisor (Esc.6: assigning first CLOSES any prior open assignment Task of the unit, then creates the new advisor-owned Task - single active assignment at a time; Task-based: the open [Demo] Asignacion Task owned by the ADVISOR is the assignment marker; NO record owner changes - the vehicle belongs to GrupoQ: Asset.AccountId = sociedad, Vehicle.CurrentOwnerId = dealer, both untouched), release for sale (request Task + alert), cancel exceptional assignment (closes the open assignment Task, nothing else changes). Entry restricted by the RequestDemoVehicle custom permission (component visibility). ELIGIBILITY v2 (07/08): the request branch only accepts units whose Vehicle.Status = "En ubicación de concesionario" (available at dealer - the SAP-load arrival state); any other status shows the Not Eligible screen with the current state. To widen the eligible set, add values to the IsUnitEligible decision. UX 07/08: brand/branch are now cascading dropdowns fed by the CR quota CMDT records (unique brands via dedupe loop; branches filtered by selected brand) - impossible to request a combination without a quota row. TODO-DAVI: (1) unit selected by typed VIN - evolve to CBSF search (T01); (2) brand/branch typed - derive from the Vehicle record; (3) GetUnitsInTargetStatus filters only by Status - add brand and branch filters; (4) RESOLVED 06/08: floor manager is now a required User dropdown (EncargadoPick) on the menu screen - evolve later to a per-branch GRP_Sucursal_* default; (5) RESOLVED 06/08: AdvisorId is a User dropdown (ActiveUserChoices, IsActive=true sorted by Name) - refine the filter later (e.g., sales profile/role or branch) if the user list grows. Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented). DESIGN FIX 06/08: SerializedProduct leg REMOVED (legacy of the old HU premises) - unit identity is the Vehicle (VehicleIdentificationNumber), per the Automotive Cloud model; DESIGN FIX 2 (same day, Diego): NO owner write at all - the vehicle belongs to GrupoQ; the assignment lives in the advisor-owned open Task, closed on cancel/expiry. Search matches VIN OR Name (filterLogic or).</description>
     <dynamicChoiceSets>
         <name>ActiveUserChoices</name>
         <dataType>String</dataType>
@@ -583,6 +601,23 @@
             <fieldType>DropdownBox</fieldType>
             <helpText>&lt;p&gt;Usuario que ejecutará la solicitud en la pantalla "Ejecutar Solicitudes Demo". Será el dueño de la Task y recibirá la alerta.&lt;/p&gt;</helpText>
             <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>NotEligibleScreen</name>
+        <label>Screen: Unit Not Eligible</label>
+        <locationX>0</locationX><locationY>330</locationY>
+        <allowBack>true</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <fields>
+            <name>NotEligibleTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Unidad no elegible&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>NotEligibleText</name>
+            <fieldText>&lt;p&gt;Solo unidades con estado &lt;b&gt;En ubicación de concesionario&lt;/b&gt; pueden designarse como Demo/Exhibición.&lt;/p&gt;&lt;p&gt;Estado actual de la unidad: &lt;b&gt;{!GetVehicle.Status}&lt;/b&gt;. Si la unidad está en demo/exhibición y debe venderse, use "Liberar para venta"; si está en otro estado, regularícela primero.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter><showHeader>false</showHeader>
     </screens>
