@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>SapOrderAlert</customNotifTypeName>
+    <description>All countries. Alertas del ciclo de pedido SAP de la venta guiada (confirmación y factura).</description>
+    <desktop>true</desktop>
+    <masterLabel>SAP Order Alert</masterLabel>
+    <mobile>true</mobile>
+</CustomNotificationType>
