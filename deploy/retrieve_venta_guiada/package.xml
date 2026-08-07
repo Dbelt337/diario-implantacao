@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 
-    <!-- Apex Classes -->
+    <!-- Apex Classes (fases 1-4 do pedido: + GenerateSapOrderAction e SapMuleClient) -->
     <types>
         <members>SapInventoryService</members>
         <members>SapInventoryServiceTest</members>
         <members>PricingService</members>
         <members>QuoteOrderService</members>
         <members>SapOrderService</members>
+        <members>SapMuleClient</members>
+        <members>GenerateSapOrderAction</members>
         <members>MaterialSearchService</members>
         <members>MaterialSearchServiceTest</members>
         <members>FinancingService</members>
@@ -39,10 +41,15 @@
         <name>CustomObject</name>
     </types>
 
-    <!-- Custom Fields: Repuestos a cotizar (form web -> lead -> oportunidad) -->
+    <!-- Custom Fields: RequestedParts (form web -> lead -> oportunidad)
+         + ciclo SAP do pedido na Order (fase 1) -->
     <types>
         <members>Lead.RequestedParts__c</members>
         <members>Opportunity.RequestedParts__c</members>
+        <members>Order.SapStatus__c</members>
+        <members>Order.SapOrderNumber__c</members>
+        <members>Order.SapInvoiceNumber__c</members>
+        <members>Order.SapInvoiceDate__c</members>
         <name>CustomField</name>
     </types>
 
@@ -70,6 +77,22 @@
     <types>
         <members>Opportunity.VentaGuiadaModal</members>
         <name>QuickAction</name>
+    </types>
+
+    <!-- Flows do pipeline do pedido (fases 1-4): ida automatica + botao,
+         retorno SAP e faturado -> entrega/milestone -->
+    <types>
+        <members>Quote_Aceptada_Genera_Pedido</members>
+        <members>Generar_Pedido_SAP</members>
+        <members>SAP_Order_Response_Handler</members>
+        <members>Order_Facturado_Handler</members>
+        <name>Flow</name>
+    </types>
+
+    <!-- Notificacao do ciclo do pedido (fase 2/4) -->
+    <types>
+        <members>SapOrderAlert</members>
+        <name>CustomNotificationType</name>
     </types>
 
     <!-- Custom Metadata records (pais -> moedas permitidas) -->
