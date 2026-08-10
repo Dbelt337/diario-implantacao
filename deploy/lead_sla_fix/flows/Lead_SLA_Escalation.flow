@@ -3,6 +3,11 @@
     <apiVersion>62.0</apiVersion>
     <description>US-031 v2 (fix RECORD_IN_USE_BY_WORKFLOW / KB 000385353). The SLA wait NO LONGER lives on the Lead: this flow only creates and maintains the marker Task "[SLA] Primera atencion" (ReminderDateTime = SLADeadline__c). The scheduled path moved to flow Lead_SLA_Task_Escalation, anchored ON THE TASK - no pending interview ever locks lead conversion. Attending the lead (Status leaves Nuevo) closes the marker, which cancels the pending schedule. SLADeadlineFormula__c is no longer used as time source.</description>
     <environments>Default</environments>
+    <formulas>
+        <name>markerReminderSet</name>
+        <dataType>Boolean</dataType>
+        <expression>IF(LEFT({!$Record.OwnerId}, 3) = '00G', false, true)</expression>
+    </formulas>
     <interviewLabel>Lead_SLA_Escalation {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Lead_SLA_Escalation</label>
     <processType>AutoLaunchedFlow</processType>
@@ -102,7 +107,7 @@
         </inputAssignments>
         <inputAssignments>
             <field>IsReminderSet</field>
-            <value><booleanValue>true</booleanValue></value>
+            <value><elementReference>markerReminderSet</elementReference></value>
         </inputAssignments>
         <inputAssignments>
             <field>Description</field>
