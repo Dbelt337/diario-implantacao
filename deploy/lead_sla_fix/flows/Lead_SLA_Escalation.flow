@@ -84,6 +84,27 @@
             <connector><targetReference>Reanclar_Marcador</targetReference></connector>
             <label>Deadline cambio (sigue Nuevo)</label>
         </rules>
+        <rules>
+            <name>Dueno_Cambio</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>Nuevo</stringValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.OwnerId</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue><elementReference>$Record__Prior.OwnerId</elementReference></rightValue>
+            </conditions>
+            <connector><targetReference>Reasignar_Marcador</targetReference></connector>
+            <label>Dueno cambio (fila -&gt; asesor o reasignacion; sigue Nuevo)</label>
+        </rules>
     </decisions>
     <recordCreates>
         <name>Crear_Marcador</name>
@@ -161,6 +182,40 @@
             <operator>NotEqualTo</operator>
             <value><stringValue>Completed</stringValue></value>
         </filters>
+        <inputAssignments>
+            <field>ReminderDateTime</field>
+            <value><elementReference>$Record.SLADeadline__c</elementReference></value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Reasignar_Marcador</name>
+        <label>Update: Marcador acompana al nuevo dueno</label>
+        <locationX>1000</locationX><locationY>300</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WhoId</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </filters>
+        <filters>
+            <field>Subject</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>[SLA] Primera atencion</stringValue></value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>NotEqualTo</operator>
+            <value><stringValue>Completed</stringValue></value>
+        </filters>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value><elementReference>$Record.OwnerId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>IsReminderSet</field>
+            <value><elementReference>markerReminderSet</elementReference></value>
+        </inputAssignments>
         <inputAssignments>
             <field>ReminderDateTime</field>
             <value><elementReference>$Record.SLADeadline__c</elementReference></value>
