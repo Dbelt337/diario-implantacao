@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>GenerarPedidoAuto</name>
+        <label>Action: Generar pedido SAP (automático)</label>
+        <locationX>200</locationX><locationY>400</locationY>
+        <actionName>GenerateSapOrderAction</actionName>
+        <actionType>apex</actionType>
+        <inputParameters>
+            <name>quoteId</name>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </inputParameters>
+        <nameSegment>GenerateSapOrderAction</nameSegment>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>62.0</apiVersion>
+    <description>v2. Backend automático del pedido: cuando la cotización pasa a ACEPTADA, (1) la vuelve la quote SINCRONIZADA de la oportunidad (SyncedQuoteId — 1 por opp; escribible por Flow, prohibido en trigger; con el sync el Amount de la opp pasa a reflejar la cotización ganadora) y (2) crea el Order (Borrador) y lo envía a SAP en segundo plano. Ancla = ACEITE, no la creación (crear en la creación dispararía la Z301/reserva de stock por cada cotización de negociación). Idempotente vía GenerateSapOrderAction.</description>
+    <environments>Default</environments>
+    <interviewLabel>Quote Aceptada Genera Pedido {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Quote Aceptada Genera Pedido</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value><stringValue>AUTO_LAYOUT_CANVAS</stringValue></value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>SetSyncedQuote</name>
+        <label>Update Records: Cotización aceptada = sincronizada</label>
+        <locationX>200</locationX><locationY>250</locationY>
+        <connector><targetReference>GenerarPedidoAuto</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>$Record.OpportunityId</elementReference></value>
+        </filters>
+        <inputAssignments>
+            <field>SyncedQuoteId</field>
+            <value><elementReference>$Record.Id</elementReference></value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <start>
+        <locationX>200</locationX><locationY>50</locationY>
+        <connector><targetReference>SetSyncedQuote</targetReference></connector>
+        <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value><stringValue>Accepted</stringValue></value>
+        </filters>
+        <object>Quote</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>
