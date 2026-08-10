@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <decisions>
+        <name>HasAsset</name>
+        <label>Decision: ¿La unidad tiene Asset?</label>
+        <locationX>200</locationX><locationY>200</locationY>
+        <defaultConnector><targetReference>NoAssetScreen</targetReference></defaultConnector>
+        <defaultConnectorLabel>Sin asset</defaultConnectorLabel>
+        <rules>
+            <name>ConAssetAcc</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetVehicleAcc</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>GetVehicleAcc.AssetId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>GetParentAsset</targetReference></connector>
+            <label>Con asset</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>AgregarOtroDecision</name>
+        <label>Decision: ¿Agregar otro accesorio?</label>
+        <locationX>200</locationX><locationY>900</locationY>
+        <defaultConnectorLabel>No — terminar</defaultConnectorLabel>
+        <rules>
+            <name>SiOtro</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>AgregarOtroPick</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue><stringValue>Si</stringValue></rightValue>
+            </conditions>
+            <connector><targetReference>SearchScreen</targetReference></connector>
+            <label>Sí</label>
+        </rules>
+    </decisions>
+    <description>Instalación guiada de accesorios en la unidad Demo/Exhibición (HU-046, evolución console 10/08). Quick Action en la página del Vehicle: busca productos activos por nombre, crea UN Asset HIJO por accesorio (Parent Asset = asset de la unidad — patrón oficial de jerarquía de assets: Name + Parent + Product; Status Installed; misma Account del asset padre) y repite mientras el usuario quiera. Los accesorios aparecen NATIVAMENTE en la pestaña "Installed Parts &amp; Accessories" del console. Decisión 10/08: la liberación PRESERVA el histórico (no elimina assets hijos); si el negocio pedir remoción, agregar paso en el flow de liberación. Asset.VehicleId NO es escribible (doc) — el vínculo es SOLO por ParentId.</description>
+    <dynamicChoiceSets>
+        <name>AccessoryChoices</name>
+        <collectionReference>GetAccessoryProducts</collectionReference>
+        <dataType>String</dataType>
+        <displayField>Name</displayField>
+        <object>Product2</object>
+        <valueField>Id</valueField>
+    </dynamicChoiceSets>
+    <choices>
+        <name>OtroSi</name>
+        <choiceText>Sí, agregar otro accesorio</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>Si</stringValue></value>
+    </choices>
+    <choices>
+        <name>OtroNo</name>
+        <choiceText>No, terminar</choiceText>
+        <dataType>String</dataType>
+        <value><stringValue>No</stringValue></value>
+    </choices>
+    <environments>Default</environments>
+    <interviewLabel>Instalar Accesorios Demo {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Instalar Accesorios Demo</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value><stringValue>LightningFlowBuilder</stringValue></value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value><stringValue>AUTO_LAYOUT_CANVAS</stringValue></value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordCreates>
+        <name>CreateAccessoryAsset</name>
+        <label>Create Records: Asset hijo del accesorio</label>
+        <locationX>200</locationX><locationY>700</locationY>
+        <connector><targetReference>ConfirmScreen</targetReference></connector>
+        <inputAssignments>
+            <field>Name</field>
+            <value><elementReference>GetPickedProduct.Name</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Product2Id</field>
+            <value><elementReference>GetPickedProduct.Id</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>ParentId</field>
+            <value><elementReference>GetVehicleAcc.AssetId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>AccountId</field>
+            <value><elementReference>GetParentAsset.AccountId</elementReference></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Status</field>
+            <value><stringValue>Installed</stringValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Quantity</field>
+            <value><numberValue>1.0</numberValue></value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>InstallDate</field>
+            <value><elementReference>$Flow.CurrentDate</elementReference></value>
+        </inputAssignments>
+        <object>Asset</object>
+    </recordCreates>
+    <recordLookups>
+        <name>GetVehicleAcc</name>
+        <label>Get Records: Unidad (Vehicle)</label>
+        <locationX>200</locationX><locationY>100</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>HasAsset</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>recordId</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Vehicle</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetParentAsset</name>
+        <label>Get Records: Asset de la unidad</label>
+        <locationX>200</locationX><locationY>300</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>SearchScreen</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>GetVehicleAcc.AssetId</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Asset</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetAccessoryProducts</name>
+        <label>Get Records: Productos por nombre</label>
+        <locationX>200</locationX><locationY>500</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>PickScreen</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>IsActive</field>
+            <operator>EqualTo</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
+        <filters>
+            <field>Name</field>
+            <operator>Contains</operator>
+            <value><elementReference>SearchTerm</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Product2</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetPickedProduct</name>
+        <label>Get Records: Producto elegido</label>
+        <locationX>200</locationX><locationY>620</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector><targetReference>CreateAccessoryAsset</targetReference></connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>AccessoryPick</elementReference></value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Product2</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <screens>
+        <name>NoAssetScreen</name>
+        <label>Screen: Unidad sin asset</label>
+        <locationX>400</locationX><locationY>300</locationY>
+        <allowBack>false</allowBack><allowFinish>true</allowFinish><allowPause>false</allowPause>
+        <fields>
+            <name>NoAssetText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;Esta unidad no tiene Asset vinculado.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;El par Vehicle+Asset es el modelo de la unidad — regularice el asset antes de instalar accesorios.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter><showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>SearchScreen</name>
+        <label>Screen: Buscar accesorio</label>
+        <locationX>200</locationX><locationY>400</locationY>
+        <allowBack>false</allowBack><allowFinish>false</allowFinish><allowPause>false</allowPause>
+        <connector><targetReference>GetAccessoryProducts</targetReference></connector>
+        <fields>
+            <name>SearchTitle</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;&lt;span style="font-size: 16px;"&gt;Instalar accesorio — {!GetVehicleAcc.Name}&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>SearchTerm</name>
+            <dataType>String</dataType>
+            <fieldText>Nombre del accesorio (o parte del nombre)</fieldText>
+            <fieldType>InputField</fieldType>
+            <helpText>&lt;p&gt;Ej.: tapetes, polarizado, cámara. Busca en el catálogo de productos activos.&lt;/p&gt;</helpText>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>PickScreen</name>
+        <label>Screen: Elegir accesorio</label>
+        <locationX>200</locationX><locationY>560</locationY>
+        <allowBack>true</allowBack><allowFinish>false</allowFinish><allowPause>false</allowPause>
+        <connector><targetReference>GetPickedProduct</targetReference></connector>
+        <fields>
+            <name>AccessoryPick</name>
+            <choiceReferences>AccessoryChoices</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Accesorio a instalar</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <helpText>&lt;p&gt;Resultados de la búsqueda. Si no aparece, vuelve atrás y ajusta el término — o solicite la creación del material (el flujo de venta no crea materiales SAP).&lt;/p&gt;</helpText>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>ConfirmScreen</name>
+        <label>Screen: Accesorio instalado</label>
+        <locationX>200</locationX><locationY>800</locationY>
+        <allowBack>false</allowBack><allowFinish>false</allowFinish><allowPause>false</allowPause>
+        <connector><targetReference>AgregarOtroDecision</targetReference></connector>
+        <fields>
+            <name>ConfirmText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;{!GetPickedProduct.Name}&lt;/b&gt; instalado en &lt;b&gt;{!GetVehicleAcc.Name}&lt;/b&gt; ✔&lt;/p&gt;&lt;p&gt;Ya aparece en la pestaña &lt;b&gt;Installed Parts &amp;amp; Accessories&lt;/b&gt; del console.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>AgregarOtroPick</name>
+            <choiceReferences>OtroSi</choiceReferences>
+            <choiceReferences>OtroNo</choiceReferences>
+            <dataType>String</dataType>
+            <defaultSelectedChoiceReference>OtroNo</defaultSelectedChoiceReference>
+            <fieldText>¿Agregar otro accesorio?</fieldText>
+            <fieldType>RadioButtons</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <showFooter>true</showFooter><showHeader>false</showHeader>
+    </screens>
+    <start>
+        <locationX>200</locationX><locationY>0</locationY>
+        <connector><targetReference>GetVehicleAcc</targetReference></connector>
+    </start>
+    <status>Draft</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
+</Flow>

@@ -397,6 +397,11 @@
         <connector><targetReference>IsUnitFound</targetReference></connector>
         <filterLogic>or</filterLogic>
         <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value><elementReference>recordId</elementReference></value>
+        </filters>
+        <filters>
             <field>VehicleIdentificationNumber</field>
             <operator>EqualTo</operator>
             <value><elementReference>VehicleSerial</elementReference></value>
@@ -574,8 +579,8 @@
                     <dataType>String</dataType>
                     <fieldText>VIN o nombre de la unidad</fieldText>
                     <fieldType>InputField</fieldType>
-                    <helpText>&lt;p&gt;Busca por VIN (17 caracteres) o por el nombre exacto de la unidad.&lt;/p&gt;</helpText>
-                    <isRequired>true</isRequired>
+                    <helpText>&lt;p&gt;Busca por VIN (17 caracteres) o por el nombre exacto de la unidad. Si abriste esta acción desde la página del vehículo, deja el campo vacío: la unidad de la página ya está seleccionada.&lt;/p&gt;</helpText>
+                    <isRequired>false</isRequired>
                 </fields>
                 <inputParameters>
                     <name>width</name>
@@ -829,6 +834,11 @@
             <name>resultMessage</name>
         </outputAssignments>
     </subflows>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection><isInput>true</isInput><isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>currentUnitCount</name>
         <dataType>Number</dataType>
