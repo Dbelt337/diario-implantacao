@@ -1,12 +1,9 @@
 /**
  * All countries. Tests for QuoteOrderService: quote creation from the guided
  * flow (existing lines, fallback by selection, payload parsing, description
- * tracing, discount approval guard) and the quote->order->SAP leg (creation,
- * idempotency, error paths). No SeeAllData; pricebook = standard via
- * Test.getStandardPricebookId(); callouts never happen (SapMuleClient mock).
- * v2: operaciones de riesgo envueltas en try/catch con Assert.fail(mensaje
- * real) para que una falla de org (VR, picklist, trigger) aparezca VERBATIM
- * en la columna de error del test run.
+ * tracing) and the quote->order->SAP leg (creation, idempotency, error paths).
+ * No SeeAllData; pricebook = standard via Test.getStandardPricebookId();
+ * callouts never happen (SapMuleClient runs in mock mode).
  */
 @isTest
 private class QuoteOrderServiceTest {
@@ -53,29 +50,6 @@ private class QuoteOrderServiceTest {
         });
     }
 
-    /** Reexpone el error real del servicio con el mensaje raíz AL FRENTE (columna Errors truncada). */
-    private class RootCause extends Exception {}
-
-    /** Ejecuta la creación de cotizaciones y convierte cualquier excepción en un fallo legible. */
-    private static List<Quote> createQuotesOrFail(Id oppId, String payload, String selectedVehicles) {
-        try {
-            return QuoteOrderService.createQuotesSingleVehicle(oppId, payload, selectedVehicles);
-        } catch (Exception e) {
-            throw new RootCause(e.getMessage() + ' [createQuotesSingleVehicle | ' + e.getTypeName()
-                + ' | ' + e.getStackTraceString() + ']');
-        }
-    }
-
-    /** Ejecuta la creación del pedido y convierte cualquier excepción en un fallo legible. */
-    private static Id createOrderOrFail(Id quoteId) {
-        try {
-            return QuoteOrderService.createOrderFromQuote(quoteId);
-        } catch (Exception e) {
-            throw new RootCause(e.getMessage() + ' [createOrderFromQuote | ' + e.getTypeName()
-                + ' | ' + e.getStackTraceString() + ']');
-        }
-    }
-
     @isTest
     static void createQuotesHappyPathBuildsQuoteLinesAndDescription() {
         Opportunity opp = getOpp();
@@ -88,10 +62,10 @@ private class QuoteOrderServiceTest {
         });
 
         Test.startTest();
-        List<Quote> quotes = createQuotesOrFail(opp.Id, buildPayload(), selectedVehicles);
+        List<Quote> quotes = QuoteOrderService.createQuotesSingleVehicle(opp.Id, buildPayload(), selectedVehicles);
         Test.stopTest();
 
-        Assert.areEqual(1, quotes.size(), 'Debe crearse UNA cotización por vehículo.');
+        Assert.areEqual(1, quotes.size(), 'Debe crearse una cotización por vehículo.');
         Quote created = [
             SELECT Id, ExpirationDate, Description, Pricebook2Id,
                    (SELECT Id, Product2.Name FROM QuoteLineItems)
@@ -100,19 +74,18 @@ private class QuoteOrderServiceTest {
         Assert.areEqual(Date.today().addDays(10), created.ExpirationDate,
             'vigenciaDias del payload define la vigencia.');
         Assert.isTrue(created.Description.contains('Descuento solicitado'),
-            'El descuento debe quedar trazado. Description actual: ' + created.Description);
+            'El descuento debe quedar trazado. Description: ' + created.Description);
         Assert.isTrue(created.Description.contains('Financiado CrediQ Tradicional'),
-            'La opción de financiamiento debe quedar trazada. Description actual: ' + created.Description);
+            'El financiamiento elegido debe quedar trazado. Description: ' + created.Description);
         Assert.isTrue(created.Description.contains('Accesorios (1)'),
-            'Los accesorios del vehículo deben quedar trazados. Description actual: ' + created.Description);
+            'Los accesorios del vehículo deben quedar trazados. Description: ' + created.Description);
         List<String> lineNames = new List<String>();
         for (QuoteLineItem qli : created.QuoteLineItems) {
             lineNames.add(qli.Product2.Name);
         }
-        // 1 línea del vehículo + 1 del accesorio de la oportunidad + 1 del payload
         Assert.areEqual(3, created.QuoteLineItems.size(),
-            'Vehículo, accesorio de la oportunidad y accesorio del payload generan línea. '
-            + 'Líneas actuales: ' + String.join(lineNames, ' | '));
+            'Vehículo, accesorio de la oportunidad y accesorio del payload generan línea. Líneas: '
+            + String.join(lineNames, ' | '));
         Assert.areEqual(opp.Pricebook2Id, created.Pricebook2Id,
             'La cotización hereda el pricebook de la oportunidad.');
     }
@@ -124,7 +97,7 @@ private class QuoteOrderServiceTest {
         VentasTestDataFactory.addOpportunityLine(opp.Id, vehicleEntry.Id, 1, vehicleEntry.UnitPrice);
 
         Test.startTest();
-        List<Quote> quotes = createQuotesOrFail(opp.Id, 'esto no es json', null);
+        List<Quote> quotes = QuoteOrderService.createQuotesSingleVehicle(opp.Id, 'esto no es json', null);
         Test.stopTest();
 
         Assert.areEqual(1, quotes.size(), 'Payload ilegible se ignora, la cotización nace igual.');
@@ -135,14 +108,14 @@ private class QuoteOrderServiceTest {
 
     @isTest
     static void createQuotesFallbackBuildsVehicleLineFromSelection() {
-        Opportunity opp = getOpp(); // sin OpportunityLineItems
+        Opportunity opp = getOpp();
         String selectedVehicles = JSON.serialize(new List<Object>{
             new Map<String, Object>{ 'modelo' => 'Creta', 'stockCentral' => 0, 'stockDealer' => 0 },
             new Map<String, Object>{ 'modelo' => 'ModeloInexistente', 'stockCentral' => 0, 'stockDealer' => 0 }
         });
 
         Test.startTest();
-        List<Quote> quotes = createQuotesOrFail(opp.Id, null, selectedVehicles);
+        List<Quote> quotes = QuoteOrderService.createQuotesSingleVehicle(opp.Id, null, selectedVehicles);
         Test.stopTest();
 
         List<OpportunityLineItem> lines = [SELECT Id FROM OpportunityLineItem WHERE OpportunityId = :opp.Id];
@@ -177,8 +150,6 @@ private class QuoteOrderServiceTest {
 
     @isTest
     static void createQuotesResolvesDefaultPricebookAndFailsWithoutVehicles() {
-        // oportunidad SIN pricebook + pricebook custom activo VACÍO: cubre
-        // resolveDefaultPricebookId y el error "sin vehículos activos"
         Pricebook2 vacio = new Pricebook2(Name = 'Catalogo Vacio', IsActive = true);
         insert vacio;
         Opportunity sinCatalogo = VentasTestDataFactory.createOpportunityNoPricebook(
@@ -202,12 +173,12 @@ private class QuoteOrderServiceTest {
         Quote quotation = VentasTestDataFactory.createQuoteWithLine(opp, getEntry('VEH-001'));
 
         Test.startTest();
-        Id orderId = createOrderOrFail(quotation.Id);
-        Id secondCall = createOrderOrFail(quotation.Id);
+        Id orderId = QuoteOrderService.createOrderFromQuote(quotation.Id);
+        Id secondCall = QuoteOrderService.createOrderFromQuote(quotation.Id);
         Test.stopTest();
 
         Assert.areEqual(orderId, secondCall,
-            'Idempotencia: la segunda llamada devuelve el MISMO pedido, nunca duplica.');
+            'Idempotencia: la segunda llamada devuelve el mismo pedido, nunca duplica.');
         Assert.areEqual(1, [SELECT COUNT() FROM Order WHERE QuoteId = :quotation.Id],
             'Un pedido por cotización, siempre.');
         Order pedido = [
@@ -215,13 +186,10 @@ private class QuoteOrderServiceTest {
                    (SELECT Id FROM OrderItems)
             FROM Order WHERE Id = :orderId
         ];
-        Assert.areEqual('Borrador', pedido.SapStatus__c, 'Ciclo SAP nace en Borrador.');
+        Assert.areEqual('Borrador', pedido.SapStatus__c, 'El ciclo SAP nace en Borrador.');
         Assert.areEqual(1, pedido.OrderItems.size(), 'Una OrderItem por QuoteLineItem.');
         Assert.areEqual(opp.Id, pedido.OpportunityId, 'El pedido referencia la oportunidad.');
-        // El Status nativo queda en el valor inicial del ciclo (Draft) hasta
-        // back-office; se registra el valor real para diagnóstico sin acoplar
-        // el test a la personalización del picklist OrderStatus de la org.
-        Assert.isNotNull(pedido.Status, 'El pedido debe nacer con Status nativo. Actual: ' + pedido.Status);
+        Assert.isNotNull(pedido.Status, 'El pedido nace con el status inicial nativo. Actual: ' + pedido.Status);
     }
 
     @isTest
@@ -258,19 +226,18 @@ private class QuoteOrderServiceTest {
     static void sendOrderToSapEnqueuesAndConfirmsInMockMode() {
         Opportunity opp = getOpp();
         Quote quotation = VentasTestDataFactory.createQuoteWithLine(opp, getEntry('VEH-001'));
-        Id orderId = createOrderOrFail(quotation.Id);
+        Id orderId = QuoteOrderService.createOrderFromQuote(quotation.Id);
 
         Test.startTest();
         Id jobId = QuoteOrderService.sendOrderToSap(orderId);
-        Test.stopTest(); // ejecuta el Queueable (SapMuleClient.mockMode = true, sin callout)
+        Test.stopTest();
 
         Assert.isNotNull(jobId, 'Debe encolarse el job de envío a SAP.');
         Order pedido = [SELECT SapStatus__c, SapOrderNumber__c FROM Order WHERE Id = :orderId];
         Assert.areEqual('Confirmado SAP', pedido.SapStatus__c,
-            'Mock determinista devuelve documento -> Confirmado SAP. SapStatus actual: '
-            + pedido.SapStatus__c + ', SapOrderNumber actual: ' + pedido.SapOrderNumber__c);
+            'El mock determinista devuelve documento y confirma. Actual: ' + pedido.SapStatus__c);
         Assert.isTrue(pedido.SapOrderNumber__c != null && pedido.SapOrderNumber__c.startsWith('Z301'),
-            'La Z301 (oferta/reserva) queda registrada en el pedido. Actual: ' + pedido.SapOrderNumber__c);
+            'La Z301 queda registrada en el pedido. Actual: ' + pedido.SapOrderNumber__c);
     }
 
     @isTest
