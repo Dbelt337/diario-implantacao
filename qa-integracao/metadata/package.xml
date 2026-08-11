@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>IntegrationLog__c.Status__c</members>
+        <members>IntegrationLog__c.TargetSystem__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Integracao_Field_Service</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>63.0</version>
+</Package>

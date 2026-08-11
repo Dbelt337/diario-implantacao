@@ -1,0 +1,5 @@
+SELECT Id, WorkOrderNumber, Subject, Account.Name, WorkType.Name,
+       ServiceTerritory.Name, CreatedDate
+FROM WorkOrder
+ORDER BY CreatedDate DESC
+LIMIT 3

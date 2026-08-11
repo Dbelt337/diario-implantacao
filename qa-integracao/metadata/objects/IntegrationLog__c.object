@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Item C: campos em drift no QA (existem na org de origem, faltam no QA).
+     REGRA DA CASA 1: antes do deploy, rodar scripts/c_auditar_campos_origem.soql
+     na org de ORIGEM (provavel PROD, confirmar com Diego) e ajustar tipo/valores
+     abaixo se divergirem. Defaults atuais = inferencia (nivel B) do payload
+     observado: Status__c com valores Sucesso/Erro; TargetSystem__c texto curto. -->
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Status__c</fullName>
+        <label>Status</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>false</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value><fullName>Sucesso</fullName><default>false</default><label>Sucesso</label></value>
+                <value><fullName>Erro</fullName><default>false</default><label>Erro</label></value>
+                <value><fullName>Parcial</fullName><default>false</default><label>Parcial</label></value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>TargetSystem__c</fullName>
+        <label>Target System</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>

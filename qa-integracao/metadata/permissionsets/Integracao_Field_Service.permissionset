@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Item B.2: minimo necessario ao fluxo ref-tickets-send-to-salesforce.
+     Read: Account, WorkType, ServiceTerritory, OperatingHours.
+     Create/Read/Update: WorkOrder, ServiceAppointment, IntegrationLog__c (SEM Delete - log imutavel).
+     FLS: campos do IntegrationLog usados pelo log-write + Account.DocumentNumber__c
+     (necessario para a query por CNPJ do composite).
+     Aviso (nivel B): se a licenca "Salesforce Integration" do usuario nao cobrir
+     WorkOrder/ServiceAppointment, a atribuicao falha - insumo para a decisao B.3. -->
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Integracao Field Service</label>
+    <description>Minimo para o fluxo Mule ref-tickets-send-to-salesforce no QA: leitura de referencias FS, criacao de WorkOrder/ServiceAppointment e escrita de IntegrationLog sem delete.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <objectPermissions>
+        <object>Account</object>
+        <allowCreate>false</allowCreate><allowRead>true</allowRead><allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete><viewAllRecords>true</viewAllRecords><modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>WorkType</object>
+        <allowCreate>false</allowCreate><allowRead>true</allowRead><allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete><viewAllRecords>true</viewAllRecords><modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>ServiceTerritory</object>
+        <allowCreate>false</allowCreate><allowRead>true</allowRead><allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete><viewAllRecords>true</viewAllRecords><modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>OperatingHours</object>
+        <allowCreate>false</allowCreate><allowRead>true</allowRead><allowEdit>false</allowEdit>
+        <allowDelete>false</allowDelete><viewAllRecords>true</viewAllRecords><modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>WorkOrder</object>
+        <allowCreate>true</allowCreate><allowRead>true</allowRead><allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete><viewAllRecords>true</viewAllRecords><modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>ServiceAppointment</object>
+        <allowCreate>true</allowCreate><allowRead>true</allowRead><allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete><viewAllRecords>true</viewAllRecords><modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>IntegrationLog__c</object>
+        <allowCreate>true</allowCreate><allowRead>true</allowRead><allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete><viewAllRecords>true</viewAllRecords><modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
+    <fieldPermissions>
+        <field>Account.DocumentNumber__c</field>
+        <readable>true</readable><editable>false</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>IntegrationLog__c.IntegrationName__c</field>
+        <readable>true</readable><editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>IntegrationLog__c.IntegrationType__c</field>
+        <readable>true</readable><editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>IntegrationLog__c.RequestPayload__c</field>
+        <readable>true</readable><editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>IntegrationLog__c.ResponsePayload__c</field>
+        <readable>true</readable><editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>IntegrationLog__c.Timestamp__c</field>
+        <readable>true</readable><editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>IntegrationLog__c.PartiallyProcessed__c</field>
+        <readable>true</readable><editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>IntegrationLog__c.NotProcessed__c</field>
+        <readable>true</readable><editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>IntegrationLog__c.Status__c</field>
+        <readable>true</readable><editable>true</editable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <field>IntegrationLog__c.TargetSystem__c</field>
+        <readable>true</readable><editable>true</editable>
+    </fieldPermissions>
+</PermissionSet>

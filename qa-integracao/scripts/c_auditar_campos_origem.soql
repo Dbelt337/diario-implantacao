@@ -1,0 +1,4 @@
+SELECT QualifiedApiName, DataType, Label
+FROM FieldDefinition
+WHERE EntityDefinition.QualifiedApiName = 'IntegrationLog__c'
+  AND QualifiedApiName IN ('Status__c', 'TargetSystem__c')
