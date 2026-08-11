@@ -43,7 +43,10 @@ private class QuoteOrderServiceTest {
                 new Map<String, Object>{
                     'modelo' => 'Creta',
                     'items' => new List<Object>{
-                        new Map<String, Object>{ 'id' => 'a1', 'nombre' => 'Alfombra Premium', 'precio' => 50000 }
+                        // en catálogo (ACC-001): línea por MATCH con el pricebook
+                        new Map<String, Object>{ 'id' => 'a1', 'nombre' => 'Barra antivuelco', 'precio' => 250000 },
+                        // fuera de catálogo: línea por AUTO-PROVISIÓN
+                        new Map<String, Object>{ 'id' => 'a2', 'nombre' => 'Alfombra Premium', 'precio' => 50000 }
                     }
                 }
             }
@@ -54,9 +57,9 @@ private class QuoteOrderServiceTest {
     static void createQuotesHappyPathBuildsQuoteLinesAndDescription() {
         Opportunity opp = getOpp();
         PricebookEntry vehicleEntry = getEntry('VEH-001');
-        PricebookEntry accessoryEntry = getEntry('ACC-001');
+        // los accesorios viajan por el PAYLOAD (flujo real de la venta guiada);
+        // la oportunidad solo trae la línea del vehículo
         VentasTestDataFactory.addOpportunityLine(opp.Id, vehicleEntry.Id, 1, vehicleEntry.UnitPrice);
-        VentasTestDataFactory.addOpportunityLine(opp.Id, accessoryEntry.Id, 1, accessoryEntry.UnitPrice);
         String selectedVehicles = JSON.serialize(new List<Object>{
             new Map<String, Object>{ 'modelo' => 'Creta', 'stockCentral' => 1, 'stockDealer' => 0 }
         });
@@ -77,7 +80,7 @@ private class QuoteOrderServiceTest {
             'El descuento debe quedar trazado. Description: ' + created.Description);
         Assert.isTrue(created.Description.contains('Financiado CrediQ Tradicional'),
             'El financiamiento elegido debe quedar trazado. Description: ' + created.Description);
-        Assert.isTrue(created.Description.contains('Accesorios (1)'),
+        Assert.isTrue(created.Description.contains('Accesorios (2)'),
             'Los accesorios del vehículo deben quedar trazados. Description: ' + created.Description);
         List<String> lineNames = new List<String>();
         for (QuoteLineItem qli : created.QuoteLineItems) {
@@ -89,9 +92,9 @@ private class QuoteOrderServiceTest {
         Assert.isTrue(lineas.contains('Hyundai Creta'),
             'FALTA linea del VEHICULO. Hay: ' + lineas);
         Assert.isTrue(lineas.contains('Barra antivuelco'),
-            'FALTA linea del accesorio de la OPORTUNIDAD. Hay: ' + lineas);
+            'FALTA linea del accesorio en CATALOGO (match pricebook). Hay: ' + lineas);
         Assert.isTrue(lineas.contains('Alfombra Premium'),
-            'FALTA linea del accesorio del PAYLOAD. Hay: ' + lineas);
+            'FALTA linea del accesorio AUTO-PROVISIONADO. Hay: ' + lineas);
         Assert.areEqual(3, created.QuoteLineItems.size(),
             'Sobran lineas duplicadas. Hay: ' + lineas);
         Assert.areEqual(opp.Pricebook2Id, created.Pricebook2Id,
