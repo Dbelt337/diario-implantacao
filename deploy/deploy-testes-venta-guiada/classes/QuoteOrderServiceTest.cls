@@ -43,7 +43,7 @@ private class QuoteOrderServiceTest {
                 new Map<String, Object>{
                     'modelo' => 'Creta',
                     'items' => new List<Object>{
-                        new Map<String, Object>{ 'id' => 'a1', 'nombre' => 'Barra antivuelco', 'precio' => 250000 }
+                        new Map<String, Object>{ 'id' => 'a1', 'nombre' => 'Alfombra Premium', 'precio' => 50000 }
                     }
                 }
             }
@@ -83,9 +83,16 @@ private class QuoteOrderServiceTest {
         for (QuoteLineItem qli : created.QuoteLineItems) {
             lineNames.add(qli.Product2.Name);
         }
+        String lineas = String.join(lineNames, ' | ');
+        // tres líneas con nombres DISTINTOS para saber qué pierna falta si falla:
+        // vehículo (OLI), accesorio de la oportunidad (OLI) y accesorio del
+        // payload (catálogo/auto-provisión)
         Assert.areEqual(3, created.QuoteLineItems.size(),
-            'Vehículo, accesorio de la oportunidad y accesorio del payload generan línea. Líneas: '
-            + String.join(lineNames, ' | '));
+            'Vehículo, accesorio de la oportunidad y accesorio del payload generan línea. Líneas: ' + lineas);
+        Assert.isTrue(lineas.contains('Barra antivuelco'),
+            'La línea del accesorio de la OPORTUNIDAD debe estar. Líneas: ' + lineas);
+        Assert.isTrue(lineas.contains('Alfombra Premium'),
+            'La línea del accesorio del PAYLOAD (auto-provisión) debe estar. Líneas: ' + lineas);
         Assert.areEqual(opp.Pricebook2Id, created.Pricebook2Id,
             'La cotización hereda el pricebook de la oportunidad.');
     }
