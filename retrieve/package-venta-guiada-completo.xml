@@ -17,6 +17,11 @@
         <members>SapMuleClientTest</members>
         <members>GenerateSapOrderAction</members>
         <members>GenerateSapOrderActionTest</members>
+        <members>RepuestosLineService</members>
+        <members>RepuestosLineServiceTest</members>
+        <members>MaterialCreationService</members>
+        <members>MaterialCreationServiceTest</members>
+        <members>CreateSapMaterialAction</members>
         <members>MaterialSearchService</members>
         <members>MaterialSearchServiceTest</members>
         <members>FinancingService</members>
@@ -30,6 +35,7 @@
 
     <!-- Lightning Web Components -->
     <types>
+        <members>lineasRepuestos</members>
         <members>ventaGuiadaLauncher</members>
         <members>ventaGuiadaModal</members>
         <members>aprobacionDescuentoModal</members>
@@ -57,6 +63,8 @@
         <members>Order.SapOrderNumber__c</members>
         <members>Order.SapInvoiceNumber__c</members>
         <members>Order.SapInvoiceDate__c</members>
+        <members>QuoteLineItem.AvailabilityStatus__c</members>
+        <members>QuoteLineItem.AvailabilityDetail__c</members>
         <name>CustomField</name>
     </types>
 
@@ -132,7 +140,12 @@
     </types>
     <types>
         <members>PS_Mule_Integration</members>
+        <members>PS_Create_SAP_Material</members>
         <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>CreateSapMaterial</members>
+        <name>CustomPermission</name>
     </types>
 
     <version>63.0</version>
