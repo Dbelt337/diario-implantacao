@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>US-021: autoriza la creación de materiales en SAP (ZQEV_DBM_CREACION_MATERIALES) desde el grid de Repuestos/PA o desde flows de catálogo. Gobierna las dos puertas (botón del grid y acción invocable).</description>
+    <isLicensed>false</isLicensed>
+    <label>Create SAP Material</label>
+</CustomPermission>

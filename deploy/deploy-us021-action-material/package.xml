@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- US-021: duas portas de invocacao do alta de material SAP.
+         Pre-requisito: pacote deploy-us021-creacion-materiales (fachada) OU
+         este pacote ja inclui SapMuleClient/SapMuleClientTest atualizados.
+         Deploy: RunSpecifiedTests -> MaterialCreationServiceTest,
+         SapMuleClientTest, RepuestosLineServiceTest, GuidedSellingControllerTest -->
+    <types>
+        <members>SapMuleClient</members>
+        <members>SapMuleClientTest</members>
+        <members>MaterialCreationService</members>
+        <members>MaterialCreationServiceTest</members>
+        <members>CreateSapMaterialAction</members>
+        <members>GuidedSellingController</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>CreateSapMaterial</members>
+        <name>CustomPermission</name>
+    </types>
+    <types>
+        <members>PS_Create_SAP_Material</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>lineasRepuestos</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <version>63.0</version>
+</Package>

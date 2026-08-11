@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>PS Create SAP Material</label>
+    <description>US-021: alta de material SAP para asesores de Repuestos/PA y backoffice de catálogo. Incluye la custom permission que gobierna las dos puertas de invocación y el acceso a las clases del flujo.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <classAccesses><apexClass>MaterialCreationService</apexClass><enabled>true</enabled></classAccesses>
+    <classAccesses><apexClass>CreateSapMaterialAction</apexClass><enabled>true</enabled></classAccesses>
+    <classAccesses><apexClass>GuidedSellingController</apexClass><enabled>true</enabled></classAccesses>
+    <customPermissions><enabled>true</enabled><name>CreateSapMaterial</name></customPermissions>
+</PermissionSet>
