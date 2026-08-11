@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- HU-043 - Repuestos y PA: seleccion, carga masiva y modificacion de
+         lineas con verificacion de disponibilidad SAP via MuleSoft.
+         Deploy: RunSpecifiedTests -> RepuestosLineServiceTest,
+         GuidedSellingControllerTest (controller alterado) -->
+    <types>
+        <members>RepuestosLineService</members>
+        <members>RepuestosLineServiceTest</members>
+        <members>GuidedSellingController</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>QuoteLineItem.AvailabilityStatus__c</members>
+        <members>QuoteLineItem.AvailabilityDetail__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>lineasRepuestos</members>
+        <members>contraventaRepuestos</members>
+        <members>ventaPA</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <version>63.0</version>
+</Package>
