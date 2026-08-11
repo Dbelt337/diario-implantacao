@@ -10,6 +10,8 @@
          (VentasTestDataFactory e GuidedSellingControllerTest sao atualizacoes
           de classes existentes; o restante e novo) -->
     <types>
+        <members>QuoteOrderService</members>
+        <members>SapOrderService</members>
         <members>VentasTestDataFactory</members>
         <members>QuoteOrderServiceTest</members>
         <members>SapOrderServiceTest</members>
