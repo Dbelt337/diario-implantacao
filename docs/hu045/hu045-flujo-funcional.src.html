@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #f6f8fb; }
+  body { font-family: "Liberation Sans", "DejaVu Sans", Arial, sans-serif; width: 1560px; padding: 34px 44px 26px 44px; color: #1e293b; }
+  .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
+  h1 { font-size: 25px; font-weight: bold; color: #0f172a; }
+  .meta { font-size: 13px; color: #64748b; }
+  .sub { font-size: 13.5px; color: #475569; margin-bottom: 20px; }
+  .sub b { color: #1d4ed8; }
+
+  .lane { margin-bottom: 18px; }
+  .lane-title {
+    display: inline-block; color: #fff; font-size: 13.5px; font-weight: bold;
+    border-radius: 6px 6px 0 0; padding: 6px 16px;
+  }
+  .lane-a .lane-title { background: #1d4ed8; }
+  .lane-b .lane-title { background: #6d28d9; }
+  .lane-body {
+    background: #ffffff; border: 1px solid #d6dee9; border-radius: 0 8px 8px 8px;
+    padding: 14px; display: flex; align-items: stretch;
+  }
+  .step { flex: 1 1 0; background: #f8fafc; border: 1px solid #d6dee9; border-top-width: 3px; border-radius: 7px; padding: 9px 11px; }
+  .lane-a .step { border-top-color: #1d4ed8; }
+  .lane-b .step { border-top-color: #6d28d9; }
+  .step .n { font-size: 10.5px; font-weight: bold; color: #64748b; letter-spacing: 1px; }
+  .step .t { font-size: 13px; font-weight: bold; color: #0f172a; margin: 2px 0 4px 0; line-height: 1.2; }
+  .step .d { font-size: 11.5px; color: #475569; line-height: 1.3; }
+  .step.branch { background: #fffbeb; border-color: #fcd34d; border-top-color: #f59e0b; }
+  .step .b1, .step .b2 { display: block; font-size: 11.5px; margin-top: 3px; padding-left: 10px; position: relative; }
+  .step .b1::before, .step .b2::before { content: "→"; position: absolute; left: 0; color: #b45309; }
+  .arr { width: 30px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
+
+  .rules {
+    background: #eef2f9; border: 1px dashed #94a3b8; border-radius: 8px;
+    padding: 10px 16px; font-size: 12.5px; color: #334155; display: flex; gap: 26px; justify-content: center;
+  }
+  .rules b { color: #0f172a; }
+  .foot { margin-top: 14px; padding-top: 10px; border-top: 1px solid #d6dee9; display: flex; justify-content: space-between; font-size: 12px; color: #64748b; }
+</style>
+</head>
+<body>
+  <div class="hdr">
+    <h1>HU-045 — Flujo Funcional: Registro de Vehículo Usado</h1>
+    <div class="meta">Inventario y Consignación · Automotive Cloud · US-088 / US-090</div>
+  </div>
+  <div class="sub">Dos vías de ingreso al inventario de usados. <b>SAP es el maestro de stock y movimientos; Salesforce es el maestro de la ficha comercial de la unidad.</b></div>
+
+  <div class="lane lane-a">
+    <div class="lane-title">FLUJO A — Unidad ADQUIRIDA (compra directa · trade-in · recuperación · ex-demo)</div>
+    <div class="lane-body">
+      <div class="step"><div class="n">A1 · ORIGEN</div><div class="t">La unidad llega a Grupo Q</div><div class="d">Avalúo de trade-in aceptado (HU-036), compra directa, recuperación o vehículo demo destinado a venta como usado (RN5).</div></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step"><div class="n">A2 · ALTA GUIADA</div><div class="t">Gestor registra la ficha</div><div class="d">VIN, marca/modelo/año/versión, color, kilometraje (odómetro), estado, equipamiento, ubicación, tipo de adquisición y <b>fotografías obligatorias</b>.</div></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step branch"><div class="n">A3 · VIN CHECK</div><div class="t">¿Vendido nuevo por GQ?</div><span class="b1"><b>Sí</b>: se actualiza el MISMO registro — conserva historial de servicio, dueño anterior y características.</span><span class="b2"><b>No</b>: se crea la unidad nueva en el inventario; el avalúo se liga a la placa.</span></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step"><div class="n">A4 · AVALÚO</div><div class="t">Avalúo SIEMPRE asociado</div><div class="d">Todo alta lleva su registro de avalúo (RN3) — insumo del precio de referencia (fuera de esta HU: US-089).</div></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step"><div class="n">A5 · SINCRONÍA SAP</div><div class="t">Interfaz SF → SAP</div><div class="d">SAP marca el VIN original con punto (.) y asigna número de inventario nuevo; la unidad usada conserva el VIN original (RN1).</div></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step"><div class="n">A6 · DISPONIBLE</div><div class="t">Lista para cotizar</div><div class="d">La unidad aparece en la base filtrable de usados y puede seleccionarse en oportunidad/cotización.</div></div>
+    </div>
+  </div>
+
+  <div class="lane lane-b">
+    <div class="lane-title">FLUJO B — Unidad en CONSIGNACIÓN (propiedad de un tercero)</div>
+    <div class="lane-body">
+      <div class="step"><div class="n">B1 · TERCERO</div><div class="t">Consignante entrega la unidad</div><div class="d">Renting/arrendadora, cliente o unidad recuperada — la propiedad NO es de Grupo Q.</div></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step"><div class="n">B2 · CONTRATO</div><div class="t">Contrato de consignación</div><div class="d">Consignante, términos, <b>comisión</b> y vencimiento (30 días por defecto, modificable). Habilitado por sociedad.</div></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step"><div class="n">B3 · INGRESO</div><div class="t">Estado "En consignación"</div><div class="d">Almacén/ubicación específica, FUERA del inventario propio de usados. Ficha y fotos igual que el Flujo A.</div></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step"><div class="n">B4 · VIGILANCIA</div><div class="t">Alerta de vencimiento</div><div class="d">~5 días antes del vencimiento del contrato, alerta automática al <b>Gerente de Usados</b>.</div></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step branch"><div class="n">B5 · VENTA GESTIONADA</div><div class="t">Aparece un comprador</div><span class="b1">El gerente <b>aprueba</b> e incorpora la unidad al inventario de usados (transición de estado).</span><span class="b2">Sigue el flujo comercial normal de cotización/venta.</span></div>
+      <div class="arr"><svg width="24" height="20"><line x1="0" y1="10" x2="15" y2="10" stroke="#64748b" stroke-width="2"/><polygon points="15,4 24,10 15,16" fill="#64748b"/></svg></div>
+      <div class="step"><div class="n">B6 · CIERRE</div><div class="t">Baja de consignación</div><div class="d">Al cerrarse la venta, la unidad se da de baja del inventario de consignación y se liquida la comisión del contrato.</div></div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <span><b>VIN único</b> — nunca dos unidades activas iguales</span>
+    <span><b>Avalúo siempre</b> — sin avalúo no hay alta</span>
+    <span><b>Fotos obligatorias</b> en el alta</span>
+    <span><b>Seguridad por sociedad</b> — sucursal · marca · canal</span>
+    <span><b>Fuera de alcance</b>: precio referencia (US-089) · IVA (HU-105)</span>
+  </div>
+
+  <div class="foot">
+    <div>Punto abierto: Guatemala — unidad demo registrada como activo fijo (reclasificación contable en SAP, por definir con GrupoQ)</div>
+    <div>Fuente: HU-045 v1.1 · diario-implantacao · 11/08/2026</div>
+  </div>
+</body>
+</html>
