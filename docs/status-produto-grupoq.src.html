@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: 1560px 830px; margin: 0; }
+  html, body { background: #f6f8fb; }
+  body { font-family: "Liberation Sans", "DejaVu Sans", Arial, sans-serif; color: #1e293b; }
+  .pg { width: 1560px; height: 830px; padding: 36px 44px 30px 44px; overflow: hidden; }
+  .pa { page-break-after: always; }
+
+  .hdr { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+  .hdr h1 { font-size: 26px; font-weight: bold; color: #0f172a; letter-spacing: -0.3px; }
+  .hdr .meta { font-size: 13px; color: #64748b; }
+  .sub { font-size: 14px; color: #475569; margin-bottom: 24px; }
+  .sub b { color: #1d4ed8; }
+  .foot { margin-top: 18px; padding-top: 12px; border-top: 1px solid #d6dee9; display: flex; justify-content: space-between; font-size: 12.5px; color: #64748b; }
+
+  /* ===== Página 1: backlog ===== */
+  .pa .grid { display: flex; }
+  .pa .rail { width: 150px; flex: 0 0 auto; display: flex; flex-direction: column; }
+  .pa .rail .lvl { font-size: 11px; font-weight: bold; letter-spacing: 1.4px; color: #64748b; border-right: 2px solid #cbd5e1; padding-right: 14px; text-align: right; }
+  .pa .rail .lvl span { display: block; margin-top: 4px; font-weight: normal; letter-spacing: 0; font-size: 10.5px; color: #94a3b8; }
+  .pa .lvl.l1 { height: 86px; } .pa .lvl.l2 { height: 78px; } .pa .lvl.l3 { flex: 1; }
+  .pa .canvas { flex: 1; padding-left: 26px; }
+  .pa .product-row { display: flex; justify-content: center; height: 60px; }
+  .pa .product { background: #0f172a; color: #fff; border-radius: 10px; padding: 12px 44px; text-align: center; }
+  .pa .product .t { font-size: 17px; font-weight: bold; }
+  .pa .product .s { font-size: 11.5px; color: #cbd5e1; margin-top: 2px; }
+  .pa .trunk { display: flex; justify-content: center; height: 26px; }
+  .pa .epics { display: flex; gap: 20px; }
+  .pa .epic { flex: 1 1 0; display: flex; flex-direction: column; }
+  .pa .epic-head { color: #fff; border-radius: 8px; padding: 9px 12px; text-align: center; font-size: 14.5px; font-weight: bold; }
+  .pa .down { display: flex; justify-content: center; height: 20px; }
+  .pa .feats { display: flex; flex-direction: column; gap: 8px; }
+  .pa .feat { background: #fff; border: 1px solid #d6dee9; border-left-width: 4px; border-radius: 7px; padding: 8px 10px 8px 12px; font-size: 12.5px; color: #334155; line-height: 1.25; display: flex; gap: 8px; align-items: flex-start; }
+  .pa .feat .st { font-size: 12px; font-weight: bold; flex: 0 0 auto; margin-top: 1px; }
+  .pa .ok .st { color: #15803d; } .pa .warn .st { color: #b45309; }
+  .pa .warn { background: #fffbeb; border-color: #fcd34d; border-left-color: #f59e0b; }
+  .pa .e1 .epic-head { background: #1d4ed8; } .pa .e1 .feat.ok { border-left-color: #1d4ed8; }
+  .pa .e2 .epic-head { background: #0e7490; } .pa .e2 .feat.ok { border-left-color: #0e7490; }
+  .pa .e3 .epic-head { background: #15803d; } .pa .e3 .feat.ok { border-left-color: #15803d; }
+  .pa .e4 .epic-head { background: #6d28d9; } .pa .e4 .feat.ok { border-left-color: #6d28d9; }
+  .pa .below { margin-top: 22px; padding: 10px 16px; border: 1px dashed #94a3b8; border-radius: 8px; background: #eef2f9; font-size: 12.5px; color: #475569; text-align: center; }
+  .pa .legend { display: flex; gap: 18px; }
+  .pa .legend b.g { color: #15803d; } .pa .legend b.y { color: #b45309; }
+
+  /* ===== Página 2: jornada ===== */
+  .pb .pipeline { display: flex; align-items: stretch; }
+  .pb .stage { flex: 1 1 0; background: #ffffff; border: 1px solid #d6dee9; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+  .pb .stage-head { padding: 11px 14px 10px 14px; color: #fff; }
+  .pb .stage-head .num { font-size: 11px; font-weight: bold; opacity: 0.85; letter-spacing: 1.2px; }
+  .pb .stage-head .name { font-size: 16.5px; font-weight: bold; margin-top: 2px; line-height: 1.15; }
+  .pb .stage-body { padding: 12px 14px 14px 14px; flex: 1; }
+  .pb .stage-body ul { list-style: none; }
+  .pb .stage-body li { font-size: 13px; color: #334155; padding: 5px 0 5px 22px; position: relative; line-height: 1.3; border-bottom: 1px solid #eef2f7; }
+  .pb .stage-body li:last-child { border-bottom: none; }
+  .pb .stage-body li::before { content: "✓"; position: absolute; left: 2px; top: 4px; font-weight: bold; font-size: 12px; }
+  .pb .s1 .stage-head { background: #1d4ed8; } .pb .s1 li::before { color: #1d4ed8; }
+  .pb .s2 .stage-head { background: #0e7490; } .pb .s2 li::before { color: #0e7490; }
+  .pb .s3 .stage-head { background: #6d28d9; } .pb .s3 li::before { color: #6d28d9; }
+  .pb .s4 .stage-head { background: #c2410c; } .pb .s4 li::before { color: #c2410c; }
+  .pb .s5 .stage-head { background: #15803d; } .pb .s5 li::before { color: #15803d; }
+  .pb .connector { width: 42px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+  .pb .platform { margin-top: 26px; display: flex; gap: 18px; }
+  .pb .plat-card { flex: 1; background: #eef2f9; border: 1px dashed #94a3b8; border-radius: 10px; padding: 12px 16px; font-size: 13px; color: #334155; display: flex; align-items: center; gap: 12px; }
+  .pb .plat-card .icon { width: 34px; height: 34px; border-radius: 8px; background: #475569; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; flex: 0 0 auto; }
+  .pb .plat-card b { color: #0f172a; display: block; font-size: 13.5px; margin-bottom: 2px; }
+  .pb .badges { display: flex; gap: 10px; }
+  .pb .badge { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 999px; padding: 4px 14px; font-size: 12.5px; color: #334155; font-weight: bold; }
+  .pb .badge.blue { border-color: #93c5fd; color: #1d4ed8; background: #eff6ff; }
+</style>
+</head>
+<body>
+
+<!-- ============ PÁGINA 1: BACKLOG ============ -->
+<div class="pg pa">
+  <div class="hdr">
+    <h1>Backlog del Producto — nivel Funcionalidad · CRM GrupoQ</h1>
+    <div class="meta">Demo directores · jueves 13/08/2026</div>
+  </div>
+  <div class="sub">Estructura del backlog (Producto → Épico → Funcionalidad): lo que ya está <b>completo, probado e implementado</b> y lo que sigue en ajuste. Historias de usuario y tareas viven en el backlog del equipo.</div>
+  <div class="grid">
+    <div class="rail">
+      <div class="lvl l1">PRODUCTO<span>u objetivo</span></div>
+      <div class="lvl l2">ÉPICO</div>
+      <div class="lvl l3">FUNCIONALIDAD<span>criterio de la demo:<br>completa · probada · implementada</span></div>
+    </div>
+    <div class="canvas">
+      <div class="product-row">
+        <div class="product">
+          <div class="t">CRM GrupoQ — Ventas</div>
+          <div class="s">del lead a la cotización · 38 automaciones activas</div>
+        </div>
+      </div>
+      <div class="trunk"><svg width="12" height="26"><line x1="6" y1="0" x2="6" y2="18" stroke="#64748b" stroke-width="2"/><polygon points="1,17 11,17 6,25" fill="#64748b"/></svg></div>
+      <div class="epics">
+        <div class="epic e1">
+          <div class="epic-head">Gestión de Leads</div>
+          <div class="down"><svg width="12" height="20"><line x1="6" y1="0" x2="6" y2="12" stroke="#94a3b8" stroke-width="1.5"/><polygon points="2,11 10,11 6,18" fill="#94a3b8"/></svg></div>
+          <div class="feats">
+            <div class="feat ok"><span class="st">✓</span>Captación por UI e integración (portales), con productos de interés y vendedor preferido</div>
+            <div class="feat ok"><span class="st">✓</span>SLA de 1ª atención: recordatorios, escalada y reasignación</div>
+            <div class="feat ok"><span class="st">✓</span>Máquina de estados con motivo de descarte</div>
+            <div class="feat ok"><span class="st">✓</span>Alertas de duplicados con matching rules por línea</div>
+            <div class="feat warn"><span class="st">⚠</span>Ruteo Omni-Channel (cola + skill) — validación final antes de la demo</div>
+          </div>
+        </div>
+        <div class="epic e2">
+          <div class="epic-head">Conversión</div>
+          <div class="down"><svg width="12" height="20"><line x1="6" y1="0" x2="6" y2="12" stroke="#94a3b8" stroke-width="1.5"/><polygon points="2,11 10,11 6,18" fill="#94a3b8"/></svg></div>
+          <div class="feats">
+            <div class="feat ok"><span class="st">✓</span>Conversión a Cuenta + Oportunidad llevando todos los datos</div>
+            <div class="feat ok"><span class="st">✓</span>Record type y sales process por línea: Autos · Motos · Usados · Repuestos/PA</div>
+            <div class="feat warn"><span class="st">⚠</span>Defaults de Cuenta (sociedad, moneda, país) — activación pendiente</div>
+          </div>
+        </div>
+        <div class="epic e3">
+          <div class="epic-head">Oportunidad y Venta</div>
+          <div class="down"><svg width="12" height="20"><line x1="6" y1="0" x2="6" y2="12" stroke="#94a3b8" stroke-width="1.5"/><polygon points="2,11 10,11 6,18" fill="#94a3b8"/></svg></div>
+          <div class="feats">
+            <div class="feat ok"><span class="st">✓</span>Avalúo de usados con notificación a proveedor</div>
+            <div class="feat ok"><span class="st">✓</span>Test drive con autorización en PDF</div>
+            <div class="feat ok"><span class="st">✓</span>Descuento con matriz de aprobación</div>
+            <div class="feat ok"><span class="st">✓</span>Visitas con hand-off entre sucursales</div>
+            <div class="feat ok"><span class="st">✓</span>Venta guiada → cotización con líneas reales</div>
+            <div class="feat warn"><span class="st">⚠</span>Vehículos demo en consola — ajuste de requisito con GrupoQ</div>
+          </div>
+        </div>
+        <div class="epic e4">
+          <div class="epic-head">Cuenta y Gobierno de Datos</div>
+          <div class="down"><svg width="12" height="20"><line x1="6" y1="0" x2="6" y2="12" stroke="#94a3b8" stroke-width="1.5"/><polygon points="2,11 10,11 6,18" fill="#94a3b8"/></svg></div>
+          <div class="feats">
+            <div class="feat ok"><span class="st">✓</span>Datos sensibles (MDM): solicitud, aprobación y aplicación controlada</div>
+            <div class="feat ok"><span class="st">✓</span>Higiene automática: oportunidades inactivas, cotizaciones vencidas, consignación</div>
+            <div class="feat warn"><span class="st">⚠</span>Cliente ocasional — en definición con el equipo</div>
+          </div>
+        </div>
+      </div>
+      <div class="below">⬇ Debajo de cada funcionalidad: <b>historias de usuario</b> y <b>tareas/actividades</b> — gestionadas en el backlog del equipo (nivel operativo, no entra en la demo)</div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="legend"><span><b class="g">✓</b> Completa, probada e implementada</span>&nbsp;&nbsp;&nbsp;<span><b class="y">⚠</b> En ajuste o validación</span></div>
+    <div>Fuente: retrieve de la org · 11/08/2026 · diario-implantacao</div>
+  </div>
+</div>
+
+<!-- ============ PÁGINA 2: JORNADA ============ -->
+<div class="pg pb">
+  <div class="hdr">
+    <h1>Jornada del Producto — CRM GrupoQ</h1>
+    <div class="meta">Demo directores · jueves 13/08/2026</div>
+  </div>
+  <div class="sub">Funcionalidad <b>completa, probada e implementada</b>: el recorrido se demuestra en vivo, de la entrada del lead a la cotización — con marca, pantallas en español y modelos GrupoQ.</div>
+  <div class="pipeline">
+    <div class="stage s1">
+      <div class="stage-head"><div class="num">ETAPA 1</div><div class="name">Captación del Lead</div></div>
+      <div class="stage-body"><ul>
+        <li>Creación por UI o integración (portales)</li>
+        <li>Productos de interés desde el origen</li>
+        <li>Vendedor preferido respetado</li>
+        <li>Defaults automáticos (método de contacto, sociedad)</li>
+      </ul></div>
+    </div>
+    <div class="connector"><svg width="34" height="24"><line x1="0" y1="12" x2="24" y2="12" stroke="#64748b" stroke-width="2"/><polygon points="24,5 34,12 24,19" fill="#64748b"/></svg></div>
+    <div class="stage s2">
+      <div class="stage-head"><div class="num">ETAPA 2</div><div class="name">Ruteo y Atención</div></div>
+      <div class="stage-body"><ul>
+        <li>Omni-Channel: cola + skill</li>
+        <li>SLA de 1ª atención</li>
+        <li>Recordatorios programados</li>
+        <li>Escalada y reasignación por inactividad</li>
+      </ul></div>
+    </div>
+    <div class="connector"><svg width="34" height="24"><line x1="0" y1="12" x2="24" y2="12" stroke="#64748b" stroke-width="2"/><polygon points="24,5 34,12 24,19" fill="#64748b"/></svg></div>
+    <div class="stage s3">
+      <div class="stage-head"><div class="num">ETAPA 3</div><div class="name">Calidad y Gobierno</div></div>
+      <div class="stage-body"><ul>
+        <li>Máquina de estados con motivo de descarte</li>
+        <li>Alertas de duplicados (matching rules por línea)</li>
+        <li>Campos obligatorios por línea (Motos)</li>
+        <li>Pre-merge de leads Repuestos/PA</li>
+      </ul></div>
+    </div>
+    <div class="connector"><svg width="34" height="24"><line x1="0" y1="12" x2="24" y2="12" stroke="#64748b" stroke-width="2"/><polygon points="24,5 34,12 24,19" fill="#64748b"/></svg></div>
+    <div class="stage s4">
+      <div class="stage-head"><div class="num">ETAPA 4</div><div class="name">Conversión</div></div>
+      <div class="stage-body"><ul>
+        <li>Cuenta + Oportunidad en un paso</li>
+        <li>Datos y productos de interés migran completos</li>
+        <li>Record type por línea de negocio</li>
+        <li>Autos · Motos · Usados · Repuestos/PA, cada uno con su sales process</li>
+      </ul></div>
+    </div>
+    <div class="connector"><svg width="34" height="24"><line x1="0" y1="12" x2="24" y2="12" stroke="#64748b" stroke-width="2"/><polygon points="24,5 34,12 24,19" fill="#64748b"/></svg></div>
+    <div class="stage s5">
+      <div class="stage-head"><div class="num">ETAPA 5</div><div class="name">Oportunidad → Venta Guiada</div></div>
+      <div class="stage-body"><ul>
+        <li>Avalúo de usados + notificación a proveedor</li>
+        <li>Test drive con autorización en PDF</li>
+        <li>Descuento con matriz de aprobación</li>
+        <li>Visitas con hand-off entre sucursales</li>
+        <li>Venta guiada → cotización con líneas reales</li>
+      </ul></div>
+    </div>
+  </div>
+  <div class="platform">
+    <div class="plat-card"><div class="icon">⚙</div><div><b>Consola del vendedor</b>Gestión de vehículos demo, actividades y solicitudes en una sola pantalla</div></div>
+    <div class="plat-card"><div class="icon">🔒</div><div><b>Datos sensibles de Cuenta (MDM)</b>Solicitud, aprobación y aplicación controlada de cambios</div></div>
+    <div class="plat-card"><div class="icon">⏱</div><div><b>Higiene automática</b>Cierre de oportunidades inactivas, cotizaciones vencidas, alertas de consignación</div></div>
+  </div>
+  <div class="foot">
+    <div class="badges">
+      <div class="badge blue">38 automaciones activas</div>
+      <div class="badge">Pantallas en español</div>
+      <div class="badge">Marca y modelos GrupoQ</div>
+    </div>
+    <div>Fuente: retrieve de la org · 11/08/2026 · diario-implantacao</div>
+  </div>
+</div>
+
+</body>
+</html>
