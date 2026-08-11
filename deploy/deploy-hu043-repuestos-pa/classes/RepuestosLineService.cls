@@ -191,8 +191,8 @@ public with sharing class RepuestosLineService {
 
         if (!trazasPerdida.isEmpty()) {
             String bloque = String.join(trazasPerdida, '\n');
-            String desc = cotizacion.Description == null ? '' : cotizacion.Description + '\n';
-            update new Quote(Id = cotizacion.Id, Description = (desc + bloque).abbreviate(32000));
+            String descripcion = cotizacion.Description == null ? '' : cotizacion.Description + '\n';
+            update new Quote(Id = cotizacion.Id, Description = (descripcion + bloque).abbreviate(32000));
         }
         return resultado;
     }
