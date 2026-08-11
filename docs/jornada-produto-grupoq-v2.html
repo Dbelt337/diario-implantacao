@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #f6f8fb; }
+  body {
+    font-family: "Liberation Sans", "DejaVu Sans", Arial, sans-serif;
+    width: 1560px;
+    padding: 36px 44px 30px 44px;
+    color: #1e293b;
+  }
+  .header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+  h1 { font-size: 27px; font-weight: bold; color: #0f172a; letter-spacing: -0.3px; }
+  .header .meta { font-size: 13px; color: #64748b; }
+  .subtitle { font-size: 14.5px; color: #475569; margin-bottom: 26px; }
+  .subtitle b { color: #1d4ed8; }
+
+  .pipeline { display: flex; align-items: stretch; }
+  .stage {
+    flex: 1 1 0;
+    background: #ffffff;
+    border: 1px solid #d6dee9;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.07);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .stage-head {
+    padding: 11px 14px 10px 14px;
+    color: #fff;
+  }
+  .stage-head .num { font-size: 11px; font-weight: bold; opacity: 0.85; letter-spacing: 1.2px; }
+  .stage-head .name { font-size: 16.5px; font-weight: bold; margin-top: 2px; line-height: 1.15; }
+  .stage-body { padding: 12px 14px 14px 14px; flex: 1; }
+  .stage-body ul { list-style: none; }
+  .stage-body li {
+    font-size: 13px;
+    color: #334155;
+    padding: 5px 0 5px 22px;
+    position: relative;
+    line-height: 1.3;
+    border-bottom: 1px solid #eef2f7;
+  }
+  .stage-body li:last-child { border-bottom: none; }
+  .stage-body li::before {
+    content: "✓";
+    position: absolute; left: 2px; top: 4px;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  .s1 .stage-head { background: #1d4ed8; }  .s1 li::before { color: #1d4ed8; }
+  .s2 .stage-head { background: #0e7490; }  .s2 li::before { color: #0e7490; }
+  .s3 .stage-head { background: #6d28d9; }  .s3 li::before { color: #6d28d9; }
+  .s4 .stage-head { background: #c2410c; }  .s4 li::before { color: #c2410c; }
+  .s5 .stage-head { background: #15803d; }  .s5 li::before { color: #15803d; }
+
+  .connector {
+    width: 42px;
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .connector svg { display: block; }
+
+  .platform {
+    margin-top: 26px;
+    display: flex;
+    gap: 18px;
+  }
+  .plat-card {
+    flex: 1;
+    background: #eef2f9;
+    border: 1px dashed #94a3b8;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #334155;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .plat-card .icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: #475569; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: bold;
+    flex: 0 0 auto;
+  }
+  .plat-card b { color: #0f172a; display: block; font-size: 13.5px; margin-bottom: 2px; }
+
+  .footer {
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid #d6dee9;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12.5px; color: #64748b;
+  }
+  .badges { display: flex; gap: 10px; }
+  .badge {
+    background: #ffffff; border: 1px solid #cbd5e1; border-radius: 999px;
+    padding: 4px 14px; font-size: 12.5px; color: #334155; font-weight: bold;
+  }
+  .badge.blue { border-color: #93c5fd; color: #1d4ed8; background: #eff6ff; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Jornada del Producto — CRM GrupoQ</h1>
+    <div class="meta">Demo directores · jueves 13/08/2026</div>
+  </div>
+  <div class="subtitle">Funcionalidad <b>completa, probada e implementada</b>: el recorrido se demuestra en vivo, de la entrada del lead a la cotización — con marca, pantallas en español y modelos GrupoQ.</div>
+
+  <div class="pipeline">
+    <div class="stage s1">
+      <div class="stage-head"><div class="num">ETAPA 1</div><div class="name">Captación del Lead</div></div>
+      <div class="stage-body"><ul>
+        <li>Creación por UI o integración (portales)</li>
+        <li>Productos de interés desde el origen</li>
+        <li>Vendedor preferido respetado</li>
+        <li>Defaults automáticos (método de contacto, sociedad)</li>
+      </ul></div>
+    </div>
+    <div class="connector"><svg width="34" height="24"><line x1="0" y1="12" x2="24" y2="12" stroke="#64748b" stroke-width="2"/><polygon points="24,5 34,12 24,19" fill="#64748b"/></svg></div>
+
+    <div class="stage s2">
+      <div class="stage-head"><div class="num">ETAPA 2</div><div class="name">Ruteo y Atención</div></div>
+      <div class="stage-body"><ul>
+        <li>Omni-Channel: cola + skill</li>
+        <li>SLA de 1ª atención</li>
+        <li>Recordatorios programados</li>
+        <li>Escalada y reasignación por inactividad</li>
+      </ul></div>
+    </div>
+    <div class="connector"><svg width="34" height="24"><line x1="0" y1="12" x2="24" y2="12" stroke="#64748b" stroke-width="2"/><polygon points="24,5 34,12 24,19" fill="#64748b"/></svg></div>
+
+    <div class="stage s3">
+      <div class="stage-head"><div class="num">ETAPA 3</div><div class="name">Calidad y Gobierno</div></div>
+      <div class="stage-body"><ul>
+        <li>Máquina de estados con motivo de descarte</li>
+        <li>Alertas de duplicados (matching rules por línea)</li>
+        <li>Campos obligatorios por línea (Motos)</li>
+        <li>Pre-merge de leads Repuestos/PA</li>
+      </ul></div>
+    </div>
+    <div class="connector"><svg width="34" height="24"><line x1="0" y1="12" x2="24" y2="12" stroke="#64748b" stroke-width="2"/><polygon points="24,5 34,12 24,19" fill="#64748b"/></svg></div>
+
+    <div class="stage s4">
+      <div class="stage-head"><div class="num">ETAPA 4</div><div class="name">Conversión</div></div>
+      <div class="stage-body"><ul>
+        <li>Cuenta + Oportunidad en un paso</li>
+        <li>Datos y productos de interés migran completos</li>
+        <li>Record type por línea de negocio</li>
+        <li>Autos · Motos · Usados · Repuestos/PA, cada uno con su sales process</li>
+      </ul></div>
+    </div>
+    <div class="connector"><svg width="34" height="24"><line x1="0" y1="12" x2="24" y2="12" stroke="#64748b" stroke-width="2"/><polygon points="24,5 34,12 24,19" fill="#64748b"/></svg></div>
+
+    <div class="stage s5">
+      <div class="stage-head"><div class="num">ETAPA 5</div><div class="name">Oportunidad → Venta Guiada</div></div>
+      <div class="stage-body"><ul>
+        <li>Avalúo de usados + notificación a proveedor</li>
+        <li>Test drive con autorización en PDF</li>
+        <li>Descuento con matriz de aprobación</li>
+        <li>Visitas con hand-off entre sucursales</li>
+        <li>Venta guiada → cotización con líneas reales</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="platform">
+    <div class="plat-card">
+      <div class="icon">⚙</div>
+      <div><b>Consola del vendedor</b>Gestión de vehículos demo, actividades y solicitudes en una sola pantalla</div>
+    </div>
+    <div class="plat-card">
+      <div class="icon">🔒</div>
+      <div><b>Datos sensibles de Cuenta (MDM)</b>Solicitud, aprobación y aplicación controlada de cambios</div>
+    </div>
+    <div class="plat-card">
+      <div class="icon">⏱</div>
+      <div><b>Higiene automática</b>Cierre de oportunidades inactivas, cotizaciones vencidas, alertas de consignación</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="badges">
+      <div class="badge blue">38 automaciones activas</div>
+      <div class="badge">Pantallas en español</div>
+      <div class="badge">Marca y modelos GrupoQ</div>
+    </div>
+    <div>Fuente: retrieve de la org · 11/08/2026 · diario-implantacao</div>
+  </div>
+</body>
+</html>
