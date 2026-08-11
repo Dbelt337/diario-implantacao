@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #f6f8fb; }
+  body {
+    font-family: "Liberation Sans", "DejaVu Sans", Arial, sans-serif;
+    width: 1560px;
+    padding: 36px 44px 30px 44px;
+    color: #1e293b;
+  }
+  .header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+  h1 { font-size: 26px; font-weight: bold; color: #0f172a; letter-spacing: -0.3px; }
+  .header .meta { font-size: 13px; color: #64748b; }
+  .subtitle { font-size: 14px; color: #475569; margin-bottom: 24px; }
+  .subtitle b { color: #1d4ed8; }
+
+  .grid { display: flex; }
+  .rail { width: 150px; flex: 0 0 auto; display: flex; flex-direction: column; }
+  .rail .lvl {
+    font-size: 11px; font-weight: bold; letter-spacing: 1.4px; color: #64748b;
+    border-right: 2px solid #cbd5e1; padding-right: 14px; text-align: right;
+  }
+  .rail .lvl span { display: block; margin-top: 4px; font-weight: normal; letter-spacing: 0; font-size: 10.5px; color: #94a3b8; }
+  .lvl.l1 { height: 86px; }
+  .lvl.l2 { height: 78px; }
+  .lvl.l3 { flex: 1; }
+  .canvas { flex: 1; padding-left: 26px; }
+
+  .product-row { display: flex; justify-content: center; height: 60px; }
+  .product {
+    background: #0f172a; color: #fff; border-radius: 10px;
+    padding: 12px 44px; text-align: center;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.25);
+  }
+  .product .t { font-size: 17px; font-weight: bold; }
+  .product .s { font-size: 11.5px; color: #cbd5e1; margin-top: 2px; }
+
+  .trunk { display: flex; justify-content: center; height: 26px; }
+  .trunk svg { display: block; }
+
+  .epics { display: flex; gap: 20px; }
+  .epic { flex: 1 1 0; display: flex; flex-direction: column; }
+  .epic-head {
+    color: #fff; border-radius: 8px; padding: 9px 12px; text-align: center;
+    font-size: 14.5px; font-weight: bold;
+    box-shadow: 0 1px 4px rgba(15,23,42,0.15);
+  }
+  .down { display: flex; justify-content: center; height: 20px; }
+  .feats { display: flex; flex-direction: column; gap: 8px; }
+  .feat {
+    background: #fff; border: 1px solid #d6dee9; border-left-width: 4px;
+    border-radius: 7px; padding: 8px 10px 8px 12px;
+    font-size: 12.5px; color: #334155; line-height: 1.25;
+    display: flex; gap: 8px; align-items: flex-start;
+    box-shadow: 0 1px 3px rgba(15,23,42,0.06);
+  }
+  .feat .st { font-size: 12px; font-weight: bold; flex: 0 0 auto; margin-top: 1px; }
+  .ok .st { color: #15803d; }
+  .warn .st { color: #b45309; }
+  .warn { background: #fffbeb; border-color: #fcd34d; border-left-color: #f59e0b; }
+
+  .e1 .epic-head { background: #1d4ed8; } .e1 .feat.ok { border-left-color: #1d4ed8; }
+  .e2 .epic-head { background: #0e7490; } .e2 .feat.ok { border-left-color: #0e7490; }
+  .e3 .epic-head { background: #15803d; } .e3 .feat.ok { border-left-color: #15803d; }
+  .e4 .epic-head { background: #6d28d9; } .e4 .feat.ok { border-left-color: #6d28d9; }
+
+  .below {
+    margin-top: 22px; padding: 10px 16px;
+    border: 1px dashed #94a3b8; border-radius: 8px; background: #eef2f9;
+    font-size: 12.5px; color: #475569; text-align: center;
+  }
+  .footer {
+    margin-top: 18px; padding-top: 12px; border-top: 1px solid #d6dee9;
+    display: flex; justify-content: space-between; font-size: 12.5px; color: #64748b;
+  }
+  .legend { display: flex; gap: 18px; }
+  .legend b.g { color: #15803d; } .legend b.y { color: #b45309; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Backlog del Producto — nivel Funcionalidad · CRM GrupoQ</h1>
+    <div class="meta">Demo directores · jueves 13/08/2026</div>
+  </div>
+  <div class="subtitle">Estructura del backlog (Producto → Épico → Funcionalidad): lo que ya está <b>completo, probado e implementado</b> y lo que sigue en ajuste. Historias de usuario y tareas viven en el backlog del equipo.</div>
+
+  <div class="grid">
+    <div class="rail">
+      <div class="lvl l1">PRODUCTO<span>u objetivo</span></div>
+      <div class="lvl l2">ÉPICO</div>
+      <div class="lvl l3">FUNCIONALIDAD<span>criterio de la demo:<br>completa · probada · implementada</span></div>
+    </div>
+    <div class="canvas">
+      <div class="product-row">
+        <div class="product">
+          <div class="t">CRM GrupoQ — Ventas</div>
+          <div class="s">del lead a la cotización · 38 automaciones activas</div>
+        </div>
+      </div>
+      <div class="trunk"><svg width="12" height="26"><line x1="6" y1="0" x2="6" y2="18" stroke="#64748b" stroke-width="2"/><polygon points="1,17 11,17 6,25" fill="#64748b"/></svg></div>
+
+      <div class="epics">
+        <div class="epic e1">
+          <div class="epic-head">Gestión de Leads</div>
+          <div class="down"><svg width="12" height="20"><line x1="6" y1="0" x2="6" y2="12" stroke="#94a3b8" stroke-width="1.5"/><polygon points="2,11 10,11 6,18" fill="#94a3b8"/></svg></div>
+          <div class="feats">
+            <div class="feat ok"><span class="st">✓</span>Captación por UI e integración (portales), con productos de interés y vendedor preferido</div>
+            <div class="feat ok"><span class="st">✓</span>SLA de 1ª atención: recordatorios, escalada y reasignación</div>
+            <div class="feat ok"><span class="st">✓</span>Máquina de estados con motivo de descarte</div>
+            <div class="feat ok"><span class="st">✓</span>Alertas de duplicados con matching rules por línea</div>
+            <div class="feat warn"><span class="st">⚠</span>Ruteo Omni-Channel (cola + skill) — validación final antes de la demo</div>
+          </div>
+        </div>
+
+        <div class="epic e2">
+          <div class="epic-head">Conversión</div>
+          <div class="down"><svg width="12" height="20"><line x1="6" y1="0" x2="6" y2="12" stroke="#94a3b8" stroke-width="1.5"/><polygon points="2,11 10,11 6,18" fill="#94a3b8"/></svg></div>
+          <div class="feats">
+            <div class="feat ok"><span class="st">✓</span>Conversión a Cuenta + Oportunidad llevando todos los datos</div>
+            <div class="feat ok"><span class="st">✓</span>Record type y sales process por línea: Autos · Motos · Usados · Repuestos/PA</div>
+            <div class="feat warn"><span class="st">⚠</span>Defaults de Cuenta (sociedad, moneda, país) — activación pendiente</div>
+          </div>
+        </div>
+
+        <div class="epic e3">
+          <div class="epic-head">Oportunidad y Venta</div>
+          <div class="down"><svg width="12" height="20"><line x1="6" y1="0" x2="6" y2="12" stroke="#94a3b8" stroke-width="1.5"/><polygon points="2,11 10,11 6,18" fill="#94a3b8"/></svg></div>
+          <div class="feats">
+            <div class="feat ok"><span class="st">✓</span>Avalúo de usados con notificación a proveedor</div>
+            <div class="feat ok"><span class="st">✓</span>Test drive con autorización en PDF</div>
+            <div class="feat ok"><span class="st">✓</span>Descuento con matriz de aprobación</div>
+            <div class="feat ok"><span class="st">✓</span>Visitas con hand-off entre sucursales</div>
+            <div class="feat ok"><span class="st">✓</span>Venta guiada → cotización con líneas reales</div>
+            <div class="feat warn"><span class="st">⚠</span>Vehículos demo en consola — ajuste de requisito con GrupoQ</div>
+          </div>
+        </div>
+
+        <div class="epic e4">
+          <div class="epic-head">Cuenta y Gobierno de Datos</div>
+          <div class="down"><svg width="12" height="20"><line x1="6" y1="0" x2="6" y2="12" stroke="#94a3b8" stroke-width="1.5"/><polygon points="2,11 10,11 6,18" fill="#94a3b8"/></svg></div>
+          <div class="feats">
+            <div class="feat ok"><span class="st">✓</span>Datos sensibles (MDM): solicitud, aprobación y aplicación controlada</div>
+            <div class="feat ok"><span class="st">✓</span>Higiene automática: oportunidades inactivas, cotizaciones vencidas, consignación</div>
+            <div class="feat warn"><span class="st">⚠</span>Cliente ocasional — en definición con el equipo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="below">⬇ Debajo de cada funcionalidad: <b>historias de usuario</b> y <b>tareas/actividades</b> — gestionadas en el backlog del equipo (nivel operativo, no entra en la demo)</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="legend"><span><b class="g">✓</b> Completa, probada e implementada</span><span><b class="y">⚠</b> En ajuste o validación</span></div>
+    <div>Fuente: retrieve de la org · 11/08/2026 · diario-implantacao</div>
+  </div>
+</body>
+</html>
