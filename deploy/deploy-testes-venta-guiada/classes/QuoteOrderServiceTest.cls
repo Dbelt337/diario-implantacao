@@ -84,15 +84,16 @@ private class QuoteOrderServiceTest {
             lineNames.add(qli.Product2.Name);
         }
         String lineas = String.join(lineNames, ' | ');
-        // tres líneas con nombres DISTINTOS para saber qué pierna falta si falla:
-        // vehículo (OLI), accesorio de la oportunidad (OLI) y accesorio del
-        // payload (catálogo/auto-provisión)
-        Assert.areEqual(3, created.QuoteLineItems.size(),
-            'Vehículo, accesorio de la oportunidad y accesorio del payload generan línea. Líneas: ' + lineas);
+        // tres líneas con nombres DISTINTOS; los asserts por pierna corren
+        // ANTES del conteo para que una falla identifique la pierna exacta
+        Assert.isTrue(lineas.contains('Hyundai Creta'),
+            'FALTA linea del VEHICULO. Hay: ' + lineas);
         Assert.isTrue(lineas.contains('Barra antivuelco'),
-            'La línea del accesorio de la OPORTUNIDAD debe estar. Líneas: ' + lineas);
+            'FALTA linea del accesorio de la OPORTUNIDAD. Hay: ' + lineas);
         Assert.isTrue(lineas.contains('Alfombra Premium'),
-            'La línea del accesorio del PAYLOAD (auto-provisión) debe estar. Líneas: ' + lineas);
+            'FALTA linea del accesorio del PAYLOAD. Hay: ' + lineas);
+        Assert.areEqual(3, created.QuoteLineItems.size(),
+            'Sobran lineas duplicadas. Hay: ' + lineas);
         Assert.areEqual(opp.Pricebook2Id, created.Pricebook2Id,
             'La cotización hereda el pricebook de la oportunidad.');
     }
