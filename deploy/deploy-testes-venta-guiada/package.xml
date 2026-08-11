@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Classes de teste da Venta Guiada / pedido SAP.
+         Deploy com RunSpecifiedTests:
+           sf project deploy start - -metadata-dir deploy-tests -l RunSpecifiedTests
+             -t QuoteOrderServiceTest SapOrderServiceTest SapMuleClientTest
+                GenerateSapOrderActionTest PricingServiceTest
+                GuidedSellingControllerTest FinancingServiceTest
+                MaterialSearchServiceTest SapInventoryServiceTest
+         (VentasTestDataFactory e GuidedSellingControllerTest sao atualizacoes
+          de classes existentes; o restante e novo) -->
+    <types>
+        <members>VentasTestDataFactory</members>
+        <members>QuoteOrderServiceTest</members>
+        <members>SapOrderServiceTest</members>
+        <members>SapMuleClientTest</members>
+        <members>GenerateSapOrderActionTest</members>
+        <members>PricingServiceTest</members>
+        <members>GuidedSellingControllerTest</members>
+        <name>ApexClass</name>
+    </types>
+    <version>63.0</version>
+</Package>
