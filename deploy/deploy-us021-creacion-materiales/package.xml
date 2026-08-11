@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- US-021: alta de material via ZQEV_DBM_CREACION_MATERIALES na fachada
+         SapMuleClient (mock + rota real /api/v1/materials via MuleGateway).
+         Deploy: RunSpecifiedTests -> SapMuleClientTest -->
+    <types>
+        <members>SapMuleClient</members>
+        <members>SapMuleClientTest</members>
+        <name>ApexClass</name>
+    </types>
+    <version>63.0</version>
+</Package>
