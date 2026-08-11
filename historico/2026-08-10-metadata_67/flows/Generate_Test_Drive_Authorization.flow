@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Create_Service_Document</name>
+        <label>Create Service Document</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>createServiceDocument</actionName>
+        <actionType>createServiceDocument</actionType>
+        <connector>
+            <targetReference>Wait_For_Document_Generation</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Show_Generation_Error</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>recordId</name>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>templateId</name>
+            <value>
+                <elementReference>resolvedTemplateId</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>title</name>
+            <value>
+                <elementReference>documentTitle</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>createServiceDocument</nameSegment>
+        <offset>0</offset>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Is_Document_Ready</name>
+        <label>Is Document Ready?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <isGoTo>true</isGoTo>
+            <targetReference>Wait_For_Document_Generation</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Still Generating</defaultConnectorLabel>
+        <rules>
+            <name>Document_Ready</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Service_Report</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>Get_Service_Report.ContentVersionDocumentId</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Review_Authorization_Document</targetReference>
+            </connector>
+            <label>Document Ready</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Is_Template_Available</name>
+        <label>Is Template Available?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Show_Configuration_Error</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Template</defaultConnectorLabel>
+        <rules>
+            <name>Template_Available</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Service_Appointment</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>isTemplateAvailable</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Service_Document</targetReference>
+            </connector>
+            <label>Template Available</label>
+        </rules>
+    </decisions>
+    <description>Business purpose: generates the test drive authorization PDF from a Service Appointment so the receptionist can review it, print it, and collect the customer signature before the test drive starts. When used: launched from an action on the Service Appointment record page on the day of the test drive. Dependencies: Field Service Document Builder (createServiceDocument action; Document Builder user permission via the Field Service Standard permission set license; active Service Document Template built on Service Appointment). The template comes from ServiceDocumentTemplateId__c on the appointment Work Type, with the documentTemplateId flow input as an optional override. The generated PDF is stored in a Service Report record linked to the appointment; generation is asynchronous, so the flow polls the Service Report until ContentVersionDocumentId is populated. Country considerations: none, template and screen texts handle localization.</description>
+    <environments>Default</environments>
+    <formulas>
+        <description>Label of the generated service report, shown in the Service Reports related list.</description>
+        <name>documentTitle</name>
+        <dataType>String</dataType>
+        <expression>&quot;Test Drive Authorization - &quot; &amp; {!Get_Service_Appointment.AppointmentNumber}</expression>
+    </formulas>
+    <formulas>
+        <description>Standard file preview URL of the generated document, used until the File Preview screen component name is confirmed.</description>
+        <name>documentUrl</name>
+        <dataType>String</dataType>
+        <expression>&quot;/lightning/r/ContentDocument/&quot; &amp; {!Get_Service_Report.ContentVersionDocumentId} &amp; &quot;/view&quot;</expression>
+    </formulas>
+    <formulas>
+        <description>True when a template is available from the flow input or from ServiceDocumentTemplateId__c on the appointment Work Type.</description>
+        <name>isTemplateAvailable</name>
+        <dataType>Boolean</dataType>
+        <expression>OR(NOT(ISBLANK({!documentTemplateId})), NOT(ISBLANK({!Get_Work_Type.ServiceDocumentTemplateId__c})))</expression>
+    </formulas>
+    <formulas>
+        <description>Template used for generation: the flow input when provided (override), otherwise ServiceDocumentTemplateId__c from the appointment Work Type.</description>
+        <name>resolvedTemplateId</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!documentTemplateId}), {!Get_Work_Type.ServiceDocumentTemplateId__c}, {!documentTemplateId})</expression>
+    </formulas>
+    <interviewLabel>Generate Test Drive Authorization {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Generate Test Drive Authorization</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <recordLookups>
+        <name>Get_Service_Appointment</name>
+        <label>Get Service Appointment</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Work_Type</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceAppointment</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Service_Report</name>
+        <label>Get Service Report</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Is_Document_Ready</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Create_Service_Document.pdfReportId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>ServiceReport</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Work_Type</name>
+        <label>Get Work Type</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Is_Template_Available</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Service_Appointment.WorkTypeId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>WorkType</object>
+        <sortField>Id</sortField>
+        <sortOrder>Asc</sortOrder>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <runInMode>DefaultMode</runInMode>
+    <screens>
+        <name>Review_Authorization_Document</name>
+        <label>Review Authorization Document</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>AuthorizationReviewText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;Documento generado con exito.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Verifique los datos de la autorizacion (vehiculo, cliente, fechas) antes de imprimir y recoger la firma.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;{!documentUrl}&quot; target=&quot;_blank&quot;&gt;Abrir la autorizacion&lt;/a&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Show_Configuration_Error</name>
+        <label>Show Configuration Error</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>ConfigurationErrorText</name>
+            <fieldText>&lt;p&gt;No se encontró una plantilla de documento para esta cita de servicio. Complete el campo &lt;b&gt;Plantilla de documento de servicio&lt;/b&gt; del tipo de trabajo, o informe el &lt;b&gt;documentTemplateId&lt;/b&gt; como entrada del flujo. La plantilla debe estar creada y activada en Document Builder.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Show_Generation_Error</name>
+        <label>Show Generation Error</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>GenerationErrorText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;No fue posible generar el documento.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Detalle tecnico: {!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Wait_For_Document_Generation</name>
+        <label>Wait for Document Generation</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Get_Service_Report</targetReference>
+        </connector>
+        <fields>
+            <name>GenerationInProgressText</name>
+            <fieldText>&lt;p&gt;&lt;b&gt;El documento se esta generando.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;La generacion es asincrona y puede tardar unos segundos. Haga clic en &lt;b&gt;Siguiente&lt;/b&gt; para verificar si la autorizacion ya esta disponible.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <styleProperties>
+                <verticalAlignment>
+                    <stringValue>top</stringValue>
+                </verticalAlignment>
+                <width>
+                    <stringValue>12</stringValue>
+                </width>
+            </styleProperties>
+        </fields>
+        <nextOrFinishButtonLabel>Siguiente</nextOrFinishButtonLabel>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Service_Appointment</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <description>Optional override for the Service Document Template Id (prefix 0M0, visible in the Document Builder template URL after &amp;id=). When blank, the flow uses ServiceDocumentTemplateId__c from the appointment Work Type.</description>
+        <name>documentTemplateId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Id of the Service Appointment. Populated automatically when the flow runs from a record page.</description>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

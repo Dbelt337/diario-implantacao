@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Default_Telefono</name>
+        <label>Asignar Teléfono por defecto</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.PreferredContactMethod__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Telefono</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>HU-016 H1 (fix conversión): asigna Teléfono como método de contacto preferido para Leads de Autos/Motos creados o actualizados por actores automáticos (titulares de Bypass_Gates_Automacao: Integration User / data load) cuando el campo llega en blanco. Es el único caso que no cubre la VR Metodo_Preferido_Requerido_Lead (esa VR exige el valor a los humanos de Autos/Motos). Garantiza que un Lead Autos/Motos nunca se convierta en blanco contra la VR de Opp Metodo_Preferido_Requerido_Creacion (escopada a los Record Types Autos/Motos). Repuestos/Flotas no requieren método y no se tocan.</description>
+    <environments>Default</environments>
+    <interviewLabel>Lead_BeforeSave_DefaultPreferredContactMethod {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_BeforeSave_DefaultPreferredContactMethod</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_Default_Telefono</targetReference>
+        </connector>
+        <filterFormula>AND(
+  ISBLANK(TEXT({!$Record.PreferredContactMethod__c})),
+  OR(ISPICKVAL({!$Record.Industry}, &quot;Autos&quot;), ISPICKVAL({!$Record.Industry}, &quot;Motos&quot;)),
+  {!$Permission.Bypass_Gates_Automacao}
+)</filterFormula>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>20</triggerOrder>
+</Flow>

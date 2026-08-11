@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_Asignado</name>
+        <label>Estampar estado Asignado</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Status</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Asignado</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Owner_Cambio_A_Usuario</name>
+        <label>¿El owner cambió a un usuario?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No — no hacer nada</defaultConnectorLabel>
+        <rules>
+            <name>Cambio_A_Usuario</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>ownerCambioAUsuario</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Set_Asignado</targetReference>
+            </connector>
+            <label>Owner cambió a usuario (prefijo 005)</label>
+        </rules>
+    </decisions>
+    <description>Cuando el OwnerId de un Lead en estado &quot;Nuevo&quot; cambia a un usuario (aceptación OmniChannel o reasignación desde cola), estampa Status = &quot;Asignado&quot;. Solo en UPDATE: el owner en creación es transitorio porque el ruteo/assignment rules corren después del before-save. Respeta la transición Nuevo→Asignado validada por Lead_BS_TransicionEstado.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>ownerCambioAUsuario</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(ISCHANGED({!$Record.OwnerId}), BEGINS({!$Record.OwnerId}, &quot;005&quot;))</expression>
+    </formulas>
+    <interviewLabel>Lead_BS_EstampaAsignado {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_BS_EstampaAsignado</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Owner_Cambio_A_Usuario</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Status</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Nuevo</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>IsConverted</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>30</triggerOrder>
+</Flow>

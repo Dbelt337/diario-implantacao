@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <name>Error_Ambos_Requeridos</name>
+        <label>Error: Moto y Sucursal Requeridas</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Para avanzar el Lead Motos a &quot;En contacto&quot;, la moto de interés y la sucursal son obligatorias. Agrega el producto en la lista relacionada y la sucursal (Preferred Seller) antes de continuar.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
+        <name>Error_LLI_Requerido</name>
+        <label>Error: Moto de Interés Requerida</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Para avanzar el Lead Motos a &quot;En contacto&quot;, el modelo de moto de interés es obligatorio. Agrega un producto en la lista relacionada antes de continuar.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
+        <name>Error_LPS_Requerido</name>
+        <label>Error: Sucursal Requerida</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>Para avanzar el Lead Motos a &quot;En contacto&quot;, la sucursal es obligatoria. Agrega una sucursal en la lista relacionada (Preferred Seller) antes de continuar.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>Es_Avance_A_En_Contacto</name>
+        <label>¿Avanza a &quot;En contacto&quot;?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No avanza a En contacto (nada que hacer)</defaultConnectorLabel>
+        <rules>
+            <name>Si_Avance</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>entrandoEnContacto</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_LLI</targetReference>
+            </connector>
+            <label>Sí avanza a En contacto</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Evaluar_Requeridos</name>
+        <label>¿Faltan moto y/o sucursal?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Tiene ambos (válido)</defaultConnectorLabel>
+        <rules>
+            <name>Faltan_Ambos</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varLLI.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>varLPS.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Error_Ambos_Requeridos</targetReference>
+            </connector>
+            <label>Faltan moto Y sucursal</label>
+        </rules>
+        <rules>
+            <name>Falta_LLI</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varLLI.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Error_LLI_Requerido</targetReference>
+            </connector>
+            <label>Falta solo moto</label>
+        </rules>
+        <rules>
+            <name>Falta_LPS</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>varLPS.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Error_LPS_Requerido</targetReference>
+            </connector>
+            <label>Falta solo sucursal</label>
+        </rules>
+    </decisions>
+    <description>Bloquea el avance de un Lead Motos a &quot;En contacto&quot; si no tiene moto de interés (LeadLineItem) y/o sucursal (LeadPreferredSeller). Solo aplica a actores humanos sin Bypass_Gates_Automacao. Evalúa ambos objetos antes de emitir el error para que el usuario vea todo de una vez. IsConverted=false protege la conversión del gate.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>entrandoEnContacto</name>
+        <dataType>Boolean</dataType>
+        <expression>AND(ISCHANGED({!$Record.Status}), ISPICKVAL({!$Record.Status}, &quot;En contacto&quot;))</expression>
+    </formulas>
+    <interviewLabel>Lead_BS_ObligatoriedadMotos {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_BS_ObligatoriedadMotos</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_LLI</name>
+        <label>Buscar moto de interés (LeadLineItem)</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_LPS</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>LeadId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <object>LeadLineItem</object>
+        <outputReference>varLLI</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_LPS</name>
+        <label>Buscar sucursal (LeadPreferredSeller)</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>true</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Evaluar_Requeridos</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>LeadId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <object>LeadPreferredSeller</object>
+        <outputReference>varLPS</outputReference>
+        <queriedFields>Id</queriedFields>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Es_Avance_A_En_Contacto</targetReference>
+        </connector>
+        <filterFormula>AND(
+  ISPICKVAL({!$Record.Industry}, &quot;Motos&quot;),
+  NOT({!$Record.IsConverted}),
+  NOT({!$Permission.Bypass_Gates_Automacao})
+)</filterFormula>
+        <object>Lead</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Obsolete</status>
+    <triggerOrder>50</triggerOrder>
+    <variables>
+        <name>varLLI</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>LeadLineItem</objectType>
+    </variables>
+    <variables>
+        <name>varLPS</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>LeadPreferredSeller</objectType>
+    </variables>
+</Flow>

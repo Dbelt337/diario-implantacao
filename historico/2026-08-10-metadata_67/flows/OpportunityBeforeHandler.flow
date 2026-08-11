@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <name>BlockDemoUnitSale</name>
+        <label>Custom Error: Block Demo Unit Sale</label>
+        <locationX>200</locationX>
+        <locationY>500</locationY>
+        <customErrorMessages>
+            <errorMessage>Esta unidad está designada como Demo/Exhibición y no puede venderse en la venta general (HU-046). Si necesita venderla, solicite la liberación a su gerente.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>HasBypassPermission</name>
+        <label>Decision: Has Bypass Permission?</label>
+        <locationX>200</locationX>
+        <locationY>100</locationY>
+        <defaultConnector>
+            <targetReference>IsVehicleLinkChanged</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Validate</defaultConnectorLabel>
+        <rules>
+            <name>BypassGranted</name>
+            <conditionLogic>or</conditionLogic>
+            <conditions>
+                <leftValueReference>$Permission.BypassAllocationValidation</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Permission.Bypass_Gates_Automacao</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Bypass (integration/admin)</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>IsAssignedAdvisor</name>
+        <label>Decision: Running User Is the Assigned Advisor?</label>
+        <locationX>200</locationX>
+        <locationY>460</locationY>
+        <defaultConnector>
+            <targetReference>BlockDemoUnitSale</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Not assigned - block</defaultConnectorLabel>
+        <rules>
+            <name>AdvisorException</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetActiveAssignment</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>isAssignmentValid</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Assigned advisor within window - allow (Esc.4)</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>IsUnitBlocked</name>
+        <label>Decision: Unit Designated as Demo?</label>
+        <locationX>200</locationX>
+        <locationY>400</locationY>
+        <defaultConnectorLabel>Allow</defaultConnectorLabel>
+        <rules>
+            <name>UnitBlocked</name>
+            <conditionLogic>1 AND (2 OR 3)</conditionLogic>
+            <conditions>
+                <leftValueReference>GetLinkedVehicle</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>GetLinkedVehicle.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>En demostración</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>GetLinkedVehicle.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>En exhibicion</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>GetActiveAssignment</targetReference>
+            </connector>
+            <label>Blocked</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>IsVehicleLinkChanged</name>
+        <label>Decision: Vehicle Link New or Changed?</label>
+        <locationX>200</locationX>
+        <locationY>200</locationY>
+        <defaultConnectorLabel>Unchanged</defaultConnectorLabel>
+        <rules>
+            <name>VehicleLinkChanged</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.RecordType.DeveloperName</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>GQOpportunitiesAutos</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Vehiculo__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <elementReference>$Record__Prior.Vehiculo__c</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>GetLinkedVehicle</targetReference>
+            </connector>
+            <label>Autos sale, new or changed</label>
+        </rules>
+    </decisions>
+    <description>Sales guard for demo/exhibition vehicles, no Apex (HU-046, Esc.10 - visible but not sellable). All countries. Before-save on Opportunity create/update when Vehiculo__c (existing org lookup Opportunity-to-Vehicle, confirmed by describe 05/08) is set or changed: if the linked unit has Vehicle.Status = En demostración or En exhibicion, a custom error blocks the save. Replaces the earlier Quote Before Handler draft - Quote and QuoteLineItem have NO unit lookup in this org (describes 05/08), so Opportunity.Vehiculo__c is the only native anchor. ADVISOR EXCEPTION v4 (Esc.4-6, 07/08): if the running user OWNS an open [Demo] Asignacion Task on the linked unit (the Task IS the 8-business-hour exceptional assignment), the save is ALLOWED - the designated advisor can manage the sale during the window while everyone else stays blocked; REAL-TIME EXPIRY: the exception also checks the same next-business-day formula used by the scheduled flow (isAssignmentValid) - past the deadline the advisor is blocked IMMEDIATELY even before the nightly run closes the Task (the scheduled flow becomes housekeeping/trace only). Cancellation re-arms the block instantly. Bypass via BypassAllocationValidation custom permission (demo-specific) OR Bypass_Gates_Automacao (the org&apos;s existing automation-gate bypass, same pattern as validation rule Opp_Retail_Vehiculo_Cotizacion / HU-025 B3.7 - unit is REQUIRED at stage Reserva Confirmada, which is where this guard bites). Fires only for record type GQOpportunitiesAutos (vehicle SALES) and only when the link is new or changed ($Record__Prior comparison) - Vehiculo__c was created for Repuestos/PA opportunities (field description: the customer&apos;s vehicle receiving parts, populated by the vehicle search), where linking a demo unit is LEGITIMATE (e.g., accessories for a demo car), so RepuestosPA and other record types are exempt by design. Release-for-sale is unaffected: Execute Demo Request releases Vehicle.Status BEFORE creating the VIN Opportunity. TODO-DAVI: if an Opportunity before-save handler flow already exists in the org, MERGE this logic into it (one before-handler per object, per GRPQM conventions). Picklist API values verbatim from the org: En demostración (accented), En exhibicion (NOT accented).</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>isAssignmentValid</name>
+        <dataType>Boolean</dataType>
+        <expression>NOW() &lt;= ({!GetActiveAssignment.CreatedDate} + CASE(WEEKDAY(DATEVALUE({!GetActiveAssignment.CreatedDate})), 6, 3, 7, 2, 1))</expression>
+    </formulas>
+    <interviewLabel>Opportunity Before Handler {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Flow Trigger: Opportunity Before Handler</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>GetActiveAssignment</name>
+        <label>Get Records: Get Active Assignment for Running User</label>
+        <locationX>200</locationX>
+        <locationY>430</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>IsAssignedAdvisor</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WhatId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Vehiculo__c</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Subject</field>
+            <operator>StartsWith</operator>
+            <value>
+                <stringValue>[Demo] Asignación</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Status</field>
+            <operator>NotEqualTo</operator>
+            <value>
+                <stringValue>Completed</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>OwnerId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$User.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetLinkedVehicle</name>
+        <label>Get Records: Get Linked Vehicle</label>
+        <locationX>200</locationX>
+        <locationY>300</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>IsUnitBlocked</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Vehiculo__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Vehicle</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>200</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>HasBypassPermission</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Vehiculo__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Opportunity</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Apply_Currency_and_Country</name>
+        <label>Apply Currency and Country</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CurrencyCode__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>fml_Currency</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Country__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>fml_Country</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>assigns_the_user_company_code</name>
+        <label>assigns the user&apos;s company code</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Sociedad__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>$User.Sociedad__c</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Get_Sociedad_Config</targetReference>
+        </connector>
+    </assignments>
+    <decisions>
+        <name>CMT_found</name>
+        <label>¿CMT found?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>It did not find</defaultConnectorLabel>
+        <rules>
+            <name>It_was_found</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Sociedad_Config</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Apply_Currency_and_Country</targetReference>
+            </connector>
+            <label>It was found</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Empty_society</name>
+        <label>¿Empty society?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>It already has a company.</defaultConnectorLabel>
+        <rules>
+            <name>Yes_it_is_empty</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Sociedad__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>assigns_the_user_company_code</targetReference>
+            </connector>
+            <label>Yes, it is empty.</label>
+        </rules>
+    </decisions>
+    <description>A &quot;before-save&quot; flow that inherits the Company from the creating user and derives the Currency and Country from `Sociedad_Config__mdt`. It populates only empty fields. It applies to all Account creation methods.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>fml_Country</name>
+        <dataType>String</dataType>
+        <expression>IF(
+   ISBLANK(TEXT({!$Record.Country__c})),
+   TEXT({!Get_Sociedad_Config.Country__c}),
+   TEXT({!$Record.Country__c})
+)</expression>
+    </formulas>
+    <formulas>
+        <name>fml_Currency</name>
+        <dataType>String</dataType>
+        <expression>BLANKVALUE(
+ TEXT( {!$Record.CurrencyIsoCode}),
+  {!Get_Sociedad_Config.Currency_Code__c}
+)</expression>
+    </formulas>
+    <interviewLabel>Account_RecordTriggeredFlow_ {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Account_RecordTriggeredFlow_Universal_Account_Defaults(CompanyCodeCurrencyCountry)</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Sociedad_Config</name>
+        <label>Get Sociedad Config</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>CMT_found</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>IOU_DeveloperName__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Sociedad__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Sociedad_Config__mdt</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Empty_society</targetReference>
+        </connector>
+        <object>Account</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

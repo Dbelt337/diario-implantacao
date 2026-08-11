@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>66.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Resetear_Intentos</name>
+        <label>Resetear intentos al reactivar</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.ContactAttempts__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <numberValue>0.0</numberValue>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.DiscardReason__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue></stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <customErrors>
+        <name>Error_Motivo_Requerido</name>
+        <label>Error Motivo Requerido</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>El campo &quot;Motivo de Descarte&quot; es obligatorio al pasar el lead a estado No calificado.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
+        <name>Error_Transicion_Invalida</name>
+        <label>Error Transición Inválida</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>La transición de estado seleccionada no está permitida. Revise el ciclo de vida del lead.</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>Es_Bypass</name>
+        <label>¿Tiene permiso de bypass?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Evaluar_Transicion</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin bypass — validar</defaultConnectorLabel>
+        <rules>
+            <name>Tiene_Bypass</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>tieneBypass</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <label>Tiene bypass (flujos automáticos)</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Evaluar_Transicion</name>
+        <label>Evaluar transición</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Error_Transicion_Invalida</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Transición inválida</defaultConnectorLabel>
+        <rules>
+            <name>Nuevo_a_Asignado</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Nuevo</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Asignado</stringValue>
+                </rightValue>
+            </conditions>
+            <label>Nuevo → Asignado</label>
+        </rules>
+        <rules>
+            <name>Asignado_a_EnContacto</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Asignado</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>En contacto</stringValue>
+                </rightValue>
+            </conditions>
+            <label>Asignado → En contacto</label>
+        </rules>
+        <rules>
+            <name>EnContacto_a_NoCalificado</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>En contacto</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>No calificado</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Requiere_Motivo</targetReference>
+            </connector>
+            <label>En contacto → No calificado (requiere motivo)</label>
+        </rules>
+        <rules>
+            <name>EnContacto_a_Convertido</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>En contacto</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Convertido</stringValue>
+                </rightValue>
+            </conditions>
+            <label>En contacto → Convertido</label>
+        </rules>
+        <rules>
+            <name>NoCalificado_a_EnContacto</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>No calificado</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>En contacto</stringValue>
+                </rightValue>
+            </conditions>
+            <label>No calificado → En contacto (reapertura)</label>
+        </rules>
+        <rules>
+            <name>NoContactado_a_EnContacto</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>No contactado</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>En contacto</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Resetear_Intentos</targetReference>
+            </connector>
+            <label>No contactado → En contacto (reactivación, resetea intentos)</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Hubo_Cambio_Status</name>
+        <label>¿Cambió el Status?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>No cambió (nada que hacer)</defaultConnectorLabel>
+        <rules>
+            <name>Si_Cambio</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>statusCambio</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Es_Bypass</targetReference>
+            </connector>
+            <label>Sí cambió</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Requiere_Motivo</name>
+        <label>¿Tiene motivo de descarte?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Error_Motivo_Requerido</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin motivo — bloquear</defaultConnectorLabel>
+        <rules>
+            <name>Tiene_Motivo</name>
+            <conditionLogic>1 AND 2</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.DiscardReason__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.DiscardReason__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue></stringValue>
+                </rightValue>
+            </conditions>
+            <label>Tiene motivo (no nulo y no vacío)</label>
+        </rules>
+    </decisions>
+    <description>Valida transiciones de estado del Lead y obliga a informar DiscardReason__c al descartar.
+Transiciones permitidas: Nuevo→Asignado, Asignado→En contacto, En contacto→No calificado|Convertido, No calificado→En contacto (reapertura), No contactado→En contacto (reactivación).
+El cierre automático (No contactado) lo hace Lead_Sched_CierreIntentos — ese path no pasa por este flujo porque usa $Permission.BypassLeadLifecycle.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>statusCambio</name>
+        <dataType>Boolean</dataType>
+        <expression>ISCHANGED({!$Record.Status})</expression>
+    </formulas>
+    <formulas>
+        <name>tieneBypass</name>
+        <dataType>Boolean</dataType>
+        <expression>{!$Permission.BypassLeadLifecycle}</expression>
+    </formulas>
+    <interviewLabel>Lead_BeforeSave_EnforceStatusTransitions {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead_BeforeSave_EnforceStatusTransitions</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Hubo_Cambio_Status</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>IsConverted</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>40</triggerOrder>
+</Flow>

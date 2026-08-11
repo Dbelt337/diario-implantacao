@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Set_ContractTerm_Default</name>
+        <label>Fijar ContractTerm por defecto</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.ContractTerm</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>HU-045 T08 / RN4. Contrato de consignación (Record Type Consignment): al crear o actualizar, si ContractTerm viene en blanco, fija la vigencia por defecto en 1 mes; EndDate (de solo lectura) se auto-calcula como StartDate + ContractTerm. Modificable: si el usuario ya definió ContractTerm, no lo toca.</description>
+    <environments>Default</environments>
+    <interviewLabel>Contract_BS_ConsignmentDefaultEndDate {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Contract_BS_ConsignmentDefaultEndDate</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Set_ContractTerm_Default</targetReference>
+        </connector>
+        <filterFormula>AND(
+  {!$Record.RecordType.DeveloperName} = &quot;Consignment&quot;,
+  ISBLANK({!$Record.ContractTerm})
+)</filterFormula>
+        <object>Contract</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+    <triggerOrder>10</triggerOrder>
+</Flow>

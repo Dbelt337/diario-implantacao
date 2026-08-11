@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>SendProviderEmail</name>
+        <label>Action: Send Email to Provider</label>
+        <locationX>176</locationX>
+        <locationY>395</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector>
+            <targetReference>CreateNotificationTask</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>GetProviderContact.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>providerEmailSubject</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>providerEmailBody</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
+    </actionCalls>
+    <apiVersion>49.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>NoticeAlreadySent</name>
+        <label>Decision: Notice Already Sent?</label>
+        <locationX>176</locationX>
+        <locationY>359</locationY>
+        <defaultConnectorLabel>Notice Exists</defaultConnectorLabel>
+        <rules>
+            <name>NoNoticeYet</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetExistingNoticeTask</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>SendProviderEmail</targetReference>
+            </connector>
+            <label>No Notice Yet</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>ProviderHasEmail</name>
+        <label>Decision: Provider Has Email?</label>
+        <locationX>176</locationX>
+        <locationY>287</locationY>
+        <defaultConnectorLabel>No Email</defaultConnectorLabel>
+        <rules>
+            <name>EmailAvailable</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>GetProviderContact.Email</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>GetExistingNoticeTask</targetReference>
+            </connector>
+            <label>Email Available</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>RouteAppraisalChange</name>
+        <label>Decision: What Changed?</label>
+        <locationX>176</locationX>
+        <locationY>119</locationY>
+        <defaultConnectorLabel>Nothing Relevant</defaultConnectorLabel>
+        <rules>
+            <name>AcceptedNow</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Aceptado</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record__Prior.Status</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Aceptado</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>GetAcceptedAppraisal</targetReference>
+            </connector>
+            <label>Accepted Now</label>
+        </rules>
+        <rules>
+            <name>ProviderAssigned</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.AppraisedById</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>GetProviderContact</targetReference>
+            </connector>
+            <label>External Provider Assigned</label>
+        </rules>
+    </decisions>
+    <description>All countries. After-save handler for the Appraisal object (used-vehicle trade-in). Current branch: when the appraiser assigned is a Contact (external provider per the business rules; detection by Contact lookup — internal appraisers are Users and end the flow silently), sends the notification email once per opportunity (deduplicated by the traceability task) with the customer intent and logs a task on the related Opportunity for traceability. The notification text is a placeholder until the business provides the final wording. Closure branch: when Status changes to accepted, stamps FinalAppraisalValue into the opportunity trade-in value field (verified 23/07: no native trade-in column exists on Opportunity/Quote in this org); if the reference record is not an Opportunity the update silently matches zero records. Rejection is enforced by the RejectionReasonRequired validation rule. Origin: used-vehicle trade-in appraisal user story (external provider notification).</description>
+    <environments>Default</environments>
+    <interviewLabel>Appraisal After Handler {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Appraisal After Handler</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>CreateNotificationTask</name>
+        <label>Create Notification Log Task</label>
+        <locationX>176</locationX>
+        <locationY>503</locationY>
+        <inputAssignments>
+            <field>Description</field>
+            <value>
+                <stringValue>Notificación automática enviada al proveedor externo con la intención del cliente de realizar el avalúo del vehículo usado. Trazabilidad del criterio de proveedor externo de la historia de avalúo.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>OwnerId</field>
+            <value>
+                <elementReference>$Record.OwnerId</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Subject</field>
+            <value>
+                <stringValue>Aviso enviado al proveedor externo del avalúo</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>WhatId</field>
+            <value>
+                <elementReference>$Record.ReferenceRecordId</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Task</object>
+    </recordCreates>
+    <recordLookups>
+        <name>GetAcceptedAppraisal</name>
+        <label>Get Records: Get Accepted Appraisal</label>
+        <locationX>396</locationX>
+        <locationY>179</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>UpdateOpportunityTradeIn</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Appraisal</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetExistingNoticeTask</name>
+        <label>Get Records: Get Existing Notice</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>NoticeAlreadySent</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>WhatId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ReferenceRecordId</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Subject</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Aviso enviado al proveedor externo del avalúo</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Task</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>GetProviderContact</name>
+        <label>Get Records: Get Provider Contact</label>
+        <locationX>176</locationX>
+        <locationY>179</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>ProviderHasEmail</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.AppraisedById</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>UpdateOpportunityTradeIn</name>
+        <label>Set Trade-In Value on Opportunity</label>
+        <locationX>396</locationX>
+        <locationY>239</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.ReferenceRecordId</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>TradeInValue__c</field>
+            <value>
+                <elementReference>GetAcceptedAppraisal.FinalAppraisalValue</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Opportunity</object>
+    </recordUpdates>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>RouteAppraisalChange</targetReference>
+        </connector>
+        <object>Appraisal</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>providerEmailBody</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Estimado proveedor,
+
+Le informamos que un cliente tiene la intención de realizar el avalúo de su vehículo usado como parte de una negociación de compra.
+
+Vigencia de la solicitud: {!$Record.ValidityEndDate}
+
+Por favor coordine la cita con la sucursal correspondiente.
+
+[TEXTO PROVISORIO — reemplazar con la redacción oficial del negocio al llegar el insumo]
+
+GrupoQ</text>
+    </textTemplates>
+    <textTemplates>
+        <name>providerEmailSubject</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Solicitud de avalúo de vehículo usado — GrupoQ</text>
+    </textTemplates>
+</Flow>
