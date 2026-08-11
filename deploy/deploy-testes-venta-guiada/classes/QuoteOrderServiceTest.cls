@@ -53,14 +53,16 @@ private class QuoteOrderServiceTest {
         });
     }
 
+    /** Reexpone el error real del servicio con el mensaje raíz AL FRENTE (columna Errors truncada). */
+    private class RootCause extends Exception {}
+
     /** Ejecuta la creación de cotizaciones y convierte cualquier excepción en un fallo legible. */
     private static List<Quote> createQuotesOrFail(Id oppId, String payload, String selectedVehicles) {
         try {
             return QuoteOrderService.createQuotesSingleVehicle(oppId, payload, selectedVehicles);
         } catch (Exception e) {
-            Assert.fail('createQuotesSingleVehicle falló: ' + e.getTypeName() + ' — '
-                + e.getMessage() + ' | stack: ' + e.getStackTraceString());
-            return null;
+            throw new RootCause(e.getMessage() + ' [createQuotesSingleVehicle | ' + e.getTypeName()
+                + ' | ' + e.getStackTraceString() + ']');
         }
     }
 
@@ -69,9 +71,8 @@ private class QuoteOrderServiceTest {
         try {
             return QuoteOrderService.createOrderFromQuote(quoteId);
         } catch (Exception e) {
-            Assert.fail('createOrderFromQuote falló: ' + e.getTypeName() + ' — '
-                + e.getMessage() + ' | stack: ' + e.getStackTraceString());
-            return null;
+            throw new RootCause(e.getMessage() + ' [createOrderFromQuote | ' + e.getTypeName()
+                + ' | ' + e.getStackTraceString() + ']');
         }
     }
 
