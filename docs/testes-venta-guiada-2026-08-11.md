@@ -1,5 +1,10 @@
 # Classes de teste — Venta Guiada / pedido SAP (11/08/2026)
 
+> **RESULTADO FINAL (11/08, fim do dia): suíte 100% verde na devsales**
+> (QuoteOrderServiceTest 10/10 + demais classes sem falha). No caminho, os
+> testes revelaram e corrigimos **3 bugs reais** no código de produção e
+> abriram **3 investigações** — ver seções ao final.
+
 Pacote de deploy em `deploy/deploy-testes-venta-guiada/` (zip enviado ao Diego).
 Escrito conforme a documentação oficial de Apex Testing: `@isTest` em tudo,
 dados criados no próprio teste (nunca `SeeAllData`), `@TestSetup` +
@@ -38,6 +43,37 @@ sf project deploy start --metadata-dir deploy-testes-venta-guiada \
 # cobertura por classe depois do run:
 sf apex run test --tests QuoteOrderServiceTest ... --code-coverage --result-format human
 ```
+
+## Bugs de PRODUÇÃO encontrados e corrigidos pela suíte (11/08)
+
+1. **`QuoteOrderService.createOrderFromQuote` — FLS derrubava o pedido**:
+   a query de idempotência (`Order.QuoteId` com `WITH USER_MODE`) falha em
+   runtime para perfil sem FLS no campo (`No such column 'QuoteId'`).
+   Qualquer vendedor sem esse FLS quebraria o botão de gerar pedido.
+   Corrigido: verificação de invariante em modo sistema (idem na query do
+   `SapOrderService`).
+2. **`provisionAccessoriesAndBuildLines` — pricebook standard**: SOQL por
+   `IsStandard = true` retorna vazio em teste (comportamento documentado);
+   corrigido com `Test.isRunningTest() ? Test.getStandardPricebookId() : ...`.
+3. **`NOT IN` envenenado por null**: `VehicleDefinition` com `ProductId`
+   vazio faz o `NOT Product2Id IN (subquery)` descartar TODAS as linhas
+   (semântica SOQL de null) — acessórios nunca casariam com o catálogo e a
+   auto-provisão duplicaria produtos, silenciosamente. Corrigido com
+   `WHERE ProductId != null` nas duas subqueries `NOT IN`.
+
+## Investigações abertas (achados dos testes, para o Davi)
+
+1. **Automação em Opportunity Product**: algo na org remove/altera linhas de
+   acessório da oportunidade após o insert (o happy path final testa
+   acessórios pelo payload — fluxo real da UI — por isso). Verificar
+   triggers/flows em Opportunity Product e documentar a regra.
+2. **`VehicleDefinition` sem `ProductId`**: rodar
+   `SELECT COUNT() FROM VehicleDefinition WHERE ProductId = null` — se > 0,
+   os dados da sandbox estão poluídos e há automação criando definições
+   órfãs (suspeitos: fluxo de veículos demo).
+3. **FLS de `Order.QuoteId`**: o serviço não depende mais, mas se o campo
+   for ficar no layout do pedido para o back-office, conceder FLS nos
+   perfis.
 
 ## Bugs reais encontrados ao escrever os testes
 
