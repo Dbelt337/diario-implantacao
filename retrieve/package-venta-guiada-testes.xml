@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- Apex Classes (fases 1-4 do pedido: + GenerateSapOrderAction e SapMuleClient) -->
+    <types>
+        <members>SapInventoryService</members>
+        <members>SapInventoryServiceTest</members>
+        <members>PricingService</members>
+        <members>QuoteOrderService</members>
+        <members>SapOrderService</members>
+        <members>SapMuleClient</members>
+        <members>GenerateSapOrderAction</members>
+        <members>MaterialSearchService</members>
+        <members>MaterialSearchServiceTest</members>
+        <members>FinancingService</members>
+        <members>FinancingServiceTest</members>
+        <members>VentasTestDataFactory</members>
+        <members>SapCalloutMockFactory</members>
+        <members>GuidedSellingController</members>
+        <members>GuidedSellingControllerTest</members>
+        <name>ApexClass</name>
+    </types>
+
+    <!-- Triggers, se existirem no escopo (curinga: vem tudo; se nao houver, vem vazio) -->
+    <types>
+        <members>*</members>
+        <name>ApexTrigger</name>
+    </types>
+
+    <!-- Lightning Web Components -->
+    <types>
+        <members>ventaGuiadaLauncher</members>
+        <members>ventaGuiadaModal</members>
+        <members>aprobacionDescuentoModal</members>
+        <members>cotizacionConfirmModal</members>
+        <members>ventaVehiculo</members>
+        <members>ventaUsados</members>
+        <members>contraventaRepuestos</members>
+        <members>ventaPA</members>
+        <name>LightningComponentBundle</name>
+    </types>
+
+    <!-- Platform Event + Custom Metadata Type
+         + objetos do fluxo COMPLETOS (campos custom, RTs e VRs juntos):
+         necessarios para as classes de teste compilarem e popularem
+         campos obrigatorios corretamente -->
+    <types>
+        <members>SapOrderResponse__e</members>
+        <members>CountryCurrency__mdt</members>
+        <members>Account</members>
+        <members>Lead</members>
+        <members>Opportunity</members>
+        <members>Order</members>
+        <members>OrderItem</members>
+        <members>Quote</members>
+        <members>QuoteLineItem</members>
+        <members>Product2</members>
+        <members>Pricebook2</members>
+        <members>PricebookEntry</members>
+        <name>CustomObject</name>
+    </types>
+
+    <!-- Custom Fields: RequestedParts (form web -> lead -> oportunidad)
+         + ciclo SAP do pedido na Order (fase 1)
+         (redundante com o CustomObject acima, mantido por clareza) -->
+    <types>
+        <members>Lead.RequestedParts__c</members>
+        <members>Opportunity.RequestedParts__c</members>
+        <members>Order.SapStatus__c</members>
+        <members>Order.SapOrderNumber__c</members>
+        <members>Order.SapInvoiceNumber__c</members>
+        <members>Order.SapInvoiceDate__c</members>
+        <name>CustomField</name>
+    </types>
+
+    <!-- Record Types do fluxo (API names reais, query 04/08/2026).
+         Router do modal por DeveloperName: Autos/Motos=nuevo, Usados=usado,
+         RepuestosPA=repuestos (nao existe RT separado de PA);
+         Flotas=Release 2 (comentado no router), Mayorista pendente -->
+    <types>
+        <members>Lead.GQLeadsRepuestosPA</members>
+        <members>Opportunity.GQOpportunitiesAutos</members>
+        <members>Opportunity.GQOpportunitiesMotos</members>
+        <members>Opportunity.GQOpportunitiesUsados</members>
+        <members>Opportunity.GQOpportunitiesRepuestosPA</members>
+        <name>RecordType</name>
+    </types>
+
+    <!-- Standard Value Sets (tipo correto: StandardValueSet; membros sem ponto) -->
+    <types>
+        <members>Product2Family</members>
+        <members>QuoteStatus</members>
+        <name>StandardValueSet</name>
+    </types>
+
+    <!-- Quick Action -->
+    <types>
+        <members>Opportunity.VentaGuiadaModal</members>
+        <name>QuickAction</name>
+    </types>
+
+    <!-- Flows do pipeline do pedido (fases 1-4): ida automatica + botao,
+         retorno SAP e faturado -> entrega/milestone -->
+    <types>
+        <members>Quote_Aceptada_Genera_Pedido</members>
+        <members>Generar_Pedido_SAP</members>
+        <members>SAP_Order_Response_Handler</members>
+        <members>Order_Facturado_Handler</members>
+        <name>Flow</name>
+    </types>
+
+    <!-- Notificacao do ciclo do pedido (fase 2/4) -->
+    <types>
+        <members>SapOrderAlert</members>
+        <name>CustomNotificationType</name>
+    </types>
+
+    <!-- Custom Metadata records: curinga com prefixo (CountryCurrency.*)
+         NAO e suportado pela Metadata API — usar * (vem os registros de
+         todos os CMDTs; os de CountryCurrency vem juntos) -->
+    <types>
+        <members>*</members>
+        <name>CustomMetadata</name>
+    </types>
+
+    <!-- Validation Rules -->
+    <types>
+        <members>Opportunity.Currency_Matches_Country</members>
+        <name>ValidationRule</name>
+    </types>
+
+    <!-- Integracao MuleSoft do fluxo (gateway unico SAP) -->
+    <types>
+        <members>MuleSoft_EC</members>
+        <name>ExternalCredential</name>
+    </types>
+    <types>
+        <members>MuleGateway</members>
+        <name>NamedCredential</name>
+    </types>
+    <types>
+        <members>PS_Mule_Integration</members>
+        <name>PermissionSet</name>
+    </types>
+
+    <version>65.0</version>
+</Package>
