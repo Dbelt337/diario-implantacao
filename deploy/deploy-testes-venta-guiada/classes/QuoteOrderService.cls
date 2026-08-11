@@ -38,10 +38,13 @@ public with sharing class QuoteOrderService {
         }
 
         //include custom field mapping to vehicle here (Vehicle__c) -> accessory X belong to the vehicle Y
+        // ProductId != null en el subquery: un VehicleDefinition sin producto
+        // envenena el NOT IN (semántica SOQL de null) y vacía la query entera
         List<OpportunityLineItem> accessories = [
             SELECT Id, PricebookEntryId, Quantity, UnitPrice, CurrencyIsoCode, Product2Id, Product2.Name
             FROM OpportunityLineItem
-            WHERE OpportunityId = :opportunityId AND (NOT Product2Id IN (SELECT ProductId FROM VehicleDefinition))
+            WHERE OpportunityId = :opportunityId
+              AND (NOT Product2Id IN (SELECT ProductId FROM VehicleDefinition WHERE ProductId != null))
             WITH USER_MODE
         ];
 
@@ -256,12 +259,14 @@ public with sharing class QuoteOrderService {
         if (!hayItems) {
             return lineas;
         }
-        // catalogo de accesorios del pricebook de la oportunidad (no vehiculos)
+        // catalogo de accesorios del pricebook de la oportunidad (no vehiculos);
+        // ProductId != null en el subquery: un VehicleDefinition sin producto
+        // envenena el NOT IN (semántica SOQL de null) y vacía el catálogo
         List<PricebookEntry> pbes = [
             SELECT Id, UnitPrice, Product2Id, Product2.Name FROM PricebookEntry
             WHERE Pricebook2Id = :opp.Pricebook2Id AND IsActive = true
               AND CurrencyIsoCode = :opp.CurrencyIsoCode
-              AND (NOT Product2Id IN (SELECT ProductId FROM VehicleDefinition))
+              AND (NOT Product2Id IN (SELECT ProductId FROM VehicleDefinition WHERE ProductId != null))
             WITH USER_MODE
             LIMIT 500
         ];
