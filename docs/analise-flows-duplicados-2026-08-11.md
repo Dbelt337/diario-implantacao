@@ -35,9 +35,12 @@ Estes são o risco real para a demo de quinta (13/08):
 |---|----------|-----------|-----------------|
 | 1 | **Roteamento Omni-Channel quebrado?** | `Lead_TriggerOmniRouting` está **Active** e chama o subflow `LeadRouting_OmniFlow` — que está **Obsolete** (inativo). Flow ativo chamando subflow inativo = erro em tempo de execução | O passo "roteamento por fila e skill" pode falhar ao vivo. **Testar hoje** |
 | 2 | **Governança de duplicados desligada** | `Lead_Dup_Governance` (Obsolete) e `Lead_RecordTriggered_DupGovernance` (Draft) — os dois inativos. Restam só `Lead_AS_CrossFieldDuplicateAlert` e `GQ_Lead_Repuestos_PreMerge` | Somado ao achado das duplicate rules (todas `Allow`, e a GQ rule exclui o usuário de integração): **lead duplicado vindo do portal entra sem alerta nem bloqueio** |
-| 3 | **Lead Score desligado** | `Lead_Score_Temperatura` (Obsolete), sem substituto no pacote | Lead Score está no roteiro da demo — ou reativar, ou tirar do roteiro |
-| 4 | **Primeira atenção** | `Lead_AT_PrimerContacto` (Obsolete). Existe `Lead_Contact_Attempt_Notify` ativo, mas é outra coisa (platform event `LeadContactAttempt__e` → notificação) | Verificar quem estampa a primeira atenção para o SLA (o `Lead_BS_SetSLADeadline` e `Lead_SLA_Escalation` estão ativos) |
-| 5 | **Defaults de Conta nunca ativados** | `Account_RecordTriggeredFlow_Universal_Account_Defaults_CompanyCodeCurrencyCountr` (Draft) | Company code, moeda e país não são preenchidos ao criar conta — aparece na conversão do lead |
+| 3 | **Primeira atenção** | `Lead_AT_PrimerContacto` (Obsolete). Existe `Lead_Contact_Attempt_Notify` ativo, mas é outra coisa (platform event `LeadContactAttempt__e` → notificação) | Verificar quem estampa a primeira atenção para o SLA (o `Lead_BS_SetSLADeadline` e `Lead_SLA_Escalation` estão ativos) |
+| 4 | **Defaults de Conta nunca ativados** | `Account_RecordTriggeredFlow_Universal_Account_Defaults_CompanyCodeCurrencyCountr` (Draft) | Company code, moeda e país não são preenchidos ao criar conta — aparece na conversão do lead |
+
+> Nota (11/08): `Lead_Score_Temperatura` (Obsolete) **não é red flag** — o Lead
+> Score foi descontinuado por decisão do time (confirmado pelo Diego). O flow
+> obsoleto entra na lista de limpeza pós-demo, e o Lead Score sai do roteiro.
 
 ## 3. "Aqui tem todos os fluxos, certo?"
 

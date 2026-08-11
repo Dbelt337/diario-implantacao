@@ -45,11 +45,11 @@ Organizado pela jornada demonstrável, conforme alinhado para a demo de 13/08.
 | `Lead_AS_CrossFieldDuplicateAlert` | Alerta de duplicidade cross-field |
 | `GQ_Lead_Repuestos_PreMerge` | Pré-merge de leads de Repuestos |
 
-## 6. Lead Score
+## 6. Lead Score — descontinuado
 
 | Flow | Papel |
 |------|-------|
-| `Lead_Score_Temperatura` | Score / temperatura do lead |
+| `Lead_Score_Temperatura` | Score / temperatura do lead — **descontinuado por decisão do time (Obsolete); não faz parte do escopo atual nem da demo** |
 
 ## 7. Conversão em Conta + Oportunidade
 

@@ -17,7 +17,6 @@ Hoje temos **38 automações funcionando**, cobrindo a jornada completa de Lead 
 - **SLA de primeira atenção** com recordatórios e escalada
 - **Controle de duplicados**
 - **Máquina de estados** com motivo de descarte
-- **Lead Score**
 
 ### 2. Conversão
 
@@ -40,7 +39,7 @@ Hoje temos **38 automações funcionando**, cobrindo a jornada completa de Lead 
 ## Roteiro sugerido para a demo ao vivo
 
 1. Criar um lead pela UI (e mostrar a entrada via integração), com produtos de interesse e vendedor preferido
-2. Mostrar o roteamento automático (fila + skill / Omni-Channel) e o Lead Score
+2. Mostrar o roteamento automático (fila + skill / Omni-Channel)
 3. Deixar o SLA de primeira atenção disparar recordatório/escalada (ou mostrar o histórico de um caso real)
 4. Tentar criar um duplicado e mostrar o bloqueio
 5. Percorrer a máquina de estados, incluindo descarte com motivo
