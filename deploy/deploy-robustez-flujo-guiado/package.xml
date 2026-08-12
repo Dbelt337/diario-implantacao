@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- Robustez del flujo guiado (12/08/2026):
+         - QuoteOrderService: lock FOR UPDATE en createOrderFromQuote
+           (doble clic / dos usuarios ya no generan DOS pedidos Z301)
+         - RepuestosLineService: lock FOR UPDATE en guardarLineas
+           (dos asesores guardando la misma cotización se serializan)
+         - MaterialCreationService: upsert atómico de Product2 por
+           SapMaterialCode__c (external id único) + reutilización de legados
+         - GuidedSellingController: searchMaterials (búsqueda del catálogo
+           dentro del flujo, cacheable — pierna local)
+         - lineasRepuestos: búsqueda con debounce + "Solicitar creación de
+           material" cuando la búsqueda no encuentra (US-021 EN el flujo) -->
+    <types>
+        <members>GuidedSellingController</members>
+        <members>MaterialCreationService</members>
+        <members>MaterialCreationServiceTest</members>
+        <members>QuoteOrderService</members>
+        <members>RepuestosLineService</members>
+        <name>ApexClass</name>
+    </types>
+
+    <!-- External ID único: la base de datos garantiza un Product2 por material -->
+    <types>
+        <members>Product2.SapMaterialCode__c</members>
+        <name>CustomField</name>
+    </types>
+
+    <types>
+        <members>lineasRepuestos</members>
+        <name>LightningComponentBundle</name>
+    </types>
+
+    <version>63.0</version>
+</Package>

@@ -1,0 +1,143 @@
+<template>
+    <div class="slds-p-around_small">
+        <lightning-spinner lwc:if={isLoading} alternative-text="Consultando SAP" size="medium"></lightning-spinner>
+
+        <!-- captura individual: búsqueda del catálogo mientras se teclea
+             (debounce 300 ms, mínimo 3 caracteres) -->
+        <div class="slds-grid slds-gutters_x-small slds-grid_vertical-align-end slds-m-bottom_x-small">
+            <div class="slds-col slds-size_5-of-12 contenedor-busqueda">
+                <lightning-input label="Código de material" value={codigoNuevo}
+                    placeholder="Ej.: REP-001 o parte del nombre" autocomplete="off"
+                    onchange={handleCodigo} onblur={handleBusquedaBlur}></lightning-input>
+                <div lwc:if={mostrarSugerencias} class="slds-dropdown slds-dropdown_fluid lista-sugerencias" role="listbox">
+                    <ul class="slds-listbox slds-listbox_vertical">
+                        <template for:each={sugerencias} for:item="s">
+                            <li key={s.productCode} class="slds-listbox__item">
+                                <div class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_center"
+                                    role="option" data-code={s.productCode} onmousedown={handleElegirSugerencia}>
+                                    <span class="slds-media__body">
+                                        <span class="slds-listbox__option-text">{s.productCode}</span>
+                                        <span class="slds-listbox__option-meta">{s.name}</span>
+                                    </span>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+                <!-- US-021 dentro del flujo: la búsqueda no encontró -> se
+                     solicita la creación sin salir de la venta guiada -->
+                <div lwc:if={mostrarSinResultado} class="slds-box slds-box_x-small slds-m-top_xx-small aviso-sin-resultado">
+                    <span class="slds-text-body_small">
+                        "{terminoBuscado}" no está en el catálogo.
+                    </span>
+                    <lightning-button label="Solicitar creación de material" variant="brand-outline"
+                        icon-name="utility:add" onclick={handleCrearDesdeBusqueda}
+                        class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </div>
+            <div class="slds-col slds-size_3-of-12">
+                <lightning-input type="number" label="Cantidad" value={cantidadNueva}
+                    min="1" step="1" onchange={handleCantidad}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_4-of-12">
+                <lightning-button label="Agregar línea" onclick={handleAgregar}
+                    class="slds-m-right_x-small"></lightning-button>
+                <lightning-button label="Carga masiva" variant="neutral"
+                    onclick={toggleMasiva}></lightning-button>
+            </div>
+        </div>
+
+        <!-- carga masiva (GQ-PV-02-001-4): un renglón por línea "CODIGO, CANTIDAD" -->
+        <div lwc:if={mostrarMasiva} class="slds-box slds-box_x-small slds-m-bottom_x-small">
+            <lightning-textarea label="Carga masiva — un renglón por línea: CÓDIGO, CANTIDAD"
+                value={cargaMasiva} placeholder="REP-001, 2&#10;REP-002, 10"
+                onchange={handleMasivaInput}></lightning-textarea>
+            <lightning-button label="Cargar líneas" variant="brand"
+                onclick={handleMasivaCargar} class="slds-m-top_x-small"></lightning-button>
+        </div>
+
+        <!-- grid de líneas -->
+        <table lwc:if={hayLineas} class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col">Material</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Disponible (SAP)</th>
+                    <th scope="col">Leyenda / ubicación</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={lineas} for:item="linea">
+                    <tr key={linea.productCode} class={linea.rowClass}>
+                        <td>
+                            <div class="slds-text-body_regular">{linea.productCode}</div>
+                            <div class="slds-text-body_small slds-text-color_weak">{linea.name}</div>
+                        </td>
+                        <td>
+                            <lightning-input type="number" variant="label-hidden" min="1" step="1"
+                                value={linea.cantidad} data-code={linea.productCode}
+                                onchange={handleCantidadLinea}></lightning-input>
+                        </td>
+                        <td>{linea.saldoLabel}</td>
+                        <td class="slds-cell-wrap">{linea.textoExistencia}</td>
+                        <td><span class={linea.badgeClass}>{linea.statusLabel}</span></td>
+                        <td>
+                            <lightning-button-icon icon-name="utility:delete" alternative-text="Quitar"
+                                data-code={linea.productCode} onclick={handleQuitar}
+                                class="slds-m-right_xx-small"></lightning-button-icon>
+                            <lightning-button label="Venta Perdida" variant={linea.perdidaVariant}
+                                data-code={linea.productCode} onclick={handleVentaPerdida}
+                                class="slds-m-right_xx-small"></lightning-button>
+                            <lightning-button lwc:if={linea.mostrarCrearMaterial} label="Crear material"
+                                icon-name="utility:add" data-code={linea.productCode}
+                                onclick={handleAbrirCrear}></lightning-button>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+        <div lwc:if={sinLineas} class="slds-illustration slds-p-vertical_medium slds-text-align_center slds-text-color_weak">
+            Agregue líneas de material (individual o carga masiva) y consulte la disponibilidad.
+        </div>
+
+        <!-- US-021: alta de material SAP — se abre desde la búsqueda sin
+             resultado (flujo guiado) o desde la línea sinCatalogo del grid -->
+        <div lwc:if={mostrarCrear} class="slds-box slds-box_x-small slds-m-top_x-small slds-theme_shade">
+            <div class="slds-text-title_bold slds-m-bottom_xx-small">
+                Crear material en SAP: {crearCodigo} (sociedad {companyCode} · canal {canal})
+            </div>
+            <div class="slds-grid slds-gutters_x-small slds-grid_vertical-align-end">
+                <div class="slds-col slds-size_4-of-12">
+                    <lightning-input label="Serie (obligatoria — ZREP)" value={crearSerie}
+                        placeholder="Ej.: D22" onchange={handleCrearSerie}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_3-of-12">
+                    <lightning-input type="checkbox" label="Versión por defecto (X)"
+                        checked={crearVerDefault} onchange={handleCrearVerDefault}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_5-of-12">
+                    <lightning-button label="Confirmar creación" variant="brand"
+                        onclick={handleConfirmarCrear} class="slds-m-right_x-small"></lightning-button>
+                    <lightning-button label="Cancelar" onclick={handleCancelarCrear}></lightning-button>
+                </div>
+            </div>
+            <div class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">
+                Si SAP rechaza (ej.: partida arancelaria), se levanta un caso al área automáticamente.
+            </div>
+        </div>
+
+        <!-- acciones del lote -->
+        <div class="slds-m-top_small">
+            <lightning-button label="Consultar disponibilidad" variant="brand"
+                onclick={handleConsultar} disabled={consultarDisabled}
+                class="slds-m-right_x-small"></lightning-button>
+            <lightning-button label="Guardar en cotización" variant="success"
+                onclick={handleGuardar} disabled={consultarDisabled}
+                class="slds-m-right_x-small"></lightning-button>
+            <lightning-button label="Revalidar líneas de la cotización" variant="neutral"
+                onclick={handleRevalidar} disabled={isLoading}></lightning-button>
+        </div>
+    </div>
+</template>

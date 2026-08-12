@@ -65,6 +65,7 @@
         <members>Order.SapInvoiceDate__c</members>
         <members>QuoteLineItem.AvailabilityStatus__c</members>
         <members>QuoteLineItem.AvailabilityDetail__c</members>
+        <members>Product2.SapMaterialCode__c</members>
         <name>CustomField</name>
     </types>
 

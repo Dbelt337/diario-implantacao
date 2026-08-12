@@ -1,0 +1,19 @@
+.fila-sin-catalogo { background-color: #fff5f5; }
+
+/* la lista de sugerencias flota sobre el grid sin empujar el layout */
+.contenedor-busqueda { position: relative; }
+.lista-sugerencias {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 9000;
+    max-height: 16rem;
+    overflow-y: auto;
+}
+.aviso-sin-resultado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    background-color: #fef7e5;
+}
