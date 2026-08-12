@@ -1,67 +1,109 @@
-# HU-038 — Administración de Precios y Price Books (Autos y Motos): como cobrimos
+# HU-038 — Administración de Precios y Price Books (Autos y Motos): modelagem 100% nativa
 
-**Data:** 12/08/2026 · **Fontes:** HU038 V3, Refinamiento 13/07, sessão Dominio de Precios v4.1, Impuestos_SAP.xlsx (Luis Chavarría), Accesorios GrupoQ, gravações 22-23/07.
+**Data:** 12/08/2026 · **v2 — SEM objeto custom** (decisão Diego), fundamentada nos textos oficiais:
+Automotive Cloud Standard Objects, PricebookEntry Object Reference, Salesforce Pricing Standard Objects (RLM), Limits and Considerations for Classic Approval Processes.
+**Fontes de negócio:** HU038 V3, Refinamiento 13/07, sessão Dominio de Precios v4.1, Impuestos_SAP.xlsx, Accesorios GrupoQ.
 
 ---
 
-## A decisão central de arquitetura
+## O que a documentação oficial estabelece (com as correções que ela impôs)
 
-**O maestro do preço NÃO pode ser o PricebookEntry puro.** A plataforma não suporta no PBE o que a HU exige:
+1. **Automotive Cloud NÃO tem objeto de preço próprio.** A lista completa de Standard Objects do Automotive (Vehicle, VehicleDefinition, Appraisal, Fleet, Claim, Telemetry…) não contém nenhum objeto de pricing — o Automotive usa o Pricebook2/PricebookEntry da plataforma. Nossa venta guiada já está no modelo certo.
+2. **PricebookEntry SUPORTA Field History Tracking** (`PricebookEntryHistory` — "History is available for tracked fields of the object") e Change Data Capture (`PricebookEntryChangeEvent`, v57+). CORREÇÃO da análise anterior: o histórico nativo existe.
+3. **Restrição estrutural do PBE (Object Reference):** "Create ONE PricebookEntry record for each standard or custom price AND CURRENCY combination for a product in a Pricebook2" — uma entrada por produto+lista+moeda. Preço vigente e preço pendente NÃO podem ser duas linhas na mesma lista. É esta restrição que desenha a solução de staging abaixo.
+4. **Existe o modelo Salesforce Pricing (RLM):** CostBook/CostBookEntry (custos), ProductPriceHistoryLog e ProductPriceRange (histórico/faixa de preço), PriceAdjustmentSchedule/Tier, PriceRevisionPolicy (revisão de preços com vigência e fórmula), PricingProcedure. **Depende de licença** — verificar na org (GAPCHECK4 abaixo).
+5. **Approvals:** a doc oficial recomenda **Flow Approval Processes** no lugar do clássico — "can trigger on record changes… unlike Classic Approval Processes, which are TIED TO SPECIFIC OBJECTS". O clássico não suporta PBE; o moderno remove a lista fechada.
 
-| Exigência da HU | Suporte no PricebookEntry nativo |
-|---|---|
-| Aprovação (RN3, assimétrica) | ❌ PBE não suporta Approval Process |
-| Histórico consultável / reconstruir preço numa data (Esc. 10) | ❌ sem Field History Tracking, sem versionamento |
-| Vigência programada sem data fim (RN2, Esc. 14) | ❌ sem effective dating |
-| Acesso restrito por marca (RN2/RN3) | ❌ Pricebook2 não tem sharing rules |
-| Custo/margem com FLS só para gerência (RN10) | parcial (FLS existe, mas sem o resto não basta) |
-| Trazabilidade: quem pediu, quem aprovou, com qué archivo (RN3) | ❌ |
+---
 
-**Modelagem: maestro custom + projeção nativa.**
+## A modelagem (nativa, zero objetos novos)
 
-- **`VehiclePriceEntry__c` ("Precio de Vehículo")** — objeto custom, UMA LINHA POR VERSÃO DE PREÇO, nunca deletada. Campos: lookup Product2 (versión), Marca, Sociedad (12: C101…P105), País, Canal (con impuesto/exonerado), Moneda, os **11 campos comerciais** (7 originais + Flotas, 2 custos, moneda de publicación), `VigenciaDesde__c`, `Estado__c` (Pendiente/Aprobado/Rechazado/Sustituido), solicitante, aprovador, data, arquivo de carga (ContentDocumentLink). Field History Tracking ligado.
-- **PricebookEntry nativo = projeção publicada.** Job agendado diário (Scheduled Flow/Batch) publica no PBE da lista certa (sociedad+canal) o preço **Aprobado cuja vigência começou**, marca o anterior como `Sustituido` (Esc. 14) e espelha os pisos/gastos em custom fields do PBE para a cotização consumir. O fluxo comercial (venta guiada) continua 100% nativo — nada muda no que já construímos.
-- É o mesmo padrão SF↔SAP da própria HU: um maestro governado + um consumidor que recebe o valor pronto.
+### Estrutura: listas oficiais + listas de staging por marca
 
-## Mapa RN → solução
+- **Listas oficiais por sociedad+canal** (12 sociedades × canal com impuesto/exonerado) — as MESMAS que a venta guiada consome hoje e que estão no plano de carga (fila 2). Marca é atributo do Product2 (regra estrutural da própria HU: "la marca no multiplica listas").
+- **Listas de STAGING por marca** ("Precios Pendientes — Hyundai", etc.): o preço NOVO entra aqui como PBE, com os campos de controle. Resolve as duas coisas de uma vez, dentro da restrição de plataforma (item 3):
+  - *Pendente vs vigente coexistem* (linhas em listas diferentes);
+  - *Acesso por marca*: o responsável da marca trabalha só na staging da sua marca (permissão por perfil/permission set nas listas staging); as listas oficiais são de leitura para o comercial — o asesor precisa do preço publicado para cotizar.
+- **Publicação = cópia staging → oficial**, feita por Scheduled Flow diário quando `Estado='Aprobado'` e `VigenciaDesde <= HOY` (Esc. 14: o novo preço rege automaticamente ao iniciar a vigência). A PBE staging vira `Publicado`.
 
-| RN | Solução |
-|---|---|
-| **RN1** 11 campos comerciais | Custom fields no maestro; espelho no PBE (pisos, gastos, % 1ª matrícula) para HU de cotização. Accesorios: lista independente (JÁ EXISTE no nosso fluxo — pricebook da sociedad, Esc. 20 coberto) |
-| **RN2** segmentação + vigência + histórico | Pricebook2 por **Sociedad+Canal**; marca = atributo do produto (regra estrutural da própria HU). Vigência: `VigenciaDesde` sem data fim + job de publicação. Histórico = linhas versionadas do maestro (Esc. 10 = query por data) |
-| **RN2/RN3** acesso por marca | **No maestro**, via sharing rules por Marca + permission sets (nativo Pricebook2 não suporta sharing — ver "decisões a validar") |
-| **RN3** aprovação assimétrica | Record-Triggered Flow compara com o vigente: algum dos **5 campos baixou** → Approval Process com aprovador dinâmico por marca (objeto `Marca__c` com lookup ao Gerente de Producto/Marca); subiu ou só gastos/% → ativa direto. Em bloque: list view + aprovação massiva via Flow. Notificações nativas do approval |
-| **RN3** bloqueio comercial | Esta HU **provê o estado**: `PricingService.getPrecioVigente(producto, sociedad, canal, fecha)` devolve o preço Aprobado+vigente ou `BLOQUEADO` com motivo — `searchVehicles`/`getPricePageData` (nossos stubs do guided selling) consomem e mostram a alerta. Esc. 6/6b/6-novo cobertos: existe vigente → cotiza com ele; não existe → bloqueia |
-| **RN4** carga masiva | LWC `cargaPrecios` (upload da plantilla CSV) + Apex: valida fila a fila, cria maestros `Pendiente`, devolve **o mesmo arquivo + coluna Motivo** (ContentVersion para download). Mesmo padrão do grid HU-043. Arquivo fica anexado à solicitação (trazabilidade RN3) |
-| **RN5** impostos | **Decision Matrix (BRE)** — a própria HU nomeia: (1) `TasaImpuestoPais` (País+Característica+CondiciónCliente → tasa; ex.: elétrico CR 4%, accesorios 13% — Esc. 15/16), editável e versionada pelo admin SEM deploy; (2) `PrimeraMatricula` (tipo vehículo → rango personas/carta porte + cilindraje — anexo do Luis). A planilha **Impuestos_SAP (KSCHL/ALAND/TAXK1/MWSK1)** é o de-para de códigos SAP: carga inicial das matrizes. PricingService já contempla BRE |
-| **RN6** multi-moeda + redondeo | Org multi-currency + DatedConversionRate; `MonedaPublicacion__c` no Product2 (modelo — prevalece sobre a da sociedad, Esc. 17); conversão automática na carga (Esc. 18). Guatemala GTQ+USD = duas PBEs por produto (nativo). Redondeo: Custom Metadata `ReglaRedondeo__mdt` por sociedad+moneda espelhando SAP (pricing 4 decimais, posições 2) — usada por PricingService e pela carga |
-| **RN7** consumo | HUs de Guided Selling/Cotización (nossa arquitetura atual já é o consumidor) |
-| **RN8** reporte | Report Type sobre o maestro: marca, modelo, fecha, aprobador, país, precios — Reports padrão, sem número de inventário |
-| **RN9** níveis por fator | Decision Matrix `FactoresNivelesPrecio` (versão+vigência editável): calcula Mín. Gerente Ventas/Marca/Director ao salvar (Esc. 12); VP sem piso. HU-064/065 consomem |
-| **RN10** custo e margem | `CostoEstimado__c` + `CostoEstimadoExonerado__c` + fórmulas `Margen__c`/`MargenExonerado__c` no maestro; **FLS via PS_Precios_Margen** (Gerente Marca/Ventas/Director/VP); visíveis no layout da aprovação, nunca na lista comercial (Esc. 13/19) |
+### Campos (custom FIELDS em objetos padrão — permitido, mesmo padrão de QLI/Order)
 
-## O que já construímos que encaixa direto
+**No PricebookEntry** (staging e oficial):
+- Os **11 campos comerciais**: `UnitPrice` = Precio de Lista (nativo) + `PrecioMinimoAsesor__c`, `MontoCashback__c` (+ indicador web + vigência do cashback), `PrecioExonerado__c`, `PrecioExoneradoMinimo__c`, `Gastos__c`, `ImpuestoPrimeraMatricula__c` (%), `PrecioFlotas__c`, `CostoEstimado__c`, `CostoEstimadoExonerado__c` (FLS!), + fórmulas `Margen__c`/`MargenExonerado__c` (FLS).
+- Controle (staging): `Estado__c` (Pendiente/Aprobado/Rechazado/Publicado), `VigenciaDesde__c`, `MotivoRechazo__c`.
+- **Field History Tracking ligado** nos campos comerciais → `PricebookEntryHistory` = o histórico exigido (quem, quando, valor anterior — Esc. 10 reconstruível por query no history).
+- **FLS de custo/margem** via permission set `PS_Precios_Margen` (Gerente Marca/Ventas/Director/VP) — o asesor não vê (RN10/Esc. 13/19). FLS em custom field de PBE é suportado.
 
-- Pricebook nativo consumido pela venta guiada (QLI→PBE) — a projeção publicada cai em cima do que existe.
-- `PricingService` com BRE de referência — recebe as Decision Matrices.
-- `CountryCurrency__mdt` (moedas por país) + validation rule — RN6.
-- Padrão de carga com feedback fila a fila (grid HU-043) — RN4 reusa o desenho.
-- Cadeia Product2→VehicleDefinition (catálogo HU-041) — o preço pendura na versión.
-- Plan de carga (docs/carga): as listas por sociedad/canal da fila 2 são exatamente os PBEs desta HU.
+**No Product2:** `Marca__c` (se não existir — verificar o que o Automotive já adiciona no Product2), `MonedaPublicacion__c` (RN6/Esc. 17 — prevalece sobre a da sociedad; aplica ao modelo e versões).
 
-## Ordem de construção sugerida (sprints)
+**No Pricebook2 (staging):** `MarcaPropietaria__c`, `AprobadorMarca__c` (lookup User) — o aprovador dinâmico por marca SEM objeto novo (RN3: Gerente de Producto/Marca).
 
-1. **Fundação:** `Marca__c` + `VehiclePriceEntry__c` + FLS/permission sets + Field History (FO-09/FO-10).
-2. **Aprovação:** flow de disparo assimétrico + Approval Process por marca + aprovação em bloque + notificações.
-3. **Publicação:** job de vigência (maestro→PBE) + estado para o guided selling (`getPrecioVigente`).
-4. **Matrizes:** Decision Matrices (tasas, 1ª matrícula, factores) + carga inicial do Impuestos_SAP.xlsx + `ReglaRedondeo__mdt`.
-5. **Carga masiva:** LWC plantilla + arquivo de retorno com motivos.
-6. **Reporte** gerencial + testes (aprovação assimétrica, vigência, histórico por data, conversão de moeda, margem FLS).
+### Aprovação assimétrica (RN3)
 
-## Decisões a validar (não são dev)
+- Submissão (botão na staging ou no save da carga): Flow compara os **5 campos disparadores** com a PBE oficial vigente do mesmo produto+moeda:
+  - algum **BAIXOU** → **Flow Approval Process** (o moderno, recomendado pela doc — dispara em record change e não tem lista fechada de objetos) com aprovador = `AprobadorMarca__c` da lista staging; notificações nativas ao solicitante (aprovado/rechazado, com comentário).
+  - **subiu**, ou só mudou `Gastos__c`/`% 1ª matrícula` → `Estado='Aprobado'` direto (Esc. 2).
+- Aprovação **em bloque**: list view da staging + ação massiva de aprovação (Esc. 4).
+- Trazabilidade "con qué archivo": o CSV da carga anexado (ContentDocumentLink) à PBE staging / à solicitação.
+- **Bloqueio comercial**: `PricingService.getPrecioVigente(producto, sociedad, canal, fecha)` — devolve a PBE oficial ativa ou `BLOQUEADO` ("lista pendiente de autorización") quando só existe staging pendente (Esc. 6/6b). O guided selling consome (nossos stubs `searchVehicles`/`getPricePageData`).
 
-1. **Acesso por marca nas listas NATIVAS é impossível** (Pricebook2 sem sharing) — a restrição vive no maestro; as listas publicadas ficam legíveis para o comercial. Validar com GrupoQ que isso atende o "solo administra y visualiza los precios de su marca" (administrar sim; *visualizar* o preço publicado é aberto por natureza — o asesor precisa dele para cotizar).
-2. A HU tem uma tensão interna: "marca no multiplica listas" (RN2) vs "Pricebooks separados por marca" (RN2/criterios). A modelagem resolve com listas por sociedad+canal e governo por marca no maestro — confirmar com a Melisa/Hugo.
-3. "Gastos: se carga para algunas sociedades y para otras se calcula — **Definir**" (aberto da sessão de domínio).
-4. Regra de redondeo oficial por sociedad+moneda (insumo GrupoQ, igual à do SAP).
-5. Se a plataforma exigir data fim: default 3 meses (a HU já prevê o fallback — só se aplica se usarmos feature com data fim obrigatória; no maestro custom não é o caso).
+### Impostos, fatores e redondeo (RN5/RN9/RN6)
+
+- **Decision Matrix (BRE)** — a HU nomeia a ferramenta, nativa do Automotive/Industries, editável sem deploy:
+  1. `TasaImpuestoPais` (País+Característica+CondiciónCliente → tasa; elétrico CR 4%, acessórios 13% — Esc. 15/16). Carga inicial = Impuestos_SAP.xlsx (KSCHL/ALAND/TAXK1/MWSK1).
+  2. `PrimeraMatricula` (tipo vehículo → rango personas/carta porte + cilindraje — anexo do Luis).
+  3. `FactoresNivelesPrecio` (Esc. 12 — mínimos de Gerente Ventas/Marca/Director por fator; VP sem piso). HU-064/065 consomem.
+- **Redondeo por sociedad+moneda** espelhando SAP (pricing 4 decimais, posições 2): `ReglaRedondeo__mdt` (Custom Metadata — configuração, não objeto de dados).
+- **Multi-moeda**: org multi-currency + DatedConversionRate; conversão automática na carga quando a moeda do arquivo difere da `MonedaPublicacion__c` (Esc. 18); Guatemala GTQ+USD = duas PBEs por produto (exatamente o que o modelo nativo prevê: uma por moeda).
+
+### Carga masiva (RN4) e reporte (RN8)
+
+- LWC `cargaPrecios`: upload da plantilla → PBEs na staging da marca em `Pendiente` → contagem de corretas + **o mesmo arquivo devolvido com coluna de motivo por fila** (ContentVersion). Padrão já provado na HU-043.
+- Reporte gerencial: Report Type PBE com Product2/Pricebook2 (marca, modelo, fecha, aprobador, país, precios; sem número de inventário) + relatório de histórico (PricebookEntryHistory).
+
+### Upgrade opcional se a licença RLM estiver na org (GAPCHECK4)
+
+- `CostBook`/`CostBookEntry` no lugar dos campos de custo no PBE (separação natural + segurança por objeto em vez de FLS);
+- `ProductPriceHistoryLog`/`ProductPriceRange` complementando o histórico;
+- `PriceRevisionPolicy` para revisões programadas com fórmula.
+Nada disso muda a espinha (staging→oficial + BRE); só substitui pedaços por peças ainda mais nativas.
+
+---
+
+## GAPCHECK4 — rodar na org (Execute Anonymous, filtrar "GAPCHECK4")
+
+```apex
+List<String> r = new List<String>();
+r.add('=============== GAPCHECK4 ===============');
+Map<String, Schema.SObjectType> gd = Schema.getGlobalDescribe();
+// 1. RLM Pricing disponível?
+for (String obj : new List<String>{'CostBook','CostBookEntry','PriceAdjustmentSchedule',
+        'ProductPriceHistoryLog','ProductPriceRange','PriceRevisionPolicy','ProductSellingModel'}) {
+    r.add((gd.get(obj.toLowerCase()) != null ? '[SI]  ' : '[NO]  ') + obj);
+}
+// 2. Campos que o Automotive já dá no Product2 (marca/moeda podem já existir)
+if (gd.get('product2') != null) {
+    List<String> custom = new List<String>();
+    for (Schema.SObjectField f : gd.get('product2').getDescribe().fields.getMap().values()) {
+        String n = f.getDescribe().getName().toLowerCase();
+        if (n.contains('brand') || n.contains('marca') || n.contains('make')
+                || n.contains('model') || n.contains('trim') || n.contains('series')) {
+            custom.add(f.getDescribe().getName());
+        }
+    }
+    r.add('[INFO] Product2 campos de marca/modelo: ' + String.join(custom, ', '));
+}
+// 3. Decision Matrix / Expression Set (BRE) habilitados?
+for (String obj : new List<String>{'CalculationMatrix','CalculationMatrixVersion','ExpressionSet'}) {
+    r.add((gd.get(obj.toLowerCase()) != null ? '[SI]  ' : '[NO]  ') + obj);
+}
+r.add('=========================================');
+System.debug(LoggingLevel.ERROR, '\n' + String.join(r, '\n'));
+```
+
+## Decisões a validar (negócio, não dev)
+
+1. Acesso por marca = staging por marca + oficiais legíveis pelo comercial (o asesor precisa do preço publicado). Validar que atende "solo administra y visualiza los precios de su marca".
+2. Gastos: "se carga para algunas sociedades y para otras se calcula — Definir" (aberto da sessão de domínio).
+3. Regra oficial de redondeo por sociedad+moneda (insumo GrupoQ, igual ao SAP).
+4. Se RLM estiver licenciado (GAPCHECK4), decidir os upgrades opcionais.
