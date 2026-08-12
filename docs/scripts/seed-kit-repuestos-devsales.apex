@@ -1,8 +1,8 @@
 // ============================================================
-// SEED COMPLETO do kit de teste (GQ-PV-02-029) — DevSales · v2
+// SEED COMPLETO do kit de teste (GQ-PV-02-029) — DevSales · v3
 // Quote: 0Q0WK0000059Ke90AE (workflow 3 - Accent Sedan) · CRC
-// v2: KIT-001 nasce com Type='Bundle' — validação do catálogo
-// ("A parent must have the type of bundle, set, base or none").
+// v2: KIT-001 nasce com Type='Bundle' (pai precisa ser bundle/set/base)
+// v3: componentes com IsDefaultComponent=true (bundle estático)
 // Idempotente: pode rodar mais de uma vez sem duplicar.
 // Execute Anonymous — esperado no fim: "SEED OK" no debug log.
 // ============================================================
@@ -70,13 +70,17 @@ if (q.Pricebook2Id != null && q.Pricebook2Id != std) {
 }
 
 // --- vínculos do kit (só se ainda não existem) ---
+// IsDefaultComponent=true: bundle estático exige componentes por padrão
+// ("Child component must be added by default for a Static Parent Product")
 Integer vinculos = [SELECT COUNT() FROM ProductRelatedComponent WHERE ParentProductId = :kit.Id];
 if (vinculos == 0) {
     insert new List<ProductRelatedComponent>{
         new ProductRelatedComponent(ParentProductId = kit.Id, ChildProductId = rep1.Id,
-            ProductRelationshipTypeId = tipoId, Quantity = 2),   // 2x REP-001 por kit
+            ProductRelationshipTypeId = tipoId, Quantity = 2,
+            IsDefaultComponent = true),   // 2x REP-001 por kit
         new ProductRelatedComponent(ParentProductId = kit.Id, ChildProductId = rep2.Id,
-            ProductRelationshipTypeId = tipoId, Quantity = 1)    // 1x REP-002 por kit
+            ProductRelationshipTypeId = tipoId, Quantity = 1,
+            IsDefaultComponent = true)    // 1x REP-002 por kit
     };
 }
 System.debug(LoggingLevel.ERROR, 'SEED OK: KIT-001 = 2x REP-001 + 1x REP-002 (Bundle->BundleComponent)');
