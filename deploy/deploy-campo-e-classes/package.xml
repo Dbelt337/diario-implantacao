@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- GRPQM Naming Conventions (12/08): campo SapMaterialCode__c com
+         label/description/help em INGLES (era o desvio; o API name ja era
+         conforme: PascalCase, ingles, sem underscores internos). Deploy POR
+         CIMA - sem deletar: a exclusao e desnecessaria e bloqueada porque
+         as classes abaixo referenciam o campo. As duas classes sobem juntas
+         para o deploy ser atomico e consistente nas duas orgs -->
+    <types>
+        <members>MaterialCreationService</members>
+        <members>MaterialCreationServiceTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>Product2.SapMaterialCode__c</members>
+        <name>CustomField</name>
+    </types>
+    <version>63.0</version>
+</Package>
