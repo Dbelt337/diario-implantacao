@@ -1,9 +1,9 @@
 // ============================================================================
-// GAP CHECK — carga de productos, precios, stock e inventario (12/08/2026)
+// GAP CHECK v2 — carga de productos, precios, stock e inventario (12/08/2026)
 // Execute Anonymous (Developer Console). Solo LEE: describe + counts, cero DML.
-// Compara la org contra el modelo oficial del Automotive Cloud Developer Guide
-// (cadena Product2 -> VehicleDefinition -> Vehicle/Asset + Pricebook nativo)
-// y contra lo que nuestros flujos (venta guiada / HU-043 / US-021) consumen.
+// v2: cada sección protegida por try/catch — una falla puntual se reporta
+// como línea [ERRO] y el resto del informe SIEMPRE sale (la v1 moría entera
+// con un NullPointerException si un campo esperado no existía).
 // Leer el resultado en el debug log filtrando por "GAPCHECK".
 // ============================================================================
 
@@ -32,51 +32,64 @@ Map<String, Schema.SObjectType> gd = Schema.getGlobalDescribe();
 List<String> lineas = new List<String>();
 lineas.add('==================== GAPCHECK ====================');
 
+// --- 1. objetos y campos ---
 for (String obj : alvo.keySet()) {
-    Schema.SObjectType tipo = gd.get(obj);
-    if (tipo == null) {
-        lineas.add('[FALTA OBJETO] ' + obj + ' — no existe/no habilitado en la org');
-        continue;
+    try {
+        Schema.SObjectType tipo = gd.get(obj.toLowerCase());
+        if (tipo == null) {
+            lineas.add('[FALTA OBJETO] ' + obj + ' — no existe/no habilitado en la org');
+            continue;
+        }
+        Map<String, Schema.SObjectField> campos = tipo.getDescribe().fields.getMap();
+        List<String> faltan = new List<String>();
+        for (String c : alvo.get(obj)) {
+            if (!campos.containsKey(c.toLowerCase())) { faltan.add(c); }
+        }
+        Integer n = -1;
+        try { n = Database.countQuery('SELECT COUNT() FROM ' + obj); } catch (Exception e) { /* sin permiso/soporte */ }
+        lineas.add((faltan.isEmpty() ? '[OK]   ' : '[GAP]  ') + obj
+            + ' | registros: ' + (n == -1 ? 'n/d' : String.valueOf(n))
+            + (faltan.isEmpty() ? '' : ' | CAMPOS FALTANTES: ' + String.join(faltan, ', ')));
+    } catch (Exception e) {
+        lineas.add('[ERRO] ' + obj + ': ' + e.getMessage());
     }
-    Schema.DescribeSObjectResult d = tipo.getDescribe();
-    Map<String, Schema.SObjectField> campos = d.fields.getMap();
-    List<String> faltan = new List<String>();
-    for (String c : alvo.get(obj)) {
-        if (!campos.containsKey(c.toLowerCase())) { faltan.add(c); }
-    }
-    Integer n = -1;
-    try { n = Database.countQuery('SELECT COUNT() FROM ' + obj); } catch (Exception e) { /* sin permiso/soporte */ }
-    lineas.add((faltan.isEmpty() ? '[OK]   ' : '[GAP]  ') + obj
-        + ' | registros: ' + (n == -1 ? 'n/d' : String.valueOf(n))
-        + (faltan.isEmpty() ? '' : ' | CAMPOS FALTANTES: ' + String.join(faltan, ', ')));
 }
 
-// --- detalles que deciden la carga ---
+// --- 2. VIN: nombre real del campo en Vehicle ---
+try {
+    if (gd.get('vehicle') != null) {
+        List<String> vinCand = new List<String>();
+        for (Schema.SObjectField f : gd.get('vehicle').getDescribe().fields.getMap().values()) {
+            String api = f.getDescribe().getName();
+            String low = api.toLowerCase();
+            if (low.contains('identification') || low.contains('vin')) { vinCand.add(api); }
+        }
+        lineas.add('[INFO] Vehicle — candidatos a VIN: '
+            + (vinCand.isEmpty() ? '(ninguno con "vin"/"identification" en el nombre)' : String.join(vinCand, ', ')));
+    }
+} catch (Exception e) { lineas.add('[ERRO] VIN: ' + e.getMessage()); }
 
-// 1. VIN: nombre real del campo en Vehicle (varía la etiqueta; buscar por 'identification')
-if (gd.containsKey('Vehicle')) {
-    List<String> vinCand = new List<String>();
-    for (Schema.SObjectField f : gd.get('Vehicle').getDescribe().fields.getMap().values()) {
-        String api = f.getDescribe().getName();
-        if (api.toLowerCase().contains('identification') || api.toLowerCase().contains('vin')) {
-            vinCand.add(api);
+// --- 3. roles de kit disponibles (seed del ProductRelatedComponent) ---
+try {
+    if (gd.get('productrelationshiptype') != null) {
+        Map<String, Schema.SObjectField> prt = gd.get('productrelationshiptype').getDescribe().fields.getMap();
+        Schema.SObjectField rol = prt.get('mainproductrole');
+        if (rol == null) {
+            // el campo esperado no existe: listar los campos reales para decidir
+            lineas.add('[INFO] ProductRelationshipType SIN campo MainProductRole. Campos reales: '
+                + String.join(new List<String>(prt.keySet()), ', '));
+        } else {
+            List<String> roles = new List<String>();
+            for (Schema.PicklistEntry pe : rol.getDescribe().getPicklistValues()) {
+                roles.add(pe.getValue() + (pe.isActive() ? '' : ' (inactivo)'));
+            }
+            lineas.add('[INFO] ProductRelationshipType.MainProductRole valores: '
+                + (roles.isEmpty() ? '(picklist vacía — es texto libre o sin valores)' : String.join(roles, ', ')));
         }
     }
-    lineas.add('[INFO] Vehicle — candidatos a VIN: ' + String.join(vinCand, ', '));
-}
+} catch (Exception e) { lineas.add('[ERRO] roles kit: ' + e.getMessage()); }
 
-// 2. Tipos de relación de kit disponibles (para el seed de ProductRelatedComponent)
-if (gd.containsKey('ProductRelationshipType')) {
-    List<String> roles = new List<String>();
-    for (Schema.PicklistEntry pe :
-            gd.get('ProductRelationshipType').getDescribe().fields.getMap()
-              .get('MainProductRole').getDescribe().getPicklistValues()) {
-        roles.add(pe.getValue());
-    }
-    lineas.add('[INFO] ProductRelationshipType.MainProductRole valores: ' + String.join(roles, ', '));
-}
-
-// 3. Monedas activas (multi-moneda: cada PricebookEntry lleva CurrencyIsoCode)
+// --- 4. monedas activas (multi-moneda: la moneda vive en cada PricebookEntry) ---
 try {
     List<String> monedas = new List<String>();
     for (SObject c : Database.query('SELECT IsoCode FROM CurrencyType WHERE IsActive = true')) {
@@ -87,30 +100,36 @@ try {
     lineas.add('[INFO] Org SIN multi-moneda habilitada (CurrencyType no consultable).');
 }
 
-// 4. Estado del backfill del external id (garantía anti-duplicado de la BD)
-if (gd.containsKey('Product2')
-        && gd.get('Product2').getDescribe().fields.getMap().containsKey('sapmaterialcode__c')) {
-    Integer sinCodigo = Database.countQuery(
-        'SELECT COUNT() FROM Product2 WHERE IsActive = true AND SapMaterialCode__c = null');
-    lineas.add('[DATO] Product2 activos SIN SapMaterialCode__c (backfill pendiente): ' + sinCodigo);
-}
-
-// 5. VehicleDefinition huérfanas (rompen los subqueries del flujo — bug 3 de la suite)
-if (gd.containsKey('VehicleDefinition')) {
-    Integer huerfanas = Database.countQuery('SELECT COUNT() FROM VehicleDefinition WHERE ProductId = null');
-    lineas.add('[DATO] VehicleDefinition con ProductId NULO (cargar siempre con ProductId): ' + huerfanas);
-}
-
-// 6. Productos sin entrada Standard (bloquea el insert en listas custom)
+// --- 5. backfill del external id (garantía anti-duplicado de la BD) ---
 try {
-    Id stdId = [SELECT Id FROM Pricebook2 WHERE IsStandard = true LIMIT 1].Id;
-    Integer sinStd = Database.countQuery(
-        'SELECT COUNT() FROM Product2 WHERE IsActive = true AND Id NOT IN '
-        + '(SELECT Product2Id FROM PricebookEntry WHERE Pricebook2Id = \'' + stdId + '\')');
-    lineas.add('[DATO] Product2 activos SIN entrada en la lista Standard: ' + sinStd);
-} catch (Exception e) {
-    lineas.add('[DATO] No fue posible medir productos sin entrada Standard: ' + e.getMessage());
-}
+    if (gd.get('product2') != null
+            && gd.get('product2').getDescribe().fields.getMap().containsKey('sapmaterialcode__c')) {
+        Integer sinCodigo = Database.countQuery(
+            'SELECT COUNT() FROM Product2 WHERE IsActive = true AND SapMaterialCode__c = null');
+        lineas.add('[DATO] Product2 activos SIN SapMaterialCode__c (backfill pendiente): ' + sinCodigo);
+    }
+} catch (Exception e) { lineas.add('[ERRO] backfill: ' + e.getMessage()); }
+
+// --- 6. VehicleDefinition huérfanas (rompen subqueries del flujo — bug 3 de la suite) ---
+try {
+    if (gd.get('vehicledefinition') != null) {
+        Integer huerfanas = Database.countQuery('SELECT COUNT() FROM VehicleDefinition WHERE ProductId = null');
+        lineas.add('[DATO] VehicleDefinition con ProductId NULO (cargar siempre con ProductId): ' + huerfanas);
+    }
+} catch (Exception e) { lineas.add('[ERRO] VehicleDefinition: ' + e.getMessage()); }
+
+// --- 7. productos sin entrada Standard (bloquean el insert en listas custom) ---
+try {
+    List<Pricebook2> std = [SELECT Id FROM Pricebook2 WHERE IsStandard = true LIMIT 1];
+    if (std.isEmpty()) {
+        lineas.add('[DATO] La org no expone lista Standard por SOQL (revisar permisos).');
+    } else {
+        Integer sinStd = Database.countQuery(
+            'SELECT COUNT() FROM Product2 WHERE IsActive = true AND Id NOT IN '
+            + '(SELECT Product2Id FROM PricebookEntry WHERE Pricebook2Id = \'' + std[0].Id + '\')');
+        lineas.add('[DATO] Product2 activos SIN entrada en la lista Standard: ' + sinStd);
+    }
+} catch (Exception e) { lineas.add('[ERRO] entrada Standard: ' + e.getMessage()); }
 
 lineas.add('==================================================');
 System.debug(LoggingLevel.ERROR, '\n' + String.join(lineas, '\n'));
