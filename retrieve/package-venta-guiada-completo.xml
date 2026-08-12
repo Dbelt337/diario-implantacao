@@ -21,7 +21,6 @@
         <members>RepuestosLineServiceTest</members>
         <members>MaterialCreationService</members>
         <members>MaterialCreationServiceTest</members>
-        <members>CreateSapMaterialAction</members>
         <members>MaterialSearchService</members>
         <members>MaterialSearchServiceTest</members>
         <members>FinancingService</members>

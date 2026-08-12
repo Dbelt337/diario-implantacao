@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- Porta declarativa fora do escopo da HU: removida por decisao de
+         escopo (Diego, 12/08/2026). A capa de negocio segue intacta em
+         MaterialCreationService -->
+    <types>
+        <members>CreateSapMaterialAction</members>
+        <name>ApexClass</name>
+    </types>
+    <version>63.0</version>
+</Package>

@@ -17,7 +17,15 @@ A modelagem que o Diego descreveu **é a correta** e agora está implementada:
 5. Confirmada a criação (ZQEV_DBM_CREACION_MATERIALES via SapMuleClient), a linha **entra no grid automaticamente** e segue o caminho normal: consultar disponibilidade → guardar na cotização.
 6. Rejeição SAP continua abrindo Case à área com a MENSAJE crua (regra da US-021).
 
-O botão "Crear material" na linha `sinCatalogo` do grid e a action de Flow (`CreateSapMaterialAction`) continuam existindo — são portas complementares, não substituídas.
+O botão "Crear material" na linha `sinCatalogo` do grid continua existindo — é a mesma porta da US-021 para o caminho da **carga masiva** (GQ-PV-02-001-4), que não passa pela busca-enquanto-digita.
+
+> **Decisão de escopo (Diego, 12/08/2026):** a action de Flow
+> (`CreateSapMaterialAction`) foi **removida** — estava além do que a HU pede
+> ("só quero o que realmente vamos usar"). Pacote de remoção:
+> `deploy/deploy-remocao-action-material.zip` (teste atualizado +
+> `destructiveChangesPost.xml`). A capa de negócio (`MaterialCreationService`)
+> segue intacta; se um dia o domínio de catálogo precisar de porta
+> declarativa, a action se reconstrói em minutos sobre o mesmo serviço.
 
 ### Práticas de LWC enterprise aplicadas (documentação Salesforce)
 

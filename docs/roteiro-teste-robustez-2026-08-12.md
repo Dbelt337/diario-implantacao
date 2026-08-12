@@ -7,7 +7,7 @@ pacote da US-021 já deployado (feito em 11/08).
 
 1. Workbench → migration → Deploy → zip, com **Single Package** e **Rollback on Error**.
 2. Setup → Apex Test Execution → rodar `MaterialCreationServiceTest`.
-   Esperado: **8 testes verdes**, incluindo os 2 novos
+   Esperado: **7 testes verdes** (a action de Flow foi removida por decisão de escopo em 12/08 — o teste dela saiu junto), incluindo os 2 novos
    (`reutilizaProductoLegadoYRellenaCodigoSap`, `busquedaDelFlujoEncuentraYRespetaElMinimo`).
 3. Rodar a suíte completa da venta guiada (as 7 classes de teste) — nada regride.
 
@@ -74,7 +74,7 @@ WHERE Subject LIKE 'Creación de material SAP rechazada%'
 >    reutilizan con backfill del código.
 >
 > **Para seguir con la HU:**
-> - Deploy del zip + correr `MaterialCreationServiceTest` (8 verdes) y la suite.
+> - Deploy del zip + correr `MaterialCreationServiceTest` (7 verdes — la action de Flow se removió por decisión de alcance) y la suite.
 > - Asignar `PS_Create_SAP_Material` a los perfiles piloto.
 > - Cuando cierre el contrato Mule con Flavio: apagar `SapMuleClient.mockMode`,
 >   implementar la pierna SAP de `MaterialSearchService` (y en ese momento
