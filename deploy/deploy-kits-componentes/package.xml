@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- GQ-PV-02-029 (kits/combos): o servico ja expandia e consultava os
+         componentes do kit; este pacote faz o grid RENDERIZAR as filas dos
+         componentes (indentadas, somente leitura — a cantidad do componente
+         deriva da cantidad do kit) sob a linha-pai com badge "Kit" -->
+    <types>
+        <members>lineasRepuestos</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <version>63.0</version>
+</Package>
