@@ -181,11 +181,47 @@ Y es exactamente la misma restricción que deja sin dueño el estado En revisió
 | **2. Aviso dentro de SAP** | SAP genera una tarea o entrada de trabajo para el analista | **Desarrollo SAP nuevo.** Cuando la RFC rechaza no se creó nada en SAP, así que no hay de dónde disparar un aviso: habría que enviar la solicitud a SAP como registro pendiente. No figura en ningún inventario de integraciones | Resuelve el aviso en la herramienta donde esa persona trabaja, al costo de una integración y un desarrollo que hoy no existen |
 | **3. Dar usuario Salesforce a Gestión de Inventarios** | Trabajan la solicitud desde su List View, como ya lo hace el Catman en PA | Licencias y perfiles. La org tiene 2554 licencias Salesforce con 48 en uso, así que **la licencia no es la restricción** | Resuelve aviso y trazabilidad de una sola vez, con lo nativo: vista de lista, estado, seguimiento del registro e historial |
 
+### La opción 2 sí es viable: SAP tiene APIs para esto
+
+Revisamos la documentación de SAP y **existen módulos de función habilitados para RFC**, es decir invocables desde MuleSoft, que sirven exactamente para avisar dentro de SAP. Son tres caminos con alcances distintos.
+
+| Camino | Módulo de función | Qué produce | Nivel |
+|---|---|---|---|
+| **Work item de workflow** | `SAP_WAPI_START_WORKFLOW`, o `SAP_WAPI_CREATE_EVENT` si se prefiere disparar por evento | Un **ítem de trabajo** en la bandeja del analista, con estado, responsable y fecha de cierre. Devuelve el ID del work item | Tarea real |
+| **Mensaje en la bandeja de SAP** | `SO_NEW_DOCUMENT_SEND_API1` o `SO_DOCUMENT_SEND_API1`, con tipo de destinatario `B` | Un mensaje en el Business Workplace. Se lee, pero no se gestiona | Aviso |
+| **Correo** | Los mismos, con tipo de destinatario `U` | Un correo | Aviso |
+
+**El caso de la tabla que hay que descartar es el tercero**, y por una razón de arquitectura: si la respuesta es un correo, pasar por SAP y MuleSoft no agrega nada, Salesforce lo envía de forma nativa. Ir por SAP solo se justifica si el aviso tiene que **vivir dentro de SAP como trabajo**.
+
+**Una advertencia operativa sobre el segundo camino:** los mensajes enviados a la bandeja de SAP **no generan aviso por correo por sí solos**. Para que el analista se entere sin abrir el Business Workplace hay que ejecutar el programa estándar `RSWUWFML2`, que es el que reenvía por correo los ítems de la bandeja. Si esto no se contempla, el aviso llega a un buzón que nadie mira.
+
+Descartamos también `BAPI_ALM_NOTIF_CREATE`: crea una notificación de mantenimiento o de calidad, que es un objeto de negocio con otra semántica y no corresponde a la creación de un material.
+
+### El diseño con workflow, que es el que resuelve las dos cosas a la vez
+
+El primer camino tiene una propiedad que los otros no tienen, y es la que cierra el problema de fondo: **un work item tiene estado y devuelve un identificador**. Eso permite saber si alguien lo tomó, quién y cuándo, sin que esa persona necesite usuario Salesforce. Es exactamente la trazabilidad que la RN-15 y el CA-06 piden y que la opción del correo no da.
+
+El enrutamiento en MuleSoft quedaría así:
+
+1. Salesforce crea la solicitud y **publica un evento de plataforma**. No llama a MuleSoft en la misma transacción, porque la plataforma prohíbe hacer una llamada externa después de haber escrito en la base. El evento es el mecanismo previsto para esto.
+2. MuleSoft se suscribe y **enruta por línea de negocio y por motivo de rechazo**. Repuestos va a workflow de SAP; PA no va a SAP, porque su circuito son las aprobaciones dentro de Salesforce. Y dentro de Repuestos, falta de serie y falta de partida arancelaria pueden ir a responsables distintos.
+3. MuleSoft invoca `SAP_WAPI_START_WORKFLOW` pasando en el contenedor la clave de la solicitud, el código, la sociedad, el centro, la marca, la descripción, el solicitante y el motivo del rechazo.
+4. **El ID del work item vuelve a Salesforce** y se guarda en el registro. Con eso la solicitud queda enlazada a la tarea de SAP.
+5. Cuando el analista completa el work item, SAP avisa a MuleSoft y MuleSoft actualiza la solicitud por su clave, poniéndola En revisión, Material Creado o Rechazado.
+
+Con ese ida y vuelta, **el estado deja de estar huérfano** y Gestión de Inventarios sigue trabajando solo en SAP, que es la premisa de la RN-38.
+
+**Lo que hay que construir de cada lado.** Del lado Salesforce es poco: un evento de plataforma, un campo para el ID del work item y el endpoint de retorno, todo dentro de lo ya diseñado. Del lado SAP no es gratuito: hace falta **definir el workflow y las reglas de determinación de agente**, o sea quién recibe según sociedad y centro. Eso es desarrollo SAP con costo real, y es la parte que hay que dimensionar antes de comprometerla.
+
 ### Recomendación
 
-**Opción 1 para el R1**, porque no bloquea nada y se implementa con una alerta de correo. **Opción 3 como decisión a evaluar en serio**, porque es la única que cierra la trazabilidad que la propia historia pide en la RN-15 y en el CA-06, y el obstáculo que se asumía, la licencia, no existe.
+**Opción 1 para el R1**, porque no bloquea nada y se implementa con una alerta de correo desde Salesforce, sin pasar por SAP ni por MuleSoft.
 
-La opción 2 solo tiene sentido si el negocio exige que el analista no salga de SAP, y en ese caso hay que dimensionar desarrollo SAP más una integración de salida que hoy no está en ninguna estimación.
+**Opción 2 con workflow como objetivo**, porque es la única que resuelve el aviso y la trazabilidad respetando la premisa de que Gestión de Inventarios no usa Salesforce. Las APIs existen y son invocables desde MuleSoft; lo que falta dimensionar es la definición del workflow y la determinación de agente del lado SAP.
+
+**Opción 3 como alternativa a comparar**, porque si dar usuario Salesforce resulta más barato que definir el workflow en SAP, es la solución más simple de las tres, y la licencia no es el obstáculo.
+
+La decisión entre la 2 y la 3 es, en el fondo, dónde queremos que viva el trabajo del analista. Conviene tomarla con los dos números sobre la mesa.
 
 ---
 
