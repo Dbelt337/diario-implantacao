@@ -130,19 +130,51 @@ ambiente — com impacto direto no cronograma de implantação.
 
 ---
 
-## Pendente: o OM Standard está operando?
-
-Saber o sabor não diz se o motor está rodando. Três verificações:
+## O OM está operando — em escala de piloto
 
 ```sql
--- 1. existe configuração e movimento de pedidos?
-SELECT COUNT() FROM vlocity_cmt__OrchestrationPlanDefinition__c
-SELECT COUNT() FROM vlocity_cmt__OrchestrationPlan__c
-SELECT COUNT() FROM vlocity_cmt__FulfilmentRequest__c
+SELECT Id, Name, vlocity_cmt__State__c
+FROM vlocity_cmt__OrchestrationPlan__c
+WHERE CreatedDate >= LAST_N_DAYS:90
 ```
 
+**14 registros.** Numeração em `Plan0000246`–`Plan0000249`, indicando ~249 planos
+desde o início. Cerca de um plano por semana — não é volume de produção para uma
+operadora com 1479 usuários no Comms Cloud Plus. O cenário é de **piloto,
+homologação ou linha de produto isolada**.
+
+### Ponto de atenção: planos em `In Progress`
+
+Todos os registros observados estão em `In Progress`. Duas leituras possíveis:
+
+- **Normal** — fulfillment em telecom é longo por natureza (instalação de fibra,
+  agendamento de técnico, ativação em rede). Planos abertos por semanas são
+  esperados.
+- **Travado** — o motor parou de processar. É o sintoma clássico de
+  **Orchestration Recovery Job** e **Integration Retry Job** não agendados. A
+  página XOM Administration não informa o estado desses jobs, só oferece "Start".
+
+Consultas que separam os dois casos:
+
 ```sql
--- 2. os jobs da XOM Administration estão agendados?
+-- distribuição de estados na base completa
+SELECT vlocity_cmt__State__c, COUNT(Id)
+FROM vlocity_cmt__OrchestrationPlan__c
+GROUP BY vlocity_cmt__State__c
+```
+Predomínio de `In Progress` com pouco `Completed` = motor não fecha planos.
+
+```sql
+-- idade do plano In Progress mais antigo
+SELECT Id, Name, vlocity_cmt__State__c, CreatedDate, LastModifiedDate
+FROM vlocity_cmt__OrchestrationPlan__c
+WHERE vlocity_cmt__State__c = 'In Progress'
+ORDER BY CreatedDate ASC
+```
+`LastModifiedDate` parado há meses = travado, não em andamento.
+
+```sql
+-- os jobs estão agendados?
 SELECT CronJobDetail.Name, State, NextFireTime, PreviousFireTime
 FROM CronTrigger
 WHERE CronJobDetail.Name LIKE '%Orchestration%'
@@ -152,12 +184,43 @@ WHERE CronJobDetail.Name LIKE '%Orchestration%'
 ```
 
 ```sql
--- 3. parâmetros do motor (intervalMins, OrchestrationRetryJobIntervalMins, etc.)
-SELECT Name FROM vlocity_cmt__XOMSetup__c
+-- fallout acumulado nos itens
+SELECT vlocity_cmt__State__c, COUNT(Id)
+FROM vlocity_cmt__OrchestrationItem__c
+GROUP BY vlocity_cmt__State__c
+```
+`Fatally Failed` ou `Running` em quantidade = fallout sem tratamento.
+
+### Custom setting `XOMSetup`
+
+```sql
+SELECT FIELDS(ALL) FROM vlocity_cmt__XOMSetup__c LIMIT 200
 ```
 
-Zero nas contagens e nenhum job com `State = WAITING` = pacote CME instalado e
-modo Standard configurado, porém **sem motor em operação**.
+`FIELDS(ALL)` evita adivinhar o nome do campo de valor.
+
+O setting contém ~59 chaves, incluindo um bloco `Thor*` (`ThorCalloutRegion`,
+`ThorCalloutAccessKey`, `ThorCalloutSecretKey`, `ThorAwsAccessKeysPath`,
+`ThorSystemURL`, `ThorBaseDomain`…) e um bloco `OMPL*` (`OMPLSubmitMode`,
+`OMPLCatalogSyncEventBatchSize`, `OMPLMonitoring.E2E.requestTimeoutMs`…).
+"Thor" é a nomenclatura interna do motor off-platform em AWS.
+
+**Isso não indica OM Plus.** `XOMSetup` é list custom setting e o managed package
+instala o conjunto completo de chaves nos dois modos — mesma armadilha das
+ApexPages e dos permission sets. O que decide são os **valores**:
+
+| Chave | Leitura |
+|---|---|
+| `OrderSubmitMode`, `OMPLSubmitMode`, `OrchestrationMode` | modo de submissão/orquestração |
+| `ThorSystemURL`, `ThorBaseDomain`, `ThorEnvironmentDomain` | vazios = sem motor off-platform |
+| `InCoreDecompositionEnabled` | decomposição on-platform, coerente com Standard |
+| `SchedulerEnabled` | `false` explicaria planos parados em `In Progress` |
+| `SchedulerJobTimeIntervalMins`, `OrchestrationRecoveryWaitPeriodMins`, `OrchestrationRecoveryJobBatchSize` | cadência do motor |
+| `OrderDecompositionEnabled` | decomposição ligada |
+| `XOMDebug` | ligado em produção é achado à parte |
+
+O custom setting diz o que *deveria* rodar; `CronTrigger` diz o que *está*
+agendado. Os dois são necessários.
 
 ---
 
