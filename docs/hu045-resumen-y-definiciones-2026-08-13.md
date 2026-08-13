@@ -48,12 +48,13 @@ De acuerdo, con tres condiciones y una adición importante que salió de la revi
 2. Orden de creación confirmado, Asset primero y Vehicle después, porque `Vehicle.AssetId` es master detail y el centro vive en `Asset.LocationId`. En el Asset van sociedad, LocationId, PurchaseDate y AssetProvidedById.
 3. El ex GQ conserva su VehicleDefinition real, y por VIN único el reingreso actualiza el mismo Vehicle, nunca crea otro. Con la Op.2 híbrida, además, cualquier usado de una marca del catálogo también conserva la definición real.
 
-Adición: para la consignación el modelo estándar tiene dos objetos que hoy no están en el diseño y que resuelven justo el punto delicado, que la unidad está en nuestro predio pero no es nuestra.
+Adición: para la consignación el modelo estándar tiene un objeto que hoy no está en el diseño y que resuelve justo el punto delicado, que la unidad está en nuestro predio pero no es nuestra.
 
-1. `AssetTitle`, API 60 y superior, «information that establishes the legal ownership of an asset or a vehicle», junto con `AssetTitleParty`, «the relationship between an account, a contact, or a user and an asset title». Es el lugar nativo de la titularidad, es decir quién es el dueño legal mientras la unidad está consignada.
-2. `AssetAccountParticipant`, API 56 y superior, junction entre Asset y Account, «the association between a participating account and an asset», y su equivalente `AssetContactParticipant` para personas. Es el lugar nativo del consignante como participante de la unidad.
+`AssetAccountParticipant`, API 56 y superior, es la junction entre Asset y Account, «the association between a participating account and an asset», con su equivalente `AssetContactParticipant` para personas. Es el lugar nativo del consignante como participante de la unidad, y está confirmado disponible en la org, verificado el 13/08 con `check-licencias-objetos.apex`.
 
-Esto no reemplaza al Contract, lo complementa. El Contract queda para las condiciones comerciales de la consignación, plazo, comisión, precio mínimo, y la titularidad y la participación quedan en los objetos que la plataforma tiene para eso. La ventaja concreta es que la relación dueño y unidad sobrevive al Contract, sirve para la baja al vender (T15) y evita campos custom de dueño en el Asset. La disponibilidad de los tres objetos en la org está en el script.
+Esto no reemplaza al Contract, lo complementa. El Contract queda para las condiciones comerciales de la consignación, plazo, comisión, precio mínimo, y la relación con el dueño queda en el objeto que la plataforma tiene para eso. La ventaja concreta es que la relación dueño y unidad sobrevive al Contract, sirve para la baja al vender (T15) y evita campos custom de dueño en el Asset.
+
+Sobre la titularidad legal, el estándar tiene además `AssetTitle`, «information that establishes the legal ownership of an asset or a vehicle», con `AssetTitleParty`. Sería el lugar ideal para el título del vehículo consignado, pero la verificación del 13/08 muestra que **esos dos objetos no existen hoy en la org**, aunque sí están contratadas y asignadas las licencias de Vehicle and Asset Finance Foundation y Vehicle and Asset Lending for Agents. O sea que no parece un tema de licencia sino de habilitación en Setup, en Enable Features for Automotive Cloud. Mientras no aparezcan, el diseño no depende de ellos: `AssetAccountParticipant` más Contract cubre la consignación. Vale revisar el toggle porque si se habilita sin costo, es el lugar correcto del título.
 
 ### Definición 3. Avalúo, a qué registro se liga
 
@@ -106,15 +107,19 @@ Están todas en un solo script, `docs/scripts/gapcheck6-hu045-usado-consignacion
 5. Qué campos custom ya existen en Vehicle y en Asset, incluidos los `Actual*`, para ver qué queda por crear.
 6. Si `AppraisalItem.MakeName`, `ModelName` y `ModelYear` son restringidas en la org y con qué valores.
 
-## 4bis. Licencias
+## 4bis. Licencias, verificado en la org el 13/08
 
-Los objetos que uso en las respuestas se dividen en tres grupos y conviene tenerlo claro antes de diseñar sobre ellos.
+Ejecutado `docs/scripts/check-licencias-objetos.apex` en DEV Sales. Resultado, ningún bloqueo de licencia para la HU-045.
 
-1. Sin licencia adicional: `Product2`, `Pricebook2`, `PricebookEntry`, `Opportunity`, `Quote`, `QuoteLineItem`, `Order`, `Asset`, `Location` y `Contract`. Son Sales Cloud y plataforma, ya los usamos en el flujo de venta guiada.
-2. Con licencia de Automotive Cloud, que la org ya tiene provisionada porque `Vehicle` y `VehicleDefinition` están en uso: `Vehicle`, `VehicleDefinition`, `AssetMilestone`, `VehicleSearchableField`, `AssetAccountParticipant`, `AssetContactParticipant`, y el bloque de avalúo y titularidad, `Appraisal`, `AppraisalItem`, `AppraisalAdjustment`, `AppraisalItemAddOn`, `AppraisalItemProviderVal`, `AssetTitle` y `AssetTitleParty`. Automotive Cloud es un producto adicional sobre Enterprise, Unlimited o Developer, y además de la licencia de org cada usuario necesita la permission set license correspondiente asignada. Lo que hay que confirmar no es la licencia de org sino qué bloques están incluidos en el contrato y qué usuarios los tienen asignados.
-3. Con licencia de Commerce o Revenue Cloud: `ProductCatalog`, `ProductCategory` y `ProductCategoryProduct`, que no intervienen en la HU-045 pero sí en la propuesta de parametrización de marcas y modelos del ADR-004. Ahí hay un riesgo concreto, el frente B2C del programa usa SFCC, que es plataforma separada y no provisiona objetos del core.
+Sin licencia adicional, todo disponible: `Product2`, `Pricebook2`, `PricebookEntry`, `Opportunity`, `OpportunityLineItem`, `Quote`, `QuoteLineItem`, `Order`, `OrderItem`, `Asset`, `Location`, `Contract`, `Account` y `Contact`.
 
-Todo esto se resuelve con `docs/scripts/check-licencias-objetos.apex`, que lista las licencias contratadas, las asignadas al usuario y la disponibilidad real de cada objeto agrupada por bloque.
+Automotive Cloud, todo disponible y con licencias holgadas: `Vehicle`, `VehicleDefinition`, `AssetMilestone`, `VehicleSearchableField`, `AssetAccountParticipant`, `AssetContactParticipant`, `LeadLineItem` y `OpportunityPreferredSeller`. Las permission set licenses contratadas son Automotive Foundation User con 2130 asientos y 10 en uso, Automotive Scheduler 2130 con 8, Fleet Management 2130 con 4, Vehicle Connected Services 2130 con 3, Warranty Lifecycle Management 2130 sin uso y Einstein for Automotive 80 con 5. Todas vencen el 10/02/2031.
+
+Avalúo, todo disponible: `Appraisal`, `AppraisalItem`, `AppraisalAdjustment`, `AppraisalItemAddOn` y `AppraisalItemProviderVal`. Las licencias del bloque de finance están contratadas y asignadas, Vehicle and Asset Finance Foundation 2130 con 2 en uso y Vehicle and Asset Lending for Agents 2130 con 2.
+
+Única excepción: `AssetTitle` y `AssetTitleParty` no existen en la org. Como las licencias de lending sí están, lo más probable es que falte el toggle en Setup, Enable Features for Automotive Cloud. No bloquea la HU-045 porque la consignación se resuelve con `AssetAccountParticipant` más Contract.
+
+Taxonomía de catálogo, disponible y con licencia propia: `ProductCatalog`, `ProductCategory`, `ProductCategoryProduct`, `ProductRelatedComponent`, `ProductClassification` y `BusinessBrand`. La org tiene Product Catalog Management Administrator con 4261 asientos y 4 en uso, y Product Catalog Management Viewer con 6391. Esto no afecta a la HU-045 pero confirma la propuesta del ADR-004 para parametrizar marcas y modelos sin crear objetos.
 
 ## 5. Acciones
 

@@ -146,16 +146,26 @@ Um plano pode ser ligado a **N marcas e N modelos** — a junção é N:N por na
 - **Verificar disponibilidade na org** (podem depender de habilitação Commerce/Revenue) — script GAPCHECK5 em `docs/scripts/`.
 - Modelos: continuam também no `VehicleDefinition` para specs/valoração — a categoria é o **escopo comercial**, não a ficha técnica.
 
-### Licença: risco identificado em 13/08 (verificar ANTES de desenhar em cima disso)
+### Licença: VERIFICADO NA ORG em 13/08, solução liberada
 
-A documentação do modelo de dados de produto e catálogo é explícita: `ProductCatalog`, `ProductCategory` e `ProductCategoryProduct` **exigem licença de Commerce** ("requires at least one of these licenses: B2B Commerce"); nas versões recentes o **Revenue Cloud / Product Catalog Management** também os habilita.
+A documentação exige licença de Commerce ou Revenue Cloud para `ProductCatalog`, `ProductCategory` e `ProductCategoryProduct`, e o risco levantado era real: o time B2C usa **SFCC**, plataforma separada que **não** provisiona objetos do core.
 
-**Por que isso é um risco real aqui:** o time B2C do programa usa **SFCC (Commerce Cloud B2C)**, que é uma plataforma separada e **não** provisiona objetos do core. Ou seja, o fato de existir frente de e-commerce **não garante** que estes três objetos existam nesta org.
+**A verificação fechou o risco.** Execução de `docs/scripts/check-licencias-objetos.apex` em DEV Sales:
 
-**Ordem correta:** rodar `docs/scripts/check-licencias-objetos.apex` (bloco E) antes de qualquer desenho. Se os objetos não existirem, o plano B já documentado passa a ser o principal:
+| Objeto | Disponível | Observação |
+|---|---|---|
+| `ProductCatalog` | Sim | 18 campos |
+| `ProductCategory` | Sim | 18 campos |
+| `ProductCategoryProduct` | Sim | 14 campos |
+| `ProductRelatedComponent` | Sim | 29 campos |
+| `ProductClassification` | Sim | 15 campos |
+| `BusinessBrand` | Sim | 13 campos |
 
-1. **Decision Matrix / Expression Set (BRE)** para a elegibilidade plano × marca × modelo — sem objeto, sem registros de junção, editável pelo negócio;
-2. `BusinessBrand` (padrão, API 53+) e `VehicleDefinition` (Automotive) seguem valendo para marca e modelo, porque não dependem de licença Commerce.
+E a licença que os sustenta está contratada com folga: **Product Catalog Management Administrator**, 4261 assentos com 4 em uso, e **Product Catalog Management Viewer**, 6391 assentos, ambas ativas até 10/02/2031. Ou seja, a modelagem v4 (marca e modelo como hierarquia de `ProductCategory`, vínculo do plano por `ProductCategoryProduct`) está **liberada para desenho, sem objeto custom e sem custo adicional**.
+
+O plano B (Decision Matrix) deixa de ser contingência de licença e passa a ser o caminho de **evolução**, quando a elegibilidade ganhar critérios além de marca e modelo.
+
+**Achado lateral relevante para a HU-038:** a org tem `Salesforce Pricing Design Time` e `Salesforce Pricing Run Time`, mas com **1 assento cada**. Serve para prova de conceito do motor nativo de pricing, não para operação. A modelagem nativa de preços da HU-038 continua valendo como está.
 
 ### Alternativa se ProductCategory não estiver disponível
 
