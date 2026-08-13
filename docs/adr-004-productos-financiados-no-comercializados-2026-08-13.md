@@ -66,3 +66,46 @@ Resolve a exibição hoje, mas pelo motivo errado e com três custos:
 - Ruído em relatórios de catálogo e no Inventory Search;
 - Volume: um catálogo de valoração de todas as marcas são milhares de modelos — dilui a busca do fluxo;
 - Colisão de chave com o external id da réplica SAP.
+
+
+---
+
+## Parametrização de marca/modelo nos planos (contexto completo — 13/08)
+
+**Requisito:** planos financeiros e de seguro com três escopos: (1) sem marca e sem modelo; (2) com marca, sem modelo; (3) com marca e modelo. Picklists dependentes foram descartados pelo volume — corretamente.
+
+### Veredito das duas opções propostas
+
+| Opção avaliada | Veredito |
+|---|---|
+| **1. Product2 por marca + por marca/modelo** | **Não.** Cria milhares de registros que não são produtos, no objeto que alimenta busca do fluxo, relatórios de catálogo, administração de preços e Inventory Search. É exatamente a poluição que este ADR evita |
+| **2. BusinessBrand + objeto custom de modelos** | **Meio certo.** `BusinessBrand` para marcas: correto (objeto padrão, API 53+, "a unique brand for a business"). Objeto custom para modelos: **não** — duplica o `VehicleDefinition`, que já existe, já está populado pela réplica e é o padrão do Automotive |
+
+**Citação que decide:** a documentação do Automotive é explícita ao separar os dois papéis — *"While Product records are created for a vehicle type, **Vehicle Definition records are created to add more details**"*, e o `VehicleDefinition` guarda *"the make, model, model year, body style, trim level"*. O universo marca × modelo **já tem objeto nativo**.
+
+### Modelo recomendado (3 entidades + 1 junção leve)
+
+| Papel | Objeto | Nota |
+|---|---|---|
+| Marca (todas, inclusive não comercializadas) | **`BusinessBrand`** (padrão, API 53+) | ~dezenas de registros |
+| Modelo/versão | **`VehicleDefinition`** (padrão Automotive) | Já existe (224 na org). Adicionar os modelos financiáveis. Se precisar, campo custom de lookup para BusinessBrand |
+| Plano (financeiro ou seguro) | **`Product2`** com `Family = Financiamiento` / `Seguro` | É produto que o CrediQ comercializa de fato |
+| **Escopo do plano** | **1 objeto de junção** com 3 lookups: Plano, Marca (opcional), Modelo (opcional) | Um registro por escopo; um plano pode ter N escopos |
+
+Os três cenários caem sozinhos: **marca e modelo vazios** = plano global; **só marca** = vale para todos os modelos daquela marca; **marca + modelo** = plano específico.
+
+**Resolução por especificidade** (mesma lógica de regras de preço): ao cotizar, busca-se primeiro escopo marca+modelo, depois só marca, depois global. O negócio decide se o mais específico **substitui** ou se **soma** aos demais.
+
+### LWC: lookup pesquisável, não picklist
+
+O problema do volume se resolve com **`lightning-record-picker`** (componente base, API 59+): um seletor de marca sobre `BusinessBrand` e um seletor de modelo sobre `VehicleDefinition` **filtrado pela marca escolhida**. Escala para milhares de registros, sem os limites de picklist e sem dependência de valores.
+
+### Quando migrar para regra (BRE)
+
+Se a elegibilidade ganhar mais critérios (ano, faixa de valor, LTV, prazo, condição do cliente), o escopo marca/modelo continua na junção e os critérios adicionais vão para **Decision Matrix** — a mesma ferramenta dos impostos e fatores de preço.
+
+### A verificar na org
+
+1. `BusinessBrand` disponível (API 53+) — GAPCHECK;
+2. Campos reais de make/model/year no `VehicleDefinition` da org (nomes mudaram em Spring '24 — houve deprecação);
+3. Volume esperado de modelos financiáveis (dimensiona a carga).
