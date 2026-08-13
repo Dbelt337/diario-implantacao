@@ -130,51 +130,13 @@ ambiente — com impacto direto no cronograma de implantação.
 
 ---
 
-## O OM está operando — em escala de piloto
+## ⚠️ Achado crítico: o motor de orquestração está parado
+
+Verificado em produção em 13/08/2026.
+
+### Nenhum job agendado
 
 ```sql
-SELECT Id, Name, vlocity_cmt__State__c
-FROM vlocity_cmt__OrchestrationPlan__c
-WHERE CreatedDate >= LAST_N_DAYS:90
-```
-
-**14 registros.** Numeração em `Plan0000246`–`Plan0000249`, indicando ~249 planos
-desde o início. Cerca de um plano por semana — não é volume de produção para uma
-operadora com 1479 usuários no Comms Cloud Plus. O cenário é de **piloto,
-homologação ou linha de produto isolada**.
-
-### Ponto de atenção: planos em `In Progress`
-
-Todos os registros observados estão em `In Progress`. Duas leituras possíveis:
-
-- **Normal** — fulfillment em telecom é longo por natureza (instalação de fibra,
-  agendamento de técnico, ativação em rede). Planos abertos por semanas são
-  esperados.
-- **Travado** — o motor parou de processar. É o sintoma clássico de
-  **Orchestration Recovery Job** e **Integration Retry Job** não agendados. A
-  página XOM Administration não informa o estado desses jobs, só oferece "Start".
-
-Consultas que separam os dois casos:
-
-```sql
--- distribuição de estados na base completa
-SELECT vlocity_cmt__State__c, COUNT(Id)
-FROM vlocity_cmt__OrchestrationPlan__c
-GROUP BY vlocity_cmt__State__c
-```
-Predomínio de `In Progress` com pouco `Completed` = motor não fecha planos.
-
-```sql
--- idade do plano In Progress mais antigo
-SELECT Id, Name, vlocity_cmt__State__c, CreatedDate, LastModifiedDate
-FROM vlocity_cmt__OrchestrationPlan__c
-WHERE vlocity_cmt__State__c = 'In Progress'
-ORDER BY CreatedDate ASC
-```
-`LastModifiedDate` parado há meses = travado, não em andamento.
-
-```sql
--- os jobs estão agendados?
 SELECT CronJobDetail.Name, State, NextFireTime, PreviousFireTime
 FROM CronTrigger
 WHERE CronJobDetail.Name LIKE '%Orchestration%'
@@ -183,13 +145,78 @@ WHERE CronJobDetail.Name LIKE '%Orchestration%'
    OR CronJobDetail.Name LIKE '%Retry%'
 ```
 
+**Resultado vazio.** Nenhum dos jobs da XOM Administration está agendado —
+Orchestration Recovery, Integration Retry, Jeopardy Management, Future-Dated
+Tasks, Data Purge.
+
+### Passivo acumulado
+
+| Objeto | Total | Distribuição |
+|---|---|---|
+| `OrchestrationPlan__c` | 260 | 47 `Completed` (18%) · **213 `In Progress` (82%)** |
+| `OrchestrationItem__c` | 2.360 | 1.330 `Completed` · **813 `Pending`** · **201 `Running`** · **16 `Fatally Failed`** |
+
+### Não é fulfillment longo — é travamento
+
+A hipótese de que `In Progress` fosse normal em telecom (instalação de fibra,
+agendamento de técnico) **foi descartada pelos dados**:
+
+- Na maioria dos planos travados, `LastModifiedDate` é **idêntico** ao
+  `CreatedDate` — o plano nasceu e nunca mais foi tocado. Fulfillment em
+  andamento teria a data avançando conforme os itens completam.
+- `Plan0000000`, o mais antigo, é de **14/12/2025**, última modificação em
+  22/12/2025: ~8 meses parado.
+- **Nenhum plano criado desde 28/05/2026** — ~2,5 meses sem entrada.
+- Os 201 itens em `Running` estão marcados como executando sem nada executando.
+- Os 813 `Pending` são trabalho enfileirado que ninguém puxa sem os jobs.
+
+**Conclusão:** o OM rodou como piloto entre dezembro/2025 e maio/2026 e parou.
+Hoje não está em operação.
+
+### Não acionar "Start" direto em produção
+
+Ligar os jobs parece a correção óbvia e **é perigoso**. O Recovery Job e o
+Integration Retry Job varrem os 1.014 itens parados e os 213 planos travados e
+disparam **integrações reais** — callouts para MuleSoft e sistemas de rede —
+referentes a pedidos de 3 a 8 meses atrás. Provisionamento retroativo em
+produção, sem ninguém esperando.
+
+Sequência segura:
+
+1. Reproduzir em sandbox e ligar os jobs lá primeiro, medindo o que dispara
+2. Definir o destino do passivo histórico — purgar, encerrar ou descartar os
+   213 planos — **antes** de qualquer agendamento
+3. Tratar os 16 `Fatally Failed` (fila de fallout nunca trabalhada)
+4. Só então agendar em produção, com monitoramento
+
+---
+
+## Escala: piloto, não produção
+
+260 planos desde a origem (dez/2025), ~1 por semana no período ativo. Para uma
+operadora com 1479 usuários no Comms Cloud Plus, não é volume de produção — é
+piloto, homologação ou linha de produto isolada.
+
+### Consultas usadas
+
 ```sql
--- fallout acumulado nos itens
+SELECT vlocity_cmt__State__c, COUNT(Id)
+FROM vlocity_cmt__OrchestrationPlan__c
+GROUP BY vlocity_cmt__State__c
+```
+```sql
+SELECT Id, Name, vlocity_cmt__State__c, CreatedDate, LastModifiedDate
+FROM vlocity_cmt__OrchestrationPlan__c
+WHERE vlocity_cmt__State__c = 'In Progress'
+ORDER BY CreatedDate ASC
+```
+```sql
 SELECT vlocity_cmt__State__c, COUNT(Id)
 FROM vlocity_cmt__OrchestrationItem__c
 GROUP BY vlocity_cmt__State__c
 ```
-`Fatally Failed` ou `Running` em quantidade = fallout sem tratamento.
+
+`LastModifiedDate` é o campo que distingue "em andamento" de "travado".
 
 ### Custom setting `XOMSetup`
 
