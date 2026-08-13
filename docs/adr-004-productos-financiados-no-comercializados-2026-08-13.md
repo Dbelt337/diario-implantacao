@@ -146,6 +146,17 @@ Um plano pode ser ligado a **N marcas e N modelos** — a junção é N:N por na
 - **Verificar disponibilidade na org** (podem depender de habilitação Commerce/Revenue) — script GAPCHECK5 em `docs/scripts/`.
 - Modelos: continuam também no `VehicleDefinition` para specs/valoração — a categoria é o **escopo comercial**, não a ficha técnica.
 
+### Licença: risco identificado em 13/08 (verificar ANTES de desenhar em cima disso)
+
+A documentação do modelo de dados de produto e catálogo é explícita: `ProductCatalog`, `ProductCategory` e `ProductCategoryProduct` **exigem licença de Commerce** ("requires at least one of these licenses: B2B Commerce"); nas versões recentes o **Revenue Cloud / Product Catalog Management** também os habilita.
+
+**Por que isso é um risco real aqui:** o time B2C do programa usa **SFCC (Commerce Cloud B2C)**, que é uma plataforma separada e **não** provisiona objetos do core. Ou seja, o fato de existir frente de e-commerce **não garante** que estes três objetos existam nesta org.
+
+**Ordem correta:** rodar `docs/scripts/check-licencias-objetos.apex` (bloco E) antes de qualquer desenho. Se os objetos não existirem, o plano B já documentado passa a ser o principal:
+
+1. **Decision Matrix / Expression Set (BRE)** para a elegibilidade plano × marca × modelo — sem objeto, sem registros de junção, editável pelo negócio;
+2. `BusinessBrand` (padrão, API 53+) e `VehicleDefinition` (Automotive) seguem valendo para marca e modelo, porque não dependem de licença Commerce.
+
 ### Alternativa se ProductCategory não estiver disponível
 
 **Decision Matrix (BRE)** — a elegibilidade vira regra (marca + modelo + ano + valor → planos), sem objeto e sem registros de junção. É também o caminho natural se os critérios crescerem além de marca/modelo. Vale como plano B ou como evolução.

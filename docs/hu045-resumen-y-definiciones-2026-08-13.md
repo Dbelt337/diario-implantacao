@@ -106,6 +106,16 @@ Están todas en un solo script, `docs/scripts/gapcheck6-hu045-usado-consignacion
 5. Qué campos custom ya existen en Vehicle y en Asset, incluidos los `Actual*`, para ver qué queda por crear.
 6. Si `AppraisalItem.MakeName`, `ModelName` y `ModelYear` son restringidas en la org y con qué valores.
 
+## 4bis. Licencias
+
+Los objetos que uso en las respuestas se dividen en tres grupos y conviene tenerlo claro antes de diseñar sobre ellos.
+
+1. Sin licencia adicional: `Product2`, `Pricebook2`, `PricebookEntry`, `Opportunity`, `Quote`, `QuoteLineItem`, `Order`, `Asset`, `Location` y `Contract`. Son Sales Cloud y plataforma, ya los usamos en el flujo de venta guiada.
+2. Con licencia de Automotive Cloud, que la org ya tiene provisionada porque `Vehicle` y `VehicleDefinition` están en uso: `Vehicle`, `VehicleDefinition`, `AssetMilestone`, `VehicleSearchableField`, `AssetAccountParticipant`, `AssetContactParticipant`, y el bloque de avalúo y titularidad, `Appraisal`, `AppraisalItem`, `AppraisalAdjustment`, `AppraisalItemAddOn`, `AppraisalItemProviderVal`, `AssetTitle` y `AssetTitleParty`. Automotive Cloud es un producto adicional sobre Enterprise, Unlimited o Developer, y además de la licencia de org cada usuario necesita la permission set license correspondiente asignada. Lo que hay que confirmar no es la licencia de org sino qué bloques están incluidos en el contrato y qué usuarios los tienen asignados.
+3. Con licencia de Commerce o Revenue Cloud: `ProductCatalog`, `ProductCategory` y `ProductCategoryProduct`, que no intervienen en la HU-045 pero sí en la propuesta de parametrización de marcas y modelos del ADR-004. Ahí hay un riesgo concreto, el frente B2C del programa usa SFCC, que es plataforma separada y no provisiona objetos del core.
+
+Todo esto se resuelve con `docs/scripts/check-licencias-objetos.apex`, que lista las licencias contratadas, las asignadas al usuario y la disponibilidad real de cada objeto agrupada por bloque.
+
 ## 5. Acciones
 
 1. Ejecutar el GAPCHECK6 y pegar el log. Responsable Santiago.
