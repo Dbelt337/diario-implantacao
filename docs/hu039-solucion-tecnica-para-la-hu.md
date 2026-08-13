@@ -71,6 +71,42 @@ Sección lista para incorporar al documento de la historia. Cierra el diseño: c
 
 ---
 
+## 3bis. Cuándo se consulta a SAP y cuándo no
+
+Como el catálogo de materiales se replica a Salesforce, conviene dejar explícito qué preguntas se responden localmente y cuáles obligan a llamar a SAP. Son cuatro preguntas distintas y tienen respuestas distintas.
+
+| Pregunta | ¿Necesita API? | Por qué |
+|---|---|---|
+| ¿El material existe? | **No** | Se responde contra el catálogo replicado |
+| ¿Está creado para mi sociedad y centro? | **No, si la réplica trae los segmentos de centro y organización de ventas.** Ver más abajo | Es la pregunta que decide todo el volumen de llamadas |
+| ¿Cuánto hay disponible? | **Sí, siempre** | El saldo cambia por minuto y ya se definió que viene de SAP en vivo (HU-043 RN4). Replicar saldo es una batalla perdida |
+| ¿Cuál es el precio? | Según lo que defina la administración de precios | Fuera del alcance de esta historia |
+
+**El diagrama de la historia ya dice esto y vale señalarlo:** la caja "Sistema valida el material esté creado" está pintada como Salesforce, no como SAP. La consulta al Maestro de Materiales y al Maestro de Fábrica aparece recién después de que el asesor confirma que quiere generar el código. Es decir, la validación de existencia es local por diseño, y la llamada a SAP es el camino de excepción.
+
+### Por qué la API sigue siendo necesaria aunque el catálogo esté replicado
+
+Tres motivos, y ninguno desaparece por replicar mejor:
+
+1. **Latencia de la réplica.** Un material creado en SAP hace diez minutos puede no estar todavía en Salesforce. Es exactamente el caso que la RN-20 llama "catálogo desactualizado", y por eso esa regla existe: la consulta lo detecta y actualiza el catálogo en el momento.
+2. **Materiales que no están en el Maestro de Materiales.** La nota del diagrama describe una tabla Z con los códigos de todos los fabricantes, que se consulta justamente cuando el material no está en el catálogo de materiales. Eso, por definición, **nunca puede llegar por la réplica**, porque no está en el maestro. Es el corazón de esta historia.
+3. **Extensión a un centro nuevo.** Si el material existe pero no está creado para el centro del asesor, la extensión se ejecuta en SAP. Leer no alcanza, hay que escribir.
+
+### La pregunta concreta que hay que hacerle al equipo SAP
+
+El IDoc estándar de materiales tiene segmentos separados por nivel de dato: `E1MARAM` para el dato general, `E1MARCM` para el dato de centro, `E1MVKEM` para organización de ventas y canal de distribución, y `E1MARDM` para almacén.
+
+**¿La réplica actual incluye `E1MARCM` y `E1MVKEM`, o solo `E1MARAM`?**
+
+De la respuesta depende el diseño entero:
+
+1. **Si trae los segmentos de centro y de ventas**, la pregunta "está creado para mi sociedad y centro" se responde localmente, la API queda como camino de excepción, y el volumen de llamadas es bajo. Además el destino natural del segmento de centro es el objeto estándar que relaciona producto y ubicación, de modo que la persistencia de la extensión por centro deja de ser una optimización que inventamos y pasa a ser simplemente dónde aterriza un dato que la réplica ya trae.
+2. **Si solo trae el dato general**, entonces cada búsqueda necesita preguntarle a SAP si el material está creado para ese centro, la consulta síncrona deja de ser excepción y pasa a ser la norma, y hay que revisar la experiencia del mostrador antes de comprometer tiempos.
+
+Es una sola pregunta, y es la que más impacto tiene sobre el rendimiento y sobre el esfuerzo de integración.
+
+---
+
 ## 4. Cobertura de las reglas de negocio
 
 | Bloque | Reglas | Cómo queda cubierto |
