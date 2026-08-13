@@ -107,6 +107,64 @@ Es una sola pregunta, y es la que más impacto tiene sobre el rendimiento y sobr
 
 ---
 
+## 3ter. La RFC de creación de material, y cómo simplifica el diseño
+
+Con el diccionario de datos de `ZQEV_DBM_CREACION_MATERIALES` a la vista, el diseño se simplifica de forma importante. Corrige además una afirmación anterior nuestra, que decía que faltaban tres piernas de integración: **dos de las tres ya existen y son esta misma función.**
+
+### Qué hace y qué no hace la función
+
+| Parámetro | Tipo | Obligatorio | Observación |
+|---|---|---|---|
+| `MATERIAL` | MATNR, 18 | **Sí** | **Es entrada, no salida** |
+| `SOCIEDAD` | BUKRS, 4 | Sí | |
+| `CANAL` | VTWEG, 2 | Sí | Canal de distribución |
+| `SERIE` | ZSERIE_APLIC | Sí | Obligatoria para materiales ZREP |
+| `VER_DEFAULT` | CHAR1 | No | Con X ejecuta lógica adicional y confirma la transacción |
+| `MENSAJE` | CHAR255 | Salida | **Es la única salida** |
+
+Tres consecuencias de diseño salen directo de esta tabla.
+
+**Primera, y es la que más simplifica: SAP no asigna el código, el código se envía.** `MATERIAL` es entrada obligatoria. Entonces todo el circuito de "SAP crea, asigna un MATNR y lo devuelve para que Salesforce actualice el registro" **no aplica a esta función**. El código es el número de parte que el asesor ya tiene. Como la llamada es síncrona, el resultado se conoce en el momento.
+
+**Segunda, la misma función hace la creación y la extensión.** Las variantes documentadas incluyen crear para distinta sociedad, distinto canal y distinta serie. Eso es exactamente la extensión de la RN-21, de modo que no hace falta un servicio aparte.
+
+**Tercera, la función no devuelve datos maestros.** La única salida es un mensaje de 255 caracteres. Entonces la RN-48 y la RN-49, que piden que el retorno traiga descripción, disponibilidad, precio, rotación y cadena de sucesión, **no se satisfacen con esta función**. Esos datos llegan por la consulta de materiales o por la réplica del catálogo, en un segundo paso.
+
+### El recorrido queda así, mucho más corto
+
+1. Búsqueda local. Si aparece, la venta sigue.
+2. Si no aparece, se pregunta al asesor si desea generar el código (RN-18).
+3. Si confirma, se llama a `ZQEV_DBM_CREACION_MATERIALES` de forma síncrona.
+4. Si el mensaje es de éxito, el material **ya existe en SAP**. Se consulta para traer los datos maestros, se crea o actualiza el producto en Salesforce, se activa, y la venta sigue con el ítem.
+5. Si el mensaje es de error, se informa al asesor, se crea la solicitud prellenada inactiva y la venta sigue sin ese ítem (RN-23).
+
+El Tiempo 2 no desaparece, **pasa a ser el camino de excepción en lugar de ser la regla.** Es donde caen los casos que la RFC rechaza.
+
+### Cuándo la RFC rechaza, que es exactamente el alcance del Tiempo 2
+
+La documentación declara dos validaciones que producen rechazo:
+
+1. **Serie obligatoria.** Los materiales ZREP deben tener serie; si no la tienen, el material se elimina del procesamiento.
+2. **Partida arancelaria obligatoria.** Si no existe, el material se rechaza durante la carga.
+
+Ambas son datos que el asesor no puede inventar en el mostrador. Por eso la solicitud al área responsable sigue teniendo sentido: es quien completa esos datos. Y como la función admite ser llamada de nuevo, **la solicitud completada se reenvía por la misma RFC**, sin necesidad de un servicio nuevo ni de una notificación de vuelta.
+
+### Alcance real de la función
+
+Las reglas internas fijan Tipo de Material ZREP, Unidad ZUN y Condición de Precio ZQRP. Es decir, **la función es de repuestos**. Esto es consistente con la RN-27, que dice que en PA la creación nunca se resuelve automáticamente y siempre pasa por solicitud, cotización y aprobación. PA no usa esta función.
+
+### Lo que esto obliga a resolver, y es lo más urgente del diseño
+
+`CANAL` y `SERIE` son entradas obligatorias, y **hoy el flujo de venta guiada no las tiene**. No son datos que el asesor tenga a mano ni que estén en la pantalla. Hay tres opciones y hay que elegir una:
+
+1. Derivarlas del contexto, canal por sociedad y serie por la línea o el vehículo asociado;
+2. Pedirlas al asesor en el momento de confirmar la creación;
+3. Parametrizarlas por sociedad y centro en configuración.
+
+**Sin resolver esto, el camino automático no se puede construir**, por más que la RFC exista. Es la definición más urgente de toda la historia, por encima incluso de la lista de campos de la RN-49.
+
+---
+
 ## 4. Cobertura de las reglas de negocio
 
 | Bloque | Reglas | Cómo queda cubierto |
@@ -215,18 +273,23 @@ Se declara explícitamente para evitar interpretaciones posteriores.
 
 ## 8. Qué queda cubierto y qué no, sin adornos
 
-De las 63 reglas de negocio, **55 quedan completamente resueltas con el diseño de esta sección**. Las 8 restantes se agrupan en dos categorías, y ninguna de las dos depende de decisiones nuestras.
+De las 63 reglas de negocio, **59 quedan completamente resueltas con el diseño de esta sección**. Las 4 restantes son, todas, definiciones que la propia historia declara abiertas, más la lista de campos maestros. Ninguna depende de decisiones nuestras.
 
-### 8.1 Diseñadas y construibles, pero inoperables hasta que exista el servicio SAP
+Además hay **una definición que no es una regla de negocio pero que bloquea la construcción del camino automático**, y es la más urgente de todas: de dónde salen el canal de distribución y la serie, que la RFC exige como entradas obligatorias. Está detallada en la sección 3ter.
 
-| Regla | Qué falta |
+### 8.1 Dependientes de servicios SAP
+
+Con el diccionario de datos de `ZQEV_DBM_CREACION_MATERIALES` a la vista, esta lista se reduce mucho respecto de la evaluación inicial.
+
+| Regla | Estado |
 |---|---|
-| RN-21, RN-22 | La creación y extensión automática necesita un servicio de SAP que **no figura en el inventario de integraciones** sobre el que se está dimensionando el esfuerzo. El único candidato aparece citado en el diagrama de la historia, no en el inventario |
-| RN-41, RN-42 | La notificación de carga del código con el MATNR de vuelta **tampoco figura en el inventario**. El lado Salesforce está completamente especificado y se construye igual, pero sin esa pierna no llega nada |
+| RN-21, RN-22 | **Cubiertas.** La RFC crea y extiende, es síncrona, y sus variantes documentadas incluyen distinta sociedad, distinto canal y distinta serie |
+| RN-41, RN-42 | **Ya no son necesarias en el camino automático**, porque la RFC devuelve el resultado en el momento y el código es dato de entrada. Siguen siendo necesarias solo si se decide que el camino de excepción se completa dentro de SAP en lugar de reenviarse desde Salesforce. Es una elección, no una dependencia |
+| RN-48, RN-49 | **Pendientes.** La RFC devuelve únicamente un mensaje de 255 caracteres, así que los datos maestros llegan por la consulta de materiales o por la réplica. Falta la lista de campos |
 
-Es importante ser explícito en esto: el inventario "Integraciones para cotizar y crear un pedido" fue armado para cotizar y crear pedidos, no para crear materiales, así que la ausencia es esperable. Pero si la HU-039 entra al release sin que estas piernas entren en la estimación de integración, la historia se construye y no funciona.
+Es decir, la ausencia de estos servicios en el inventario "Integraciones para cotizar y crear un pedido" era esperable y no era un vacío: ese inventario se armó para cotizar y crear pedidos, y la RFC de creación de material se documentó por separado, en el contexto de la HU-028.
 
-Hay además una trampa de nomenclatura que conviene señalar: en ese inventario existe un escenario llamado *"Create Material from Cloud for Customer in SAP ERP"* que en realidad apunta a un servicio de **consulta**, no de creación. Quien lea solo el título va a concluir que la creación de material ya está cubierta, y no lo está.
+Queda una trampa de nomenclatura que conviene igual señalar: en ese inventario existe un escenario llamado *"Create Material from Cloud for Customer in SAP ERP"* que apunta a un servicio de **consulta**, no de creación. La creación es la RFC de este apartado, no aquella.
 
 ### 8.2 No cubribles como están escritas, porque la propia historia las declara abiertas
 
