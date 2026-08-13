@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!--
+        HU-039, Repuestos y PA: gestion de solicitud de creacion de material.
+        The request and the material live on the SAME Product2 record (RN-05,
+        RN-09). While it is a request the record stays inactive; when SAP
+        returns the MATNR the same record is completed, activated and switched
+        to the Material record type.
+
+        Metadata API names in English per the GRPQM naming conventions
+        document. Spanish display goes through the Translation Workbench.
+    -->
+
+    <!-- ============================ RECORD TYPES ============================ -->
+
+    <recordTypes>
+        <fullName>Material</fullName>
+        <active>true</active>
+        <label>Material</label>
+        <description>Definitive material. This is the catalog replicated from the SAP material master, plus the requests that SAP has already created. Records reach this record type only through the inbound integration (RN-42).</description>
+    </recordTypes>
+
+    <recordTypes>
+        <fullName>MaterialRequestOriginalPart</fullName>
+        <active>true</active>
+        <label>Material Request - Original Part</label>
+        <description>Creation request for an original spare part, identified by its manufacturer part number (RN-06, RN-30). Owner: Inventory Management team. No approval step (RN-36).</description>
+    </recordTypes>
+
+    <recordTypes>
+        <fullName>MaterialRequestWildcardCode</fullName>
+        <active>true</active>
+        <label>Material Request - Wildcard Code</label>
+        <description>Creation request for a local purchase item identified by its own wildcard code (RN-06, RN-31). Never eligible for automatic creation or extension in SAP (RN-22).</description>
+    </recordTypes>
+
+    <!-- ============================== FIELDS =============================== -->
+
+    <fields>
+        <fullName>RequestStatus__c</fullName>
+        <label>Request Status</label>
+        <type>Picklist</type>
+        <description>All countries. Lifecycle of the creation request (RN-10 to RN-15). In the Repuestos line only the inbound SAP integration writes this field, because Inventory Management has no Salesforce user (RN-38, RN-62); in PA the Category Manager updates it from the record.</description>
+        <inlineHelpText>Repuestos: updated by the SAP integration. PA: updated by the Category Manager.</inlineHelpText>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Pending</fullName>
+                    <default>true</default>
+                    <label>Pending</label>
+                </value>
+                <value>
+                    <fullName>InReview</fullName>
+                    <default>false</default>
+                    <label>In Review</label>
+                </value>
+                <value>
+                    <fullName>MaterialCreated</fullName>
+                    <default>false</default>
+                    <label>Material Created</label>
+                </value>
+                <value>
+                    <fullName>Rejected</fullName>
+                    <default>false</default>
+                    <label>Rejected</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+
+    <fields>
+        <fullName>RequestKey__c</fullName>
+        <label>Request Key</label>
+        <type>Text</type>
+        <length>80</length>
+        <unique>true</unique>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <required>false</required>
+        <description>All countries. Composite key of the open request: material code, company and plant (RN-33). It does three jobs at once. First, the database uniqueness closes the duplicate race that a Flow alone cannot close, because two advisors can query at the same instant and both find nothing (RN-35). Second, a unique field ignores null values, so clearing this field when the request is rejected makes a new request over the same combination admissible, exactly as RN-14 requires. Third, it is the External ID that MuleSoft upserts on when SAP returns the MATNR, which guarantees RN-43 (no second Product2) by construction rather than by convention.</description>
+        <inlineHelpText>Populated automatically. Do not edit: it is the key that prevents duplicate requests and that SAP uses to return the created code.</inlineHelpText>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestedMaterialCode__c</fullName>
+        <label>Requested Material Code</label>
+        <type>Text</type>
+        <length>40</length>
+        <required>false</required>
+        <description>All countries. Manufacturer part number for an Original Part request, or the wildcard code for a local purchase request (RN-30, RN-31). It is NOT the MATNR: the SAP code lands on ProductCode and SapMaterialCode__c only when SAP confirms the creation (RN-08).</description>
+        <inlineHelpText>Part number, or wildcard code for local purchases.</inlineHelpText>
+        <trackHistory>true</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestCompany__c</fullName>
+        <label>Requesting Company</label>
+        <type>Lookup</type>
+        <referenceTo>InternalOrganizationUnit</referenceTo>
+        <relationshipName>MaterialRequestsByCompany</relationshipName>
+        <relationshipLabel>Material Requests (Company)</relationshipLabel>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <required>false</required>
+        <description>All countries. Company the request belongs to (RN-28). Availability is evaluated per company and plant, never globally (RN-29).</description>
+        <trackHistory>true</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestPlant__c</fullName>
+        <label>Requesting Plant</label>
+        <type>Lookup</type>
+        <referenceTo>Location</referenceTo>
+        <relationshipName>MaterialRequestsByPlant</relationshipName>
+        <relationshipLabel>Material Requests (Plant)</relationshipLabel>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <required>false</required>
+        <description>All countries. Plant the material is requested for (RN-28). Part of the duplicate key together with the material code and the company (RN-33).</description>
+        <trackHistory>true</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestBranch__c</fullName>
+        <label>Requesting Branch</label>
+        <type>Lookup</type>
+        <referenceTo>Location</referenceTo>
+        <relationshipName>MaterialRequestsByBranch</relationshipName>
+        <relationshipLabel>Material Requests (Branch)</relationshipLabel>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <required>false</required>
+        <description>All countries. Branch of the advisor who raised the request (RN-28). Reporting and follow-up dimension; it is not part of the duplicate key.</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestedBy__c</fullName>
+        <label>Requested By</label>
+        <type>Lookup</type>
+        <referenceTo>User</referenceTo>
+        <relationshipName>MaterialRequestsRaised</relationshipName>
+        <relationshipLabel>Material Requests Raised</relationshipLabel>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <required>false</required>
+        <description>All countries. Advisor who originated the request, notified when the material is created or rejected (RN-55, CA-14). This is deliberately NOT CreatedById: when the guided flow or the integration creates the record, CreatedBy is the running or integration user and the real requester would be lost.</description>
+        <inlineHelpText>Advisor who raised the request. Notified when the material is created or rejected.</inlineHelpText>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestFob__c</fullName>
+        <label>FOB Value</label>
+        <type>Currency</type>
+        <precision>18</precision>
+        <scale>2</scale>
+        <required>false</required>
+        <description>All countries. Optional FOB value supplied by the advisor (RN-30, desirable data).</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestOrigin__c</fullName>
+        <label>Requested Origin</label>
+        <type>Text</type>
+        <length>80</length>
+        <required>false</required>
+        <description>All countries. Optional origin of the part (RN-30, desirable data).</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestVehicleModel__c</fullName>
+        <label>Requested Vehicle Model</label>
+        <type>Text</type>
+        <length>80</length>
+        <required>false</required>
+        <description>All countries. Vehicle model the part is intended for (RN-30, RN-31, desirable data).</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestVin__c</fullName>
+        <label>Requested VIN</label>
+        <type>Text</type>
+        <length>17</length>
+        <required>false</required>
+        <description>All countries. VIN of the vehicle that motivated the request (RN-30, desirable data). Helps Inventory Management identify the exact part.</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RequestNotes__c</fullName>
+        <label>Request Notes</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>4</visibleLines>
+        <required>false</required>
+        <description>All countries. Free notes from the advisor (RN-30, RN-31). Supporting photos and documents go to Salesforce Files, not here (RN-57).</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>RejectionReason__c</fullName>
+        <label>Rejection Reason</label>
+        <type>LongTextArea</type>
+        <length>32768</length>
+        <visibleLines>3</visibleLines>
+        <required>false</required>
+        <description>All countries. Why the responsible area decided the code should not be created (RN-14, scenario 17). In Repuestos this arrives from SAP through the integration together with the Rejected status.</description>
+        <trackHistory>true</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>SapLastError__c</fullName>
+        <label>SAP Last Error</label>
+        <type>LongTextArea</type>
+        <length>5000</length>
+        <visibleLines>3</visibleLines>
+        <required>false</required>
+        <description>All countries. Verbatim error returned by SAP. The record is not activated and is not marked as created; the incident stays recorded for retry or escalation (RN-51, RN-53, CA-16).</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>SapRetryCount__c</fullName>
+        <label>SAP Retry Count</label>
+        <type>Number</type>
+        <precision>3</precision>
+        <scale>0</scale>
+        <required>false</required>
+        <description>All countries. Number of retries already attempted (RN-51). The retry logic must test this explicitly and stop, because the platform bounds automatic platform event retries and a silently discarded event leaves nobody informed.</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>SapLastAttempt__c</fullName>
+        <label>SAP Last Attempt</label>
+        <type>DateTime</type>
+        <required>false</required>
+        <description>All countries. Timestamp of the last integration attempt. Feeds the stuck-requests list view that replaces the escalation case, which RN-56 forbids.</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>TurnoverClass__c</fullName>
+        <label>Turnover Class</label>
+        <type>Text</type>
+        <length>20</length>
+        <required>false</required>
+        <description>All countries. Turnover ("Rotacion") returned by SAP with the master data (RN-49). Text rather than a picklist until SAP confirms the closed set of values; convert to a restricted picklist once known.</description>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <fields>
+        <fullName>SupersededByProduct__c</fullName>
+        <label>Superseded By Product</label>
+        <type>Lookup</type>
+        <referenceTo>Product2</referenceTo>
+        <relationshipName>SupersededProducts</relationshipName>
+        <relationshipLabel>Superseded Products</relationshipLabel>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <required>false</required>
+        <description>All countries. Succession chain ("Cadena de Sucesion") returned by SAP (RN-49): the product that replaces this one. Self-relationship, so following the chain is a single lookup hop per step. If the chain ever needs source systems and versions, the native alternative is Codeset and CodesetRelationship.</description>
+        <inlineHelpText>Product that replaces this one according to the SAP succession chain.</inlineHelpText>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+    <!-- ========================= VALIDATION RULE ========================== -->
+
+    <validationRules>
+        <fullName>Request_Cannot_Be_Active_Before_SAP</fullName>
+        <active>true</active>
+        <description>RN-07, RN-42 and CA-04: a request stays inactive, and an inactive material cannot be quoted. Only the inbound integration marks Material Created and activates the record, because a material counts as created only once it is in the SAP material master. This rule stops a well-meaning user from ticking Active by hand and letting a non-existent material reach a customer quote.</description>
+        <errorConditionFormula>AND(
+  OR(
+    RecordType.DeveloperName = "MaterialRequestOriginalPart",
+    RecordType.DeveloperName = "MaterialRequestWildcardCode"
+  ),
+  IsActive,
+  NOT(ISPICKVAL(RequestStatus__c, "MaterialCreated"))
+)</errorConditionFormula>
+        <errorDisplayField>IsActive</errorDisplayField>
+        <errorMessage>A material request cannot be activated manually. The record is activated automatically when SAP confirms the code was loaded into the material master.</errorMessage>
+    </validationRules>
+
+</CustomObject>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Product2.RequestStatus__c</members>
+        <members>Product2.RequestKey__c</members>
+        <members>Product2.RequestedMaterialCode__c</members>
+        <members>Product2.RequestCompany__c</members>
+        <members>Product2.RequestPlant__c</members>
+        <members>Product2.RequestBranch__c</members>
+        <members>Product2.RequestedBy__c</members>
+        <members>Product2.RequestFob__c</members>
+        <members>Product2.RequestOrigin__c</members>
+        <members>Product2.RequestVehicleModel__c</members>
+        <members>Product2.RequestVin__c</members>
+        <members>Product2.RequestNotes__c</members>
+        <members>Product2.RejectionReason__c</members>
+        <members>Product2.SapLastError__c</members>
+        <members>Product2.SapRetryCount__c</members>
+        <members>Product2.SapLastAttempt__c</members>
+        <members>Product2.TurnoverClass__c</members>
+        <members>Product2.SupersededByProduct__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Product2.Material</members>
+        <members>Product2.MaterialRequestOriginalPart</members>
+        <members>Product2.MaterialRequestWildcardCode</members>
+        <name>RecordType</name>
+    </types>
+    <types>
+        <members>Product2.Request_Cannot_Be_Active_Before_SAP</members>
+        <name>ValidationRule</name>
+    </types>
+    <version>62.0</version>
+</Package>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!--
+        HU-039, package 2 of 2. Isolated on purpose.
+
+        RequestBrand__c is a lookup to BusinessBrand, which is the right model:
+        the standard brand object already holds 23 records in DEV Sales, so the
+        brand of a request is a reference and not free text that each advisor
+        spells differently.
+
+        It ships separately because BusinessBrand is a standard object and not
+        every standard object is a valid lookup target. If this package is
+        rejected, nothing else is lost: deploy package 1 and replace this field
+        with a Text(80) named RequestBrand__c, keeping the same API name so no
+        code or layout changes later.
+    -->
+
+    <fields>
+        <fullName>RequestBrand__c</fullName>
+        <label>Requested Brand</label>
+        <type>Lookup</type>
+        <referenceTo>BusinessBrand</referenceTo>
+        <relationshipName>MaterialRequestsByBrand</relationshipName>
+        <relationshipLabel>Material Requests (Brand)</relationshipLabel>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <required>false</required>
+        <description>All countries. Brand of the requested part (RN-30 mandatory for Original Part, RN-31 desirable for Wildcard Code). It joins the duplicate key only when populated (RN-33).</description>
+        <inlineHelpText>Brand of the part. Searchable lookup, so it scales past picklist limits.</inlineHelpText>
+        <trackHistory>false</trackHistory>
+    </fields>
+
+</CustomObject>
