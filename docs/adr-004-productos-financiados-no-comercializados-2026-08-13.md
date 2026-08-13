@@ -109,3 +109,43 @@ Se a elegibilidade ganhar mais critérios (ano, faixa de valor, LTV, prazo, cond
 1. `BusinessBrand` disponível (API 53+) — GAPCHECK;
 2. Campos reais de make/model/year no `VehicleDefinition` da org (nomes mudaram em Spring '24 — houve deprecação);
 3. Volume esperado de modelos financiáveis (dimensiona a carga).
+
+---
+
+## v4 (13/08) — Solução SEM criar objeto: taxonomia nativa de catálogo
+
+**Restrição adicional:** não criar objeto custom. Isso elimina a junção própria e a opção "objeto de modelos". A plataforma já tem a estrutura completa — **catálogo, hierarquia de categorias e junção N:N** — em objetos padrão:
+
+| Objeto padrão | Definição oficial | API | Papel aqui |
+|---|---|---|---|
+| **`ProductCatalog`** | *"The container that holds a Product Category hierarchy"* | 55+ | Catálogo próprio: *"Marcas y Modelos Financiables"* — separado do catálogo comercial/B2C |
+| **`ProductCategory`** | *"Represents the category that products are organized in"* | 49+ | **Hierarquia**: nível 1 = MARCA (VW, Toyota…), nível 2 = MODELO (Gol, Polo…) via `ParentCategoryId` |
+| **`ProductCategoryProduct`** | *"Holds the relation between product and product category to assign products to a category"* | 55+ | **A junção N:N que faltava** — liga o PLANO (Product2) à marca e/ou ao modelo |
+
+### Os três cenários, sem nenhum objeto novo
+
+| Cenário | Como fica |
+|---|---|
+| Sem marca e sem modelo | Plano **sem** nenhum `ProductCategoryProduct` → global |
+| Com marca, sem modelo | Plano ligado à categoria **da marca** → vale para todos os modelos abaixo |
+| Com marca e com modelo | Plano ligado à categoria **do modelo** (filha da marca) |
+
+Um plano pode ser ligado a **N marcas e N modelos** — a junção é N:N por natureza. E a hierarquia dá a herança de graça: quem consulta um modelo sobe até a marca e depois ao global.
+
+### Por que esta é a melhor forma
+
+1. **Zero objetos custom** — três objetos padrão que já existem no programa (o time B2C já configura catálogo e categorias na integração com o SFCC).
+2. **A hierarquia é nativa** — marca → modelo sem inventar auto-relacionamento.
+3. **Resolve o problema das picklists** — categorias são registros: milhares deles sem limite de picklist, pesquisáveis por lookup.
+4. **Reaproveitável** — a mesma taxonomia de marcas serve para planos de seguro, campanhas e relatórios.
+5. **Não polui o catálogo comercial** — nenhum Product2 falso de marca/modelo; e o catálogo de financiamento é um `ProductCatalog` **separado** do de navegação do B2C.
+
+### Cuidados
+
+- **Usar um `ProductCatalog` PRÓPRIO**: se as categorias de financiamento entrarem no catálogo de navegação do B2C, elas vazam para a vitrine.
+- **Verificar disponibilidade na org** (podem depender de habilitação Commerce/Revenue) — script GAPCHECK5 em `docs/scripts/`.
+- Modelos: continuam também no `VehicleDefinition` para specs/valoração — a categoria é o **escopo comercial**, não a ficha técnica.
+
+### Alternativa se ProductCategory não estiver disponível
+
+**Decision Matrix (BRE)** — a elegibilidade vira regra (marca + modelo + ano + valor → planos), sem objeto e sem registros de junção. É também o caminho natural se os critérios crescerem além de marca/modelo. Vale como plano B ou como evolução.
