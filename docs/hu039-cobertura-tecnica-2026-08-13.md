@@ -254,6 +254,41 @@ Os passos 1 a 5 não dependem de nenhuma resposta externa e podem começar hoje.
 
 ---
 
+## 6bis. Cruzamento com o inventário de integrações da sessão 22/07
+
+Confronto do que a HU-039 precisa contra o documento "Integraciones para cotizar y crear un pedido", que é o inventário sobre o qual o time de Mule está dimensionando o esforço.
+
+| O que a HU-039 precisa | Está no inventário? | Serviço |
+|---|---|---|
+| Consulta de material por sociedade e centro no Tiempo 1 (RN-19) | **Sim** | `ZHYB_C4C_CONSULTA_MATERIALES`, individual e massiva. Variantes `ZQEV_C4C_CONSULTA_MATERIALES` e `ZQEV_SD_CONSULTA_GENERAL_MAT` |
+| Texto de existência e disponibilidade | **Sim** | `ZHYB_DBM_TEXTO_EXISTENCIA_RFC`, e `TDET_SALDOS = PISO menos RESERVA`, podendo ser negativo |
+| Criação ou extensão automática no Tiempo 1 (RN-21) | **Não** | `ZHYB_DBM_PRECIO_VTA_NO_MAESTRO`, citado só no fluxograma da HU-039 |
+| Envio da solicitação de Salesforce para SAP (fluxograma) | **Não** | Não existe serviço mapeado |
+| Notificação de carga do código com o MATNR de volta (RN-41, RN-42) | **Não** | Não existe serviço mapeado |
+
+Ou seja, **três das cinco pernas que a HU-039 precisa não estão no inventário que o time de Mule está orçando.** Isso não é falha do documento, ele foi feito para cotizar e criar pedido, não para criar material. Mas significa que, se a HU-039 entrar no release sem que essas três entrem na estimativa, ela não tem integração para funcionar.
+
+Vale notar uma pegadinha de nomenclatura no documento: o cenário chamado *"Create Material from Cloud for Customer in SAP ERP"* aponta para `ZHYB_C4C_CONSULTA_MATERIALES`, que é uma **consulta**, não uma criação. Quem ler só o título do cenário vai concluir que a criação de material já está coberta, e não está.
+
+### O risco concreto que este documento revela: o MATMAS
+
+O inventário inclui a réplica padrão de materiais, `MATMAS_CFS_MATMAS05`, *"Replicate Material from SAP Business Suite"*. E a RN-43 diz, textualmente, que o retorno deve atualizar o mesmo registro *"para evitar que la posterior sincronización del catálogo cree un Product2 duplicado"*.
+
+Agora o cruzamento fica explícito: **a sincronização que a RN-43 teme é o MATMAS, e ele já está em escopo.** O cenário de falha é concreto e não hipotético:
+
+1. Gestión de Inventarios carrega o código no maestro de materiais;
+2. O MATMAS roda e traz o material novo, com o MATNR;
+3. A nossa solicitação tem o `RequestKey__c` preenchido mas o `SapMaterialCode__c` **vazio**, porque o MATNR ainda não chegou por ela;
+4. O MATMAS faz upsert por `SapMaterialCode__c`, não encontra nada, e **cria um segundo Product2**. A solicitação fica órfã.
+
+**A boa notícia é que o campo único transforma isso num erro alto em vez de numa duplicidade silenciosa.** Se depois chegar a notificação da RN-41 tentando gravar o mesmo MATNR na solicitação, o banco recusa com `DUPLICATE_VALUE`, porque `SapMaterialCode__c` é único. Ninguém fica com dois produtos ativos sem perceber.
+
+**Regra de tratamento a escrever no desenho:** ao receber `DUPLICATE_VALUE` na gravação do MATNR, não é erro de integração, é a corrida com o MATMAS. O tratamento correto é marcar a solicitação como Material Creado, mantê-la inativa e apontar o assessor para o produto que o MATMAS já criou, notificando normalmente. O resultado funcional é o mesmo e sem intervenção manual.
+
+**Alternativa que elimina a corrida na origem:** se a notificação da RN-41 chegar antes do MATMAS, a solicitação já tem o MATNR e o upsert posterior do MATMAS encontra o registro e apenas o completa. Vale pedir ao time de SAP que a notificação de criação seja **imediata**, e não dependente da janela do MATMAS.
+
+---
+
 ## 7. O que o Automotive Cloud já tem de nativo para esta HU
 
 Revisão objeto a objeto do catálogo padrão do Automotive Cloud contra os requisitos da HU-039. Três achados mudam decisões, um confirma a premissa da HU e dois são descartados com motivo.
