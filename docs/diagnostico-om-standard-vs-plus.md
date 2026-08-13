@@ -191,6 +191,71 @@ Sequência segura:
 
 ---
 
+## ⚠️ Achado crítico 2: o entitlement de submissão de pedidos venceu
+
+```sql
+SELECT FIELDS(ALL) FROM TenantUsageEntitlement LIMIT 200
+```
+(`MasterLabel` não é ordenável — não usar `ORDER BY` nesse objeto.)
+
+Linha relevante:
+
+```
+Maximum B2C orders submitted via Industries Order Management allowed for an org
+Setting:  orgValue.B2COrdersSubmittedLimit
+Allowed:  0          Used: 252
+Período:  2025-06-11 → 2026-06-16
+Último uso registrado: 2026-05-29
+```
+
+### Isto explica por que nada entra desde maio
+
+| Fonte | Última atividade |
+|---|---|
+| `OrchestrationPlan__c` — último plano criado | **28/05/2026** |
+| Entitlement de submissão — último uso | **29/05/2026** |
+
+Datas coincidem, e os volumes também: **252 pedidos submetidos** contra **260
+planos** criados; a diferença cabe em amendments e supplementais, que não contam
+como pedido novo. O piloto parou porque **acabou a franquia de submissão**, não
+por decisão técnica.
+
+### Não foi renovado no termo atual
+
+Todo entitlement vigente do contrato termina em **2028-06-17** (API, flows,
+comunidades, platform events) — mesma data da PSL `Comms Cloud Plus`. Todo
+entitlement lapsado aparece com `CurrentAmountAllowed = 0` e data de fim
+anterior.
+
+O do Industries OM está no segundo grupo: **encerrou em 16/06/2026 e não entrou
+no bloco até 2028**. As licenças de usuário do Comms Cloud Plus seguem válidas
+por mais dois anos, mas o **direito medido de submeter pedidos B2C via
+Industries OM está vencido**. Retomar o OM passa por contrato, não só por
+configuração.
+
+### Dois problemas independentes
+
+1. **Nada entra desde maio** → franquia esgotada/vencida. Resolução comercial.
+2. **213 planos travados** → nenhum job agendado. Resolução técnica.
+
+Um não explica o outro. Renovar o contrato não destrava os planos antigos.
+
+### Decoy na mesma tabela
+
+**"Maximum Orchestration Runs" — 600/ano, válido até 2028-06-17** é
+**Flow Orchestration**, produto padrão da plataforma. Nenhuma relação com a
+orquestração do Industries OM. É fácil ver "Orchestration" com validade até 2028
+e concluir que está tudo certo.
+
+### Ressalva
+
+A tabela não revela **qual era a franquia original**. `CurrentAmountAllowed = 0`
+é o estado pós-expiração — mesmo padrão de todas as linhas vencidas. Se a
+franquia era ~250, houve estouro tolerado pelo `OverageGrace`; se era piloto sem
+alocação formal, os 252 foram consumo sem franquia. Só o Order Form responde.
+
+---
+
 ## Escala: piloto, não produção
 
 260 planos desde a origem (dez/2025), ~1 por semana no período ativo. Para uma
