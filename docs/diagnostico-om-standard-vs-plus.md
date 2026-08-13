@@ -20,6 +20,27 @@ O botão "Configure for Order Management Standard" aparece **desabilitado** — 
 estado corrente. O botão "Configure for Order Management Plus" está disponível
 como mudança de modo.
 
+### Segunda confirmação, na mesma página
+
+O conteúdo da XOM Administration corrobora o status. Os nove itens listados são
+todos de manutenção **on-platform** — jobs Apex agendados dentro do org:
+
+- Apply Record Types and Page Layout Assignments
+- Update Orchestration Queues Counters
+- Schedule Jeopardy Management Job
+- Schedule Future-Dated Tasks Job
+- Schedule Orchestration Recovery Job
+- Schedule Integration Retry Job
+- Orchestration Data Purge Job
+- Activate Fulfillment Diagram Graph Template
+
+**Nenhuma entrada de OM Plus aparece**: Manage Secrets, Manage Encryption Keys,
+Service Level Health Check, OMPL DB Query e Off-Platform Access Config estão
+ausentes. A doc do OM Plus descreve essas entradas como parte da XOM
+Administration em modo Plus (*"With OM Plus, you can view and edit custom secrets
+directly from the XOM Administration page"*). No Plus, as responsabilidades
+desses jobs migram para os pods na AWS.
+
 ---
 
 ## O que diferencia Standard de Plus
@@ -46,6 +67,7 @@ of Order Management Standard, most notably the addition of AWS."*
 | Verificação | Resultado | Conclusão |
 |---|---|---|
 | Página XOM Administration (produção) | `CONFIGURED FOR ORDER MANAGEMENT STANDARD` | **Standard** — prova direta |
+| Itens da XOM Administration | só jobs Apex on-platform; sem Manage Secrets / Encryption Keys / Health Check / OMPL DB Query | **Standard** — a página renderiza o modo Standard |
 | `NamedCredential` | 4 no total: `CNPJPublicAPI`, `GetAddress`, `MuleCallout`, `ZendeskStatusIntegration` | nenhuma aponta para OM Plus/AWS |
 | `RemoteProxy` (Remote Site Settings) | ~140, todas FSL / Marketing Cloud / MuleSoft Tecpar / Google Maps / BrasilAPI / URLs internas | nenhum endpoint OMPL/XOM/AWS de orquestração |
 | `PermissionSet` com label `OM %`, `%OMPlus%`, `%XOM%` | vazio | sample permission sets de OM nunca implantados |
@@ -108,17 +130,34 @@ ambiente — com impacto direto no cronograma de implantação.
 
 ---
 
-## Pendente
+## Pendente: o OM Standard está operando?
 
-Verificar se o OM Standard está de fato configurado (e não apenas disponível):
+Saber o sabor não diz se o motor está rodando. Três verificações:
 
 ```sql
+-- 1. existe configuração e movimento de pedidos?
 SELECT COUNT() FROM vlocity_cmt__OrchestrationPlanDefinition__c
 SELECT COUNT() FROM vlocity_cmt__OrchestrationPlan__c
 SELECT COUNT() FROM vlocity_cmt__FulfilmentRequest__c
 ```
 
-Zero em todas = pacote CME instalado, OM sem operação.
+```sql
+-- 2. os jobs da XOM Administration estão agendados?
+SELECT CronJobDetail.Name, State, NextFireTime, PreviousFireTime
+FROM CronTrigger
+WHERE CronJobDetail.Name LIKE '%Orchestration%'
+   OR CronJobDetail.Name LIKE '%XOM%'
+   OR CronJobDetail.Name LIKE '%Jeopardy%'
+   OR CronJobDetail.Name LIKE '%Retry%'
+```
+
+```sql
+-- 3. parâmetros do motor (intervalMins, OrchestrationRetryJobIntervalMins, etc.)
+SELECT Name FROM vlocity_cmt__XOMSetup__c
+```
+
+Zero nas contagens e nenhum job com `State = WAITING` = pacote CME instalado e
+modo Standard configurado, porém **sem motor em operação**.
 
 ---
 
