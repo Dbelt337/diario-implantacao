@@ -237,6 +237,62 @@ guia = [
   'US-SAL-01-02B (una sola interfaz para todas las entidades)'],
 ]
 
+# ---- Vinculación con los ítems de estimación MuleSoft (vista S4 compartida 13/08)
+PED = 'Pedidos SF → SAP (Outbound)'
+INV = 'Inventario US-SAL-03-01B, US-SAL-03-01C, US-SAL-03-01D (Parte 1 y Parte 2)'
+LEA = 'Captura Leads (Sales Lead BOD + custom) Parte 1 y Parte 2'
+DOC = 'Documentación (OpenText + Document Templates)'
+NA  = 'NO aparece en la vista S4 compartida — confirmar si está estimado en otro sprint'
+
+ITEM_MULE = {
+ 'INT-SAL-01': NA,
+ 'INT-SAL-02': NA,
+ 'INT-SAL-03': NA,
+ 'INT-SAL-04': NA,
+ 'INT-SAL-05': NA,
+ 'INT-SAL-06': INV + ' — cubre US-SAL-03-01D (estado de la unidad). OJO: 03-01A (alta de unidad) no está nombrada en el ítem',
+ 'INT-SAL-07': NA + ' (es la consulta que usa el grid de Repuestos: sin ella la HU-043 no funciona)',
+ 'INT-SAL-08': NA + ' (US-021 — creación de material desde el flujo guiado)',
+ 'INT-SAL-09': 'Clientes — pedido como ADICIONAL por el equipo; no está en la vista S4',
+ 'INT-SAL-10': 'Clientes — pedido como ADICIONAL por el equipo; no está en la vista S4',
+ 'INT-SAL-11': 'Clientes — pedido como ADICIONAL por el equipo; no está en la vista S4',
+ 'INT-SAL-12': PED,
+ 'INT-SAL-13': PED + ' — ¿INCLUIDO? El ítem dice "Outbound" y esto es el RETORNO (inbound): confirmar que no quedó fuera',
+ 'INT-SAL-14': PED + ' — ¿INCLUIDO? Modificación en SAP es inbound: confirmar',
+ 'INT-SAL-15': INV + ' — cubre US-SAL-03-01B/C. En Salesforce el timer ya es nuestro; de Mule solo se necesita la liberación',
+ 'INT-SAL-16': NA + ' (devolución: NO estimar hasta que SAP defina el documento)',
+ 'INT-SAL-17': LEA,
+ 'INT-SAL-18': NA + ' (LexisNexis — validación de leads, US-SAL-05-01A)',
+ 'INT-SAL-19': NA + ' (buró EFX — verificar solapamiento con E-CQ de Digital Lending para no pagar dos consultas)',
+ 'INT-SAL-20': DOC + ' — la parte OpenText. Document Templates es NATIVO: no consume esfuerzo Mule',
+ 'INT-SAL-21': NA + ' (reconciliación mensual)',
+}
+g_header = g_header + ['Ítem de estimación MuleSoft (vista S4)']
+guia = [r + [ITEM_MULE.get(r[0], NA)] for r in guia]
+
+# ------------------------------------------------------- VISTA INVERSA
+e_header = ['Ítem de estimación MuleSoft', 'Equipo', 'Interfaces de esta guía que cubre', 'Cobertura / observación']
+estim = [
+ [PED, '[OSF] SOW002 - Automotive Sales', 'INT-SAL-12 (envío del pedido)',
+  'El nombre dice OUTBOUND. El flujo necesita además el RETORNO (INT-SAL-13: número de pedido, confirmación, factura) y la MODIFICACIÓN en SAP (INT-SAL-14). CONFIRMAR si están dentro del ítem o si falta estimarlos. Nota: el pedido de vehículos es una cadena (prerrequisitos → CREA Z301 → COPIA Z300), no una llamada'],
+ [INV, '[OSF] SOW002 - Automotive Sales', 'INT-SAL-06 (estado de la unidad) + INT-SAL-15 (liberación de la reserva)',
+  'El ítem nombra 03-01B/C/D. Falta nombrar 03-01A (recepción del inventario unitario por VIN), que es lo que puebla Vehicle/Asset. El timer de reserva (15/45 min) es lógica Salesforce: no consume Mule'],
+ [LEA, '[OSF] SOW002 - Automotive Sales', 'INT-SAL-17 (API única de captura de leads)',
+  'Cubre los 4 orígenes (LeadsBridge, TalkMe, SFCC/marcas, Cyberfuel SOAP) con UN endpoint de upsert; cada origen es una transformación. La captura en showroom es nativa (sin Mule)'],
+ [DOC, '[OSF] SOW002 - Automotive Sales', 'INT-SAL-20 (documentos a OpenText)',
+  'Solo la parte OpenText es integración. Document Templates de Automotive Cloud EE es generación nativa: no debería consumir esfuerzo Mule'],
+ ['E-CQ-01 — Validación de Avalúo y Revisión de Vendedor de vehículos Terceros', '[OSF] SOW002 - Digital Lending', 'Ninguna de esta guía',
+  'Otro equipo. Se relaciona con la HU-045 (usados/consignación) del lado Sales: coordinar para no duplicar la consulta de avalúo'],
+ ['E-CQ-09 — Cotizador / Tasa de Referencia SAP (PRIME, TPROFONI, TBPCR)', '[OSF] SOW002 - Digital Lending', 'Ninguna de esta guía',
+  'Otro equipo, pero es integración con SAP por el MISMO gateway: reutilizar credencial, monitoreo y política de reintentos'],
+ ['(sin ítem) Catálogo, precios y tipos de cambio', '—', 'INT-SAL-02, 03, 04, 05',
+  'RIESGO: sin catálogo ni listas de precios replicadas, la venta guiada no encuentra material ni precio. Es precondición de los ítems ya estimados'],
+ ['(sin ítem) Disponibilidad de repuestos y creación de material', '—', 'INT-SAL-07, INT-SAL-08',
+  'RIESGO: son las dos llamadas que el grid de Repuestos (HU-043) y la US-021 ya construidos consumen hoy contra el mock'],
+ ['(sin ítem) Clientes', '—', 'INT-SAL-09, 10, 11',
+  'Pedido por el equipo como adicional — ya está mapeado en esta guía, pueden empezar'],
+]
+
 # ------------------------------------------------------- MAPEO DE CAMPOS
 c_header = ['Interfaz', 'Campo SAP / origen', 'Objeto.Campo Salesforce', 'Tipo', 'Obligatorio', 'Regla de transformación / nota']
 
@@ -353,14 +409,16 @@ servicios = [
 ]
 
 sheets = [
- ('Sales', [11, 34, 13, 22, 34, 40, 32, 34, 24, 30, 46, 34], g_header, guia,
-  'GUIA SALES v2 - Integraciones Salesforce <-> SAP via MuleSoft (12/08/2026) - 21 interfaces UNICAS, con los nombres de servicio SAP confirmados en la sesion 22/07'),
+ ('Sales', [11, 34, 13, 22, 34, 40, 32, 34, 24, 30, 46, 34, 52], g_header, guia,
+  'GUIA SALES v3 - Integraciones Salesforce <-> SAP via MuleSoft (12/08/2026) - 21 interfaces UNICAS, con nombres de servicio SAP (sesion 22/07) y vinculacion a los items de estimacion MuleSoft (vista S4)'),
  ('Mapeo Campos', [14, 32, 40, 22, 12, 60], c_header, campos,
   'Mapeo de campos por interfaz (nivel campo) - reglas de transformacion'),
  ('Deduplicacion', [40, 26, 80], d_header, dedup,
   'Trazabilidad: como las filas de la guia original se consolidaron (y que quedo fuera por no ser integracion)'),
  ('Reglas', [26, 70, 60], r_header, reglas,
   'Reglas y convenciones transversales (validas para TODAS las interfaces)'),
+ ('Estimacion Mule', [46, 30, 44, 80], e_header, estim,
+  'Vista inversa: cada item de estimacion MuleSoft (vista S4) y las interfaces que cubre — incluye los huecos de cobertura'),
  ('Servicios SAP', [16, 46, 56, 20, 60], sv_header, servicios,
   'Catalogo de servicios SAP confirmados en la sesion 22/07 (documento Integraciones para cotizar y crear un pedido)'),
  ('Fuentes', [46, 80], f_header, fuentes,
