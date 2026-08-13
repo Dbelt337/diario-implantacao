@@ -165,6 +165,30 @@ Las reglas internas fijan Tipo de Material ZREP, Unidad ZUN y Condición de Prec
 
 ---
 
+## 3quater. Cómo se entera quien tiene que crear el material
+
+Pregunta abierta y conviene ser explícito: **hoy no está definido**, y la propia historia lo declara así en la RN-54, donde dice que el aviso inicial al área responsable se hace por fuera del sistema, por llamada, mensaje o correo, a criterio del vendedor, y que queda pendiente confirmar si ese aviso puede salir por correo desde Salesforce.
+
+Hay una restricción de fondo que conviene nombrar, porque explica el problema y también explica otro punto de la historia: **no se puede notificar dentro de un sistema a quien no tiene usuario en ese sistema.** La RN-38 y la RN-62 dicen que Gestión de Inventarios no tiene usuario Salesforce en esta fase.
+
+Y es exactamente la misma restricción que deja sin dueño el estado En revisión. La RN-15 dice que el área responsable actualiza los estados, pero sin usuario no puede hacerlo. **La pregunta de la notificación y la pregunta del estado son la misma pregunta.**
+
+### Tres opciones, con su costo real
+
+| Opción | Cómo funciona | Costo | Consecuencia |
+|---|---|---|---|
+| **1. Correo desde Salesforce a un buzón compartido** | Alerta automática al crear la solicitud, dirigida a una casilla o grupo de Gestión de Inventarios | Cero desarrollo. No requiere usuario Salesforce | Resuelve el aviso, **no resuelve la trazabilidad**: nadie puede marcar En revisión, así que no se sabe si alguien la tomó |
+| **2. Aviso dentro de SAP** | SAP genera una tarea o entrada de trabajo para el analista | **Desarrollo SAP nuevo.** Cuando la RFC rechaza no se creó nada en SAP, así que no hay de dónde disparar un aviso: habría que enviar la solicitud a SAP como registro pendiente. No figura en ningún inventario de integraciones | Resuelve el aviso en la herramienta donde esa persona trabaja, al costo de una integración y un desarrollo que hoy no existen |
+| **3. Dar usuario Salesforce a Gestión de Inventarios** | Trabajan la solicitud desde su List View, como ya lo hace el Catman en PA | Licencias y perfiles. La org tiene 2554 licencias Salesforce con 48 en uso, así que **la licencia no es la restricción** | Resuelve aviso y trazabilidad de una sola vez, con lo nativo: vista de lista, estado, seguimiento del registro e historial |
+
+### Recomendación
+
+**Opción 1 para el R1**, porque no bloquea nada y se implementa con una alerta de correo. **Opción 3 como decisión a evaluar en serio**, porque es la única que cierra la trazabilidad que la propia historia pide en la RN-15 y en el CA-06, y el obstáculo que se asumía, la licencia, no existe.
+
+La opción 2 solo tiene sentido si el negocio exige que el analista no salga de SAP, y en ese caso hay que dimensionar desarrollo SAP más una integración de salida que hoy no está en ninguna estimación.
+
+---
+
 ## 4. Cobertura de las reglas de negocio
 
 | Bloque | Reglas | Cómo queda cubierto |

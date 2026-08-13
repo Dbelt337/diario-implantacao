@@ -1,0 +1,56 @@
+%% HU-039 · Creación de material · Solución técnica
+%% Para importar en Lucidchart: Insertar, Diagrama con datos, Mermaid, y pegar este código.
+
+flowchart TD
+    INICIO((INICIO)) --> A1[Asesor busca el material]
+    A1 --> A2[Búsqueda local en el catálogo<br/>replicado desde SAP]
+    A2 --> D1{¿Existe en el catálogo<br/>y está activo?}
+
+    D1 -->|SÍ| OK1[Continúa el proceso de venta]
+    OK1 --> FIN((FIN))
+
+    D1 -->|NO| A3[El sistema pregunta al asesor<br/>si desea generar el código]
+    A3 --> D2{¿Desea crearlo?}
+    D2 -->|NO| OK1
+
+    D2 -->|SÍ| A4[Reúne MATERIAL, SOCIEDAD,<br/>CANAL y SERIE<br/>DEFINICIÓN PENDIENTE]
+    A4 --> A5[ZQEV_DBM_CREACION_MATERIALES<br/>síncrona · crea y extiende]
+    A5 --> D3{¿MENSAJE de éxito?}
+
+    D3 -->|SÍ| B1[ZHYB_C4C_CONSULTA_MATERIALES<br/>trae los datos maestros]
+    B1 --> B2[Crea o actualiza Product2<br/>RT Material · IsActive = true]
+    B2 --> B3[Continúa la venta CON el ítem]
+    B3 --> FIN
+
+    D3 -->|NO| C1[Informa al asesor y crea la solicitud<br/>prellenada · RT de solicitud<br/>IsActive = false · RequestKey único]
+    C1 --> C2[Continúa la venta SIN el ítem]
+    C2 --> T2
+
+    subgraph T2 [TIEMPO 2 · REPUESTOS · sin aprobaciones]
+        direction LR
+        E1[El área toma la solicitud<br/>estado En revisión] --> E2[Completa SERIE y<br/>partida arancelaria]
+        E2 --> D4{¿Procede la creación?}
+        D4 -->|SÍ| E3[Reenvío por la MISMA RFC]
+        E3 --> E4[Material Creado · activa el registro<br/>y pasa a RT Material]
+        E4 --> E5[Notifica al asesor y a los seguidores]
+        D4 -->|NO| E6[Rechazado · se libera el RequestKey]
+        E6 --> E5
+    end
+
+    subgraph T2PA [TIEMPO 2 · PA · con aprobaciones]
+        direction LR
+        F1[Solicitud dirigida al Catman] --> F2[Valida y cotiza con fábrica]
+        F2 --> F3[Aprobación Director de PA]
+        F3 --> F4[Aprobación VP de PA]
+        F4 --> F5[Solicita a Inventarios<br/>manual, fuera de Salesforce]
+    end
+
+    classDef comercial fill:#FFFFFF,stroke:#7C4DFF,stroke-width:3px,color:#15181C
+    classDef salesforce fill:#FFFFFF,stroke:#1FA9C4,stroke-width:3px,color:#15181C
+    classDef sap fill:#FFFFFF,stroke:#EF3E36,stroke-width:3px,color:#15181C
+    classDef inventarios fill:#FFFFFF,stroke:#EE5A94,stroke-width:3px,color:#15181C
+
+    class A1,OK1,B3,C2,F2 comercial
+    class A2,A3,A4,B2,C1,E4,E5,E6,F1,F3,F4 salesforce
+    class A5,B1,E3 sap
+    class E1,E2,F5 inventarios
