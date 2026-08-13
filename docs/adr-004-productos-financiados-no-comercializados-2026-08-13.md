@@ -35,6 +35,31 @@ Filtra **só por `IsActive = true`**. Um Product2 de VW ativo apareceria na busc
 | 3 | Definir dono e cadência do catálogo de valoração (não é a réplica SAP) | Financial / CrediQ |
 | 4 | Verificar impacto no dominio de preços (HU-038): esses produtos não devem aparecer como "sem preço" na administração | HU-038 |
 
+## Requisito real (esclarecido 13/08): planos de financiamento POR MARCA
+
+CrediQ tem planos específicos por marca (ex.: um plano só para Volkswagen), mesmo sem comercializar a marca. Precisam de entidades de marca/modelo para vincular os planos elegíveis.
+
+### Modelo em 3 camadas (tudo nativo)
+
+| Camada | Objeto | Papel |
+|---|---|---|
+| **Plano de financiamento** | `Product2` com `Family = Financiamiento` | É produto que CrediQ **comercializa de fato** — entra no catálogo deles com naturalidade |
+| **Marca / modelo financiável** | `VehicleDefinition` (marca, modelo, ano, versão) — objeto Automotive para isso | Se precisar de Product2 espelho: `Family = No Comercializado`, **nunca** com PricebookEntry comercial |
+| **Elegibilidade plano × marca/modelo** | **Decision Matrix / Expression Set (BRE)** | Regras (marca + modelo + ano + valor + LTV → planos elegíveis), editáveis pelo negócio sem deploy |
+
+**Por que regras e não tabela de vínculos:** é assim que a indústria de *captive finance* modela — programas com **critérios de elegibilidade**, não enumeração de combinações. Um catálogo de todas as marcas × todos os planos gera milhares de registros de junção que ninguém mantém. E é a MESMA ferramenta (BRE) que já usamos para impostos e fatores de preço. Se para um conjunto pequeno precisarem de vínculo registro a registro, o nativo é `ProductRelatedComponent` com relação AddOn.
+
+**Opção adicional a verificar:** `ProductClassification` (Revenue Cloud, API 60+) — "template que agrupa atributos dinâmicos para definir produtos similares". Se a org tiver a licença RLM, "Marca" vira atributo de classificação e o vínculo fica ainda mais natural. O GAPCHECK4 já testa isso.
+
+## Sobre usar `IsActive = false` como segregação: NÃO
+
+Resolve a exibição hoje, mas pelo motivo errado e com três custos:
+1. **Semântica trocada:** `IsActive=false` significa *descontinuado*. Esconde o produto em **toda** a UI — inclusive onde CrediQ precisa dele (lookups, related lists, relatórios próprios, seleção nos planos).
+2. **Briga com a plataforma:** produto inativo não sustenta PricebookEntry ativo. Se um dia o plano ou o modelo precisar de valor/preço, o modelo trava.
+3. **Frágil:** nossa busca filtra `IsActive = true` **por acaso** — no dia em que alguém ativar um registro, ou uma consulta nova não filtrar, o vazamento volta. Uma `Family` é explícita e auto-documentada.
+
+**Design à prova de futuro na busca:** filtrar por **lista de famílias comerciais permitidas** (allowlist), não por exclusão. Assim, qualquer família não comercial criada depois já nasce fora do fluxo de venda, sem tocar no código.
+
 ## Riscos se NÃO segregar
 
 - Assessor cotiza um veículo que a empresa não vende (erro comercial visível ao cliente);
