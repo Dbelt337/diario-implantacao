@@ -254,7 +254,82 @@ Os passos 1 a 5 não dependem de nenhuma resposta externa e podem começar hoje.
 
 ---
 
-## 7. Fontes
+## 7. O que o Automotive Cloud já tem de nativo para esta HU
+
+Revisão objeto a objeto do catálogo padrão do Automotive Cloud contra os requisitos da HU-039. Três achados mudam decisões, um confirma a premissa da HU e dois são descartados com motivo.
+
+### 7.1 Confirma a premissa: `ProductRequest` **não** serve, e Product2 com Record Types está certo
+
+O primeiro reflexo de quem lê "solicitação de material" é procurar um objeto de solicitação. Ele existe: `ProductRequest` e `ProductRequestLineItem`, documentados como *"an order for a part or parts"*. Mas a semântica é outra. `ProductRequest` pede **peças que já existem** para serem transferidas ou pedidas, e suas linhas apontam para um `Product2` existente.
+
+Na HU-039 o produto **ainda não existe**, é justamente isso que se está pedindo criar. Usar `ProductRequest` exigiria criar antes o Product2 que a solicitação pretende criar, o que é circular.
+
+**Conclusão: a RN-05 está tecnicamente correta.** Product2 com Record Types é o modelo certo, e agora com fundamento e não por ausência de alternativa.
+
+### 7.2 Muda o desenho: `ProductItem` é o lugar nativo do "creado para el centro"
+
+A RN-29 diz que *"un material puede existir para una sociedad y no para otra; la disponibilidad se evalúa por sociedad/centro y no de forma global"*. Isso é o coração funcional da HU, e hoje não tem nenhum modelo no Salesforce: Product2 é global por natureza, não tem noção de centro.
+
+O Automotive Cloud documenta `ProductItem` entre seus objetos de inventário, e ele é exatamente *"o estoque de um produto determinado numa localização determinada"*. Ou seja, a existência de um material **por Location** é um registro nativo, não um campo inventado.
+
+**Decisão recomendada, e ela é conservadora:** não replicar saldo. A HU-043 já decidiu que o saldo vem do SAP ao vivo (RN4) e isso não muda. O que `ProductItem` resolve é diferente de saldo: é o fato persistido de que **o material está criado para aquele centro**, que é o que a RN-21 e a RN-24 consultam. Duas opções:
+
+1. **Não persistir nada** e perguntar ao SAP toda vez. É o que o desenho atual faz. Simples, mas cada busca do assessor vira um callout, e a RN-19 já é síncrona no meio do atendimento.
+2. **Persistir a extensão por centro** em `ProductItem` quando o SAP confirma. A segunda consulta pelo mesmo material e centro não sai da org. Sem objeto custom.
+
+Recomendo a opção 2 se o volume de consultas for alto, que é o caso de um balcão de repuestos. Mas é decisão a tomar com número na mão, não por gosto.
+
+### 7.3 Responde uma pergunta que a HU deixou aberta: `ProductTransfer`
+
+A RN-24 diz que, na extensão entre centros da mesma sociedade, *"se genera un traslado a nivel de pedido. El sistema en el que se ejecuta y registra ese traslado requiere validación"*. Ou seja, a própria HU não sabe onde isso acontece.
+
+O Salesforce tem objeto padrão para isso: `ProductTransfer`, *"the transfer of inventory between locations"*, documentado pelo Automotive Cloud entre seus objetos de inventário. Então a resposta técnica para a pergunta em aberto é: **se o traslado precisar ficar registrado no Salesforce, existe objeto nativo e não precisa de nada custom.** Se ficar só no SAP, também está resolvido, mas aí o Salesforce não mostra o traslado em lugar nenhum e isso precisa ser dito ao negócio.
+
+Isso transforma uma pergunta aberta em uma escolha binária com as duas pontas já respondidas.
+
+### 7.4 A verificar, pode simplificar muito: `SellerProduct`
+
+`SellerProduct` (API 65) é *"information about the products associated with a seller. Provides insight into product availability, production details, and the seller's role for the product, such as for sales or for service"*.
+
+Lido junto com a RN-29, é o modelo mais próximo que existe de "este material está habilitado para esta sociedade, neste papel". Se estiver disponível na org, vale avaliar como alternativa ou complemento ao `ProductItem` do item 7.2, porque fala de **habilitação comercial** e não de estoque.
+
+Ressalva honesta: é API 65, recente, e a documentação de campo é escassa fora da referência oficial. Entra como verificação, não como decisão. O script `gapcheck7` testa.
+
+### 7.5 Candidato natural para dois pontos soltos: `Codeset` e `CodesetRelationship`
+
+`Codeset` é *"various industry defined codes in the context of their systems and versions of those systems"* e `CodesetRelationship` é *"a relationship between a codeset and its related codeset"*.
+
+Dois encaixes:
+
+1. A nota do fluxograma fala de uma **tabela Z com os códigos de todos os fabricantes**, consultada quando o material não está no catálogo. Isso é literalmente um conjunto de códigos de sistemas externos com versão, que é a definição de `Codeset`. Se um dia essa tabela precisar existir no Salesforce, já tem objeto.
+2. A **Cadena de Sucesión** da RN-49 é uma relação entre códigos, que é a definição de `CodesetRelationship`.
+
+Ressalva: para a cadeia de sucessão, um autorrelacionamento simples em Product2 (`SupersededByProduct__c`, seção 4.2) resolve com muito menos peça. `CodesetRelationship` só compensa se a cadeia tiver versões, sistemas de origem distintos e histórico. Fica registrado como caminho, não como recomendação imediata.
+
+### 7.6 Existe mas não compensa aqui: Actionable Event Orchestration
+
+O framework de `ActionableEventType`, `ActionableEventSubtype`, `ActionableEventOrchestration` e `ActionableOrchSourceEvent` é o mecanismo nativo do Automotive para **processar eventos externos e decidir o que fazer com eles**. À primeira vista é o candidato óbvio para receber as notificações do SAP da RN-41.
+
+Na prática não compensa nesta HU. O framework foi desenhado para eventos de ativo conectado e telemetria, e cobra uma camada de configuração inteira: tipo de evento, subtipo, context definition com a estrutura do payload, e expression set com as regras de roteamento. O que a HU-039 precisa do lado de entrada é **uma escrita idempotente num registro conhecido**, que o MuleSoft faz com um `PATCH` por External ID em uma chamada.
+
+**Veredito: usar o `PATCH` direto por `RequestKey__c`.** Guardar o Actionable Event Orchestration para quando as notificações do SAP virarem uma família com roteamento condicional, aí ele passa a valer o custo.
+
+### 7.7 Resumo das decisões
+
+| Objeto nativo | Veredito | Efeito na HU |
+|---|---|---|
+| `ProductRequest` / `ProductRequestLineItem` | **Descartado**, semântica errada | Confirma a RN-05: Product2 com Record Types |
+| `ProductItem` | **Avaliar com volume**, opção 2 recomendada | Persiste "creado para el centro" sem objeto custom (RN-29) |
+| `ProductTransfer` | **Responde a RN-24** | Vira escolha binária, não pergunta aberta |
+| `SellerProduct` | **Verificar disponibilidade** | Pode substituir ou complementar o `ProductItem` |
+| `Codeset` / `CodesetRelationship` | **Registrado, não adotado agora** | Tabela Z de fabricantes e cadeia de sucessão |
+| Actionable Event Orchestration | **Descartado por custo**, não por capacidade | Entrada do SAP fica no `PATCH` por External ID |
+
+Verificação de disponibilidade dos seis: `docs/scripts/gapcheck7-hu039-inventario.apex`.
+
+---
+
+## 8. Fontes
 
 1. Regra de callout após DML, "You have uncommitted work pending", Apex Developer Guide.
 2. `cacheable=true` não permite callout e serve dado de cache, Lightning Web Components Developer Guide.
