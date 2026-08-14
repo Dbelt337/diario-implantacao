@@ -1,35 +1,34 @@
 /**
- * Alta del BusinessProfile de nivel sociedad para C101 y C105.
+ * Alta del BusinessProfile de nivel sociedad.
  *
- * Lo que el describe ya confirmo:
- *   - el vinculo es BusinessProfile.AccountId, obligatorio, y NO existe
- *     ningun lookup desde Account hacia BusinessProfile;
- *   - BusinessPartnerType es una lista RESTRINGIDA y "Sociedad" NO es uno de
- *     sus valores, asi que no se puede escribir hasta darlo de alta en Setup;
- *   - existe ademas un campo custom BusinessType__c, que puede ser el lugar
- *     correcto para una clasificacion propia de Grupo Q.
+ * Decidido el 14/08: se crea un valor propio en BusinessPartnerType para las
+ * cuentas de sociedad, y los cuatro perfiles huerfanos con "Sales Dealer" se
+ * corrigen con Replace hacia "Concesionario de ventas". El Replace es en
+ * Setup y no lo hace este script.
  *
- * Por eso el script valida el valor ANTES de escribir. Si el valor elegido no
- * existe o no esta activo, lo dice y no intenta nada.
+ * ANTES DE CORRER:
+ *   1. Setup, Object Manager, Business Profile, Fields, Business Partner Type,
+ *      boton Replace: Sales Dealer  ->  Concesionario de ventas;
+ *   2. Mismo lugar, boton New: crear el valor para sociedad. Ver VALOR abajo;
+ *   3. Recien entonces correr esto, primero en simulacion.
  *
- * Corre en modo simulacion. Para aplicar, cambiar EJECUTAR a true.
+ * Las cuentas se eligen por POSICION EN LA JERARQUIA, nietas de la cuenta
+ * raiz, y no por AccountNumber. GrupoQ Nicaragua N105 no tiene codigo y con un
+ * cruce por codigo quedaba afuera.
  */
 
 // ==========  CONFIGURACION  ==========
 Boolean EJECUTAR = false;
 
-// Cual campo lleva la clasificacion. Dos opciones y la decision no es tecnica:
-//   'BusinessPartnerType' -> estandar de Automotive, lista restringida.
-//                            Exige dar de alta el valor nuevo en Setup.
-//   'BusinessType__c'     -> campo propio, no ensucia el estandar.
 String CAMPO = 'BusinessPartnerType';
-String VALOR = 'Sociedad';
 
-List<String> CUENTAS = new List<String>{ 'C101', 'C105' };
+// Este valor tiene que existir y estar activo en la lista, si no el script
+// para en el paso 2 y no escribe nada.
+String VALOR = 'GroupCompany';
 // =====================================
 
-Organization org = [SELECT Id, Name, InstanceName, IsSandbox FROM Organization LIMIT 1];
-System.debug('ORG: ' + org.Name + ' | sandbox=' + org.IsSandbox);
+Organization laOrg = [SELECT Id, Name, IsSandbox FROM Organization LIMIT 1];
+System.debug('ORG: ' + laOrg.Name + ' | sandbox=' + laOrg.IsSandbox);
 System.debug('MODO: ' + (EJECUTAR ? 'APLICAR' : 'SIMULACION, no escribe nada'));
 System.debug('CAMPO: ' + CAMPO + ' | VALOR: ' + VALOR);
 
@@ -37,130 +36,121 @@ Schema.DescribeSObjectResult bp =
     Schema.getGlobalDescribe().get('businessprofile').getDescribe();
 
 System.debug('===================================================');
-System.debug('0. VALORES DISPONIBLES EN LOS DOS CAMPOS CANDIDATOS');
-System.debug('===================================================');
-for (String api : new List<String>{ 'BusinessPartnerType', 'BusinessType__c' }) {
-    Schema.SObjectField f = bp.fields.getMap().get(api);
-    if (f == null) { System.debug('   ' + api + ' no existe'); continue; }
-    Schema.DescribeFieldResult fd = f.getDescribe();
-    System.debug('   ' + api + ' | restringido=' + fd.isRestrictedPicklist());
-    for (Schema.PicklistEntry pe : fd.getPicklistValues()) {
-        System.debug('        ' + pe.getValue() + ' | activo=' + pe.isActive());
-    }
-}
-
-System.debug('===================================================');
-System.debug('1. VALIDACION DEL VALOR ELEGIDO');
+System.debug('1. VALORES ACTIVOS DE ' + CAMPO);
 System.debug('===================================================');
 Schema.SObjectField refCampo = bp.fields.getMap().get(CAMPO);
-if (refCampo == null) {
-    System.debug('   El campo ' + CAMPO + ' no existe. Nada que hacer.');
-    return;
-}
 Boolean valorValido = false;
 for (Schema.PicklistEntry pe : refCampo.getDescribe().getPicklistValues()) {
+    System.debug('   ' + pe.getValue() + ' | activo=' + pe.isActive());
     if (pe.getValue() == VALOR && pe.isActive()) { valorValido = true; }
 }
+
+System.debug('===================================================');
+System.debug('2. VALIDACION');
+System.debug('===================================================');
 if (!valorValido) {
-    System.debug('   "' + VALOR + '" NO es un valor activo de ' + CAMPO + '.');
-    System.debug('   Apex no crea valores de lista de seleccion. Hay que darlo');
-    System.debug('   de alta primero en Setup, Object Manager, Business Profile,');
-    System.debug('   Fields, ' + CAMPO + ', New value. Despues volver a correr.');
-    System.debug('   Alternativa sin tocar el estandar: usar BusinessType__c.');
+    System.debug('   "' + VALOR + '" no existe o no esta activo.');
+    System.debug('   Crearlo en Setup, Object Manager, Business Profile,');
+    System.debug('   Fields, ' + CAMPO + ', New. Despues volver a correr.');
     return;
 }
-System.debug('   Valor valido. Se puede escribir.');
+System.debug('   Valor valido, se puede escribir.');
 
 System.debug('===================================================');
-System.debug('2. CUENTAS Y PERFILES EXISTENTES');
+System.debug('3. CUENTAS DE NIVEL SOCIEDAD');
 System.debug('===================================================');
-Map<Id, Account> mapaCuentas = new Map<Id, Account>([
+System.debug('   Nietas de la cuenta raiz. Incluye las que no tienen codigo.');
+Map<Id, Account> sociedades = new Map<Id, Account>([
     SELECT Id, Name, AccountNumber, Parent.Name
-    FROM Account WHERE AccountNumber IN :CUENTAS
+    FROM Account
+    WHERE ParentId != null AND Parent.ParentId != null
+      AND Parent.Parent.ParentId = null
+    ORDER BY Parent.Name, Name
 ]);
-for (Account a : mapaCuentas.values()) {
-    System.debug('   ' + a.AccountNumber + ' | ' + a.Name + ' | ' + a.Id);
+for (Account a : sociedades.values()) {
+    System.debug('   ' + (String.isBlank(a.AccountNumber) ? '(sin codigo)' : a.AccountNumber)
+        + ' | ' + a.Name + ' | pais=' + a.Parent.Name);
 }
-if (mapaCuentas.size() != CUENTAS.size()) {
-    System.debug('   ATENCION: se esperaban ' + CUENTAS.size()
-        + ' cuentas y se encontraron ' + mapaCuentas.size());
-}
+System.debug('   Total: ' + sociedades.size());
+if (sociedades.isEmpty()) { return; }
 
-// Dos trampas de Apex en el mismo lugar: el bind de SOQL dinamico solo acepta
-// variable simple, nunca una llamada a metodo; y los identificadores son
-// insensibles a mayusculas, asi que CUENTAS y cuentas serian la misma.
-Set<Id> idsCuentas = mapaCuentas.keySet();
-
+Set<Id> idsSociedades = sociedades.keySet();
 Map<Id, SObject> perfilPorCuenta = new Map<Id, SObject>();
 for (SObject p : Database.query(
         'SELECT Id, Name, AccountId, ' + CAMPO
-        + ' FROM BusinessProfile WHERE AccountId IN :idsCuentas')) {
+        + ' FROM BusinessProfile WHERE AccountId IN :idsSociedades')) {
     perfilPorCuenta.put((Id) p.get('AccountId'), p);
 }
 
 System.debug('===================================================');
-System.debug('3. LO QUE VA A PASAR');
+System.debug('4. LO QUE VA A PASAR');
 System.debug('===================================================');
 List<SObject> aInsertar = new List<SObject>();
 List<SObject> aActualizar = new List<SObject>();
 
-for (Account a : mapaCuentas.values()) {
+for (Account a : sociedades.values()) {
+    String etiqueta = (String.isBlank(a.AccountNumber) ? a.Name : a.AccountNumber);
     SObject existente = perfilPorCuenta.get(a.Id);
     if (existente == null) {
         SObject nuevo = Schema.getGlobalDescribe().get('BusinessProfile').newSObject();
         nuevo.put('AccountId', a.Id);
         nuevo.put(CAMPO, VALOR);
         aInsertar.add(nuevo);
-        System.debug('   CREAR  perfil para ' + a.AccountNumber
-            + ' con ' + CAMPO + ' = ' + VALOR);
+        System.debug('   CREAR       ' + etiqueta + ' con ' + CAMPO + ' = ' + VALOR);
     } else if (String.valueOf(existente.get(CAMPO)) != VALOR) {
-        // Leer el valor viejo ANTES de sobreescribirlo, si no el log muestra
-        // el nuevo en los dos lados.
         String anterior = String.valueOf(existente.get(CAMPO));
         existente.put(CAMPO, VALOR);
         aActualizar.add(existente);
-        System.debug('   ACTUALIZAR perfil ' + existente.get('Name')
-            + ' de ' + a.AccountNumber
-            + ': ' + CAMPO + ' de "' + anterior + '" a "' + VALOR + '"');
+        System.debug('   ACTUALIZAR  ' + etiqueta + ' | ' + existente.get('Name')
+            + ' | de "' + anterior + '" a "' + VALOR + '"');
     } else {
-        System.debug('   OK     ' + a.AccountNumber + ' ya esta correcto');
+        System.debug('   OK          ' + etiqueta + ' ya esta correcto');
     }
 }
 
-if (!EJECUTAR) {
-    System.debug('   SIMULACION. No se escribio nada.');
+System.debug('===================================================');
+System.debug('5. RESULTADO');
+System.debug('===================================================');
+if (aInsertar.isEmpty() && aActualizar.isEmpty()) {
+    System.debug('   Nada que hacer.');
+} else if (!EJECUTAR) {
+    System.debug('   SIMULACION. Crear ' + aInsertar.size()
+        + ', actualizar ' + aActualizar.size() + '.');
     System.debug('   Para aplicar: cambiar EJECUTAR a true.');
 } else {
     if (!aInsertar.isEmpty()) {
-        insert aInsertar;
-        System.debug('   Insertados: ' + aInsertar.size());
+        List<Database.SaveResult> r = Database.insert(aInsertar, false);
+        Integer ok = 0;
+        for (Integer i = 0; i < r.size(); i++) {
+            if (r[i].isSuccess()) { ok++; }
+            else { System.debug('   FALLO insert: ' + r[i].getErrors()[0].getMessage()); }
+        }
+        System.debug('   Insertados ' + ok + ' de ' + aInsertar.size());
     }
     if (!aActualizar.isEmpty()) {
-        update aActualizar;
-        System.debug('   Actualizados: ' + aActualizar.size());
+        List<Database.SaveResult> r = Database.update(aActualizar, false);
+        Integer ok = 0;
+        for (Integer i = 0; i < r.size(); i++) {
+            if (r[i].isSuccess()) { ok++; }
+            else { System.debug('   FALLO update: ' + r[i].getErrors()[0].getMessage()); }
+        }
+        System.debug('   Actualizados ' + ok + ' de ' + aActualizar.size());
     }
-    if (aInsertar.isEmpty() && aActualizar.isEmpty()) {
-        System.debug('   Nada que hacer.');
-    }
+    System.debug('   Volver a correr en simulacion para confirmar.');
 }
 
 System.debug('===================================================');
-System.debug('4. DEUDA QUE ESTE SCRIPT NO ARREGLA');
+System.debug('6. ESTADO DE TODOS LOS BusinessProfile');
 System.debug('===================================================');
-System.debug('   Hay perfiles con BusinessPartnerType = "Sales Dealer", que ya');
-System.debug('   NO figura entre los valores de la lista, y otros en null.');
-System.debug('   Son datos huerfanos de cuando la lista estaba en ingles.');
-System.debug('   Estado actual:');
 try {
     for (AggregateResult ar : [SELECT BusinessPartnerType t, COUNT(Id) q
-                               FROM BusinessProfile
-                               GROUP BY BusinessPartnerType]) {
-        System.debug('        ' + ar.get('t') + ' | ' + ar.get('q'));
+                               FROM BusinessProfile GROUP BY BusinessPartnerType]) {
+        System.debug('   ' + ar.get('t') + ' | ' + ar.get('q'));
     }
 } catch (Exception e) {
-    System.debug('        ERROR: ' + e.getMessage());
+    System.debug('   ERROR: ' + e.getMessage());
 }
-System.debug('   Se corrigen con Replace en Setup sobre la lista, no aqui.');
+System.debug('   Si todavia aparece "Sales Dealer", falta el Replace en Setup.');
 
 System.debug('===================================================');
 System.debug('FIN');
