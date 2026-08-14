@@ -149,9 +149,43 @@ Isso entrega o R1 sem nenhuma peça nova além de campos, e adia exatamente a pa
 
 ---
 
-## 6. O que fica em aberto e precisa de decisão do negócio
+## 6. As perguntas abertas, revisadas em 14/08
 
-1. **A marca multiplica listas oficiais?** A RN2 diz que não e diz que sim em parágrafos seguidos. Se o responsável da marca não pode ver preço de outra marca nem na lista oficial, as oficiais também multiplicam;
-2. **Flotas é canal ou é campo?** O Annex trata como canal e a RN1 cria o campo de preço de flotas na entrada. Os dois juntos duplicam o dado;
-3. **Costa Rica em dólares.** A RN6 diz que se administra e exibe em USD, e o dado da org está em colones, inclusive na oportunidade da demo;
-4. **Gastos vêm do SAP** pela RN5. Confirmar se é por serviço em tempo de cotização ou carga periódica.
+### 6.1 A marca multiplica listas? RESOLVIDO pelo próprio texto da HU
+
+Eu tinha marcado isso como contradição. **Não é.** Os dois parágrafos da RN2 falam de coisas diferentes, e isso fica claro ao olhar o sujeito de cada frase:
+
+> *"Como regla **estructural**, la marca es un atributo del producto y no multiplica listas: los productos se asocian a la lista de su sociedad."*
+
+> *"La **administración** de precios es centralizada por MARCA... Se configuran Pricebooks separados por marca con accesos restringidos."*
+
+O primeiro governa a **estrutura** das listas que o processo comercial consome: por sociedade, e a marca é atributo do produto.
+O segundo governa a **administração**: listas separadas por marca, com acesso restrito.
+
+**São duas camadas, não duas versões da mesma coisa.** E é exatamente o desenho de duas camadas da v2: listas oficiais por sociedade para cotizar, listas de administração por marca para carregar e aprovar. A HU descreve a solução sem nomeá-la.
+
+**Conclusão: as listas oficiais NÃO multiplicam por marca.** Ficam doze, mais as de acessórios.
+
+### 6.2 O que resta não é decisão, é um fato verificável no dado atual
+
+A única pergunta que sobra sobre a estrutura é se as listas de administração por marca precisam ser também por sociedade. E ela **não se resolve em reunião**, se resolve olhando a lista de preços que o GrupoQ mantém hoje.
+
+**A verificação, que leva cinco minutos numa planilha:** na lista mensal atual, o mesmo código de modelo aparece para **mais de uma sociedade do mesmo país, com preços diferentes e na mesma moeda**?
+
+- **Não aparece:** uma lista de administração por marca resolve, sem nenhuma multiplicação. É o caso provável se as sociedades do mesmo país forem segmentadas por marca ou por linha, que é o padrão em grupos de distribuição;
+- **Aparece:** as listas de administração passam a ser por marca e sociedade, **mas apenas nas combinações que existem de fato**, que é muito menos que o produto cartesiano.
+
+Nos dois casos a estrutura oficial não muda. É a de administração que se dimensiona pelo dado.
+
+### 6.3 Flotas é canal ou campo? Interpretação a confirmar
+
+O Annex, fila 265, cita canais Retail, Flotas e Intercompany. A RN1 cria o campo **"Precio publicado de Flotas, que se digita y no se calcula"** dentro da entrada de preço.
+
+**Nossa leitura:** o Annex descreve a capacidade geral de segmentação, e a RN1 toma a decisão concreta e mais recente, porque veio do refinamento. **Prevalece o campo.** Flotas não gera lista própria, e isso evita duplicar o mesmo dado em dois lugares.
+
+É interpretação, não fato, e vale uma linha de confirmação.
+
+### 6.4 As duas que continuam sendo do negócio
+
+1. **Costa Rica em dólares.** A RN6 diz que os preços se administram e exibem em USD e que não se exibem em colones. O dado da org está em colones, inclusive na oportunidade da demonstração. Ou o dado corrige, ou a regra mudou;
+2. **Gastos vêm do SAP** pela RN5, *"parametrizados por sociedad en SAP y el CRM los consume por servicio"*. Confirmar se é consulta em tempo de cotização ou carga periódica, porque muda quem escreve o campo.

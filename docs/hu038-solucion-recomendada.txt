@@ -8,11 +8,11 @@ Data: 14/08/2026 · Consolida a v2, a verificação de cobertura e a releitura d
 
 O Automotive Cloud não tem objeto de preço. A lista completa de Standard Objects cobre veículo e definição de veículo, avalúo, ativo e titularidade, frota, garantia e reclamação, telemetria, agendamento, visitas, códigos de indústria e o bloco financeiro. Nenhum objeto de pricing.
 
-E há uma confirmação documental melhor que a ausência. O VehDefSearchableField é definido como *"multiple fields from objects such as Product, Price Book, and Vehicle Definition"*. Ou seja, quando o próprio Automotive precisa citar de onde vêm produto e preço, ele cita Product e Price Book da plataforma.
+E há uma confirmação documental melhor que a ausência. O VehDefSearchableField é definido como "multiple fields from objects such as Product, Price Book, and Vehicle Definition". Ou seja, quando o próprio Automotive precisa citar de onde vêm produto e preço, ele cita Product e Price Book da plataforma.
 
 Conclusão fundamentada: o preço vive em Pricebook2 e PricebookEntry. Não existe alternativa nativa do Automotive, e a venda guiada já está no modelo certo.
 
-O objeto mais próximo de preço na lista é o SellerProduct, API 65, *"products associated with a seller... product availability, production details, and the seller's role for the product"*. Ele associa produto a vendedor e não carrega preço, então não substitui nada aqui.
+O objeto mais próximo de preço na lista é o SellerProduct, API 65, "products associated with a seller... product availability, production details, and the seller's role for the product". Ele associa produto a vendedor e não carrega preço, então não substitui nada aqui.
 
 ====================================================================
 2. AS QUATRO RESTRIÇÕES QUE DESENHAM A SOLUÇÃO
@@ -35,7 +35,7 @@ CAMINHO A, ZERO OBJETOS CUSTOM, COM LISTAS DE STAGING
 Para o preço pendente conviver com o vigente, ele precisa de outra lista. E há dois requisitos que multiplicam essas listas ao mesmo tempo:
 
 - Por sociedade, obrigatório: o mesmo modelo pode ter preço pendente diferente em C101 e em C105, e na mesma lista eles colidem pela restrição 1;
-- Por marca, obrigatório: a RN2 exige que o responsável *"solo administra y visualiza los precios de su marca"*, e não existe forma de restringir acesso por marca dentro de uma lista.
+- Por marca, obrigatório: a RN2 exige que o responsável "solo administra y visualiza los precios de su marca", e não existe forma de restringir acesso por marca dentro de uma lista.
 
 Então as listas de staging são 12 sociedades multiplicadas pelo número de marcas. Com oito marcas, são 96 listas de staging, mais as 12 oficiais, mais as de acessórios. Mais de 120 price books para manter, nomear, permissionar e replicar em quatro ambientes.
 
@@ -60,7 +60,7 @@ A v2 sem objeto custom fecha. Os três bloqueios que eu tinha levantado têm sa�
 
 1. Cálculo dos pisos ao gravar: resolvido com campos fórmula lendo Custom Metadata. Não precisa de automação nenhuma;
 2. Disparo do estado e da aprovação: resolvido porque somos donos da porta de escrita. A carga massiva e a edição individual passam pela nossa LWC e pelo serviço Apex, e é ele que decide, marca o estado e submete. Nada precisa reagir ao save;
-3. Objeto para aprovar: resolvido pela Approval Orchestration autolaunched, que a documentação descreve como podendo ser *"triggered from other processes or even custom buttons"*. Nosso serviço a dispara passando o registro. Não depende de a PricebookEntry suportar record-triggered flow.
+3. Objeto para aprovar: resolvido pela Approval Orchestration autolaunched, que a documentação descreve como podendo ser "triggered from other processes or even custom buttons". Nosso serviço a dispara passando o registro. Não depende de a PricebookEntry suportar record-triggered flow.
 
 Então a recomendação volta a ser a v2, com zero objetos custom. O que eu tinha dado como impossível era falta de verificação minha, não limite de plataforma.
 
@@ -97,9 +97,9 @@ Onze campos comerciais, dos quais seis já existem na org. Faltam ImpuestoPrimer
 
 Os três pisos por fator do Escenario 12 são campos fórmula lendo Custom Metadata, sem nenhuma automação:
 
-MinimoGerenteVentas__c = PrecioMinimoAsesor__c * $CustomMetadata.FactorNivel__mdt.GerenteVentas.Factor__c
+MinimoGerenteVentas__c = PrecioMinimoAsesor__c  $CustomMetadata.FactorNivel__mdt.GerenteVentas.Factor__c
 
-Atende *"aplicando los factores vigentes de la tabla editable, sin intervención manual"* e a tabela é editável sem deploy, como a RN9 exige.
+Atende "aplicando los factores vigentes de la tabla editable, sin intervención manual" e a tabela é editável sem deploy, como a RN9 exige.
 
 No Product2 entra a moeda de publicação, porque a RN6 diz por modelo.
 
@@ -108,7 +108,7 @@ CAMADA 2, O PREÇO PENDENTE
 
 PricebookEntry na lista de staging da marca, com IsActive = false. Mesma estrutura, mesmos campos, mesma carga. A publicação é uma cópia.
 
-IsActive = false é o que faz o *"no se activan en el catálogo"* da RN3 ser garantido pela plataforma e não por uma marca que a gente inventou: entrada inativa não entra em cotização, ponto.
+IsActive = false é o que faz o "no se activan en el catálogo" da RN3 ser garantido pela plataforma e não por uma marca que a gente inventou: entrada inativa não entra em cotização, ponto.
 
 Campos de controle na entrada de staging: Estado__c, MotivoRechazo__c, e o VigenciaDesde__c que já existe.
 
@@ -157,10 +157,48 @@ R2 com o objeto: as camadas 2, 4 e 5, o circuito de aprovação, que é o GQ-CA-
 Isso entrega o R1 sem nenhuma peça nova além de campos, e adia exatamente a parte que carrega o custo. E se encaixa no exercício de repriorização que a Melisa abriu.
 
 ====================================================================
-6. O QUE FICA EM ABERTO E PRECISA DE DECISÃO DO NEGÓCIO
+6. AS PERGUNTAS ABERTAS, REVISADAS EM 14/08
 ====================================================================
 
-1. A marca multiplica listas oficiais? A RN2 diz que não e diz que sim em parágrafos seguidos. Se o responsável da marca não pode ver preço de outra marca nem na lista oficial, as oficiais também multiplicam;
-2. Flotas é canal ou é campo? O Annex trata como canal e a RN1 cria o campo de preço de flotas na entrada. Os dois juntos duplicam o dado;
-3. Costa Rica em dólares. A RN6 diz que se administra e exibe em USD, e o dado da org está em colones, inclusive na oportunidade da demo;
-4. Gastos vêm do SAP pela RN5. Confirmar se é por serviço em tempo de cotização ou carga periódica.
+6.1 A MARCA MULTIPLICA LISTAS? RESOLVIDO PELO PRÓPRIO TEXTO DA HU
+-----------------------------------------------------------------
+
+Eu tinha marcado isso como contradição. Não é. Os dois parágrafos da RN2 falam de coisas diferentes, e isso fica claro ao olhar o sujeito de cada frase:
+
+    "Como regla estructural, la marca es un atributo del producto y no multiplica listas: los productos se asocian a la lista de su sociedad."
+
+    "La administración de precios es centralizada por MARCA... Se configuran Pricebooks separados por marca con accesos restringidos."
+
+O primeiro governa a estrutura das listas que o processo comercial consome: por sociedade, e a marca é atributo do produto.
+O segundo governa a administração: listas separadas por marca, com acesso restrito.
+
+São duas camadas, não duas versões da mesma coisa. E é exatamente o desenho de duas camadas da v2: listas oficiais por sociedade para cotizar, listas de administração por marca para carregar e aprovar. A HU descreve a solução sem nomeá-la.
+
+Conclusão: as listas oficiais NÃO multiplicam por marca. Ficam doze, mais as de acessórios.
+
+6.2 O QUE RESTA NÃO É DECISÃO, É UM FATO VERIFICÁVEL NO DADO ATUAL
+------------------------------------------------------------------
+
+A única pergunta que sobra sobre a estrutura é se as listas de administração por marca precisam ser também por sociedade. E ela não se resolve em reunião, se resolve olhando a lista de preços que o GrupoQ mantém hoje.
+
+A verificação, que leva cinco minutos numa planilha: na lista mensal atual, o mesmo código de modelo aparece para mais de uma sociedade do mesmo país, com preços diferentes e na mesma moeda?
+
+- Não aparece: uma lista de administração por marca resolve, sem nenhuma multiplicação. É o caso provável se as sociedades do mesmo país forem segmentadas por marca ou por linha, que é o padrão em grupos de distribuição;
+- Aparece: as listas de administração passam a ser por marca e sociedade, mas apenas nas combinações que existem de fato, que é muito menos que o produto cartesiano.
+
+Nos dois casos a estrutura oficial não muda. É a de administração que se dimensiona pelo dado.
+
+6.3 FLOTAS É CANAL OU CAMPO? INTERPRETAÇÃO A CONFIRMAR
+------------------------------------------------------
+
+O Annex, fila 265, cita canais Retail, Flotas e Intercompany. A RN1 cria o campo "Precio publicado de Flotas, que se digita y no se calcula" dentro da entrada de preço.
+
+Nossa leitura: o Annex descreve a capacidade geral de segmentação, e a RN1 toma a decisão concreta e mais recente, porque veio do refinamento. Prevalece o campo. Flotas não gera lista própria, e isso evita duplicar o mesmo dado em dois lugares.
+
+É interpretação, não fato, e vale uma linha de confirmação.
+
+6.4 AS DUAS QUE CONTINUAM SENDO DO NEGÓCIO
+------------------------------------------
+
+1. Costa Rica em dólares. A RN6 diz que os preços se administram e exibem em USD e que não se exibem em colones. O dado da org está em colones, inclusive na oportunidade da demonstração. Ou o dado corrige, ou a regra mudou;
+2. Gastos vêm do SAP pela RN5, "parametrizados por sociedad en SAP y el CRM los consume por servicio". Confirmar se é consulta em tempo de cotização ou carga periódica, porque muda quem escreve o campo.
