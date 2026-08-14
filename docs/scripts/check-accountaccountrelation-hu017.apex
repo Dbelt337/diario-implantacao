@@ -26,7 +26,7 @@ System.debug('===================================================');
 System.debug('PREMISAS DE LA HU-017 SOBRE AccountAccountRelation');
 System.debug('===================================================');
 
-Map<String, Schema.SObjectType> global = Schema.getGlobalDescribe();
+Map<String, Schema.SObjectType> esquema = Schema.getGlobalDescribe();
 
 System.debug('----- 1. EXISTENCIA DE LOS OBJETOS -----');
 List<String> aVerificar = new List<String>{
@@ -39,14 +39,14 @@ List<String> aVerificar = new List<String>{
     'InternalOrganizationUnit'
 };
 for (String api : aVerificar) {
-    Boolean existe = global.containsKey(api.toLowerCase());
+    Boolean existe = esquema.containsKey(api.toLowerCase());
     System.debug('   ' + (existe ? 'SI ' : 'NO ') + api);
 }
 
 System.debug('----- 2. LECTURA DE LAS TRES PREMISAS -----');
-Boolean hayObjeto  = global.containsKey('accountaccountrelation');
-Boolean hayHistory = global.containsKey('accountaccountrelationhistory');
-Boolean hayShare   = global.containsKey('accountaccountrelationshare');
+Boolean hayObjeto  = esquema.containsKey('accountaccountrelation');
+Boolean hayHistory = esquema.containsKey('accountaccountrelationhistory');
+Boolean hayShare   = esquema.containsKey('accountaccountrelationshare');
 
 System.debug('   a) Campos personalizados  => ver punto 3');
 System.debug('   b) Historial de campos    => ' + (hayHistory
@@ -63,7 +63,7 @@ if (!hayObjeto) {
 }
 
 System.debug('----- 3. CAMPOS DEL OBJETO -----');
-Schema.DescribeSObjectResult d = global.get('accountaccountrelation').getDescribe();
+Schema.DescribeSObjectResult d = esquema.get('accountaccountrelation').getDescribe();
 System.debug('   etiqueta   : ' + d.getLabel());
 System.debug('   creable    : ' + d.isCreateable());
 System.debug('   consultable: ' + d.isQueryable());

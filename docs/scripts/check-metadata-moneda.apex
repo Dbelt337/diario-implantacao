@@ -19,22 +19,22 @@ System.debug('===================================================');
 System.debug('CUSTOM METADATA RELACIONADO A MONEDA');
 System.debug('===================================================');
 
-Map<String, Schema.SObjectType> global = Schema.getGlobalDescribe();
+Map<String, Schema.SObjectType> esquema = Schema.getGlobalDescribe();
 
 System.debug('----- 1. TODOS LOS TIPOS __mdt DE LA ORG -----');
 List<String> tipos = new List<String>();
-for (String api : global.keySet()) {
+for (String api : esquema.keySet()) {
     if (api.endsWith('__mdt')) { tipos.add(api); }
 }
 tipos.sort();
 for (String api : tipos) {
-    System.debug('   ' + global.get(api).getDescribe().getName());
+    System.debug('   ' + esquema.get(api).getDescribe().getName());
 }
 System.debug('   Total: ' + tipos.size());
 
 System.debug('----- 2. CAMPOS DE CADA UNO QUE SUENE A MONEDA O PAIS -----');
 for (String api : tipos) {
-    Schema.DescribeSObjectResult d = global.get(api).getDescribe();
+    Schema.DescribeSObjectResult d = esquema.get(api).getDescribe();
     List<String> interesantes = new List<String>();
     for (Schema.SObjectField f : d.fields.getMap().values()) {
         Schema.DescribeFieldResult fd = f.getDescribe();
@@ -54,7 +54,7 @@ for (String api : tipos) {
 System.debug('----- 3. CONTENIDO DE Sociedad_Config__mdt -----');
 System.debug('   Es el que el flow Lead_BS_DeriveSociedad ya usa.');
 try {
-    Schema.DescribeSObjectResult d = global.get('sociedad_config__mdt').getDescribe();
+    Schema.DescribeSObjectResult d = esquema.get('sociedad_config__mdt').getDescribe();
     List<String> campos = new List<String>();
     for (Schema.SObjectField f : d.fields.getMap().values()) {
         campos.add(f.getDescribe().getName());
@@ -72,7 +72,7 @@ try {
 }
 
 System.debug('----- 4. EXISTE YA UN CountryCurrency__mdt -----');
-System.debug('   ' + (global.containsKey('countrycurrency__mdt')
+System.debug('   ' + (esquema.containsKey('countrycurrency__mdt')
     ? 'SI existe. Ver si duplica lo de arriba.'
     : 'NO existe en esta org.'));
 
