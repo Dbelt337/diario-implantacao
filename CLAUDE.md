@@ -51,6 +51,7 @@ Diário de implantação do programa Salesforce Automotive Cloud + MuleSoft + SA
 
 ## Ambiente e convenções
 
+- **A implantação é Costa Rica.** Os outros cinco países entram depois. Costa Rica opera com **duas moedas, CRC e USD**, e as duas estão ativas na org. Por isso GTQ, HNL e NIO não estarem ativas não bloqueia o escopo atual, embora bloqueie as sociedades desses países quando entrarem. Sociedades de Costa Rica: **C101, Autos, e C105, Motos**.
 - Org de trabalho: **DEV Sales**, e **INT** para integração. INT não tem a pilha de venta guiada, então pacotes para lá levam só metadados.
 - **Convenção de nomenclatura GRPQM: metadados em inglês.** API names, labels e descrições em inglês; exibição em espanhol via Translation Workbench.
 - Licenças verificadas em 13/08 com `docs/scripts/check-licencias-objetos.apex`: Automotive Cloud, avalúo, lending, Product Catalog Management e Commerce todos contratados com folga. **`AssetTitle` e `AssetTitleParty` não existem na org** apesar das licenças de lending, provável toggle de Setup.

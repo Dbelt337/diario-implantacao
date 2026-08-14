@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  RETRIEVE do que existe hoje no fluxo de venda guiada e em volta dele.
+  Uso: sf project retrieve start --manifest package.xml
+
+  Diferenca principal para a versao anterior: em vez de listar campo por campo,
+  Record Type por Record Type e validation rule por validation rule, pede-se o
+  CustomObject inteiro. O retrieve de um CustomObject ja traz os campos custom,
+  os Record Types, as validation rules, as list views, os compact layouts e os
+  web links daquele objeto. Listar cada peca a mao so serve para esquecer
+  alguma, que foi o que aconteceu: faltavam os campos de reserva da HU-025 e as
+  duas validation rules do Santiago, que existem em QA e ninguem tinha no mapa.
+
+  Curingas usados de proposito. Se o objetivo e ver o que esta construido, pedir
+  uma lista fechada devolve exatamente o que ja se sabia.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!-- ================= CODIGO ================= -->
+
+    <!-- Tudo. Inclui as classes que ninguem mapeou e as de outros times. -->
+    <types>
+        <members>*</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApexTrigger</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>AuraDefinitionBundle</name>
+    </types>
+
+    <!-- ================= AUTOMACAO ================= -->
+
+    <!-- Todos os flows, ativos e inativos. Sao 39 automacoes na org e o
+         pacote anterior pedia quatro. -->
+    <types>
+        <members>*</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>Workflow</name>
+    </types>
+    <types>
+        <members>Lead</members>
+        <members>Case</members>
+        <name>AssignmentRules</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>DuplicateRule</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>MatchingRule</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ApprovalProcess</name>
+    </types>
+
+    <!-- ================= OBJETOS =================
+         Cada linha traz campos, Record Types, validation rules e list views. -->
+    <types>
+        <members>Account</members>
+        <members>Lead</members>
+        <members>Opportunity</members>
+        <members>Quote</members>
+        <members>QuoteLineItem</members>
+        <members>Order</members>
+        <members>OrderItem</members>
+        <members>Product2</members>
+        <members>Pricebook2</members>
+        <members>PricebookEntry</members>
+        <members>Contact</members>
+        <members>Asset</members>
+        <members>Vehicle</members>
+        <members>VehicleDefinition</members>
+        <members>BusinessProfile</members>
+        <members>BusinessBrand</members>
+        <members>Location</members>
+        <members>InternalOrganizationUnit</members>
+        <members>AccountAccountRelation</members>
+        <members>ProductItem</members>
+        <members>Appraisal</members>
+
+        <!-- Platform event -->
+        <members>SapOrderResponse__e</members>
+
+        <!-- Custom Metadata Types. Sao sete carregando pais ou sociedade,
+             e o pacote anterior pedia um. -->
+        <members>Sociedad_Config__mdt</members>
+        <members>CountryCurrency__mdt</members>
+        <members>Brand_Sociedad_Map__mdt</members>
+        <members>Lead_Routing_Config__mdt</members>
+        <members>Lead_SLA_Config__mdt</members>
+        <members>Aprobador_Config__mdt</members>
+        <members>SensitiveDataApprover__mdt</members>
+        <members>GQ_Dedup_Repuestos_Config__mdt</members>
+        <members>InactivityPolicy__mdt</members>
+        <members>DemoCapacityConfig__mdt</members>
+        <name>CustomObject</name>
+    </types>
+
+    <!-- Registros de Custom Metadata, de todos os tipos.
+         Curinga com prefixo nao funciona, mas o curinga sozinho sim. -->
+    <types>
+        <members>*</members>
+        <name>CustomMetadata</name>
+    </types>
+
+    <!-- ================= INTERFACE ================= -->
+
+    <types>
+        <members>*</members>
+        <name>Layout</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>QuickAction</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>PathAssistant</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomApplication</name>
+    </types>
+
+    <!-- ================= LISTAS DE VALORES ================= -->
+
+    <!-- As etapas e status que as HU-025 e HU-064 dependem. -->
+    <types>
+        <members>OpportunityStage</members>
+        <members>LeadStatus</members>
+        <members>LeadSource</members>
+        <members>QuoteStatus</members>
+        <members>OrderStatus</members>
+        <members>Product2Family</members>
+        <name>StandardValueSet</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>GlobalValueSet</name>
+    </types>
+
+    <!-- ================= PERMISSOES E INTEGRACAO ================= -->
+
+    <types>
+        <members>*</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomPermission</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>CustomNotificationType</name>
+    </types>
+
+    <!-- Nao traz segredo nenhum, so a definicao. -->
+    <types>
+        <members>*</members>
+        <name>NamedCredential</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ExternalCredential</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+
+    <version>63.0</version>
+</Package>
