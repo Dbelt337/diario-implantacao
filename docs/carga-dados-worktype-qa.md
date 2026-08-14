@@ -296,6 +296,16 @@ Omitidos por estarem vazios nos 49 registros: `Description`, `MinimumCrewSize`,
 > `FieldDefinition` nem em `FIELDS(ALL)`. Para planejar carga, a autoridade é
 > `EntityParticle`.
 
+#### A carga não tem dependência de outros objetos
+
+Confirmado nos 49 registros exportados:
+
+- **`ShouldAutoCreateSvcAppt = false` em todos** — nenhum `ServiceAppointment` é
+  criado automaticamente, logo `ServiceTerritory` **não** é pré-requisito
+- **Nenhum lookup preenchido** entre os 11 campos — não há Id a resolver entre orgs
+
+O único pré-requisito são os valores de picklist.
+
 #### Pré-requisito: valores de picklist na QA
 
 Se as picklists forem restritas, valor ausente derruba a linha. Pior: se
@@ -338,6 +348,44 @@ significa picklist de origem errada.
 ---
 
 ## Execução
+
+### Script pronto
+
+```bash
+./scripts/load-worktype.sh <alias-da-org> --dry-run   # inspeciona sem carregar
+./scripts/load-worktype.sh <alias-da-org>             # carrega e valida
+```
+
+Arquivo de carga: `data/worktype/WorkType.csv` — 49 registros, 11 colunas,
+extraídos de produção em 13/08/2026.
+
+O script:
+
+1. **Recusa carregar fora de sandbox.** Consulta `Organization.IsSandbox` e
+   aborta se for produção (só prossegue com `ALLOW_PRODUCTION=1` **e** `--force`)
+2. Aborta se a org já tiver WorkTypes, para não duplicar (contornável com
+   `--force`)
+3. Avisa sobre colisões de `ServiceTypeKey__c` no CSV antes de carregar
+4. Carrega via `sf data import bulk`
+5. **Valida**: compara as chaves geradas na org com as calculadas a partir do
+   CSV. Divergência aponta valor de picklist ausente ou diferente no destino
+
+Requer o Salesforce CLI autenticado. Roda em Linux, macOS, WSL e Git Bash; não
+depende de `jq`.
+
+### Regeneração do CSV
+
+Para atualizar o arquivo a partir de produção:
+
+```sql
+SELECT Name, DurationType, EstimatedDuration, ShouldAutoCreateSvcAppt,
+       FSL__Exact_Appointments__c,
+       MacroCategory__c, Product__c, SubCategory__c, Criticality__c,
+       RootCase__c, Skill__c
+FROM WorkType
+```
+
+### Alternativa via sf data export tree
 
 Ids não são portáveis entre orgs (os `08qV2...` de produção não existem na QA).
 `sf data export tree` gera um plano que resolve as referências:
