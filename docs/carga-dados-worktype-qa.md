@@ -350,6 +350,57 @@ por SOAP POST sem esse limite, ou `sf apex run --file`. Para insistir no
 Inspector, quebrar em blocos de ~25 registros mantendo cada um sob 5 KB
 codificados, com skip por nome para que sejam reexecutáveis.
 
+#### Resultado da carga (14/08/2026)
+
+**46 dos 48 registros carregados.** Faltam `Serviço - Banda Larga - Aferição
+Velocidade` e `Serviço - Câmera - Alta`.
+
+Erro na tentativa dos dois:
+
+```
+INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST, bad value for restricted
+picklist field: BandaLarga: [Product__c]
+```
+
+Enganoso: `BandaLarga` **existe** na QA e foi carregado seis vezes sem problema.
+O describe explica:
+
+```
+Product__c | restrita=true | dependente=true (controlador: MacroCategory__c)
+```
+
+`Product__c` é restrita **e dependente** de `MacroCategory__c`. Não falta valor —
+falta a **dependência**: sob o controlador `Servico`, os produtos `BandaLarga` e
+`Camera` não estão habilitados na matriz da QA. Os registros `Servico` são os
+mais novos de produção (11 e 12/08/2026), posteriores ao último refresh.
+
+Correção: `Setup → Object Manager → Work Type → Fields & Relationships →
+Product__c → Field Dependencies → Edit`, incluir `BandaLarga` e `Camera` na
+coluna `Servico`. Comparar com a mesma tela em produção.
+
+Consequência enquanto não for corrigido: a integração não encontra
+`ServicoBandaLargaAlta` nem `ServicoCameraAlta`. Qualquer outro tipo funciona.
+
+> **Lição:** "o valor existe na picklist" não basta quando a picklist é
+> dependente. O `INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST` aponta o campo e o
+> valor, mas não diz que o problema está na combinação com o controlador.
+
+Script de inspeção de picklists:
+
+```apex
+Map<String, Schema.SObjectField> m = Schema.SObjectType.WorkType.fields.getMap();
+for (String f : new List<String>{'MacroCategory__c','Product__c','SubCategory__c',
+                                 'Criticality__c','RootCase__c'}) {
+  Schema.DescribeFieldResult d = m.get(f.toLowerCase()).getDescribe();
+  List<String> vs = new List<String>();
+  for (Schema.PicklistEntry pe : d.getPicklistValues()) if (pe.isActive()) vs.add(pe.getValue());
+  System.debug(f + ' | restrita=' + d.isRestrictedPicklist()
+    + ' | dependente=' + d.isDependentPicklist()
+    + (d.isDependentPicklist() ? ' (controlador: ' + d.getController().getDescribe().getName() + ')' : '')
+    + ' | ' + vs);
+}
+```
+
 #### Pré-requisito: valores de picklist na QA
 
 Se as picklists forem restritas, valor ausente derruba a linha. Pior: se
