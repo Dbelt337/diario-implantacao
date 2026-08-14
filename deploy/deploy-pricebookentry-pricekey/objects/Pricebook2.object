@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <!--
+        Business code of the price list, so the integration never has to carry
+        a Salesforce Id.
+
+        A Salesforce Id is different in every org, so a key built on
+        Pricebook2Id cannot travel from INT to QA to production: the same SAP
+        payload would need to be recomputed per environment. This field holds
+        the code the business already uses for the price list, which is the
+        same value in every org, and makes the payload portable.
+    -->
+
+    <fields>
+        <fullName>PricebookCode__c</fullName>
+        <label>Price Book Code</label>
+        <type>Text</type>
+        <length>40</length>
+        <unique>true</unique>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <required>false</required>
+        <description>All countries. Business code of the price list, the same value in every org. Lets MuleSoft reference the price book by external id instead of by Salesforce Id, so the same payload runs in INT, QA and production without recomputation.</description>
+        <inlineHelpText>Business code of the price list. Must match the code used by the integration.</inlineHelpText>
+    </fields>
+
+</CustomObject>

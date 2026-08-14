@@ -6,16 +6,23 @@
 
         Salesforce already guarantees one PricebookEntry per product, price
         book and currency, so this field does not create the uniqueness: it
-        exposes it as a single addressable value so the integration can push
-        prices repeatedly without querying first.
+        exposes it as a single addressable value so the integration can push a
+        price change over an existing entry without querying first.
 
         Value, built by the integration and never by hand:
-            SapMaterialCode__c + '|' + Pricebook2Id + '|' + CurrencyIsoCode
+            SapMaterialCode__c + '|' + PricebookCode__c + '|' + CurrencyIsoCode
+
+        Two deliberate choices behind that shape.
 
         Anchored on SapMaterialCode__c and NOT on ProductCode, because
         ProductCode is not unique in Salesforce: two products can share the
-        same code, which would make the key ambiguous. SapMaterialCode__c is
-        unique and External Id, so the anchor is safe.
+        same code, which would make the key ambiguous exactly in the case the
+        integration needs to cover.
+
+        Built on the price book CODE and not on Pricebook2Id, because a
+        Salesforce Id differs per org. A key carrying an Id cannot be promoted
+        from INT to production without recomputation; this one is identical
+        everywhere.
     -->
 
     <fields>
@@ -27,7 +34,7 @@
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
         <required>false</required>
-        <description>All countries. Upsert key for the price integration: SAP material code, price book Id and currency, pipe separated. Populated by the integration only. Lets MuleSoft push a price change over an existing entry without a prior query, and makes the load idempotent and re-runnable.</description>
+        <description>All countries. Upsert key for the price integration: SAP material code, price book code and currency, pipe separated. Contains no Salesforce Id, so the same payload runs in every environment. Populated by the integration only. Makes the price load idempotent and re-runnable.</description>
         <inlineHelpText>Integration key. Do not edit manually.</inlineHelpText>
     </fields>
 
