@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>SapCompanyCode__c</fullName>
+        <label>SAP Company Code</label>
+        <description>Codigo de sociedad del SAP, C101, C105, G101 y demas. Es la clave por la que MuleSoft localiza la cuenta de la sociedad sin depender del nombre ni de recorrer la jerarquia. Unico y External Id, entonces admite upsert directo por la URL del recurso y no exige una consulta previa. El mismo valor vive en Sociedad_Config__mdt.SAP_Company_Code__c, y es el mismo patron de Pricebook2.PricebookCode__c. Se llena solo en las cuentas de nivel sociedad: en las demas queda vacio, y un campo unico ignora los nulos, asi que no hay colision.</description>
+        <externalId>true</externalId>
+        <unique>true</unique>
+        <caseSensitive>false</caseSensitive>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+    </fields>
+</CustomObject>
