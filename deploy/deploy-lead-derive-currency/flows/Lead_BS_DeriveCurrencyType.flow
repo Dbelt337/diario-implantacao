@@ -1,30 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>62.0</apiVersion>
-    <description>Derives CurrencyType__c from Country__c on Lead when the currency is still empty. Runs before save, which is step 3 of the order of execution, so the value is already populated when custom validation rules are evaluated at step 5. This is what keeps the Financial validation rule from breaking every producer of Lead records: the guided selling flow, the UI, the integration and any data load. Never overwrites a value the user chose. The country to currency map mirrors the dependent picklist value settings exactly, because the dependency is enforced in the UI only and Flow or API can otherwise write a pairing the user cannot reselect.</description>
+    <description>Fills CurrencyType__c when it is empty, so the Financial validation rule stops breaking every producer of Lead records. Runs before save, step 3 of the order of execution, so the value is already there when custom validation runs at step 5. Trigger order 15, right after Lead_BS_DeriveSociedad at 10, so CurrencyIsoCode is already resolved when this runs. Priority one is to MIRROR CurrencyIsoCode, because that standard field is what drives PricebookEntry selection and pricing: if the two currency fields diverge, the quote pulls the wrong price entry. Only when CurrencyIsoCode is also empty does it fall back to the country map, which mirrors the dependent picklist value settings exactly, since that dependency is enforced in the UI only and Flow or API can otherwise write a pairing the user cannot reselect. Never overwrites a value already chosen.</description>
 
     <label>Lead BS Derive Currency Type</label>
     <interviewLabel>Lead BS Derive Currency Type {!$Flow.CurrentDateTime}</interviewLabel>
     <processType>AutoLaunchedFlow</processType>
     <status>Active</status>
     <triggerOrder>15</triggerOrder>
+    <environments>Default</environments>
+
+    <formulas>
+        <name>MonedaEstandarTexto</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!$Record.CurrencyIsoCode})</expression>
+    </formulas>
 
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Pais_con_moneda</targetReference>
+            <targetReference>Falta_moneda</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CurrencyType__c</field>
+            <operator>IsNull</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
         <object>Lead</object>
         <recordTriggerType>CreateAndUpdate</recordTriggerType>
         <triggerType>RecordBeforeSave</triggerType>
     </start>
 
     <decisions>
+        <name>Falta_moneda</name>
+        <label>Falta moneda</label>
+        <locationX>176</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Pais_con_moneda</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Sin moneda estandar</defaultConnectorLabel>
+        <rules>
+            <name>Espejar_moneda_estandar</name>
+            <label>Espejar moneda estandar</label>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.CurrencyIsoCode</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue><booleanValue>false</booleanValue></rightValue>
+            </conditions>
+            <connector><targetReference>Asignar_espejo</targetReference></connector>
+        </rules>
+    </decisions>
+
+    <assignments>
+        <name>Asignar_espejo</name>
+        <label>Asignar espejo de CurrencyIsoCode</label>
+        <locationX>440</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CurrencyType__c</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>MonedaEstandarTexto</elementReference></value>
+        </assignmentItems>
+    </assignments>
+
+    <decisions>
         <name>Pais_con_moneda</name>
         <label>Pais con moneda</label>
         <locationX>176</locationX>
-        <locationY>0</locationY>
+        <locationY>200</locationY>
         <defaultConnectorLabel>Sin cambio</defaultConnectorLabel>
 
         <rules>
@@ -36,14 +83,8 @@
                 <operator>EqualTo</operator>
                 <rightValue><stringValue>CR</stringValue></rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>$Record.CurrencyType__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue><booleanValue>true</booleanValue></rightValue>
-            </conditions>
             <connector><targetReference>Asignar_CRC</targetReference></connector>
         </rules>
-
         <rules>
             <name>GT</name>
             <label>Guatemala</label>
@@ -53,14 +94,8 @@
                 <operator>EqualTo</operator>
                 <rightValue><stringValue>GT</stringValue></rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>$Record.CurrencyType__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue><booleanValue>true</booleanValue></rightValue>
-            </conditions>
             <connector><targetReference>Asignar_GTQ</targetReference></connector>
         </rules>
-
         <rules>
             <name>SV</name>
             <label>El Salvador</label>
@@ -70,14 +105,8 @@
                 <operator>EqualTo</operator>
                 <rightValue><stringValue>SV</stringValue></rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>$Record.CurrencyType__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue><booleanValue>true</booleanValue></rightValue>
-            </conditions>
             <connector><targetReference>Asignar_USD_SV</targetReference></connector>
         </rules>
-
         <rules>
             <name>HN</name>
             <label>Honduras</label>
@@ -87,14 +116,8 @@
                 <operator>EqualTo</operator>
                 <rightValue><stringValue>HN</stringValue></rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>$Record.CurrencyType__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue><booleanValue>true</booleanValue></rightValue>
-            </conditions>
             <connector><targetReference>Asignar_HNL</targetReference></connector>
         </rules>
-
         <rules>
             <name>NI</name>
             <label>Nicaragua</label>
@@ -104,14 +127,8 @@
                 <operator>EqualTo</operator>
                 <rightValue><stringValue>NI</stringValue></rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>$Record.CurrencyType__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue><booleanValue>true</booleanValue></rightValue>
-            </conditions>
             <connector><targetReference>Asignar_NIO</targetReference></connector>
         </rules>
-
         <rules>
             <name>PA</name>
             <label>Panama</label>
@@ -121,11 +138,6 @@
                 <operator>EqualTo</operator>
                 <rightValue><stringValue>PA</stringValue></rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>$Record.CurrencyType__c</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue><booleanValue>true</booleanValue></rightValue>
-            </conditions>
             <connector><targetReference>Asignar_USD_PA</targetReference></connector>
         </rules>
     </decisions>
@@ -134,67 +146,62 @@
         <name>Asignar_CRC</name>
         <label>Asignar CRC</label>
         <locationX>440</locationX>
-        <locationY>0</locationY>
+        <locationY>200</locationY>
         <assignmentItems>
             <assignToReference>$Record.CurrencyType__c</assignToReference>
             <operator>Assign</operator>
             <value><stringValue>CRC</stringValue></value>
         </assignmentItems>
     </assignments>
-
     <assignments>
         <name>Asignar_GTQ</name>
         <label>Asignar GTQ</label>
         <locationX>440</locationX>
-        <locationY>130</locationY>
+        <locationY>330</locationY>
         <assignmentItems>
             <assignToReference>$Record.CurrencyType__c</assignToReference>
             <operator>Assign</operator>
             <value><stringValue>GTQ</stringValue></value>
         </assignmentItems>
     </assignments>
-
     <assignments>
         <name>Asignar_USD_SV</name>
         <label>Asignar USD El Salvador</label>
         <locationX>440</locationX>
-        <locationY>260</locationY>
+        <locationY>460</locationY>
         <assignmentItems>
             <assignToReference>$Record.CurrencyType__c</assignToReference>
             <operator>Assign</operator>
             <value><stringValue>USD</stringValue></value>
         </assignmentItems>
     </assignments>
-
     <assignments>
         <name>Asignar_HNL</name>
         <label>Asignar HNL</label>
         <locationX>440</locationX>
-        <locationY>390</locationY>
+        <locationY>590</locationY>
         <assignmentItems>
             <assignToReference>$Record.CurrencyType__c</assignToReference>
             <operator>Assign</operator>
             <value><stringValue>HNL</stringValue></value>
         </assignmentItems>
     </assignments>
-
     <assignments>
         <name>Asignar_NIO</name>
         <label>Asignar NIO</label>
         <locationX>440</locationX>
-        <locationY>520</locationY>
+        <locationY>720</locationY>
         <assignmentItems>
             <assignToReference>$Record.CurrencyType__c</assignToReference>
             <operator>Assign</operator>
             <value><stringValue>NIO</stringValue></value>
         </assignmentItems>
     </assignments>
-
     <assignments>
         <name>Asignar_USD_PA</name>
         <label>Asignar USD Panama</label>
         <locationX>440</locationX>
-        <locationY>650</locationY>
+        <locationY>850</locationY>
         <assignmentItems>
             <assignToReference>$Record.CurrencyType__c</assignToReference>
             <operator>Assign</operator>
