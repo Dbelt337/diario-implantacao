@@ -101,6 +101,44 @@ r.add('=========================================');
 System.debug(LoggingLevel.ERROR, '\n' + String.join(r, '\n'));
 ```
 
+## Status em 14/08 — o que a org já respondeu
+
+Verificações feitas na org depois da v2 respondem boa parte do GAPCHECK4 e reduzem o escopo de construção.
+
+### Metade dos campos comerciais JÁ EXISTE no PricebookEntry
+
+Sete campos custom já estão criados, verificado com `inventario-automacoes-e-campos.apex`:
+
+`AplicaCashback__c`, `Gastos__c`, `MontoCashback__c`, `PrecioExonerado__c`, `PrecioExoneradoMinimo__c`, `PrecioMinimoAsesor__c` e `VigenciaDesde__c`.
+
+Ou seja, alguém já construiu a espinha comercial, incluindo a vigência. **Falta criar:** `ImpuestoPrimeraMatricula__c`, `PrecioFlotas__c`, `CostoEstimado__c`, `CostoEstimadoExonerado__c`, as fórmulas `Margen__c` e `MargenExonerado__c`, e os campos de controle do staging `Estado__c` e `MotivoRechazo__c`.
+
+Antes de criar qualquer um deles, conferir se não existe equivalente com outro nome, que é a regra de governança de 14/08.
+
+### O upgrade para Salesforce Pricing (RLM) está fora, e isso fecha o GAPCHECK4
+
+As permission set licenses `Salesforce Pricing Design Time` e `Salesforce Pricing Run Time` existem na org, **mas com 1 assento cada**. Serve para prova de conceito, não para operação. Então `CostBook`, `ProductPriceHistoryLog` e `PriceRevisionPolicy` **não são caminho** neste programa, e a modelagem nativa desta v2 permanece como a solução, não como plano B.
+
+Em contrapartida, `ProductCatalog`, `ProductCategory` e `ProductCategoryProduct` estão disponíveis com Product Catalog Management contratado com folga, o que abre a taxonomia nativa se um dia a marca precisar virar categoria em vez de campo.
+
+### Pricebook2 ainda está sem campos custom
+
+`MarcaPropietaria__c` e `AprobadorMarca__c`, que sustentam o aprovador dinâmico por marca sem objeto novo, ainda não existem. E entra agora um terceiro: `PricebookCode__c`, único e External ID, criado para a integração de preços do MuleSoft.
+
+### Estrutura de listas: por sociedade, decidido em 14/08
+
+Discussão fechada com o time de integração: **uma lista por sociedade**, mais o standard, e não por país. O motivo é de representabilidade e não de preferência: a plataforma admite **uma única `PricebookEntry` por produto, lista e moeda**, então com 6 listas para 12 sociedades, duas sociedades do mesmo país não conseguem ter preços diferentes para o mesmo produto na mesma moeda. Moeda também não justifica lista separada, porque já é dimensão da entrada.
+
+O código da lista é o **BUKRS**, a mesma sociedade que o SAP usa, o que faz a chave da integração ficar `código do material + BUKRS + moeda`, sem nenhum Id do Salesforce.
+
+### O ponto que precisa ser resolvido antes de construir o staging
+
+O desenho de staging e aprovação desta HU assume que **o preço é administrado dentro do Salesforce**. A integração que está sendo construída com o MuleSoft assume que **o preço vem de fora**, e a sessão de 22/07 registra que a lista de preços de veículos é uma tabela em QRM por sociedade.
+
+Os dois podem conviver, mas só com uma regra explícita: se a carga externa escreve na lista **oficial**, o circuito de aprovação desta HU não tem o que aprovar; se escreve na lista **de staging**, o circuito faz sentido e a publicação continua sendo o passo controlado.
+
+**Pergunta a fechar com o negócio antes de construir:** a carga do MuleSoft entra como preço pendente de aprovação, ou como preço já vigente? Da resposta depende metade desta história.
+
 ## Decisões a validar (negócio, não dev)
 
 1. Acesso por marca = staging por marca + oficiais legíveis pelo comercial (o asesor precisa do preço publicado). Validar que atende "solo administra y visualiza los precios de su marca".
