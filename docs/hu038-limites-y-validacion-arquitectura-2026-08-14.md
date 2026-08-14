@@ -37,20 +37,33 @@ que ser lista separada.
 
 ## 2. Limites verificados
 
-### 2.1 Quantidade de price books, não há teto publicado
+### 2.1 Quantidade de price books, não há teto em Sales Cloud, há em Commerce
 
 Não existe limite documentado de quantidade de `Pricebook2` numa org de Sales
-Cloud. Os números que aparecem em busca são de outro produto e **não se aplicam
-aqui**:
+Cloud. Os limites publicados são da tabela **Price Book Data Limits do B2B
+Commerce**, e passam a valer no momento em que Commerce entrar no desenho, que é
+exatamente o que o Flavio levantou ao falar de B2C:
 
-| Número | De onde vem | Aplica ao nosso caso |
+| Limite | Valor | Tipo |
 |---|---|---|
-| 300 milhões de preços por lista | B2B Commerce, High Scale Price Books | Não |
-| No máximo 25 price books por chamada | B2B Commerce, avaliação de preço | Não |
+| Price Books por org | 300.000 | Suave, ampliável via Suporte |
+| Price Book Entries por org | 50 milhões | Suave |
+| Price Book Entries por lista | 350.000 | Suave |
+| Price Books por Buyer Group | 50 | Suave |
+| **Price Books por chamada de preço** | **25** | **Rígido, não se amplia** |
 
-Doze listas oficiais mais as de administração não chegam perto de nada.
-**A quantidade não é o risco.** O risco é o que se tem que manter em volta de
-cada lista, que é o item 3.2.
+O 25 é o único **rígido**, e é o que importa. A definição é "o número de listas
+**válidas** que o sistema avalia numa chamada de preço", e válida é lista ativa
+cuja moeda casa com a do comprador. Listas acima de 25 **não entram na avaliação
+e são ignoradas em silêncio**, que é o pior tipo de falha.
+
+Para o nosso desenho: as listas oficiais em USD são as de El Salvador, Costa
+Rica por causa da RN6, e Panamá. Sete ou oito, com folga confortável. Mas se
+alguém multiplicar as listas de administração por marca e sociedade e deixá-las
+ativas na mesma moeda, entrar em Commerce passa a ser um risco concreto.
+
+**Em Sales Cloud puro a quantidade não é o risco.** O risco é o que se tem que
+manter em volta de cada lista, item 3.2, e é o que muda se Commerce entrar.
 
 ### 2.2 Entrada em lista custom exige entrada ativa na lista padrão
 
@@ -91,9 +104,19 @@ perder o argumento.
 
 ### 3.1 Uma oportunidade usa UMA lista, e trocar a lista apaga as linhas
 
-Comportamento nativo: a janela "Choose Price Book" aceita uma lista e só uma, e
-mudar a lista de uma oportunidade que já tem produtos **apaga todas as linhas
-existentes**.
+Confirmado ao pé da letra em Considerations for Creating and Maintaining Price
+Books:
+
+> "You can add products, quote line items, or order products from a **single
+> price book only**."
+
+> "If you change the price book for an opportunity that has products, **all
+> products are deleted** from the Products related list, but the value in the
+> opportunity's Amount field remains."
+
+O segundo é pior do que parece: as linhas somem e o **Amount fica**, então o
+registro passa a mostrar um valor que nenhuma linha sustenta. Não é erro
+visível, é dado inconsistente e silencioso.
 
 Consequências que precisam ser confirmadas antes de construir:
 
@@ -125,6 +148,30 @@ Isso dá o custo real do produto cartesiano, e é um argumento muito melhor do q
 |---|---|---|
 | Uma por marca, 8 marcas | 8 | 32 |
 | Por marca e sociedade | até 96 | até 384 |
+
+---
+
+## 3bis. A estrutura não é uma hierarquia de quatro níveis
+
+O Flavio propôs no Teams uma leitura em quatro níveis: standard, sociedade,
+categoria Autos e Motos, marca. É intuitivo e está errado num ponto que muda
+tudo: **price book não tem hierarquia e não tem herança.** Cada lista é uma
+lista plana, e a oportunidade escolhe **uma**. Não existe lista que herde de
+outra, nem lista pai.
+
+Então não são quatro níveis, são **duas camadas e dois eixos**:
+
+| O que | Quantas | Quem seleciona |
+|---|---|---|
+| Standard Price Book | 1 | Ninguém, é pré-requisito técnico |
+| Listas oficiais por sociedade | 12, mais acessórios | O vendedor, uma por oportunidade |
+| Listas de administração por marca | uma por marca | Ninguém no comercial, só carga e aprovação |
+
+Categoria, Autos e Motos, e marca **não são níveis de lista.** São atributos do
+produto, e é literalmente o que a RN2 diz na frase estrutural: "la marca es un
+atributo del producto y no multiplica listas". Segmentar por categoria criaria
+listas separadas de Autos e Motos, e como a oportunidade escolhe uma só, uma
+venda de auto com moto junto ficaria impossível.
 
 ---
 
