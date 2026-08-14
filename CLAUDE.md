@@ -58,6 +58,15 @@ Diário de implantação do programa Salesforce Automotive Cloud + MuleSoft + SA
 - Não há acesso à org a partir daqui: as verificações vão como scripts `.apex` para o Diego executar em Execute Anonymous.
 - `developer.salesforce.com` e `help.salesforce.com` são bloqueados pelo proxy. Pesquisar via WebSearch.
 
+## Governança da org, decisão de 14/08
+
+A org acumulou **39 automações**, com concentração em Lead, Account e Opportunity, e já apareceu campo custom duplicado entre equipes (moeda). Decisão do Diego: **freio na criação**, nada novo sem antes verificar o que já existe.
+
+- Inventário em `docs/scripts/inventario-automacoes-e-campos.apex`: flows ativos por objeto e gatilho, triggers por objeto, e campos custom com rótulo repetido.
+- **Nunca sincronizar dois campos com o mesmo significado por Flow.** Escolher um, backfill, repontar e aposentar o outro. Manter os dois em sincronia perpetua a duplicidade e adiciona automação que pode falhar.
+- Ordem entre flows do mesmo objeto e gatilho só é previsível com **Trigger Order** definida em cada um.
+- O avalúo já existe na Opportunity, construído pelo Santi, sobre o objeto padrão `Appraisal`. Não replicar.
+
 ## Preferências de comunicação do Diego
 
 - Mensagens para o cliente **em espanhol**, prontas para colar no Teams. Documentos internos em português.
