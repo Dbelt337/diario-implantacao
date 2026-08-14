@@ -50,32 +50,88 @@ objetos num sandbox template resolve na origem.
 
 ---
 
-## ⚠️ Dois problemas nos dados de produção
+## Describe de `WorkType` em produção
 
-### 1. Nome duplicado
+Campos obrigatórios e graváveis (`IsNillable = false`):
+`Name`, `DurationType`, `EstimatedDuration`, `ShouldAutoCreateSvcAppt`,
+`OwnerId`, `FSL__Exact_Appointments__c`.
 
-"Preventiva - Banda Larga - Média" existe duas vezes:
+Lookups: apenas `OwnerId` → `User`,`Group` (obrigatório) e
+`ServiceReportTemplateId` → `ServiceReportLayout` (opcional, vazio nos 49
+registros). **`WorkType` não tem lookup para `OperatingHours`.**
 
-- `08qV2000000RVkdIAG`
-- `08qV2000000TgqHIAS`
+### ⚠️ A chave da integração é `ServiceTypeKey__c`, não `Name`
 
-Se a composite filtra por `Name` e usa `records[0]`, a escolha entre os dois é
-**não determinística**. É bug latente em produção, não apenas na QA.
+Campo customizado **`ServiceTypeKey__c`** — rótulo "Chave do Tipo de
+Atendimento", tipo **Formula (Text)**. Valores normalizados, sem acento e sem
+espaço:
 
-```sql
-SELECT Name, COUNT(Id) FROM WorkType GROUP BY Name HAVING COUNT(Id) > 1
+```
+ReparoBandaLargaCritica
+ManutencaoCorporativoDadosAlta
+ReparoCorporativoBandaLargaSemSinalCritica
+ServicoBandaLargaAlta
 ```
 
-### 2. Convenção de nome inconsistente
+É o formato que uma integração envia. Fórmula deduzida dos dados:
+
+```
+ServiceTypeKey__c = MacroCategory__c + Product__c + SubCategory__c + Criticality__c
+SkillType__c      = MacroCategory__c + Product__c + Criticality__c
+```
+
+Conferência: `ReparoCorporativo` + `BandaLarga` + `SemSinal` + `Critica`
+→ `ReparoCorporativoBandaLargaSemSinalCritica`.
+
+**Consequência para a carga:** campos fórmula são somente leitura e **não podem
+ser carregados**. Carregar apenas `Name`, `DurationType` e `EstimatedDuration`
+faz os registros entrarem na QA com a chave vazia — e a integração continua
+falhando. É obrigatório carregar as picklists de origem:
+
+| Campo | Rótulo |
+|---|---|
+| `MacroCategory__c` | Macro Categoria |
+| `Product__c` | Produto |
+| `SubCategory__c` | Sub Categoria |
+| `Criticality__c` | Críticidade |
+
+Com as quatro corretas, a chave se monta sozinha.
+
+`SkillType__c` repete entre registros por construção (não inclui
+`SubCategory__c`) — serve para match de habilidade, não como chave única.
+
+### ⚠️ Duplicidade na chave de integração
+
+```
+08qV2000000RVkdIAG  Preventiva - Banda Larga - Média  criado 31/03/2026        2 Hours / 120 min
+08qV2000000TgqHIAS  Preventiva - Banda Larga - Média  criado 13/08/2026 13:32  1 Hour  /  60 min
+```
+
+Ambos com **`ServiceTypeKey__c = PreventivaBandaLargaMedia`**. Não é só o `Name`
+duplicado: a própria chave de integração está ambígua. Com `records[0]`, a
+escolha é não determinística e as durações divergem — 120 contra 60 minutos.
+
+O segundo foi criado **no mesmo dia deste diagnóstico**, pelo usuário
+`005V200000KsviXIAR`, que também criou "Preventiva - Banda Larga - Alta" às
+13:43. Há alteração ativa nos WorkTypes de produção; alinhar antes de replicar a
+ambiguidade na QA.
+
+```sql
+-- duplicidade por chave de integração
+SELECT ServiceTypeKey__c, COUNT(Id)
+FROM WorkType GROUP BY ServiceTypeKey__c HAVING COUNT(Id) > 1
+```
+
+### Convenção de nome inconsistente
 
 | Padrão A | Padrão B |
 |---|---|
 | `Reparo - Banda Larga - Crítica` | `Reparo Corporativo -BandaLarga - Critica` |
-| espaços em volta do traço, com acento | sem espaço após o traço, sem acento, sem espaço interno |
+| espaços em volta do traço, com acento | sem espaço após o traço, sem acento |
 
-Para lookup por nome exato, acento e espaçamento são significativos. **Confirmar
-com o time de integração se o filtro da composite é por `Name`** — se for, os
-nomes precisam bater caractere a caractere entre prod e QA.
+Relevante apenas se o lookup for por `Name`. Como `ServiceTypeKey__c` é
+normalizado, ele é o candidato mais provável — **confirmar no payload da
+composite**.
 
 ---
 
@@ -125,8 +181,25 @@ ORDER BY QualifiedApiName
 Retorna nome de API, tipo, obrigatoriedade e destino dos lookups. Trocar
 `'WorkType'` para qualquer outro objeto.
 
+> `FieldDefinition` **não aceita `IN` com vários objetos** — um `IN` de sete
+> entidades devolve `UNEXPECTED EXCEPTION: Forbidden: The requested operation is
+> not yet supported by this sObject storage type`. Consultar um objeto por vez.
+
 As linhas com `DataType` = `Lookup` ou `Master-Detail` definem as dependências
 de carga: o `ReferenceTo` diz quais objetos precisam existir antes.
+
+Para saber o que é **carregável**, `FieldDefinition` não basta — use
+`EntityParticle`:
+
+```sql
+-- Tooling API
+SELECT QualifiedApiName, DataType, IsCreatable, IsUpdatable, IsCalculated, IsNillable
+FROM EntityParticle
+WHERE EntityDefinition.QualifiedApiName = 'WorkType'
+ORDER BY QualifiedApiName
+```
+
+`IsCreatable = true` **e** `IsCalculated = false` é a lista exata da carga.
 
 Atalho equivalente na UI: botão **"WorkType Field Info"** do Salesforce Inspector.
 
@@ -191,12 +264,21 @@ Rodar as mesmas na QA para o diff do que falta.
 
 ### Mínimo para destravar a composite
 
-1. Rodar o `FieldDefinition` acima e conferir os lookups obrigatórios de
-   `WorkType` (`IsNillable = false` + `DataType` de referência); carregar antes
-   o que aparecer
-2. **`WorkType`** — os 49 registros
+1. Confirmar que as picklists `MacroCategory__c`, `Product__c`,
+   `SubCategory__c`, `Criticality__c` existem na QA **com os mesmos valores** de
+   produção — sem elas a fórmula `ServiceTypeKey__c` sai errada
+2. **`WorkType`** — os 49 registros, incluindo as quatro picklists acima
 
-Isso já faz a subrequisição de lookup retornar registro e a composite passar.
+Campos a **não** incluir na carga (fórmula, somente leitura):
+`ServiceTypeKey__c`, `SkillType__c`.
+
+Único lookup obrigatório: `OwnerId` — apontar para um usuário válido da QA.
+
+Validação após a carga — as chaves devem bater com produção:
+
+```sql
+SELECT ServiceTypeKey__c, Name FROM WorkType ORDER BY ServiceTypeKey__c
+```
 
 ### Completo, para o fluxo funcionar de ponta a ponta
 
