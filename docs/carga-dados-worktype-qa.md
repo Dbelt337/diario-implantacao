@@ -501,6 +501,65 @@ refresh de sandbox.
 
 ---
 
+## Depois da carga: `ExternalIDVoalle__c`
+
+Com os WorkTypes carregados, o teste da composite avançou — o lookup passou e o
+erro mudou:
+
+```
+antes:  [WorkOrder | PROCESSING_HALTED] No value for WorkType.records[0].Id
+depois: [WorkOrder | INVALID_FIELD] No such column 'ExternalIDVoalle__c'
+```
+
+### Não é defasagem de sandbox
+
+Comparação dos campos custom de `WorkOrder` nas duas orgs:
+
+| Org | Campos custom |
+|---|---|
+| Produção | 97 |
+| QA | 97 |
+
+**Listas idênticas, zero diferenças.** `ExternalIDVoalle__c` não existe em
+nenhuma das duas — deploy não resolve, não há o que copiar.
+
+Campos relacionados que existem em ambas:
+
+```
+voallecategory1__c … voallecategory5__c   categorias do Voalle
+externalidzendesk__c                      external id, mas do Zendesk
+vlocity_cmt__externalworkordernumber__c   numero externo da ordem
+contractlineitemexternalid__c, protocolid__c, workorderuniquenumber__c
+```
+
+As categorias do Voalle foram criadas, o external id não. Ou falta criar o campo,
+ou o payload deveria gravar em outro destino — `vlocity_cmt__ExternalWorkOrderNumber__c`
+é o candidato mais natural. Decisão do time de integração.
+
+Script usado (rodar nas duas orgs; identifica a org no próprio log):
+
+```apex
+Organization o = [SELECT Name, IsSandbox FROM Organization LIMIT 1];
+List<String> fs = new List<String>();
+for (String f : Schema.SObjectType.WorkOrder.fields.getMap().keySet())
+  if (f.endsWith('__c')) fs.add(f);
+fs.sort();
+System.debug(o.Name + ' | IsSandbox=' + o.IsSandbox + ' | ' + fs.size()
+  + ' custom: ' + String.join(fs, ', '));
+```
+
+### Escopo real da defasagem QA↔produção
+
+Confirmado apenas em `WorkType`:
+
+- `Skill__c` existe em produção e falta na QA
+- dependência `Servico` → `BandaLarga`/`Camera` ausente na matriz da QA
+
+`WorkOrder` está sincronizado. O deploy pendente é
+`CustomObject:WorkType`, **não** `WorkOrder`.
+
+---
+
 ## Pendências
 
 - [ ] Obter o **payload completo da composite** com o time de integração — o filtro
