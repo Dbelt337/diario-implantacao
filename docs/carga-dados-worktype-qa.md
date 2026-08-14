@@ -84,15 +84,19 @@ nomes precisam bater caractere a caractere entre prod e QA.
 ```
 metadados (deploy)          dados (carga)
 ─────────────────           ─────────────
-Skill ─────────────────┐    OperatingHours ──┬──> ServiceTerritory
-RecordType             │         │           │
-picklists              │         └───────────┴──> WorkType   ← o que falta
-                       │                            │
+Skill ─────────────────┐    OperatingHours ──> ServiceTerritory
+RecordType             │                            │
+picklists              │         WorkType   ← o que falta
+                       │            │
                        └──> SkillRequirement ───────┤
                             ProductRequired ────────┤ (precisa Product2)
                             WorkTypeGroupMember ────┤ (precisa WorkTypeGroup)
-                            ServiceTerritoryWorkType┘
+                            ServiceTerritoryWorkType┘ (precisa ServiceTerritory)
 ```
+
+`OperatingHours` é pré-requisito de `ServiceTerritory`, **não** de `WorkType`.
+As dependências diretas de `WorkType` devem ser confirmadas pelo describe —
+ver a regra na seção seguinte.
 
 Para o `WorkOrder` criado pela composite, conforme o payload:
 `Account`, `Contact`, `Asset`/`Case`, `ServiceTerritory`, `Pricebook2`,
@@ -104,17 +108,49 @@ WorkOrder dispara criação automática de `ServiceAppointment`, que exige
 
 ---
 
-## Inventário — rodar em PRODUÇÃO
+## Regra: descrever o objeto antes de escrever a query
+
+Nunca escrever nome de campo de memória — gera `INVALID_FIELD`. A documentação
+oficial também não basta: ela não conhece os campos customizados do org nem a
+versão de API em uso. **A fonte autoritativa é o describe do próprio org.**
 
 ```sql
--- todos os campos dos 49 WorkTypes (FIELDS(ALL) evita adivinhar nomes de campo)
+-- marcar "Tooling API" no Inspector
+SELECT QualifiedApiName, Label, DataType, IsNillable, ReferenceTo
+FROM FieldDefinition
+WHERE EntityDefinition.QualifiedApiName = 'WorkType'
+ORDER BY QualifiedApiName
+```
+
+Retorna nome de API, tipo, obrigatoriedade e destino dos lookups. Trocar
+`'WorkType'` para qualquer outro objeto.
+
+As linhas com `DataType` = `Lookup` ou `Master-Detail` definem as dependências
+de carga: o `ReferenceTo` diz quais objetos precisam existir antes.
+
+Atalho equivalente na UI: botão **"WorkType Field Info"** do Salesforce Inspector.
+
+Quando o objetivo é ler os dados sem se comprometer com nomes de campo:
+
+```sql
 SELECT FIELDS(ALL) FROM WorkType LIMIT 200
 ```
 
+`FIELDS(ALL)` nunca produz `INVALID_FIELD`.
+
+> **Erro registrado:** a primeira versão deste documento usava
+> `WorkType.OperatingHoursId`, campo que **não existe** nesse objeto — o
+> relacionamento com `OperatingHours` está em `ServiceTerritory`, não em
+> `WorkType`. O nome foi assumido de memória em vez de descrito. Daí a regra
+> acima.
+
+---
+
+## Inventário — rodar em PRODUÇÃO
+
 ```sql
--- WorkTypes que dependem de OperatingHours
-SELECT Id, Name, OperatingHoursId, OperatingHours.Name
-FROM WorkType WHERE OperatingHoursId != null
+-- todos os campos dos 49 WorkTypes
+SELECT FIELDS(ALL) FROM WorkType LIMIT 200
 ```
 
 ```sql
@@ -155,7 +191,9 @@ Rodar as mesmas na QA para o diff do que falta.
 
 ### Mínimo para destravar a composite
 
-1. `OperatingHours` (+ `TimeSlot`) — **só se** os WorkTypes referenciarem
+1. Rodar o `FieldDefinition` acima e conferir os lookups obrigatórios de
+   `WorkType` (`IsNillable = false` + `DataType` de referência); carregar antes
+   o que aparecer
 2. **`WorkType`** — os 49 registros
 
 Isso já faz a subrequisição de lookup retornar registro e a composite passar.
