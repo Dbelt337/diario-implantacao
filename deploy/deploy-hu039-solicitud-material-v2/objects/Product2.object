@@ -213,7 +213,7 @@
     <validationRules>
         <fullName>Request_Cannot_Be_Active_Before_SAP</fullName>
         <active>true</active>
-        <description>RN-07, RN-42 and CA-04: a request stays inactive, and an inactive material cannot be quoted. Only the inbound integration marks Material Created and activates the record, because a material counts as created only once it is in the SAP material master. This rule stops a well-meaning user from ticking Active by hand and letting a non-existent material reach a customer quote.</description>
+        <description>RN-07, RN-42, CA-04: a request stays inactive. Only the inbound integration marks Material Created and activates it, because a material exists only once it is in the SAP master. Blocks ticking Active by hand.</description>
         <errorConditionFormula>AND(
   OR(
     RecordType.DeveloperName = "MaterialRequestOriginalPart",
