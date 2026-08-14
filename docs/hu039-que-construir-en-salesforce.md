@@ -16,7 +16,7 @@ Três: `Material`, `MaterialRequestOriginalPart`, `MaterialRequestWildcardCode`.
 
 ### 1.2 Campos em Product2 — PRONTO
 
-19 campos no mesmo pacote, mais o `RequestBrand__c` no pacote 2.
+18 campos no mesmo pacote, mais o `RequestBrand__c` no pacote 2.
 
 ### 1.3 Validation rule — PRONTO
 
