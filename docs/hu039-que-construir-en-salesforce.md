@@ -14,9 +14,9 @@ Três: `Material`, `MaterialRequestOriginalPart`, `MaterialRequestWildcardCode`.
 
 **Detalhe:** Product2 não tinha nenhum Record Type, então depois do deploy é obrigatório rodar `post-deploy-hu039-asignar-recordtype.apex` para colocar os 281 produtos existentes no Record Type Material. Sem isso o catálogo some das List Views.
 
-### 1.2 Campos em Product2 — REVISAR ANTES DE DEPLOYAR
+### 1.2 Campos em Product2 — REVISADO, 12 CAMPOS
 
-O pacote traz 18 campos, mais o `RequestBrand__c` no pacote 2. **Foi montado
+O pacote original trazia 18 campos, mais o `RequestBrand__c` no pacote 2. **Foi montado
 sem verificar o que já existe**, e o describe de 14/08
 (`check-product2-campos-existentes.apex`) mostrou que `Product2` hoje só tem
 dois campos custom, `Version__c` e `SapMaterialCode__c`, e uma lista grande de
@@ -63,8 +63,8 @@ HU-039 sem criar nada:
 | Layout | Para | O que muda |
 |---|---|---|
 | `Material Layout` | RT Material | Layout de catálogo normal. Os campos de solicitação ficam fora |
-| `Material Request Original Part` | RT Repuesto Original | Obrigatórios: `RequestBrand__c`, `RequestedMaterialCode__c`, `Description`, `RequestCompany__c`, `RequestPlant__c`, `RequestBranch__c` |
-| `Material Request Wildcard Code` | RT Código Comodín | Obrigatórios: `RequestedMaterialCode__c` e `Description`. Marca vira desejável |
+| `Material Request Original Part` | RT Repuesto Original | Obrigatórios: `BusinessBrandId`, `ProductCode`, `Description`, `RequestCompany__c`, `RequestPlant__c`, `RequestBranch__c` |
+| `Material Request Wildcard Code` | RT Código Comodín | Obrigatórios: `ProductCode` e `Description`. Marca vira desejável |
 
 **Detalhe que resolve a divergência de quem escreve o estado:** o `RequestStatus__c` entra como **somente leitura no layout de Repuestos** e editável no de PA. Obrigatoriedade e somente leitura por Record Type se fazem no layout, não em FLS, porque FLS é por perfil e não por Record Type. O layout é atribuído por perfil e Record Type, então o mesmo campo pode ser editável para o Catman e travado para o resto.
 
@@ -75,7 +75,7 @@ Quatro, todas filtradas por Record Type:
 1. `Solicitudes Repuestos abiertas` — RT Original Part ou Wildcard, estado Pending ou InReview;
 2. `Solicitudes PA abiertas` — para o Catman;
 3. `Solicitudes trabadas` — estado Pending ou InReview com `SapLastAttempt__c` anterior a X horas. É a peça que substitui o Case proibido pela RN-56;
-4. `Mis solicitudes` — filtrada por `RequestedBy__c` igual ao usuário atual, para o assessor.
+4. `Mis solicitudes` — filtrada por `CreatedById` igual ao usuário atual, para o assessor. Campo padrão, não precisa de nada novo.
 
 ### 1.6 Field History e Feed Tracking — CONSTRUIR
 
@@ -93,7 +93,7 @@ Feed Tracking em Product2 sobre `RequestStatus__c`. É o que faz os seguidores r
 | `PS_Material_Request_Manager` | Gestión de Inventarios e Catman | Editar solicitações, mudar estado no caso de PA |
 | `PS_Material_Request_Viewer` | Jefe, Encargado, Gerente, Gerente de canal | Somente leitura (CA-17) |
 
-**Detalhe fácil de esquecer:** o usuário de integração precisa de FLS de escrita em `RequestStatus__c`, `SapLastError__c`, `SapRetryCount__c`, `SapLastAttempt__c`, `ProductCode`, `SapMaterialCode__c` e `IsActive`. Sem isso a integração falha em silêncio, sem erro visível.
+**Detalhe fácil de esquecer:** o usuário de integração precisa de FLS de escrita em `RequestStatus__c`, `SapLastAttempt__c`, `ProductCode`, `SapMaterialCode__c`, `BusinessBrandId`, `HarmonizedTariffSchedCode` e `IsActive`. Sem isso a integração falha em silêncio, sem erro visível.
 
 ### 1.8 Custom Notification Type — CONSTRUIR
 
@@ -274,7 +274,7 @@ Por que assim e não só no Apex: o Flow cobre **todos** os caminhos de entrada,
 
 ### 4.2 Flow de notificação, disparado por registro, depois de salvar — CONSTRUIR
 
-Quando `RequestStatus__c` muda para Material Creado ou Rejected, dispara a Custom Notification para o usuário de `RequestedBy__c`. Os seguidores já recebem pelo Feed Tracking, sem flow.
+Quando `RequestStatus__c` muda para Material Creado ou Rejected, dispara a Custom Notification para o usuário de `CreatedById`. Os seguidores já recebem pelo Feed Tracking, sem flow.
 
 ### 4.3 Flow agendado de solicitações travadas — CONSTRUIR
 
