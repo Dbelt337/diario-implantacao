@@ -62,10 +62,32 @@ Diário de implantação do programa Salesforce Automotive Cloud + MuleSoft + SA
 
 A org acumulou **39 automações**, com concentração em Lead, Account e Opportunity, e já apareceu campo custom duplicado entre equipes (moeda). Decisão do Diego: **freio na criação**, nada novo sem antes verificar o que já existe.
 
+### REGRA DURA: não se cria nada sem consultar antes
+
+Vale para **campo, objeto, Record Type, flow, classe, Custom Metadata, valor de picklist, permission set, lista de preço**, qualquer metadado. Antes de propor ou empacotar qualquer criação, é **obrigatório**:
+
+1. Rodar um script de describe na org e olhar o que já existe, incluindo campos padrão livres, não só os custom;
+2. Mostrar ao Diego o cruzamento entre o que se quer criar e o que já existe, item por item;
+3. Só depois montar o pacote.
+
+Não é etapa opcional nem se pula por pressa. **Um pacote montado sem essa verificação é retrabalho e é dívida**, porque tirar campo depois de criado é muito mais caro que não criar.
+
+Casos reais que originaram a regra, todos em 14/08:
+
+- O pacote da HU-039 nasceu com **18 campos em `Product2` sem nenhuma verificação prévia**. A revisão posterior mostrou que `RequestedMaterialCode__c` provavelmente é `ProductCode`, `RequestedBy__c` provavelmente é `CreatedById`, `SapLastError__c` e `SapRetryCount__c` cabem no Nebula Logger que já está instalado, e `RequestVin__c` e `RequestVehicleModel__c` estão no objeto errado, porque VIN é contexto de uma venda e o material fica no catálogo para todos. Verificação em `docs/scripts/check-product2-campos-existentes.apex`;
+- `CountryCurrency__mdt` foi criado ao lado de `Sociedad_Config__mdt.Currency_Code__c`, que já existia e já era usado pelo `Lead_BS_DeriveSociedad`. Duas fontes para moeda;
+- Sete Custom Metadata carregam país ou sociedade, e o código da sociedade se repete como texto livre sem integridade referencial nenhuma;
+- `BusinessProfile.BusinessType__c` já carrega Aseguradoras, Talleristas, Repuesteras e Flotas/Arrendadoras, que é praticamente o catálogo de Grupo de Clientes que a RN-35 da HU-017 quer criar em outro lugar.
+
+**Antes de aceitar criação vinda de outro time, aplicar a mesma regra.** Foi assim que se descobriu que o `CountryCurrency__mdt` proposto pelo time financeiro já estava deployado e duplicava o que existia.
+
+### Demais decisões
+
 - Inventário em `docs/scripts/inventario-automacoes-e-campos.apex`: flows ativos por objeto e gatilho, triggers por objeto, e campos custom com rótulo repetido.
 - **Nunca sincronizar dois campos com o mesmo significado por Flow.** Escolher um, backfill, repontar e aposentar o outro. Manter os dois em sincronia perpetua a duplicidade e adiciona automação que pode falhar.
 - Ordem entre flows do mesmo objeto e gatilho só é previsível com **Trigger Order** definida em cada um.
 - O avalúo já existe na Opportunity, construído pelo Santi, sobre o objeto padrão `Appraisal`. Não replicar.
+- **Antes de acrescentar valor a picklist restrita padrão, verificar se um valor existente já serve.** Acrescentar valor próprio faz funcionalidade padrão ver algo que não conhece, e trocar valores sem Replace deixa registros órfãos, que foi o que aconteceu com os quatro `Sales Dealer` do `BusinessProfile`.
 
 ## Preferências de comunicação do Diego
 
