@@ -1,0 +1,251 @@
+HU-038 . ADMINISTRACION DE PRECIOS Y PRICE BOOKS . SOLUCION RECOMENDADA
+Fecha: 14/08/2026
+Base: HU-038 V3 leida integralmente, catalogo de Standard Objects del
+Automotive Cloud, y verificacion del estado real de la org.
+
+
+====================================================================
+1. LO QUE LA DOCUMENTACION DEL AUTOMOTIVE ESTABLECE
+====================================================================
+
+El Automotive Cloud no tiene objeto de precio. El catalogo completo de
+Standard Objects cubre vehiculo y definicion de vehiculo, avaluo, activo
+y titularidad, flota, garantia y reclamacion, telemetria, agendamiento,
+visitas, codigos de industria y el bloque financiero. Ningun objeto de
+pricing.
+
+Y hay una confirmacion mejor que la ausencia. El objeto
+VehDefSearchableField se define como "multiple fields from objects such
+as Product, Price Book, and Vehicle Definition". Es decir, cuando el
+propio Automotive necesita citar de donde vienen producto y precio, cita
+Product y Price Book de la plataforma.
+
+Conclusion: el precio vive en Pricebook2 y PricebookEntry. No existe
+alternativa nativa del Automotive, y la venta guiada ya esta en el modelo
+correcto.
+
+El objeto mas cercano a precio en el catalogo es SellerProduct, API 65,
+"products associated with a seller, product availability, production
+details, and the seller's role for the product". Asocia producto a
+vendedor y no lleva precio, asi que no sustituye nada aqui.
+
+
+====================================================================
+2. LAS CUATRO RESTRICCIONES QUE DISENAN LA SOLUCION
+====================================================================
+
+1. Una unica PricebookEntry por producto, lista y moneda. Precio vigente
+   y precio pendiente no caben en la misma lista.
+
+2. PricebookEntry no admite trigger Apex, ni record-triggered flow, ni
+   Process Builder, y no figura en la lista de objetos de aprobacion
+   clasica. Nada reacciona al guardar.
+
+3. PricebookEntry si acepta campos custom. Comprobado: la org ya tiene
+   siete.
+
+4. Un campo formula puede leer Custom Metadata, asi que hay calculo sin
+   automatizacion.
+
+
+====================================================================
+3. LA CUENTA DE COMPLEJIDAD, QUE ES LO QUE DECIDE
+====================================================================
+
+La pregunta no es "con o sin objeto custom". Es cuantas piezas cuesta
+cada camino.
+
+CAMINO A . CERO OBJETOS CUSTOM, CON LISTAS DE STAGING
+
+Para que el precio pendiente conviva con el vigente, necesita otra lista.
+Y hay dos requisitos que multiplican esas listas al mismo tiempo:
+
+  . Por sociedad, obligatorio: el mismo modelo puede tener precio
+    pendiente distinto en C101 y en C105, y en la misma lista colisionan
+    por la restriccion 1.
+
+  . Por marca, obligatorio: la RN2 exige que el responsable "solo
+    administra y visualiza los precios de su marca", y no hay forma de
+    restringir acceso por marca dentro de una lista.
+
+Entonces las listas de staging son 12 sociedades multiplicadas por el
+numero de marcas. Con ocho marcas son 96 listas de staging, mas las 12
+oficiales, mas las de accesorios. Mas de 120 price books para mantener,
+nombrar, permisionar y replicar en cuatro ambientes.
+
+Y aun asi quedan dos requisitos sin solucion: el acceso por marca en las
+listas oficiales, y la aprobacion, que habria que construir a mano porque
+no hay objeto que aprobar.
+
+CAMINO B . UN OBJETO DE SOLICITUD
+
+El precio pendiente pasa a ser registro, no entrada de lista. Desaparece
+la colision y desaparece la multiplicacion.
+
+  . Price books: 12 oficiales por sociedad mas las de accesorios.
+    Ninguna lista de staging.
+  . Acceso por marca: reglas de comparticion en el objeto, nativo.
+  . Aprobacion: proceso de aprobacion nativo, individual y en bloque.
+  . Calculo de los pisos al guardar: record-triggered flow, nativo.
+
+Un objeto custom elimina mas de noventa price books y resuelve dos
+requisitos que el otro camino deja abiertos.
+
+CONCLUSION
+
+El objeto no es la complejidad, es lo que la remueve. La restriccion de
+cero objetos custom, tomada el 12/08, era correcta con la informacion de
+ese dia y no sobrevive a la cuenta.
+
+Es un objeto. No es una familia de objetos.
+
+
+====================================================================
+4. LA SOLUCION RECOMENDADA
+====================================================================
+
+CAPA 1 . EL PRECIO PUBLICADO
+
+PricebookEntry en la lista oficial de la sociedad, activa. Es lo unico
+que el proceso comercial lee.
+
+Once campos comerciales, de los cuales seis YA EXISTEN en la org:
+PrecioMinimoAsesor, MontoCashback, AplicaCashback, PrecioExonerado,
+PrecioExoneradoMinimo y Gastos, mas VigenciaDesde.
+
+Faltan: ImpuestoPrimeraMatricula, PrecioFlotas, CostoEstimado,
+CostoEstimadoExonerado y la vigencia final del cashback.
+
+Los tres pisos por factor del Escenario 12 son CAMPOS FORMULA leyendo
+Custom Metadata, sin ninguna automatizacion:
+
+    MinimoGerenteVentas__c =
+        PrecioMinimoAsesor__c *
+        $CustomMetadata.FactorNivel__mdt.GerenteVentas.Factor__c
+
+Cumple "aplicando los factores vigentes de la tabla editable, sin
+intervencion manual", y la tabla es editable sin despliegue, como pide la
+RN9.
+
+En Product2 entra la moneda de publicacion, porque la RN6 dice "por
+modelo".
+
+CAPA 2 . LA SOLICITUD DE CAMBIO
+
+Un objeto, PriceChangeRequest__c, un registro por producto, sociedad y
+moneda, con los valores propuestos, el estado, el solicitante, el
+aprobador, la fecha y el archivo.
+
+No es invencion nuestra. La RN3 describe exactamente ese registro: "Toda
+solicitud de cambio de precio queda registrada dentro del sistema: quien
+la pidio, quien la aprobo, cuando y con que archivo."
+
+El costo y el margen viven aqui, no en la entrada de precio. Asi la RN10
+se cumple sola, "nunca en la lista comercial que consultan los asesores",
+porque simplemente no estan ahi.
+
+CAPA 3 . LA PUERTA DE ESCRITURA
+
+Una LWC mas un servicio Apex, para la carga masiva y para la edicion
+individual. No es preferencia: como PricebookEntry no tiene
+automatizacion, si no somos duenos de la puerta, nada reacciona.
+
+El servicio compara los cinco campos disparadores contra la entrada
+oficial vigente y decide: si bajo, va a aprobacion; si subio, o si solo
+cambiaron gastos o el porcentaje de primera matricula, publica directo,
+que es el Escenario 2.
+
+Quitar la edicion directa de PricebookEntry de los perfiles
+administrativos cierra la puerta de atras. Es una configuracion de perfil.
+
+CAPA 4 . APROBACION
+
+Proceso de aprobacion nativo sobre la solicitud. Aprobador determinado
+POR MARCA y no por jerarquia, que es lo que exige la RN3 y que el proceso
+nativo resuelve con aprobador dinamico. Aprobacion en bloque desde la
+vista de lista. Notificacion nativa al solicitante.
+
+CAPA 5 . PUBLICACION
+
+Al aprobar, escribe en la PricebookEntry oficial. Si la vigencia es
+futura, un Apex programado diario publica cuando llega la fecha, que es
+el Escenario 14.
+
+CAPA 6 . LO QUE YA ESTABA BIEN Y NO CAMBIA
+
+Decision Matrix para las tasas de impuesto y para los factores, editable
+sin despliegue, y la tasa nunca grabada en la entrada de precio, como
+exige la RN5.
+
+Reports estandar para el reporte gerencial de la RN8.
+
+Multimoneda nativa, con Guatemala teniendo dos entradas por producto.
+
+Regla de redondeo por sociedad y moneda en Custom Metadata, espejando los
+cuatro decimales del pricing del SAP y los dos de las posiciones.
+
+Sobre la reconstruccion del precio historico, Escenario 10: la fuente es
+la propia cotizacion, que graba el precio en el momento en que cotizo. El
+historico de campo sirve para auditar quien cambio que, pero no debe ser
+la fuente de la reconstruccion, porque se retiene por tiempo limitado y
+tiene techo de veinte campos rastreados por objeto.
+
+
+====================================================================
+5. SI AUN ASI EL OBJETO QUEDA VETADO
+====================================================================
+
+Hay camino, y es dividir en lugar de cortar.
+
+R1 SIN OBJETO Y SIN APROBACION: las capas 1, 3 y 6. Precio, campos,
+formulas, carga, impuestos, moneda, redondeo y reporte. Doce listas
+oficiales mas accesorios. La venta guiada cotiza. El control de quien
+cambio el precio queda en el historico de campo y en el archivo adjunto,
+procedimental.
+
+R2 CON EL OBJETO: las capas 2, 4 y 5, el circuito de aprobacion, que es
+el GQ-CA-01-106.
+
+Esto entrega el R1 sin ninguna pieza nueva mas alla de campos, y aplaza
+exactamente la parte que carga el costo. Y encaja en el ejercicio de
+repriorizacion que abrio Melisa.
+
+
+====================================================================
+6. LO QUE QUEDA ABIERTO Y NECESITA DECISION DEL NEGOCIO
+====================================================================
+
+1. La marca multiplica las listas oficiales? La RN2 dice que no y dice
+   que si en parrafos seguidos. Si el responsable de la marca no puede
+   ver precio de otra marca ni en la lista oficial, las oficiales tambien
+   se multiplican, y ahi el objeto deja de ser recomendacion y pasa a ser
+   necesidad.
+
+2. Flotas es canal o es campo? El Annex lo trata como canal y la RN1 crea
+   el campo de precio de flotas en la entrada. Los dos juntos duplican el
+   dato.
+
+3. Costa Rica en dolares. La RN6 dice que se administra y se exhibe en
+   USD, y el dato de la org esta en colones, incluso en la oportunidad de
+   la demostracion.
+
+4. Los gastos vienen del SAP, por la RN5. Confirmar si es por servicio en
+   tiempo de cotizacion o carga periodica.
+
+
+====================================================================
+7. LAS DOCE SOCIEDADES, QUE CIERRAN LA ESTRUCTURA DE LISTAS
+====================================================================
+
+La RN2 las nombra: C101 y C105 (Costa Rica); S101, S206 y S105 (El
+Salvador); G101 (Guatemala); H101 y H105 (Honduras); N101 y N105
+(Nicaragua); P103 y P105 (Panama).
+
+Costa Rica tiene dos y El Salvador tiene tres. Como la plataforma admite
+una unica entrada por producto, lista y moneda, una lista por PAIS seria
+incapaz de representar precios distintos entre C101 y C105. No es
+preferencia, es imposibilidad.
+
+El codigo de la lista es el mismo BUKRS, lo que hace que la clave de la
+integracion de precios sea codigo de material mas BUKRS mas moneda, sin
+ningun Id de Salesforce.
