@@ -15,14 +15,26 @@ System.debug('===================================================');
 System.debug('CAMPOS DE RESERVA Y PAGO EN OPPORTUNITY');
 System.debug('===================================================');
 
+// Correr esto en la MISMA org donde aparece la pantalla. Los campos existen
+// en QA y pueden no existir en DEV Sales, que es lo que ya paso una vez.
+Organization org = [SELECT Id, Name, InstanceName, IsSandbox FROM Organization LIMIT 1];
+System.debug('ORG: ' + org.Name + ' | ' + org.Id
+    + ' | instancia=' + org.InstanceName + ' | sandbox=' + org.IsSandbox);
+System.debug('   Si esta no es la org de la pantalla, el resultado no sirve.');
+
 System.debug('----- 1. DEFINICION TECNICA DE CADA CAMPO -----');
 List<String> apiNames = new List<String>();
+Integer totalCustom = 0;
 for (Schema.SObjectField f : Opportunity.SObjectType.getDescribe().fields.getMap().values()) {
     Schema.DescribeFieldResult fd = f.getDescribe();
+    if (fd.isCustom()) { totalCustom++; }
     String label = fd.getLabel().toLowerCase();
-    if (!label.contains('reserva') && !label.contains('pago') && !label.contains('vigencia')) {
-        continue;
-    }
+    String api = fd.getName().toLowerCase();
+    Boolean coincide =
+        label.contains('reserva') || label.contains('pago') || label.contains('vigencia')
+        || api.contains('reserva') || api.contains('pago') || api.contains('vigencia')
+        || api.contains('reserv') || api.contains('payment') || api.contains('booking');
+    if (!coincide) { continue; }
     apiNames.add(fd.getName());
     System.debug('   ' + fd.getName());
     System.debug('        label      : ' + fd.getLabel());
