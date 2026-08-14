@@ -98,38 +98,86 @@ void liberarClave(Id productId)
 
 Limpa o `RequestKey__c` ao rejeitar, para permitir nova solicitação sobre a mesma combinação (RN-14).
 
-### 2.2bis `MaterialPricingService` — CONSTRUIR, ESTAVA FALTANDO
+### 2.2bis Entradas de preço e o preço da linha — LER ANTES DE CONSTRUIR
 
-Buraco encontrado em 14/08 ao cruzar esta HU com a estrutura de listas da
-HU-038. `marcarCreado` transforma a solicitação em material definitivo e ativa
-o `Product2`, e **isso não basta para cotizar.** Um `Product2` sem
-`PricebookEntry` não pode ser adicionado a oportunidade nem a cotização. Do
-jeito que está hoje, o material nasce criado e não vendível, que é exatamente o
-que a HU quer evitar.
+Levantado em 14/08 ao cruzar esta HU com a estrutura de listas da HU-038. São
+três coisas diferentes e só a terceira é grave.
 
-O que falta construir, e a ordem é obrigatória:
+**Primeira, a que JÁ está resolvida no código.** `MaterialCreationService`
+tem `asegurarEntradas(productId, pricebookId, currencyIsoCode)`, chamada dentro
+de `crearMaterial`. Ela cria a entrada na Standard Price Book e a entrada na
+lista da venda, ativas, e já trata o caso de já existirem. **Não construir peça
+nova para isso.** A ordem obrigatória de plataforma, standard antes de lista
+custom, já está respeitada, e sem ela a segunda gravação falharia com
+`STANDARD_PRICE_NOT_DEFINED`.
 
-1. **Entrada na Standard Price Book, ativa.** É pré-requisito de plataforma:
-   "Custom price book entries can be created only for products with active
-   standard price book entries". Sem ela a segunda gravação falha com
-   `STANDARD_PRICE_NOT_DEFINED`;
-2. **Entrada na lista de repuestos**, com `UnitPrice` estrutural, porque o preço
-   real vem da consulta ao SAP no momento de cotizar;
-3. **Uma entrada por moeda** que a sociedade do material usa. `PricebookEntry` é
-   uma por produto, lista e moeda, então numa venda em CRC a entrada em CRC tem
-   que existir, não adianta ter só a de USD.
+**Segunda, o que falta de verdade nessa parte.** `asegurarEntradas` é privada e
+só é chamada no caminho síncrono, onde `pricebookId` e `currencyIsoCode` vêm do
+contexto da cotização. A HU-039 separa Tiempo 1, a solicitação, de Tiempo 2, a
+confirmação que volta pelo Mule. **`marcarCreado` roda sem cotização por
+perto**, então não tem nenhum dos dois valores. O que fazer:
 
-Duas consequências que precisam de decisão explícita:
+1. Tornar `asegurarEntradas` visível ao `MaterialRequestService` e chamá-la de
+   `marcarCreado`. Reutilizar, não reescrever, conforme a decisão de governança
+   de 14/08;
+2. Resolver os dois parâmetros sem inventar campo novo no `Product2`:
+   - moeda, a partir de `Sociedad_Config__mdt.Currency_Code__c`, indexado por
+     `RequestCompany__c`. Esse Custom Metadata já existe e já é usado pelo
+     `Lead_BS_DeriveSociedad`;
+   - lista, buscando o `Pricebook2` de repuestos por `PricebookCode__c`, o campo
+     do pacote `deploy-pricebookentry-pricekey`.
+3. Lembrar que `PricebookEntry` é uma por produto, lista **e moeda**. Material
+   criado para uma sociedade em CRC não fica cotizável numa venda em USD.
 
-- **`UnitPrice` estrutural em zero deixa o `ListPrice` da linha em zero** e o
-  desconto da linha sem sentido, porque o preço de venda vem do SAP e é gravado
-  em `UnitPrice` da `OpportunityLineItem`. Relatório de desconto sobre repuestos
-  não vai significar nada. A alternativa é gravar o último preço conhecido do
-  SAP como entrada estrutural, que custa uma escrita a mais e mantém o desconto
-  legível;
-- A criação dessas entradas tem que estar **na mesma transação lógica** de
-  `marcarCreado`. Se falhar, o material fica ativo e não vendível, e ninguém
-  percebe até o vendedor tentar cotizar.
+**Terceira, e é a grave: hoje o repuesto criado é cotizado a ZERO.**
+
+A cadeia, verificada no código que está no ar:
+
+| Passo | O que acontece |
+|---|---|
+| `asegurarEntradas` | Cria as entradas com `UnitPrice = 0` |
+| `RepuestosLineService` | Monta a `QuoteLineItem` com `UnitPrice = pbe.UnitPrice`, ou seja, 0 |
+| `SapMuleClient.MaterialSaldo` | Traz `piso`, `reserva`, `saldoDisponible`, `textoExistencia`. **Traz estoque, não traz preço** |
+| `simulateSalesOrder` | `SimulationLine.unitPrice` é **entrada**, o Salesforce manda o preço para o SAP. `SimulationResult` devolve só `netAmount`, `taxAmount` e `totalAmount`, nada por linha |
+
+Ou seja, **o preço da linha de repuestos sai da entrada local, não do SAP.** A
+decisão de que repuestos e PA têm preço consultado por API por causa do
+dinamismo **não está implementada para o preço da linha**. O que está
+implementado por API é a consulta de saldo.
+
+Enquanto isso não for fechado, todo material criado por esta HU entra na
+cotização valendo zero, e a simulação confirma zero porque foi o Salesforce que
+mandou o zero.
+
+**O que construir, e é a peça que faltava de verdade:**
+
+1. Adicionar `ZHYB_DBM_PRECIO_VTA_NO_MAESTRO` ao `SapMuleClient`, com DTO de
+   retorno que tenha preço por material. É o serviço citado no fluxograma da
+   própria HU-039, que "creará el material, en caso de estar en el maestro de
+   materiales, y le asignará un precio estimado";
+2. `RepuestosLineService` passa a gravar `UnitPrice` da linha com o preço
+   devolvido pelo SAP, e não com `pbe.UnitPrice`. A entrada local continua
+   existindo em zero, porque o modelo nativo exige que toda linha aponte para
+   uma `PricebookEntry`, mas ela deixa de ser fonte de preço;
+3. Se o serviço não devolver preço para um código, a linha **não pode** ser
+   criada valendo zero. Tem que ficar marcada como sem preço, do mesmo jeito que
+   hoje fica marcada como `sinCatalogo`.
+
+Manter a entrada local em zero é a decisão certa depois de ver isso: zero é
+honestamente vazio, um último preço conhecido pareceria autoritativo e seria
+pior, porque ninguém desconfia de um número plausível.
+
+### 2.2ter `SapMuleClient.mockMode` — VERIFICAR ANTES DE QUALQUER DEPLOY
+
+`mockMode` é `public static Boolean mockMode = true`, e **nada no código
+deployado o coloca em false**. Numa org real, todas as chamadas devolvem dado
+fabricado e determinista, sem nenhum erro visível. O saldo aparece, o preço
+fecha, a simulação bate, e nada disso veio do SAP.
+
+Antes de qualquer demonstração ou teste com o cliente, confirmar como esse
+valor é desligado no ambiente. Se a resposta for "alguém seta em runtime", isso
+precisa virar Custom Metadata com valor por ambiente, não uma variável estática
+com default perigoso.
 
 ### 2.3 `SapMuleClient` — AJUSTAR
 
@@ -210,6 +258,7 @@ Verificação de um minuto primeiro: Setup, Approval Processes, ver se Product2 
 | Saída, consulta de materiais | Existe, `ZHYB_C4C_CONSULTA_MATERIALES` | Traz os dados mestres para hidratar |
 | Entrada, notificação com MATNR | **Só é necessária se o caminho de exceção for completado dentro do SAP.** Se a solicitação completada for reenviada pela mesma RFC desde o Salesforce, não precisa | Decisão, não dependência |
 | Réplica de catálogo | Existe, MATMAS | É o vetor de duplicidade tratado no item 2.2 |
+| **Saída, preço de venda do material** | **NÃO existe no `SapMuleClient`** | `ZHYB_DBM_PRECIO_VTA_NO_MAESTRO`. Sem ela o repuesto criado é cotizado a zero, item 2.2bis |
 
 ---
 
@@ -224,19 +273,21 @@ Verificação de um minuto primeiro: Setup, Approval Processes, ver se Product2 
 5. Permission Sets;
 6. `MaterialRequestService` e o Flow de duplicados;
 7. Ajuste do `MaterialCreationService`, tirar o Case e inverter a ordem para callout antes de DML;
-8. `MaterialPricingService`. Depende de saber qual é a lista de repuestos e se a entrada estrutural vai a zero ou ao último preço conhecido, mas a peça pode ser construída com a lista parametrizada em Custom Metadata.
+8. Chamar `asegurarEntradas` a partir de `marcarCreado`, resolvendo moeda por `Sociedad_Config__mdt` e lista por `PricebookCode__c`. É reuso, não peça nova;
+9. **Verificar `SapMuleClient.mockMode` antes de qualquer teste com dado real.** Item 2.2ter.
 
 **Bloco B, depende de uma definição pequena.**
 
-9. Modal `solicitudMaterial` e ajuste do `lineasRepuestos`. Pode ser construído já, deixando canal e serie como campos do formulário, e depois automatizado quando vier a definição;
-10. Custom Notification e o Flow de notificação;
-11. `FollowRecordAction`.
+10. Modal `solicitudMaterial` e ajuste do `lineasRepuestos`. Pode ser construído já, deixando canal e serie como campos do formulário, e depois automatizado quando vier a definição;
+11. Custom Notification e o Flow de notificação;
+12. `FollowRecordAction`;
+13. **Preço da linha de repuestos vindo do SAP**, item 2.2bis terceira parte. Depende do time de Mule expor `ZHYB_DBM_PRECIO_VTA_NO_MAESTRO` com preço por material. Enquanto não existir, o repuesto criado é cotizado a zero.
 
 **Bloco C, depende de definição externa.**
 
-11. Aprovação de PA, depois da verificação em Setup;
-12. Flow de travadas, depois do destinatário e do prazo;
-13. Automatizar canal e serie, depois da definição;
-14. Campos adicionais de dado mestre, depois da lista da RN-49.
+14. Aprovação de PA, depois da verificação em Setup;
+15. Flow de travadas, depois do destinatário e do prazo;
+16. Automatizar canal e serie, depois da definição;
+17. Campos adicionais de dado mestre, depois da lista da RN-49.
 
 O Bloco A é a maior parte do esforço e não espera ninguém.
