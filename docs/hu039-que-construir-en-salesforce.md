@@ -98,6 +98,39 @@ void liberarClave(Id productId)
 
 Limpa o `RequestKey__c` ao rejeitar, para permitir nova solicitação sobre a mesma combinação (RN-14).
 
+### 2.2bis `MaterialPricingService` — CONSTRUIR, ESTAVA FALTANDO
+
+Buraco encontrado em 14/08 ao cruzar esta HU com a estrutura de listas da
+HU-038. `marcarCreado` transforma a solicitação em material definitivo e ativa
+o `Product2`, e **isso não basta para cotizar.** Um `Product2` sem
+`PricebookEntry` não pode ser adicionado a oportunidade nem a cotização. Do
+jeito que está hoje, o material nasce criado e não vendível, que é exatamente o
+que a HU quer evitar.
+
+O que falta construir, e a ordem é obrigatória:
+
+1. **Entrada na Standard Price Book, ativa.** É pré-requisito de plataforma:
+   "Custom price book entries can be created only for products with active
+   standard price book entries". Sem ela a segunda gravação falha com
+   `STANDARD_PRICE_NOT_DEFINED`;
+2. **Entrada na lista de repuestos**, com `UnitPrice` estrutural, porque o preço
+   real vem da consulta ao SAP no momento de cotizar;
+3. **Uma entrada por moeda** que a sociedade do material usa. `PricebookEntry` é
+   uma por produto, lista e moeda, então numa venda em CRC a entrada em CRC tem
+   que existir, não adianta ter só a de USD.
+
+Duas consequências que precisam de decisão explícita:
+
+- **`UnitPrice` estrutural em zero deixa o `ListPrice` da linha em zero** e o
+  desconto da linha sem sentido, porque o preço de venda vem do SAP e é gravado
+  em `UnitPrice` da `OpportunityLineItem`. Relatório de desconto sobre repuestos
+  não vai significar nada. A alternativa é gravar o último preço conhecido do
+  SAP como entrada estrutural, que custa uma escrita a mais e mantém o desconto
+  legível;
+- A criação dessas entradas tem que estar **na mesma transação lógica** de
+  `marcarCreado`. Se falhar, o material fica ativo e não vendível, e ninguém
+  percebe até o vendedor tentar cotizar.
+
 ### 2.3 `SapMuleClient` — AJUSTAR
 
 Adicionar o método de consulta de materiais (`ZHYB_C4C_CONSULTA_MATERIALES`) com o DTO de retorno, e configurar timeout curto e explícito, na casa de 10 a 15 segundos. Corrigir também o comentário de cabeçalho que hoje diz que Z301 é pedido de venda, quando é oferta ou reserva.
@@ -190,13 +223,14 @@ Verificação de um minuto primeiro: Setup, Approval Processes, ver se Product2 
 4. Page Layouts, List Views e Feed Tracking;
 5. Permission Sets;
 6. `MaterialRequestService` e o Flow de duplicados;
-7. Ajuste do `MaterialCreationService`, tirar o Case e inverter a ordem para callout antes de DML.
+7. Ajuste do `MaterialCreationService`, tirar o Case e inverter a ordem para callout antes de DML;
+8. `MaterialPricingService`. Depende de saber qual é a lista de repuestos e se a entrada estrutural vai a zero ou ao último preço conhecido, mas a peça pode ser construída com a lista parametrizada em Custom Metadata.
 
 **Bloco B, depende de uma definição pequena.**
 
-8. Modal `solicitudMaterial` e ajuste do `lineasRepuestos`. Pode ser construído já, deixando canal e serie como campos do formulário, e depois automatizado quando vier a definição;
-9. Custom Notification e o Flow de notificação;
-10. `FollowRecordAction`.
+9. Modal `solicitudMaterial` e ajuste do `lineasRepuestos`. Pode ser construído já, deixando canal e serie como campos do formulário, e depois automatizado quando vier a definição;
+10. Custom Notification e o Flow de notificação;
+11. `FollowRecordAction`.
 
 **Bloco C, depende de definição externa.**
 
