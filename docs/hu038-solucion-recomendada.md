@@ -51,11 +51,33 @@ O preço pendente vira registro, não entrada de lista. Some a colisão e some a
 
 **Um objeto custom elimina mais de noventa price books e resolve dois requisitos que o outro caminho deixa em aberto.**
 
-### A conclusão honesta
+### A conclusão, depois de verificar o que faltava
 
-Eu te disse há pouco que dava para simplificar tirando o objeto. **Fiz a conta e estava errado.** O objeto não é a complexidade, ele é o que remove a complexidade. A restrição de zero objetos custom, tomada em 12/08, foi correta com a informação daquele dia e não sobrevive à conta.
+**A v2 sem objeto custom fecha.** Os três bloqueios que eu tinha levantado têm saída, e duas delas são simples:
 
-**É um objeto. Não é uma família de objetos.**
+1. **Cálculo dos pisos ao gravar:** resolvido com **campos fórmula** lendo Custom Metadata. Não precisa de automação nenhuma;
+2. **Disparo do estado e da aprovação:** resolvido porque **somos donos da porta de escrita**. A carga massiva e a edição individual passam pela nossa LWC e pelo serviço Apex, e é ele que decide, marca o estado e submete. Nada precisa reagir ao save;
+3. **Objeto para aprovar:** resolvido pela **Approval Orchestration autolaunched**, que a documentação descreve como podendo ser *"triggered from other processes or even custom buttons"*. Nosso serviço a dispara passando o registro. Não depende de a `PricebookEntry` suportar record-triggered flow.
+
+**Então a recomendação volta a ser a v2, com zero objetos custom.** O que eu tinha dado como impossível era falta de verificação minha, não limite de plataforma.
+
+### A única coisa que ainda precisa ser verificada na org
+
+Se a **Approval Orchestration aceita `PricebookEntry` como objeto alvo**. Verificação de dois minutos: Setup, Approvals, criar um Flow Approval Process e ver se `PricebookEntry` aparece no seletor de objeto.
+
+Se aparecer, a v2 está completa e não se cria nada.
+
+Se **não** aparecer, aí sim a aprovação precisa de um registro que a suporte, e nesse caso a decisão volta à mesa, com as duas opções da seção 5.
+
+### Sobre a multiplicação de listas de staging
+
+O meu alerta de que as listas de staging multiplicariam por sociedade **depende de um fato do GrupoQ que eu não sei**: se o mesmo modelo é vendido por **mais de uma sociedade na mesma moeda**.
+
+Se C101 e C105 forem sociedades segmentadas por marca ou por linha, como o nome da lista existente sugere, um produto pertence a uma sociedade só e **não há colisão nenhuma**. A v2 funciona exatamente como escrita, com **uma lista de staging por marca**.
+
+Se houver sobreposição real, a saída não é objeto custom, é staging por marca e sociedade **apenas nas combinações que existem de fato**, que é bem menos que o produto cartesiano.
+
+**Pergunta a confirmar com o negócio:** um mesmo modelo é vendido por duas sociedades do mesmo país, com preços diferentes e na mesma moeda?
 
 ---
 
@@ -77,13 +99,19 @@ Atende *"aplicando los factores vigentes de la tabla editable, sin intervención
 
 No `Product2` entra a moeda de publicação, porque a RN6 diz **por modelo**.
 
-### Camada 2, a solicitação de mudança
+### Camada 2, o preço pendente
 
-Um objeto, `PriceChangeRequest__c`, um registro por produto, sociedade e moeda, com os valores propostos, o estado, o solicitante, o aprovador, a data e o arquivo.
+`PricebookEntry` na **lista de staging da marca**, com `IsActive = false`. Mesma estrutura, mesmos campos, mesma carga. A publicação é uma cópia.
 
-Não é invenção. A RN3 descreve exatamente esse registro: *"Toda solicitud de cambio de precio queda registrada dentro del sistema: quién la pidió, quién la aprobó, cuándo y con qué archivo."*
+`IsActive = false` é o que faz o *"no se activan en el catálogo"* da RN3 ser garantido **pela plataforma** e não por uma marca que a gente inventou: entrada inativa não entra em cotização, ponto.
 
-O custo e a margem vivem aqui, não na entrada de preço. Assim a RN10 se cumpre sozinha: *"nunca en la lista comercial que consultan los asesores"*, porque simplesmente não estão lá.
+Campos de controle na entrada de staging: `Estado__c`, `MotivoRechazo__c`, e o `VigenciaDesde__c` que já existe.
+
+Na lista de staging, dois campos no `Pricebook2`: `MarcaPropietaria__c` e `AprobadorMarca__c`, que é o aprovador dinâmico por marca **sem objeto novo**, atendendo a RN3 quando ela diz que o aprovador se determina por marca e não por hierarquia.
+
+O acesso por marca sai do **compartilhamento de `Pricebook2`**, que a lista suporta: o responsável de uma marca só enxerga a staging da sua marca.
+
+**Custo e margem:** ficam na entrada de staging, com segurança de campo pelo permission set `PS_Precios_Margen`. A RN10 exige que o asesor não veja, e FLS resolve. Como a entrada de staging não é lida pelo processo comercial, o dado nem chega perto da lista que o asesor consulta.
 
 ### Camada 3, a porta de escrita
 
