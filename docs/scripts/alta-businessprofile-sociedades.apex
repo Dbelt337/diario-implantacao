@@ -52,13 +52,13 @@ for (String api : new List<String>{ 'BusinessPartnerType', 'BusinessType__c' }) 
 System.debug('===================================================');
 System.debug('1. VALIDACION DEL VALOR ELEGIDO');
 System.debug('===================================================');
-Schema.SObjectField campo = bp.fields.getMap().get(CAMPO);
-if (campo == null) {
+Schema.SObjectField refCampo = bp.fields.getMap().get(CAMPO);
+if (refCampo == null) {
     System.debug('   El campo ' + CAMPO + ' no existe. Nada que hacer.');
     return;
 }
 Boolean valorValido = false;
-for (Schema.PicklistEntry pe : campo.getDescribe().getPicklistValues()) {
+for (Schema.PicklistEntry pe : refCampo.getDescribe().getPicklistValues()) {
     if (pe.getValue() == VALOR && pe.isActive()) { valorValido = true; }
 }
 if (!valorValido) {
@@ -74,21 +74,22 @@ System.debug('   Valor valido. Se puede escribir.');
 System.debug('===================================================');
 System.debug('2. CUENTAS Y PERFILES EXISTENTES');
 System.debug('===================================================');
-Map<Id, Account> cuentas = new Map<Id, Account>([
+Map<Id, Account> mapaCuentas = new Map<Id, Account>([
     SELECT Id, Name, AccountNumber, Parent.Name
     FROM Account WHERE AccountNumber IN :CUENTAS
 ]);
-for (Account a : cuentas.values()) {
+for (Account a : mapaCuentas.values()) {
     System.debug('   ' + a.AccountNumber + ' | ' + a.Name + ' | ' + a.Id);
 }
-if (cuentas.size() != CUENTAS.size()) {
+if (mapaCuentas.size() != CUENTAS.size()) {
     System.debug('   ATENCION: se esperaban ' + CUENTAS.size()
-        + ' cuentas y se encontraron ' + cuentas.size());
+        + ' cuentas y se encontraron ' + mapaCuentas.size());
 }
 
-// El bind de SOQL dinamico solo acepta variable simple, nunca una llamada a
-// metodo como :cuentas.keySet().
-Set<Id> idsCuentas = cuentas.keySet();
+// Dos trampas de Apex en el mismo lugar: el bind de SOQL dinamico solo acepta
+// variable simple, nunca una llamada a metodo; y los identificadores son
+// insensibles a mayusculas, asi que CUENTAS y cuentas serian la misma.
+Set<Id> idsCuentas = mapaCuentas.keySet();
 
 Map<Id, SObject> perfilPorCuenta = new Map<Id, SObject>();
 for (SObject p : Database.query(
@@ -103,7 +104,7 @@ System.debug('===================================================');
 List<SObject> aInsertar = new List<SObject>();
 List<SObject> aActualizar = new List<SObject>();
 
-for (Account a : cuentas.values()) {
+for (Account a : mapaCuentas.values()) {
     SObject existente = perfilPorCuenta.get(a.Id);
     if (existente == null) {
         SObject nuevo = Schema.getGlobalDescribe().get('BusinessProfile').newSObject();
@@ -113,11 +114,14 @@ for (Account a : cuentas.values()) {
         System.debug('   CREAR  perfil para ' + a.AccountNumber
             + ' con ' + CAMPO + ' = ' + VALOR);
     } else if (String.valueOf(existente.get(CAMPO)) != VALOR) {
+        // Leer el valor viejo ANTES de sobreescribirlo, si no el log muestra
+        // el nuevo en los dos lados.
+        String anterior = String.valueOf(existente.get(CAMPO));
         existente.put(CAMPO, VALOR);
         aActualizar.add(existente);
         System.debug('   ACTUALIZAR perfil ' + existente.get('Name')
             + ' de ' + a.AccountNumber
-            + ': ' + CAMPO + ' de "' + existente.get(CAMPO) + '" a "' + VALOR + '"');
+            + ': ' + CAMPO + ' de "' + anterior + '" a "' + VALOR + '"');
     } else {
         System.debug('   OK     ' + a.AccountNumber + ' ya esta correcto');
     }
