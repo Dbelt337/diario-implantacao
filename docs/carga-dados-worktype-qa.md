@@ -306,6 +306,50 @@ Confirmado nos 49 registros exportados:
 
 O único pré-requisito são os valores de picklist.
 
+#### ⚠️ A QA está atrasada em metadados
+
+Verificado em 14/08/2026 via `Schema.SObjectType.WorkType.fields.getMap()`:
+
+| Campo | QA |
+|---|---|
+| `MacroCategory__c`, `Product__c`, `SubCategory__c`, `Criticality__c` | ok |
+| `RootCase__c`, `ServiceTypeKey__c`, `SkillType__c` | ok |
+| **`Skill__c`** | **ausente** |
+
+`Skill__c` não compõe `ServiceTypeKey__c`, então a carga funciona sem ele —
+basta removê-lo do construtor. Perde-se a informação de habilidade em 2 dos 49
+registros.
+
+Mas o sintoma é maior que o campo: só oito campos foram testados, e a QA está
+defasada em relação à produção. `Skill__c` é recente — só aparece preenchido nos
+registros criados em 11 e 12/08/2026, depois do último refresh. **Um deploy de
+metadados prod→QA fica pendente no backlog**, senão o próximo teste esbarra em
+outro campo.
+
+Script de verificação:
+
+```apex
+Map<String, Schema.SObjectField> m = Schema.SObjectType.WorkType.fields.getMap();
+for (String f : new List<String>{'MacroCategory__c','Product__c','SubCategory__c',
+     'Criticality__c','RootCase__c','Skill__c','ServiceTypeKey__c','SkillType__c'}) {
+  System.debug(f + ' -> ' + (m.containsKey(f.toLowerCase()) ? 'ok' : '*** FALTA ***'));
+}
+```
+
+#### Execute Anonymous pelo Inspector estoura o cabeçalho
+
+O Salesforce Inspector executa Apex anônimo via **GET** na Tooling API, com o
+código na query string. O script completo dá **17 KB codificados** contra um
+limite de ~8 KB — os 80 caracteres acentuados dos nomes pesam sozinhos, já que
+cada `ç` ou `ã` vira 6 a 9 caracteres.
+
+Resultado: `HTTP ERROR 431 Request Header Fields Too Large`.
+
+Use o **Developer Console** (`Debug → Open Execute Anonymous Window`), que envia
+por SOAP POST sem esse limite, ou `sf apex run --file`. Para insistir no
+Inspector, quebrar em blocos de ~25 registros mantendo cada um sob 5 KB
+codificados, com skip por nome para que sejam reexecutáveis.
+
 #### Pré-requisito: valores de picklist na QA
 
 Se as picklists forem restritas, valor ausente derruba a linha. Pior: se
