@@ -23,15 +23,16 @@ Sección lista para incorporar al documento de la historia. Cierra el diseño: c
 | Clave anti duplicado y de correlación con SAP | `RequestKey__c`, texto único y External ID | Base de datos |
 | Sociedad | Lookup a `InternalOrganizationUnit` | 19 registros ya cargados |
 | Centro y sucursal | Lookups a `Location` | 20 registros ya cargados |
-| Marca | Lookup a `BusinessBrand` | 23 registros ya cargados |
-| Código solicitado | `RequestedMaterialCode__c` | Número de parte o código comodín |
-| Código SAP definitivo | `ProductCode` y `SapMaterialCode__c` | `SapMaterialCode__c` ya existe en la org |
+| Marca | **`BusinessBrandId`, campo estándar de Automotive** | 23 registros ya cargados. No se crea ningún campo |
+| Código solicitado | **`ProductCode`, campo estándar** | Queda libre porque el código definitivo del SAP vive en `SapMaterialCode__c`. Como la solicitud y el material son el mismo registro, lo lleva desde el inicio |
+| Partida arancelaria | **`HarmonizedTariffSchedCode`, campo estándar** | La RFC rechaza la creación cuando falta. El campo ya existe |
+| Código SAP definitivo | `SapMaterialCode__c` | Ya existe en la org |
 | Adjuntos | Salesforce Files | Estándar (RN-57) |
 | Trazabilidad de cambios | Field History Tracking sobre Product2 | Estándar (RN-58) |
 | Aviso a los seguidores | Chatter Follow más Feed Tracking del campo de estado | Estándar (RN-56) |
-| Aviso al asesor solicitante | Custom Notification al usuario de `RequestedBy__c` | Campana y push |
+| Aviso al asesor solicitante | Custom Notification al usuario de `CreatedById` | Estándar, siempre viene lleno |
 | Aprobaciones de PA | Approval Process sobre Product2, o Flow Orchestration si Product2 no lo admite | Estándar |
-| Errores e incidencias | `SapLastError__c`, `SapRetryCount__c`, `SapLastAttempt__c` | Reintento con tope explícito |
+| Errores e incidencias | `SapLastAttempt__c` en el registro, detalle del error en el log | Nebula Logger ya está instalado en la org |
 | Llamadas a SAP | Named Credential más la fachada de integración ya existente | MuleSoft |
 
 ---

@@ -10,7 +10,7 @@ Legenda de estado: **PRONTO** já está empacotado, **CONSTRUIR** falta fazer, *
 
 ### 1.1 Record Types em Product2 — PRONTO
 
-Três: `Material`, `MaterialRequestOriginalPart`, `MaterialRequestWildcardCode`. Estão em `deploy-hu039-solicitud-material.zip`.
+Três: `Material`, `MaterialRequestOriginalPart`, `MaterialRequestWildcardCode`. Estão em **`deploy-hu039-solicitud-material-v2.zip`**, que substitui o pacote original de 18 campos. O pacote antigo não deve mais ser usado.
 
 **Detalhe:** Product2 não tinha nenhum Record Type, então depois do deploy é obrigatório rodar `post-deploy-hu039-asignar-recordtype.apex` para colocar os 281 produtos existentes no Record Type Material. Sem isso o catálogo some das List Views.
 
@@ -79,7 +79,9 @@ Quatro, todas filtradas por Record Type:
 
 ### 1.6 Field History e Feed Tracking — CONSTRUIR
 
-**Ordem importa:** habilitar Field History Tracking em Product2 no Setup **antes** de deployar o pacote 1, porque cinco campos vêm com histórico ligado e o deploy recusa se o objeto não tiver o rastreamento ativo.
+**Ordem importa:** habilitar Field History Tracking em Product2 no Setup **antes** de deployar o pacote 1, porque quatro campos vêm com histórico ligado e o deploy recusa se o objeto não tiver o rastreamento ativo.
+
+**E ligar o histórico de `ProductCode` na mão**, porque ele passou a carregar o código solicitado no lugar do `RequestedMaterialCode__c` que saiu. Campo padrão não vem no pacote, então o rastreamento dele é ação de Setup e é fácil esquecer.
 
 Feed Tracking em Product2 sobre `RequestStatus__c`. É o que faz os seguidores receberem aviso sem uma linha de código (RN-56).
 
