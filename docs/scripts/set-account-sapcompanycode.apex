@@ -3,8 +3,12 @@
  *
  * Es la clave por la que MuleSoft localiza la cuenta de la sociedad. Se toma
  * de Sociedad_Config__mdt, que ya tiene las 14 sociedades con su
- * SAP_Company_Code__c, y se cruza contra Account.AccountNumber, que hoy ya
- * lleva C101 y C105.
+ * SAP_Company_Code__c, y se cruza contra Account.AccountNumber.
+ *
+ * TODO el acceso al campo es DINAMICO a proposito. El SOQL estatico compila
+ * antes de que corra la primera linea, asi que una guarda del tipo "si el
+ * campo no existe, salir" no sirve de nada: el script ni siquiera llega a
+ * ejecutarse. Con Database.query y get/put el script corre igual y avisa.
  *
  * Correr DESPUES de desplegar deploy-account-sapcompanycode.zip.
  *
@@ -15,88 +19,98 @@
 Boolean EJECUTAR = false;
 // ===================================================
 
+String CLAVE = 'SapCompanyCode__c';
+
 Organization laOrg = [SELECT Id, Name, IsSandbox FROM Organization LIMIT 1];
 System.debug('ORG: ' + laOrg.Name + ' | sandbox=' + laOrg.IsSandbox);
 System.debug('MODO: ' + (EJECUTAR ? 'APLICAR' : 'SIMULACION, no escribe nada'));
 
-if (!Schema.getGlobalDescribe().get('account').getDescribe()
-        .fields.getMap().containsKey('sapcompanycode__c')) {
-    System.debug('   SapCompanyCode__c no existe todavia.');
+Boolean hayCampo = Schema.getGlobalDescribe().get('account').getDescribe()
+    .fields.getMap().containsKey(CLAVE.toLowerCase());
+System.debug('CAMPO ' + CLAVE + ': ' + (hayCampo ? 'existe' : 'TODAVIA NO EXISTE'));
+if (!hayCampo) {
     System.debug('   Desplegar primero deploy-account-sapcompanycode.zip.');
-    return;
+    System.debug('   El resto del diagnostico corre igual, sin escribir.');
 }
 
 System.debug('===================================================');
 System.debug('1. SOCIEDADES SEGUN LA CONFIGURACION');
 System.debug('===================================================');
-Map<String, String> codigoPorSociedad = new Map<String, String>();
+Map<String, String> paisPorCodigo = new Map<String, String>();
 for (Sociedad_Config__mdt s : [SELECT DeveloperName, SAP_Company_Code__c, Country_Name__c
                                FROM Sociedad_Config__mdt ORDER BY DeveloperName]) {
-    codigoPorSociedad.put(s.SAP_Company_Code__c, s.Country_Name__c);
-    System.debug('   ' + s.SAP_Company_Code__c + ' | ' + s.Country_Name__c);
+    paisPorCodigo.put(s.SAP_Company_Code__c, s.Country_Name__c);
 }
-System.debug('   Total configuradas: ' + codigoPorSociedad.size());
+System.debug('   Configuradas: ' + paisPorCodigo.size() + ' ' + paisPorCodigo.keySet());
 
 System.debug('===================================================');
-System.debug('2. CUENTAS QUE COINCIDEN POR AccountNumber');
+System.debug('2. CUENTAS DE NIVEL SOCIEDAD SEGUN LA JERARQUIA');
 System.debug('===================================================');
-Set<String> codigos = codigoPorSociedad.keySet();
-List<Account> aTocar = new List<Account>();
-Set<String> encontrados = new Set<String>();
+System.debug('   Nivel sociedad = nieta de la cuenta raiz, sin importar si');
+System.debug('   tiene codigo. Asi aparece N105, que hoy esta sin AccountNumber.');
 
-for (Account a : [SELECT Id, Name, AccountNumber, SapCompanyCode__c, Parent.Name
-                  FROM Account WHERE AccountNumber IN :codigos
-                  ORDER BY AccountNumber]) {
-    encontrados.add(a.AccountNumber);
-    if (a.SapCompanyCode__c == a.AccountNumber) {
-        System.debug('   OK     ' + a.AccountNumber + ' | ' + a.Name + ' | ya esta');
+String campos = 'Id, Name, AccountNumber, Parent.Name'
+    + (hayCampo ? ', ' + CLAVE : '');
+
+List<SObject> nivelSociedad = Database.query(
+    'SELECT ' + campos + ' FROM Account '
+    + 'WHERE ParentId != null AND Parent.ParentId != null '
+    + 'AND Parent.Parent.ParentId = null '
+    + 'ORDER BY Parent.Name, Name');
+
+List<SObject> aTocar = new List<SObject>();
+Set<String> conCuenta = new Set<String>();
+Integer sinCodigo = 0;
+
+for (SObject a : nivelSociedad) {
+    String num = (String) a.get('AccountNumber');
+    String nombre = (String) a.get('Name');
+    if (String.isBlank(num)) {
+        sinCodigo++;
+        System.debug('   SIN CODIGO  ' + nombre + ' | Id=' + a.get('Id'));
+        System.debug('        Llenar AccountNumber primero, si no el Mule no la ubica.');
         continue;
     }
-    System.debug('   LLENAR ' + a.AccountNumber + ' | ' + a.Name
-        + ' | padre=' + a.Parent.Name
-        + ' | de "' + a.SapCompanyCode__c + '" a "' + a.AccountNumber + '"');
-    a.SapCompanyCode__c = a.AccountNumber;
-    aTocar.add(a);
-}
-
-System.debug('===================================================');
-System.debug('2bis. CUENTAS DE NIVEL SOCIEDAD SIN AccountNumber');
-System.debug('===================================================');
-System.debug('   Nivel sociedad = nieta de la cuenta raiz. N105 esta asi hoy:');
-System.debug('   la cuenta existe pero no tiene codigo, entonces el cruce por');
-System.debug('   AccountNumber no la encuentra y parece que falta cuando no falta.');
-for (Account a : [SELECT Id, Name, AccountNumber, Parent.Name, Parent.Parent.Name
-                  FROM Account
-                  WHERE Parent.Parent.Id != null AND Parent.Parent.ParentId = null
-                  ORDER BY Parent.Name, Name]) {
-    if (String.isBlank(a.AccountNumber)) {
-        System.debug('   SIN CODIGO  ' + a.Name + ' | pais=' + a.Parent.Name
-            + ' | Id=' + a.Id);
-        System.debug('        Llenar AccountNumber antes, o el Mule no la ubica.');
+    conCuenta.add(num);
+    if (!paisPorCodigo.containsKey(num)) {
+        System.debug('   HUERFANA    ' + num + ' | ' + nombre
+            + ' | no esta en Sociedad_Config__mdt');
+        continue;
+    }
+    String actual = hayCampo ? (String) a.get(CLAVE) : null;
+    if (actual == num) {
+        System.debug('   OK          ' + num + ' | ' + nombre);
     } else {
-        System.debug('   ' + a.AccountNumber + '  ' + a.Name);
+        System.debug('   LLENAR      ' + num + ' | ' + nombre
+            + ' | de "' + actual + '" a "' + num + '"');
+        if (hayCampo) {
+            a.put(CLAVE, num);
+            aTocar.add(a);
+        }
     }
 }
+System.debug('   Cuentas de nivel sociedad: ' + nivelSociedad.size()
+    + ', de las cuales ' + sinCodigo + ' sin codigo');
 
 System.debug('===================================================');
 System.debug('3. SOCIEDADES CONFIGURADAS SIN CUENTA');
 System.debug('===================================================');
-System.debug('   MuleSoft no va a poder resolver estas hasta que exista la');
-System.debug('   cuenta. No es un error del campo, es jerarquia incompleta.');
-System.debug('   Ojo: una sociedad puede aparecer aqui y tener cuenta igual,');
-System.debug('   si la cuenta no tiene AccountNumber. Cruzar con el punto 2bis.');
-List<String> sinCuenta = new List<String>();
-for (String c : codigos) {
-    if (!encontrados.contains(c)) { sinCuenta.add(c); }
+List<String> faltan = new List<String>();
+for (String c : paisPorCodigo.keySet()) {
+    if (!conCuenta.contains(c)) { faltan.add(c + ' (' + paisPorCodigo.get(c) + ')'); }
 }
-sinCuenta.sort();
-System.debug('   ' + sinCuenta);
-System.debug('   Faltan ' + sinCuenta.size() + ' de ' + codigos.size());
+faltan.sort();
+for (String f : faltan) { System.debug('   FALTA  ' + f); }
+System.debug('   Faltan ' + faltan.size() + ' de ' + paisPorCodigo.size());
+System.debug('   Sin cuenta, no hay nada que el Mule pueda localizar. Esto es');
+System.debug('   mas grande que el campo clave.');
 
 System.debug('===================================================');
 System.debug('4. RESULTADO');
 System.debug('===================================================');
-if (aTocar.isEmpty()) {
+if (!hayCampo) {
+    System.debug('   El campo no existe todavia, no se escribio nada.');
+} else if (aTocar.isEmpty()) {
     System.debug('   Nada que escribir.');
 } else if (!EJECUTAR) {
     System.debug('   SIMULACION. ' + aTocar.size() + ' cuentas quedarian llenas.');
@@ -106,21 +120,20 @@ if (aTocar.isEmpty()) {
     Integer ok = 0;
     for (Integer i = 0; i < res.size(); i++) {
         if (res[i].isSuccess()) { ok++; continue; }
-        System.debug('   FALLO ' + aTocar[i].AccountNumber + ': '
+        System.debug('   FALLO ' + aTocar[i].get('AccountNumber') + ': '
             + res[i].getErrors()[0].getMessage());
     }
     System.debug('   Actualizadas ' + ok + ' de ' + aTocar.size());
-    System.debug('   Volver a correr en simulacion para confirmar.');
 }
 
 System.debug('===================================================');
 System.debug('5. COMO LO USA MULESOFT DESPUES DE ESTO');
 System.debug('===================================================');
-System.debug('   Lectura directa por la clave, sin consulta previa:');
-System.debug('        GET  /services/data/vXX.X/sobjects/Account/SapCompanyCode__c/C101');
-System.debug('   Y upsert por la misma clave, idempotente:');
-System.debug('        PATCH /services/data/vXX.X/sobjects/Account/SapCompanyCode__c/C101');
-System.debug('   Sin depender del nombre de la cuenta ni de recorrer la jerarquia.');
+System.debug('        GET   /services/data/vXX.X/sobjects/Account/' + CLAVE + '/C101');
+System.debug('        PATCH /services/data/vXX.X/sobjects/Account/' + CLAVE + '/C101');
+System.debug('   Sin consulta previa, sin depender del nombre y sin recorrer');
+System.debug('   la jerarquia. Y el nombre importa: hay una cuenta con dos');
+System.debug('   espacios seguidos, asi que el cruce por nombre no es opcion.');
 
 System.debug('===================================================');
 System.debug('FIN');
