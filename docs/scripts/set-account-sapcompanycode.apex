@@ -60,10 +60,31 @@ for (Account a : [SELECT Id, Name, AccountNumber, SapCompanyCode__c, Parent.Name
 }
 
 System.debug('===================================================');
+System.debug('2bis. CUENTAS DE NIVEL SOCIEDAD SIN AccountNumber');
+System.debug('===================================================');
+System.debug('   Nivel sociedad = nieta de la cuenta raiz. N105 esta asi hoy:');
+System.debug('   la cuenta existe pero no tiene codigo, entonces el cruce por');
+System.debug('   AccountNumber no la encuentra y parece que falta cuando no falta.');
+for (Account a : [SELECT Id, Name, AccountNumber, Parent.Name, Parent.Parent.Name
+                  FROM Account
+                  WHERE Parent.Parent.Id != null AND Parent.Parent.ParentId = null
+                  ORDER BY Parent.Name, Name]) {
+    if (String.isBlank(a.AccountNumber)) {
+        System.debug('   SIN CODIGO  ' + a.Name + ' | pais=' + a.Parent.Name
+            + ' | Id=' + a.Id);
+        System.debug('        Llenar AccountNumber antes, o el Mule no la ubica.');
+    } else {
+        System.debug('   ' + a.AccountNumber + '  ' + a.Name);
+    }
+}
+
+System.debug('===================================================');
 System.debug('3. SOCIEDADES CONFIGURADAS SIN CUENTA');
 System.debug('===================================================');
 System.debug('   MuleSoft no va a poder resolver estas hasta que exista la');
 System.debug('   cuenta. No es un error del campo, es jerarquia incompleta.');
+System.debug('   Ojo: una sociedad puede aparecer aqui y tener cuenta igual,');
+System.debug('   si la cuenta no tiene AccountNumber. Cruzar con el punto 2bis.');
 List<String> sinCuenta = new List<String>();
 for (String c : codigos) {
     if (!encontrados.contains(c)) { sinCuenta.add(c); }
