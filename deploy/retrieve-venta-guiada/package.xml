@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   RETRIEVE do que existe hoje no fluxo de venda guiada e em volta dele.
-  Uso: sf project retrieve start --manifest package.xml
+  Uso: sf project retrieve start, apontando este arquivo como manifest.
 
   Diferenca principal para a versao anterior: em vez de listar campo por campo,
   Record Type por Record Type e validation rule por validation rule, pede-se o
