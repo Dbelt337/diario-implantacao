@@ -73,3 +73,64 @@ Isso não é pré-requisito da decisão acima, é a próxima melhoria depois que
 ## Verificação
 
 `docs/scripts/inventario-flows-lead.apex` lista os flows do objeto com tipo de gatilho, para conferir escopo e ordem um a um contra o Flow Trigger Explorer.
+
+---
+
+# Aplicação ao Lead, com os dados reais de 14/08
+
+O inventário mudou o diagnóstico e a regra se aplica menos do que a versão inicial deste ADR supunha. Vale registrar o número correto.
+
+## O problema é menor do que parecia
+
+Os 13 flows não competem entre si. **Um é Scheduled e não roda no save**, então sobram 12. E esses 12 estão em **duas filas independentes**: 7 before-save e 5 after-save. Ordem só importa dentro da mesma fila.
+
+| Fila | Quantos |
+|---|---|
+| RecordBeforeSave | 7 |
+| RecordAfterSave | 5 |
+| Scheduled, fora da discussão | 1 |
+
+## O filtro por Record Type resolve pouco, e isso é importante
+
+Os cinco Record Types do Lead são `GQLeadsAutos`, `GQLeadsFlotas`, `GQLeadsMotos`, `GQLeadsRepuestosPA` e `GQLeadsUsados`.
+
+Ao classificar os 12 flows pelo nome, **apenas dois são específicos de um Record Type**:
+
+1. `Lead_BeforeSave_EnforceMotoRequiredFields`, que é de Motos;
+2. `GQ_Lead_Repuestos_Reasignacion_y_Cotizacion`, que é de Repuestos.
+
+**Os outros dez são transversais por natureza**: derivar sociedade, aplicar valor padrão, carimbar atribuição, calcular prazo de SLA, validar transição de estado, alertar duplicidade, roteirizar. Nenhum deles deveria ser filtrado por Record Type, e filtrá-los seria errado.
+
+**Correção da regra:** a obrigação não é "filtrar por Record Type", é **declarar o escopo**. Para dez destes doze o escopo declarado é "todos os Record Types", e isso é legítimo e deve ficar explícito. Só os dois específicos ganham filtro.
+
+## Então a alavanca de verdade é a ordem, e existe uma dependência visível
+
+`Lead_BS_DeriveSociedad` deriva a sociedade. Vários dos outros provavelmente leem esse valor, a começar pelo cálculo de prazo de SLA e pela atribuição. **Se ele não rodar primeiro, os que dependem dele trabalham com o campo vazio**, e o sintoma disso não é erro, é dado errado em silêncio.
+
+Ordem proposta, para ser validada com quem é dono de cada flow. **Isto é inferência a partir dos nomes, não é verdade estabelecida**, e cada linha precisa de confirmação:
+
+### Fila before-save
+
+| Ordem | Flow | Escopo | Motivo |
+|---|---|---|---|
+| 10 | `Lead_BS_DeriveSociedad` | Todos | Tudo que depende de sociedade precisa dela preenchida |
+| 20 | `Lead_BeforeSave_DefaultPreferredContactMethod` | Todos | Valor padrão puro, sem dependência |
+| 30 | `Lead_BS_EstampaAsignado` | Todos | Atribuição, base para roteamento |
+| 40 | `Lead_BS_SetSLADeadline` | Todos | Prazo tende a depender de sociedade e de atribuição |
+| 50 | `Lead_SetStatusOnConversion` | Todos | |
+| 60 | `Lead_BeforeSave_EnforceStatusTransitions` | Todos | É guarda, roda por último para validar o estado final |
+| 110 | `Lead_BeforeSave_EnforceMotoRequiredFields` | `GQLeadsMotos` | Faixa de Sales, único com filtro nesta fila |
+
+### Fila after-save
+
+| Ordem | Flow | Escopo | Motivo |
+|---|---|---|---|
+| 10 | `Lead_AS_CrossFieldDuplicateAlert` | Todos | Alerta antes de qualquer ação sobre o registro |
+| 20 | `Lead_AS_EstampaRTOpp` | Todos | Conversão |
+| 30 | `Lead_TriggerOmniRouting` | Todos | Roteia depois de atribuição e carimbos |
+| 40 | `Lead_SLA_Escalation` | Todos | Depende do prazo calculado no before-save |
+| 110 | `GQ_Lead_Repuestos_Reasignacion_y_Cotizacion` | `GQLeadsRepuestosPA` | Faixa de Sales, único com filtro nesta fila |
+
+## Um ponto a verificar antes de levar isso ao Financial
+
+**Nenhum dos cinco Record Types do Lead é do Financial**, e nenhum dos 12 flows tem nome que sugira CrediQ. É possível que a automação do Financial não viva no Lead, e sim em outro objeto. Vale confirmar onde ela está antes de abrir a conversa, para não discutir convivência num objeto onde eles não estão.
