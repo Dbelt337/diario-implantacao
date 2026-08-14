@@ -264,21 +264,66 @@ Rodar as mesmas na QA para o diff do que falta.
 
 ### Mínimo para destravar a composite
 
-1. Confirmar que as picklists `MacroCategory__c`, `Product__c`,
-   `SubCategory__c`, `Criticality__c` existem na QA **com os mesmos valores** de
-   produção — sem elas a fórmula `ServiceTypeKey__c` sai errada
-2. **`WorkType`** — os 49 registros, incluindo as quatro picklists acima
+Lista confirmada por `EntityParticle` (`IsCreatable = true` e
+`IsCalculated = false`):
 
-Campos a **não** incluir na carga (fórmula, somente leitura):
-`ServiceTypeKey__c`, `SkillType__c`.
+```sql
+SELECT Name, DurationType, EstimatedDuration, ShouldAutoCreateSvcAppt,
+       FSL__Exact_Appointments__c,
+       MacroCategory__c, Product__c, SubCategory__c, Criticality__c,
+       RootCase__c, Skill__c
+FROM WorkType
+```
 
-Único lookup obrigatório: `OwnerId` — apontar para um usuário válido da QA.
+**`OwnerId` fica fora de propósito.** É obrigatório, mas os Ids de usuário de
+produção não existem na QA; sem ele no arquivo o Salesforce atribui ao usuário
+que executa a carga. Incluir os Ids de prod quebra o import.
 
-Validação após a carga — as chaves devem bater com produção:
+**Nunca carregar** — a plataforma rejeita:
+
+| Campo | Motivo |
+|---|---|
+| `ServiceTypeKey__c` | `IsCalculated = true` |
+| `SkillType__c` | `IsCalculated = true` |
+| `DurationInMinutes` | `IsCreatable = false`, `IsUpdatable = false` — derivado de `DurationType` × `EstimatedDuration` (2 Hours → 120; 1 Hour → 60) |
+
+Omitidos por estarem vazios nos 49 registros: `Description`, `MinimumCrewSize`,
+`RecommendedCrewSize`, `WoDocumentTemplate`, `WoliDocumentTemplate`,
+`SaDocumentTemplate`, `FSL__Due_Date_Offset__c`, `ServiceReportTemplateId`,
+`CostCenterId`, `JobExpenseTypeId`.
+
+> `CostCenterId` e `JobExpenseTypeId` aparecem em `EntityParticle` mas **não** em
+> `FieldDefinition` nem em `FIELDS(ALL)`. Para planejar carga, a autoridade é
+> `EntityParticle`.
+
+#### Pré-requisito: valores de picklist na QA
+
+Se as picklists forem restritas, valor ausente derruba a linha. Pior: se
+`SubCategory__c` entrar vazio, a fórmula `ServiceTypeKey__c` sai diferente da de
+produção e a integração continua falhando **mesmo com os 49 registros
+carregados**.
+
+Valores em uso em produção:
+
+| Campo | Valores |
+|---|---|
+| `MacroCategory__c` | `Instalacao`, `Reparo`, `Manutencao`, `Preventiva`, `Servico`, `ReparoCorporativo`, `ManutencaoCorporativo` |
+| `Product__c` | `BandaLarga`, `TV`, `TelefoniaFixa`, `Telefonia`, `Camera`, `CFTV`, `Dados` |
+| `SubCategory__c` | `SemSinal` |
+| `Criticality__c` | `Critica`, `Alta`, `Media`, `Baixa` |
+| `RootCase__c` | `LOS (00)`, `Atividade de Verificação (28)` |
+| `Skill__c` | `Indoor` |
+
+Conferir em `Setup → Object Manager → Work Type` ou pelo field info do Inspector.
+
+#### Validação após a carga
 
 ```sql
 SELECT ServiceTypeKey__c, Name FROM WorkType ORDER BY ServiceTypeKey__c
 ```
+
+As chaves geradas devem bater uma a uma com as de produção. Divergência aqui
+significa picklist de origem errada.
 
 ### Completo, para o fluxo funcionar de ponta a ponta
 
@@ -299,7 +344,10 @@ Ids não são portáveis entre orgs (os `08qV2...` de produção não existem na
 
 ```bash
 sf data export tree \
-  -q "SELECT Name, DurationType, EstimatedDuration, Description, ShouldAutoCreateSvcAppt FROM WorkType" \
+  -q "SELECT Name, DurationType, EstimatedDuration, ShouldAutoCreateSvcAppt, \
+             FSL__Exact_Appointments__c, MacroCategory__c, Product__c, \
+             SubCategory__c, Criticality__c, RootCase__c, Skill__c \
+      FROM WorkType" \
   -o prod -d ./data/worktype -p
 
 sf data import tree -p ./data/worktype/*-plan.json -o qa
