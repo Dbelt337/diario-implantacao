@@ -39,9 +39,13 @@ for (Schema.SObjectField f : d.fields.getMap().values()) {
 }
 camposCustom.sort();
 
+// El bind de SOQL dinamico solo acepta una variable simple, no una llamada a
+// metodo: :correcciones.keySet() no compila.
+Set<String> nombres = correcciones.keySet();
+
 List<SObject> registros = Database.query(
     'SELECT DeveloperName, MasterLabel, ' + String.join(camposCustom, ', ')
-    + ' FROM Sociedad_Config__mdt WHERE DeveloperName IN :correcciones.keySet()');
+    + ' FROM Sociedad_Config__mdt WHERE DeveloperName IN :nombres');
 
 System.debug('===================================================');
 System.debug('LO QUE VA A CAMBIAR');
