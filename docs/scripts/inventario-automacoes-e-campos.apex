@@ -25,12 +25,17 @@ System.debug('----- 1. FLOWS ATIVOS POR OBJETO E GATILHO -----');
 Map<String, Integer> porObjeto = new Map<String, Integer>();
 Integer totalAtivos = 0;
 try {
-    for (FlowDefinitionView f : [
-            SELECT ApiName, Label, ProcessType, TriggerType,
-                   TriggerObjectOrEventLabel, IsActive
-            FROM FlowDefinitionView
-            WHERE IsActive = true
-            ORDER BY TriggerObjectOrEventLabel, TriggerType, Label]) {
+    // FlowDefinitionView nao suporta queryMore, entao a consulta tem que
+    // caber num unico lote: lista com LIMIT, nunca for direto sobre a SOQL.
+    List<FlowDefinitionView> flows = [
+        SELECT ApiName, Label, ProcessType, TriggerType,
+               TriggerObjectOrEventLabel, IsActive
+        FROM FlowDefinitionView
+        WHERE IsActive = true
+        ORDER BY TriggerObjectOrEventLabel, TriggerType, Label
+        LIMIT 1000
+    ];
+    for (FlowDefinitionView f : flows) {
         totalAtivos++;
         String obj = String.isBlank(f.TriggerObjectOrEventLabel)
             ? '(sem objeto, screen flow ou autolaunched)'
@@ -106,6 +111,14 @@ for (String nombre : objetosDoFluxo) {
     System.debug('   ' + nombre + ': ' + customs + ' campos custom');
     for (String rotulo : porRotulo.keySet()) {
         if (porRotulo.get(rotulo).size() > 1) {
+            // Campos terminados em __pc sao a variante de Person Account de um
+            // campo de Contact, criados pela propria plataforma. Nao sao
+            // duplicidade e nao devem entrar na conta.
+            Boolean soPersonAccount = true;
+            for (String api : porRotulo.get(rotulo)) {
+                if (!api.endsWith('__pc')) { soPersonAccount = false; }
+            }
+            if (soPersonAccount) { continue; }
             System.debug('      DUPLICADO por rotulo "' + rotulo + '": ' + porRotulo.get(rotulo));
         }
     }
