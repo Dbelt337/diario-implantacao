@@ -52,6 +52,10 @@ try {
 
 System.debug('----- 2. CONCENTRACAO, O QUE PESA NO SAVE -----');
 System.debug('   TOTAL de flows ativos: ' + totalAtivos);
+System.debug('   ATENCAO ao ler este total: a maior parte sao flows entregues pela');
+System.debug('   propria plataforma, screen flows e autolaunched, e NAO rodam no save.');
+System.debug('   O numero que importa e a soma dos que tem objeto abaixo, que sao os');
+System.debug('   record-triggered.');
 List<String> objetos = new List<String>(porObjeto.keySet());
 objetos.sort();
 for (String obj : objetos) {
@@ -104,6 +108,10 @@ for (String nombre : objetosDoFluxo) {
         Schema.DescribeFieldResult fd = f.getDescribe();
         if (!fd.isCustom()) { continue; }
         customs++;
+        // Campos terminados em __pc sao a variante de Person Account de um
+        // campo de Contact, criados pela plataforma. Contam no total mas nunca
+        // sao duplicidade de equipe, entao ficam fora da comparacao de rotulo.
+        if (fd.getName().endsWith('__pc')) { continue; }
         String chave = fd.getLabel().toLowerCase().trim();
         if (!porRotulo.containsKey(chave)) { porRotulo.put(chave, new List<String>()); }
         porRotulo.get(chave).add(fd.getName());
@@ -111,14 +119,6 @@ for (String nombre : objetosDoFluxo) {
     System.debug('   ' + nombre + ': ' + customs + ' campos custom');
     for (String rotulo : porRotulo.keySet()) {
         if (porRotulo.get(rotulo).size() > 1) {
-            // Campos terminados em __pc sao a variante de Person Account de um
-            // campo de Contact, criados pela propria plataforma. Nao sao
-            // duplicidade e nao devem entrar na conta.
-            Boolean soPersonAccount = true;
-            for (String api : porRotulo.get(rotulo)) {
-                if (!api.endsWith('__pc')) { soPersonAccount = false; }
-            }
-            if (soPersonAccount) { continue; }
             System.debug('      DUPLICADO por rotulo "' + rotulo + '": ' + porRotulo.get(rotulo));
         }
     }
