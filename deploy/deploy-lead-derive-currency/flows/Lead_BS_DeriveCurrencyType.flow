@@ -1,37 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>62.0</apiVersion>
-    <description>Fills CurrencyType__c when it is empty, so the Financial validation rule stops breaking every producer of Lead records. Runs before save, step 3 of the order of execution, so the value is already there when custom validation runs at step 5. Trigger order 15, right after Lead_BS_DeriveSociedad at 10, so CurrencyIsoCode is already resolved when this runs. Priority one is to MIRROR CurrencyIsoCode, because that standard field is what drives PricebookEntry selection and pricing: if the two currency fields diverge, the quote pulls the wrong price entry. Only when CurrencyIsoCode is also empty does it fall back to the country map, which mirrors the dependent picklist value settings exactly, since that dependency is enforced in the UI only and Flow or API can otherwise write a pairing the user cannot reselect. Never overwrites a value already chosen.</description>
 
-    <label>Lead BS Derive Currency Type</label>
-    <interviewLabel>Lead BS Derive Currency Type {!$Flow.CurrentDateTime}</interviewLabel>
-    <processType>AutoLaunchedFlow</processType>
-    <status>Active</status>
-    <triggerOrder>15</triggerOrder>
-    <environments>Default</environments>
-
-    <formulas>
-        <name>MonedaEstandarTexto</name>
-        <dataType>String</dataType>
-        <expression>TEXT({!$Record.CurrencyIsoCode})</expression>
-    </formulas>
-
-    <start>
-        <locationX>50</locationX>
+    <assignments>
+        <name>Asignar_espejo</name>
+        <label>Asignar espejo de CurrencyIsoCode</label>
+        <locationX>440</locationX>
         <locationY>0</locationY>
-        <connector>
-            <targetReference>Falta_moneda</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>CurrencyType__c</field>
-            <operator>IsNull</operator>
-            <value><booleanValue>true</booleanValue></value>
-        </filters>
-        <object>Lead</object>
-        <recordTriggerType>CreateAndUpdate</recordTriggerType>
-        <triggerType>RecordBeforeSave</triggerType>
-    </start>
+        <assignmentItems>
+            <assignToReference>$Record.CurrencyType__c</assignToReference>
+            <operator>Assign</operator>
+            <value><elementReference>MonedaEstandarTexto</elementReference></value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Asignar_CRC</name>
+        <label>Asignar CRC</label>
+        <locationX>440</locationX>
+        <locationY>200</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CurrencyType__c</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>CRC</stringValue></value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Asignar_GTQ</name>
+        <label>Asignar GTQ</label>
+        <locationX>440</locationX>
+        <locationY>330</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CurrencyType__c</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>GTQ</stringValue></value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Asignar_USD_SV</name>
+        <label>Asignar USD El Salvador</label>
+        <locationX>440</locationX>
+        <locationY>460</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CurrencyType__c</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>USD</stringValue></value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Asignar_HNL</name>
+        <label>Asignar HNL</label>
+        <locationX>440</locationX>
+        <locationY>590</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CurrencyType__c</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>HNL</stringValue></value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Asignar_NIO</name>
+        <label>Asignar NIO</label>
+        <locationX>440</locationX>
+        <locationY>720</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CurrencyType__c</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>NIO</stringValue></value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Asignar_USD_PA</name>
+        <label>Asignar USD Panama</label>
+        <locationX>440</locationX>
+        <locationY>850</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.CurrencyType__c</assignToReference>
+            <operator>Assign</operator>
+            <value><stringValue>USD</stringValue></value>
+        </assignmentItems>
+    </assignments>
 
     <decisions>
         <name>Falta_moneda</name>
@@ -54,26 +101,12 @@
             <connector><targetReference>Asignar_espejo</targetReference></connector>
         </rules>
     </decisions>
-
-    <assignments>
-        <name>Asignar_espejo</name>
-        <label>Asignar espejo de CurrencyIsoCode</label>
-        <locationX>440</locationX>
-        <locationY>0</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.CurrencyType__c</assignToReference>
-            <operator>Assign</operator>
-            <value><elementReference>MonedaEstandarTexto</elementReference></value>
-        </assignmentItems>
-    </assignments>
-
     <decisions>
         <name>Pais_con_moneda</name>
         <label>Pais con moneda</label>
         <locationX>176</locationX>
         <locationY>200</locationY>
         <defaultConnectorLabel>Sin cambio</defaultConnectorLabel>
-
         <rules>
             <name>CR</name>
             <label>Costa Rica</label>
@@ -142,71 +175,37 @@
         </rules>
     </decisions>
 
-    <assignments>
-        <name>Asignar_CRC</name>
-        <label>Asignar CRC</label>
-        <locationX>440</locationX>
-        <locationY>200</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.CurrencyType__c</assignToReference>
-            <operator>Assign</operator>
-            <value><stringValue>CRC</stringValue></value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
-        <name>Asignar_GTQ</name>
-        <label>Asignar GTQ</label>
-        <locationX>440</locationX>
-        <locationY>330</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.CurrencyType__c</assignToReference>
-            <operator>Assign</operator>
-            <value><stringValue>GTQ</stringValue></value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
-        <name>Asignar_USD_SV</name>
-        <label>Asignar USD El Salvador</label>
-        <locationX>440</locationX>
-        <locationY>460</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.CurrencyType__c</assignToReference>
-            <operator>Assign</operator>
-            <value><stringValue>USD</stringValue></value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
-        <name>Asignar_HNL</name>
-        <label>Asignar HNL</label>
-        <locationX>440</locationX>
-        <locationY>590</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.CurrencyType__c</assignToReference>
-            <operator>Assign</operator>
-            <value><stringValue>HNL</stringValue></value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
-        <name>Asignar_NIO</name>
-        <label>Asignar NIO</label>
-        <locationX>440</locationX>
-        <locationY>720</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.CurrencyType__c</assignToReference>
-            <operator>Assign</operator>
-            <value><stringValue>NIO</stringValue></value>
-        </assignmentItems>
-    </assignments>
-    <assignments>
-        <name>Asignar_USD_PA</name>
-        <label>Asignar USD Panama</label>
-        <locationX>440</locationX>
-        <locationY>850</locationY>
-        <assignmentItems>
-            <assignToReference>$Record.CurrencyType__c</assignToReference>
-            <operator>Assign</operator>
-            <value><stringValue>USD</stringValue></value>
-        </assignmentItems>
-    </assignments>
+    <description>Rellena CurrencyType__c cuando esta vacio, para que la validation rule del equipo Financial deje de romper a todos los productores de Leads. Corre before save, paso 3 de la orden de ejecucion, asi que el valor ya esta cuando la validacion custom corre en el paso 5. Trigger order 15, justo despues del 10 de Lead_BS_DeriveSociedad, para que CurrencyIsoCode ya este resuelto. Prioridad uno es ESPEJAR CurrencyIsoCode, porque ese campo estandar es el que decide que PricebookEntry se usa: si los dos campos de moneda divergen, la cotizacion toma el precio equivocado. Solo cuando CurrencyIsoCode tambien esta vacio cae al mapa por pais, que replica los valueSettings del picklist dependiente, porque esa dependencia solo se impone en la interfaz y Flow o API pueden grabar un par que el usuario no puede reseleccionar. Nunca sobrescribe un valor ya elegido: la entrada filtra por CurrencyType__c vacio.</description>
 
+    <environments>Default</environments>
+
+    <formulas>
+        <name>MonedaEstandarTexto</name>
+        <dataType>String</dataType>
+        <expression>TEXT({!$Record.CurrencyIsoCode})</expression>
+    </formulas>
+
+    <interviewLabel>Lead BS Derive Currency Type {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lead BS Derive Currency Type</label>
+    <processType>AutoLaunchedFlow</processType>
+
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Falta_moneda</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>CurrencyType__c</field>
+            <operator>IsNull</operator>
+            <value><booleanValue>true</booleanValue></value>
+        </filters>
+        <object>Lead</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+
+    <status>Active</status>
+    <triggerOrder>15</triggerOrder>
 </Flow>
