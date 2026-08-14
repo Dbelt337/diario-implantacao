@@ -14,9 +14,45 @@ Três: `Material`, `MaterialRequestOriginalPart`, `MaterialRequestWildcardCode`.
 
 **Detalhe:** Product2 não tinha nenhum Record Type, então depois do deploy é obrigatório rodar `post-deploy-hu039-asignar-recordtype.apex` para colocar os 281 produtos existentes no Record Type Material. Sem isso o catálogo some das List Views.
 
-### 1.2 Campos em Product2 — PRONTO
+### 1.2 Campos em Product2 — REVISAR ANTES DE DEPLOYAR
 
-18 campos no mesmo pacote, mais o `RequestBrand__c` no pacote 2.
+O pacote traz 18 campos, mais o `RequestBrand__c` no pacote 2. **Foi montado
+sem verificar o que já existe**, e o describe de 14/08
+(`check-product2-campos-existentes.apex`) mostrou que `Product2` hoje só tem
+dois campos custom, `Version__c` e `SapMaterialCode__c`, e uma lista grande de
+campos padrão do Automotive que ninguém tinha olhado.
+
+**Seis dos 19 propostos saem, e um deles é o pacote 2 inteiro:**
+
+| Proposto | Substituto padrão | Nota |
+|---|---|---|
+| `RequestBrand__c` | **`BusinessBrandId`** | Lookup padrão do Automotive. **Elimina o pacote 2** |
+| `RequestedMaterialCode__c` | `ProductCode` | Está livre, porque o código do SAP vive em `SapMaterialCode__c`. Como a solicitação e o material são o mesmo registro, `ProductCode` leva o código solicitado desde o início |
+| `RequestedBy__c` | `CreatedById` | Só precisa de campo próprio se quem solicita puder diferir de quem cria |
+| `RequestVin__c` | nenhum, e é o objeto errado | VIN é contexto de uma venda. O material fica no catálogo para todos e arrastaria o VIN da primeira solicitação para sempre. Pertence à linha da cotização |
+| `RequestVehicleModel__c` | idem | Existe `ModelName` padrão, mas ele descreve o que o produto **é**, não para que veículo serve. Usar seria pior que criar |
+| `SapLastError__c` e `SapRetryCount__c` | Nebula Logger | Já instalado. No produto basta estado e `SapLastAttempt__c`, que é o que a list view de travadas filtra |
+
+**Ficam 12 campos**, e nenhum deles tem equivalente padrão: `RequestKey__c`,
+`RequestStatus__c`, `RequestCompany__c`, `RequestPlant__c`, `RequestBranch__c`,
+`RequestFob__c`, `RequestOrigin__c`, `RequestNotes__c`, `RejectionReason__c`,
+`SapLastAttempt__c`, `TurnoverClass__c`, `SupersededByProduct__c`.
+
+### 1.2bis Campos padrão que a HU precisa e ninguém tinha mapeado
+
+O describe revelou campos do Automotive que resolvem requisitos da própria
+HU-039 sem criar nada:
+
+- **`HarmonizedTariffSchedCode` e `HarmonizedSystemCode`**: a partida
+  arancelária. A RFC `ZQEV_DBM_CREACION_MATERIALES` **rejeita a criação quando
+  ela falta**, e isso estava mapeado como bloqueio sem dono. Os campos já
+  existem;
+- **`BusinessBrandId`**: a marca, como lookup a `BusinessBrand`. Exige que os
+  registros de marca existam, o que é carga de dado e não metadado;
+- `ManufacturerPartNumber`, `ProductLineCode`, `ProductCategoryCode` e
+  `UniversalProductCode`: candidatos naturais para os "todos los datos de la
+  consulta rápida" da RN-49, que é um dos bloqueios abertos. Vale cruzar a
+  lista da RN-49 contra esses antes de criar campo nenhum.
 
 ### 1.3 Validation rule — PRONTO
 
