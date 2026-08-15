@@ -24,8 +24,8 @@ Diário de implantação do programa Salesforce Automotive Cloud + MuleSoft + SA
 | `docs/hu039-cobertura-tecnica-2026-08-13.md` | Análise interna, conflitos com o código no ar, cruzamento com o inventário de integrações |
 | `docs/hu039-que-construir-en-salesforce.md` | Lista de construção peça por peça, com ordem por blocos |
 | `docs/diagramas/hu039-solucion.svg` e `.mmd` | Diagrama no visual do Lucidchart do cliente, e o Mermaid importável |
-| `deploy/deploy-hu039-solicitud-material.zip` | Pacote 1: 3 Record Types, 18 campos, validation rule |
-| `deploy/deploy-hu039-marca-lookup.zip` | Pacote 2: lookup de marca, isolado de propósito |
+| `deploy/deploy-hu039-solicitud-material-v2.zip` | **DEPLOYADO em 14/08 na DEV Sales**, 17 componentes: 12 campos, 3 Record Types, validation rule. Substitui o pacote de 18 campos, que não deve mais ser usado |
+| ~~`deploy/deploy-hu039-marca-lookup.zip`~~ | **Morto.** `BusinessBrandId` é padrão do Automotive e resolve a marca sem criar campo |
 | `docs/scripts/post-deploy-hu039-asignar-recordtype.apex` | **Obrigatório após o pacote 1** |
 
 ### Decisões de arquitetura que não devem ser reabertas sem motivo
