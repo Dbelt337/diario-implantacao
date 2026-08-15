@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  HU-039, Solicitud de Creacion de Material.
+
+  ESTADO: os 17 componentes abaixo JA ESTAO NA DEV SALES, deployados em 14/08.
+  Este manifest serve para levar a mesma coisa para INT, QA ou Producao, e
+  para reter o que existe quando alguem quiser conferir.
+
+  DEPOIS DO DEPLOY, EM QUALQUER ORG, DOIS PASSOS OBRIGATORIOS:
+    1. Habilitar Field History Tracking em Product2 no Setup ANTES do deploy,
+       porque quatro campos vem com historico ligado e o deploy recusa sem isso;
+    2. Rodar post-deploy-hu039-asignar-recordtype.apex DEPOIS, senao os
+       produtos existentes ficam sem Record Type e somem das List Views.
+
+  NAO FAZ PARTE, e nao deve ser criado: RequestBrand__c, que virou
+  BusinessBrandId padrao, e RequestedMaterialCode__c, que virou ProductCode.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Product2.RequestStatus__c</members>
+        <members>Product2.RequestKey__c</members>
+        <members>Product2.RequestCompany__c</members>
+        <members>Product2.RequestPlant__c</members>
+        <members>Product2.RequestBranch__c</members>
+        <members>Product2.RequestFob__c</members>
+        <members>Product2.RequestOrigin__c</members>
+        <members>Product2.RequestNotes__c</members>
+        <members>Product2.RejectionReason__c</members>
+        <members>Product2.SapLastAttempt__c</members>
+        <members>Product2.TurnoverClass__c</members>
+        <members>Product2.SupersededByProduct__c</members>
+        <members>Product2.SapMaterialCode__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Product2.Material</members>
+        <members>Product2.MaterialRequestOriginalPart</members>
+        <members>Product2.MaterialRequestWildcardCode</members>
+        <name>RecordType</name>
+    </types>
+    <types>
+        <members>Product2.Request_Cannot_Be_Active_Before_SAP</members>
+        <name>ValidationRule</name>
+    </types>
+    <version>62.0</version>
+</Package>

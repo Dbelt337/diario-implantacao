@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  O que foi ajustado na DEV Sales em 14/08 e pode subir para as outras orgs.
+
+  Diferente dos outros dois, aqui a FONTE DA VERDADE E A ORG, nao o repositorio.
+  Estes itens foram mexidos direto em Setup ou pelo Flow Builder, entao o
+  caminho e retrieve desta org com este manifest, conferir, e deploy na outra.
+
+  O QUE ESTA AQUI:
+    1. BusinessProfile.BusinessPartnerType, com o valor GroupCompany criado e o
+       Sales Dealer ja substituido por Concesionario de ventas via Replace;
+    2. Os dois registros de Sociedad_Config__mdt com o prefixo de fila
+       corrigido, G105 apontava para a fila de G101 e P103 para a de P105;
+    3. Os flows cuja Trigger Order foi declarada.
+
+  O QUE NAO ESTA AQUI, DE PROPOSITO:
+    - Os BusinessProfile de sociedade criados pelo script sao REGISTROS, nao
+      metadados. Nao viajam em deploy, roda-se o script na outra org;
+    - Field History Tracking de Product2 e acao de Setup por org;
+    - Opp RT Discount Approval nao entra porque e Record-Triggered Flow
+      Approval Process e nao tem Trigger Order.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>BusinessProfile.BusinessPartnerType</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Sociedad_Config.G105</members>
+        <members>Sociedad_Config.P103</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>Lead_SetStatusOnConversion</members>
+        <members>Lead_AS_CrossFieldDuplicateAlert</members>
+        <members>Opp_AS_EvaluarDescuento</members>
+        <name>Flow</name>
+    </types>
+    <version>62.0</version>
+</Package>

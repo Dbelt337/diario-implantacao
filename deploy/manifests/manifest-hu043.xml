@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  HU-043, Repuestos y PA no fluxo de venda guiada.
+
+  ATENCAO AO QUE VAI JUNTO. As classes abaixo tem versoes diferentes espalhadas
+  por varios pacotes antigos do repositorio. A versao boa e a de
+  deploy-robustez-flujo-guiado, de 12/08. Os pacotes de 11/08, entre eles
+  deploy-hu043-repuestos-pa e deploy-us021-action-material, levam versoes
+  ANTERIORES e regridem o codigo, inclusive reintroduzindo o abrirCaso que a
+  RN-56 proibe. Retirar o codigo da org ou do pacote de 12/08, nunca dos de 11.
+
+  As classes de teste vao junto por obrigacao: deploy de Apex em producao exige
+  cobertura, e sem elas o deploy falha.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>RepuestosLineService</members>
+        <members>RepuestosLineServiceTest</members>
+        <members>GuidedSellingController</members>
+        <members>GuidedSellingControllerTest</members>
+        <members>MaterialCreationService</members>
+        <members>MaterialCreationServiceTest</members>
+        <members>MaterialSearchService</members>
+        <members>MaterialSearchServiceTest</members>
+        <members>SapMuleClient</members>
+        <members>SapMuleClientTest</members>
+        <members>SapCalloutMockFactory</members>
+        <members>VentasTestDataFactory</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>lineasRepuestos</members>
+        <members>contraventaRepuestos</members>
+        <members>ventaPA</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>QuoteLineItem.AvailabilityStatus__c</members>
+        <members>QuoteLineItem.AvailabilityDetail__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>PS_Mule_Integration</members>
+        <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>MuleGateway</members>
+        <name>NamedCredential</name>
+    </types>
+    <types>
+        <members>MuleSoft_EC</members>
+        <name>ExternalCredential</name>
+    </types>
+    <version>62.0</version>
+</Package>
