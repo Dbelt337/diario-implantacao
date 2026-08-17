@@ -7,6 +7,21 @@
 -- cotizacion de repuestos se identifica pelo pai.
 
 
+-- 0. OS LEADS DE REPUESTOS Y PA
+--    O campo das pecas a cotizar se chama PartsToQuote__c. Nao existe
+--    RequestedParts__c em Lead nem em Opportunity, apesar de aparecer no
+--    package.xml antigo.
+SELECT Id, Name, Company, Status, LeadSource, Email, Phone,
+       PartsToQuote__c, Brand__c, CompanyCode__c, Country__c, CurrencyType__c,
+       VehicleModel__c, VehicleYear__c, VIN__c, LicensePlate__c,
+       IsConverted, ConvertedOpportunityId,
+       Owner.Name, CreatedDate
+FROM Lead
+WHERE RecordType.DeveloperName = 'GQLeadsRepuestosPA'
+ORDER BY CreatedDate DESC
+LIMIT 50
+
+
 -- 1. AS COTIZACIONES DE REPUESTOS Y PA, do mais novo para o mais antigo
 SELECT Id, QuoteNumber, Name, Status, CurrencyIsoCode, TotalPrice,
        ExpirationDate, Pricebook2Id, Pricebook2.Name,
