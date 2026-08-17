@@ -46,6 +46,59 @@ sintoma continua sendo reportado depois disso em threads da Trailblazer Communit
 Support**. Não há workaround publicado. Isso é a resposta honesta sobre os fóruns: não
 existe truque, existe caso.
 
+## Medição de 17/08, org `00DWJ000008GgDB2A0`, instância USA770S
+
+Rodada limpa, sem erro. Os três umbrales seguem cumpridos e **os números não mudaram**:
+1448 leads, 1448 criados nos últimos 200 dias, 608 convertidos, 507 com oportunidade,
+taxa de 41,99 por cento.
+
+Dois achados que a rodada trouxe e que não estavam registrados.
+
+### 1. Não há história de conversão, há um pico
+
+Agrupando os convertidos por mês de criação:
+
+| Mês de criação | Convertidos |
+|---|---|
+| 2026-08 | 607 |
+| 2026-07 | 1 |
+
+**607 dos 608 convertidos foram criados neste mês.** E os 1448 leads da org, todos eles,
+foram criados dentro dos 200 dias, nenhum é mais antigo.
+
+Isso não bloqueia a habilitação, porque o fallback documentado é o modelo global. Mas
+significa que, se o modelo algum dia sair, ele sai **do modelo global ou de um modelo
+próprio sem valor**, porque conversão concentrada em 17 dias não é comportamento ao longo
+do tempo, é um evento único. Para a demo aos diretores, o score não seria defensável se
+alguém perguntar de onde vem.
+
+### 2. Segmentar por linha de negócio quebraria tudo
+
+Criados e convertidos nos 200 dias, por Record Type:
+
+| Record Type | Criados | Convertidos | Passa o corte |
+|---|---|---|---|
+| `GQLeadsAutos` | 1331 | 603 | **sim** |
+| `FinancialIndividual` | 79 | 0 | não |
+| `GQLeadsRepuestosPA` | 21 | 4 | não |
+| `GQLeadsMotos` | 12 | 1 | não |
+| `FinancialLegalEntity` | 4 | 0 | não |
+| sem Record Type | 1 | 0 | não |
+
+Cada segmento precisa dos mesmos 1000 e 120, o segmento padrão All Leads incluído.
+**Decisão: não criar segmento nenhum**, deixar em All Leads. Cinco dos seis não passam, e
+segmentar aqui degrada o resultado em vez de melhorar.
+
+### 3. Duas sujeiras de dado, baratas de corrigir
+
+- **`Nuevo` com 821 leads e `New` com 7.** O mesmo estado em dois idiomas na mesma
+  picklist. É exatamente o tipo de duplicidade que a regra de governança ataca, e a
+  correção é Replace, não Del, senão sobram registros órfãos;
+- **1 lead sem Record Type.**
+
+Nenhuma das duas bloqueia Einstein. Ficam registradas porque aparecem em relatório e em
+qualquer segmentação futura.
+
 ## O que fazer, nesta ordem
 
 1. **Setup, Company Information, Match Production Licenses.** Leva as licenças de
