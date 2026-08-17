@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    FlexCard da agenda do veiculo demo.
+
+    Derivado do SearchAccount_Diego_1 retirado desta org, nao escrito do zero:
+    a forma do propertySetConfig, do state e do elemento block veio de um card
+    real, e so o dataSource, o conteudo e o titulo foram trocados. O esquema do
+    propertySetConfig nao e documentado, entao derivar de um artefato da propria
+    org e a unica forma segura.
+
+    O nome do membro segue o padrao dos cards existentes, nome_autor_versao.
+
+    O card sobe INATIVO, igual aos que estao na org. Depois do deploy: abrir no
+    FlexCard designer, Preview, e Activate. A ativacao e o que compila o LWC do
+    card, e sem ela ele nao renderiza. Isso e normal em OmniStudio, nao e defeito
+    do pacote.
+
+    Colocar na pagina de registro do SERVICE RESOURCE do veiculo, onde recordId
+    ja e o recurso e nao ha ambiguidade. Os quatro recursos de veiculo desta org
+    sao Asset - Prueba Demo, Asset - RPA Chevrolet Onix, Asset - RPA Mazda CX-5 e
+    Asset - RPA Toyota Hilux.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>DemoVehicleAgenda_Diego_1</members>
+        <name>OmniUiCard</name>
+    </types>
+    <version>65.0</version>
+</Package>
