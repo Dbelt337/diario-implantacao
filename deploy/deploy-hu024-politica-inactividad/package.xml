@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    HU-024. Conserta a etapa destino do fecho automatico por inatividade.
+
+    LostStageName__c ia para "Closed Lost", que nesta org esta INATIVO e nem
+    esta marcado como etapa de fechamento. StageName e picklist padrao
+    restrita, valor inativo e rejeitado na gravacao, entao o flow programado
+    CloseInactiveOpportunities falha todos os dias sem avisar ninguem.
+
+    Prova: 523 tarefas de alerta criadas desde julho e ZERO oportunidades de
+    Repuestos fechadas.
+
+    A etapa ativa de perda desta org e "Perdido", e ela esta nos seis sales
+    processes. E o que este pacote passa a gravar.
+
+    Pacote separado de proposito: e uma linha, destrava o fecho na hora, e nao
+    depende da revisao dos valores da picklist.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>InactivityPolicy.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+    <version>62.0</version>
+</Package>

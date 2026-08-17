@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    HU-024 e GQAUT-326. Motivo de Cierre completo nos seis Record Types.
+
+    Duas coisas, na ordem certa e no MESMO deploy:
+
+    1. Os quatro valores que nasceram em espanhol passam a ter valor de API em
+       ingles, com o rotulo em espanhol, pela convencao GRPQM:
+           Producto No Disponible        -> Product Not Available
+           Tiempo de entrega No Aceptado -> Delivery Time Not Accepted
+           Compra Postergada             -> Purchase Postponed
+           Oportunidad Duplicada         -> Duplicate Opportunity
+       So da para fazer isso agora, porque hoje eles nao estao atribuidos a
+       nenhum Record Type e portanto ninguem os usou pela tela. Depois de
+       atribuir, renomear exige Replace.
+
+    2. Os nove valores ficam atribuidos aos seis Record Types. Era a causa do
+       GQAUT-326: os valores existiam e nunca entraram nos Record Types, porque
+       valor novo de picklist nao entra automaticamente nos que ja existem.
+
+    O Opportunity.object foi GERADO a partir do retrieve de DEV, com os blocos
+    dos Record Types copiados na integra e os quatro valores acrescentados. As
+    treze picklists de cada Record Type estao preservadas, porque um deploy de
+    Record Type substitui o Record Type inteiro e o que faltar no arquivo se
+    perde.
+
+    NAO inclui os dois valores reaproveitados com rotulo de outro significado,
+    No Budget / Lost Funding com rotulo Precio no Competitivo e
+    No Decision / Non-Responsive com rotulo Cliente desistio de la compra.
+    Esses podem estar em uso, corrigir exige Replace e decisao do Diego.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Opportunity.Loss_Reason__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Opportunity.GQOpportunitiesAutos</members>
+        <members>Opportunity.GQOpportunitiesFlotas</members>
+        <members>Opportunity.GQOpportunitiesMayorista</members>
+        <members>Opportunity.GQOpportunitiesMotos</members>
+        <members>Opportunity.GQOpportunitiesRepuestosPA</members>
+        <members>Opportunity.GQOpportunitiesUsados</members>
+        <name>RecordType</name>
+    </types>
+    <version>62.0</version>
+</Package>
