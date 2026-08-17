@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    HU-024 e GQAUT-326, versao para a org do retrieve 09SWK00000SB0Ck2AL.
+
+    POR QUE UM PACOTE DIFERENTE DO DE DEV, e nao o mesmo zip promovido:
+
+    - aquela org tem QUATRO record types, nao seis. Nao tem Mayorista nem
+      Usados, e nem tem o business process GQOpportunityProcessMayorista, entao
+      subir os seis falharia;
+    - os record types dela atribuem CINCO picklists, nao treze. Deploy de record
+      type substitui o record type inteiro: subir os blocos de DEV apagaria ou
+      inventaria atribuicoes. Este arquivo foi gerado dos blocos DELA, na
+      integra, trocando so a lista do Loss_Reason__c.
+
+    ATENCAO, VERIFICAR ANTES DE SUBIR: naquela org o Loss_Reason__c tem o valor
+    "Price", que em DEV nao existe mais. Este pacote NAO o traz, logo ele sai.
+    Contar o uso antes:
+
+        SELECT Loss_Reason__c, COUNT(Id) FROM Opportunity
+        WHERE Loss_Reason__c != null GROUP BY Loss_Reason__c
+
+    Se houver registro em "Price", fazer Replace para
+    "No Budget / Lost Funding" ANTES, ou avisar para eu incluir o valor como
+    inativo. Apagar valor em uso deixa registro orfao.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Opportunity.Loss_Reason__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>Opportunity.GQOpportunitiesAutos</members>
+        <members>Opportunity.GQOpportunitiesFlotas</members>
+        <members>Opportunity.GQOpportunitiesMotos</members>
+        <members>Opportunity.GQOpportunitiesRepuestosPA</members>
+        <name>RecordType</name>
+    </types>
+    <version>62.0</version>
+</Package>

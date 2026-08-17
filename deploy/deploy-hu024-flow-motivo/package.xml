@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    HU-024, a outra metade: o fecho automatico passa a REGISTRAR MOTIVO.
+
+    O proprio description do flow dizia, desde a construcao, que o valor do
+    motivo "must be added to the update element once its field API name is
+    confirmed". A HU-024 confirmou: e Loss_Reason__c.
+
+    Duas mudancas:
+
+    1. O elemento Close Opportunity As Lost passa a gravar
+       Loss_Reason__c = GetInactivityPolicy.CloseReasonValue__c, junto com o
+       StageName que ja gravava;
+
+    2. CloseReasonValue__c deixa de ser "Cierre automatico por inactividad", que
+       NAO existe na picklist, e passa a ser "No Customer Response", rotulo
+       "Sin Respuesta del Cliente", que e um dos nove valores da HU. Nao se cria
+       valor novo, pela regra de nao criar sem antes verificar se um existente
+       serve. O fato de o fecho ter sido automatico continua rastreavel pela
+       tarefa de fecho que o flow cria.
+
+    Tambem inclui LostStageName__c = Perdido, para o pacote ser autossuficiente
+    caso suba numa org onde a correcao anterior nao passou.
+
+    Deploy de Flow cria uma NOVA VERSAO e a ativa. Nao desativar a anterior a
+    mao: ativar a nova ja substitui.
+
+    NAO mexe na apiVersion 49.0 nem no nome do flow, que pela convencao deveria
+    ser "Scheduled: Close Inactive Opportunities". As duas coisas mudam
+    comportamento ou identidade e pedem decisao separada.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>CloseInactiveOpportunities</members>
+        <name>Flow</name>
+    </types>
+    <types>
+        <members>InactivityPolicy.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+    <version>62.0</version>
+</Package>
