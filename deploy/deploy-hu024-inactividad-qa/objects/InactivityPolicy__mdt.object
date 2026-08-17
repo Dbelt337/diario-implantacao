@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>AlertTaskSubject__c</fullName>
+        <description>All countries. Subject of the warning task created before automatic closure. Also used by the flow to avoid duplicate alerts for the same opportunity. Translatable per business preference.</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Asunto de la tarea de alerta</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CloseReasonValue__c</fullName>
+        <description>All countries. Picklist value to be written to the opportunity close reason field (from the manual closure user story) when the automatic closure runs. Kept in configuration so the wording can change without redeploying the flow.</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Valor del motivo de cierre</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DaysToAlert__c</fullName>
+        <description>All countries. Number of days without opportunity activity (LastActivityDate) after which the owner receives a warning task. Consumed by the scheduled flow Close Inactive Opportunities. Business-tunable per environment without touching the flow.</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Días para alerta</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DaysToClose__c</fullName>
+        <description>All countries. Number of days without opportunity activity (LastActivityDate) after which the opportunity is automatically closed as lost. Consumed by the scheduled flow Close Inactive Opportunities.</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Días para cierre</label>
+        <precision>3</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LostStageName__c</fullName>
+        <description>All countries. Exact API name of the Opportunity stage used for automatic closure as lost. Must match an existing closed/lost stage of the sales process. Consumed by the scheduled flow Close Inactive Opportunities.</description>
+        <externalId>false</externalId>
+        <fieldManageability>DeveloperControlled</fieldManageability>
+        <label>Etapa de perdida</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Política de Inactividad</label>
+    <pluralLabel>Políticas de Inactividad</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

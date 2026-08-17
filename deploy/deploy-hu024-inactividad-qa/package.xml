@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    HU-024, fecho automatico por inatividade: promocao COMPLETA para a org de QA.
+
+    Naquela org NADA disso existe. O retrieve com o mesmo manifest de DEV nao
+    devolveu nem o tipo de Custom Metadata, nem o registro, nem o flow. Entao
+    nao e um ajuste, e a primeira subida.
+
+    Vai o conjunto inteiro:
+      - InactivityPolicy__mdt, o tipo e os cinco campos;
+      - o registro Default, ja com LostStageName__c = Perdido e
+        CloseReasonValue__c = No Customer Response;
+      - o flow CloseInactiveOpportunities ja gravando Loss_Reason__c.
+
+    SUBIR DEPOIS de deploy-hu024-motivo-cierre-qa.zip. O flow grava
+    No Customer Response, e esse valor so passa a existir naquela org com o
+    pacote do motivo.
+
+    Verificado no retrieve daquela org: Perdido existe, e etapa fechada e nao
+    ganha, e esta nos quatro business processes. Closed Lost nem existe la, o que
+    confirma que a etapa correta e Perdido.
+
+    O flow sobe como versao nova e ativa. Nao desativar a anterior a mao.
+
+    Divida conhecida que NAO se conserta aqui, para as orgs nao divergirem: os
+    rotulos dos cinco campos do tipo estao em espanhol, contra a convencao GRPQM
+    de metadado em ingles com traducao. Corrigir nas duas orgs de uma vez, em
+    mudanca propria.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>InactivityPolicy__mdt</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>InactivityPolicy.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+    <types>
+        <members>CloseInactiveOpportunities</members>
+        <name>Flow</name>
+    </types>
+    <version>62.0</version>
+</Package>
