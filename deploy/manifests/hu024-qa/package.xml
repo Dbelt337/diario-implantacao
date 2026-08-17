@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    HU-024 e GQAUT-326, tudo o que sobe na org de QA.
+
+    Quatro Record Types, nao seis: QA nao tem Mayorista nem Usados, e nem tem o
+    business process GQOpportunityProcessMayorista.
+
+    O tipo InactivityPolicy__mdt, o registro e o flow nao existem em QA, entao
+    para essa org e primeira subida e nao ajuste.
+
+    Verificar antes: QA tem o valor Price no Loss_Reason__c, que DEV nao tem
+    mais. Contar o uso e fazer Replace se houver registro.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <types>
+        <members>Opportunity.Loss_Reason__c</members>
+        <name>CustomField</name>
+    </types>
+
+    <types>
+        <members>Opportunity.GQOpportunitiesAutos</members>
+        <members>Opportunity.GQOpportunitiesFlotas</members>
+        <members>Opportunity.GQOpportunitiesMotos</members>
+        <members>Opportunity.GQOpportunitiesRepuestosPA</members>
+        <name>RecordType</name>
+    </types>
+
+    <types>
+        <members>InactivityPolicy__mdt</members>
+        <name>CustomObject</name>
+    </types>
+
+    <types>
+        <members>InactivityPolicy.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+
+    <types>
+        <members>CloseInactiveOpportunities</members>
+        <name>Flow</name>
+    </types>
+
+    <version>62.0</version>
+</Package>
