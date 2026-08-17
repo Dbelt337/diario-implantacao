@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    HU-024 e GQAUT-326. Retrieve pelo Workbench.
+
+    Retirar o CustomObject inteiro e nao componente filho: o Opportunity.object
+    ja traz dentro dele os businessProcesses, que e o Sales Process, os
+    recordTypes com os picklistValues de cada um, que e a resposta do
+    GQAUT-326, os validationRules e os fields com o valueSet.
+
+    Curinga em componente filho, do tipo Opportunity.* em RecordType ou
+    ValidationRule, nao e confiavel no Metadata API. Por isso nao esta aqui.
+
+    GlobalValueSet entra porque, se o campo de motivo usar um conjunto global de
+    valores, os valores NAO ficam no .object, ficam no value set.
+
+    StandardValueSet OpportunityStage traz as etapas com fechada e ganhada.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <types>
+        <members>Opportunity</members>
+        <members>Quote</members>
+        <members>InactivityPolicy__mdt</members>
+        <name>CustomObject</name>
+    </types>
+
+    <types>
+        <members>InactivityPolicy__mdt.Default</members>
+        <name>CustomMetadata</name>
+    </types>
+
+    <types>
+        <members>CloseInactiveOpportunities</members>
+        <name>Flow</name>
+    </types>
+
+    <types>
+        <members>*</members>
+        <name>GlobalValueSet</name>
+    </types>
+
+    <types>
+        <members>OpportunityStage</members>
+        <name>StandardValueSet</name>
+    </types>
+
+    <version>62.0</version>
+</Package>
