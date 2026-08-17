@@ -1,0 +1,85 @@
+-- Consultas para achar cotizacion de Repuestos y PA.
+-- Rodar no Salesforce Inspector Reloaded ou na Developer Console, Query Editor.
+--
+-- IMPORTANTE: Quote tem apenas dois Record Types nesta org, NewVehicle e
+-- UsedVehicle. Nao existe Record Type de Repuestos na cotizacion. A linha de
+-- negocio vive na Oportunidade, no GQOpportunitiesRepuestosPA, entao a
+-- cotizacion de repuestos se identifica pelo pai.
+
+
+-- 1. AS COTIZACIONES DE REPUESTOS Y PA, do mais novo para o mais antigo
+SELECT Id, QuoteNumber, Name, Status, CurrencyIsoCode, TotalPrice,
+       ExpirationDate, Pricebook2Id, Pricebook2.Name,
+       Opportunity.Name, Opportunity.StageName,
+       Opportunity.RecordType.DeveloperName,
+       Account.Name, CreatedDate, CreatedBy.Name
+FROM Quote
+WHERE Opportunity.RecordType.DeveloperName = 'GQOpportunitiesRepuestosPA'
+ORDER BY CreatedDate DESC
+LIMIT 50
+
+
+-- 2. UMA COTIZACION COM AS LINHAS, trocando o Id
+--    Os dois campos custom da HU-043 estao aqui: e neles que se ve se a linha
+--    ficou sem catalogo ou sem saldo.
+SELECT Id, QuoteNumber, Status, CurrencyIsoCode, TotalPrice, Pricebook2.Name,
+       (SELECT Id, Quantity, UnitPrice, ListPrice, TotalPrice, Discount,
+               Product2.Name, Product2.ProductCode, Product2.SapMaterialCode__c,
+               Product2.RecordType.DeveloperName,
+               AvailabilityStatus__c, AvailabilityDetail__c
+        FROM QuoteLineItems
+        ORDER BY Product2.ProductCode)
+FROM Quote
+WHERE Id = '0Q0WK00000XXXXXXXX'
+
+
+-- 3. LINHAS QUE FICARAM COM PRECO ZERO
+--    E o defeito que a gente levantou: repuesto criado nasce com entrada de
+--    preco em zero, e a linha herda o zero sem dar erro nenhum.
+SELECT Quote.QuoteNumber, Quote.Status, Product2.ProductCode, Product2.Name,
+       Quantity, UnitPrice, ListPrice, AvailabilityStatus__c
+FROM QuoteLineItem
+WHERE Quote.Opportunity.RecordType.DeveloperName = 'GQOpportunitiesRepuestosPA'
+  AND UnitPrice = 0
+ORDER BY Quote.CreatedDate DESC
+LIMIT 100
+
+
+-- 4. AS OPORTUNIDADES DE REPUESTOS Y PA, com ou sem cotizacion
+SELECT Id, Name, StageName, Amount, CurrencyIsoCode, CloseDate,
+       CompanyCode__c, Pais__c, Brand__c, Pricebook2Id,
+       Account.Name, Owner.Name, CreatedDate
+FROM Opportunity
+WHERE RecordType.DeveloperName = 'GQOpportunitiesRepuestosPA'
+ORDER BY CreatedDate DESC
+LIMIT 50
+
+
+-- 5. QUANTAS COTIZACIONES POR LINHA DE NEGOCIO, para saber onde ha dado
+SELECT Opportunity.RecordType.DeveloperName, COUNT(Id)
+FROM Quote
+GROUP BY Opportunity.RecordType.DeveloperName
+
+
+-- 6. OS PRODUTOS QUE JA NASCERAM PELA HU-039
+--    Depois do deploy de 14/08, os tres Record Types existem. Solicitacao
+--    nasce inativa, material definitivo fica ativo.
+SELECT Id, Name, ProductCode, SapMaterialCode__c, IsActive,
+       RecordType.DeveloperName, RequestStatus__c, RequestKey__c,
+       RequestCompany__c, RequestPlant__c, RequestBranch__c,
+       SapLastAttempt__c, CreatedDate, CreatedBy.Name
+FROM Product2
+WHERE RecordType.DeveloperName IN ('MaterialRequestOriginalPart',
+                                   'MaterialRequestWildcardCode')
+ORDER BY CreatedDate DESC
+LIMIT 50
+
+
+-- 7. ENTRADAS DE PRECO DOS REPUESTOS, por lista e moeda
+--    Confirma se existe entrada nas duas moedas de Costa Rica. Sem entrada na
+--    moeda da cotizacion, a linha volta como sem catalogo.
+SELECT Pricebook2.Name, CurrencyIsoCode, COUNT(Id) entradas,
+       MIN(UnitPrice) minimo, MAX(UnitPrice) maximo
+FROM PricebookEntry
+GROUP BY Pricebook2.Name, CurrencyIsoCode
+ORDER BY Pricebook2.Name
