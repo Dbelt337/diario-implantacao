@@ -99,6 +99,58 @@ segmentar aqui degrada o resultado em vez de melhorar.
 Nenhuma das duas bloqueia Einstein. Ficam registradas porque aparecem em relatório e em
 qualquer segmentação futura.
 
+## São duas orgs diferentes, e isso muda tudo
+
+A segunda rodada de 17/08 não foi na mesma org.
+
+| | QA | UAT |
+|---|---|---|
+| Org Id | `00DWJ000008GgDB2A0` | `00DWK000005VF7x2AG` |
+| Instância | USA770S | USA772S |
+| Usuário | `diego.beltrao@grupoq.com.qa` | `diego.beltrao@grupoq.com.uat` |
+| Leads, total | 1448 | **179** |
+| Criados em 200 dias | 1448, cumpre | **179, faltam 821** |
+| Convertidos | 608, cumpre | **0, faltam 120** |
+| Com oportunidade | 507, cumpre | **0** |
+| Taxa de conversão | 41,99 por cento | **0** |
+
+**Em UAT os umbrales não são cumpridos, nem de longe.** Tudo o que foi dito até aqui
+sobre "os três umbrales já cumprem" vale para QA e **não** vale para UAT. E o texto do
+caso de Support redigido acima cita 1448, 608, 507 e a org `00DWJ`: **não serve para
+UAT**, mandar assim volta como pedido de esclarecimento.
+
+Isso não impede habilitar em UAT, porque o fallback documentado é o modelo global. Mas em
+UAT o score sairia **inteiramente** do modelo global, sem uma única conversão própria.
+
+E muda o valor do script de criação de leads: em QA ele era irrelevante, porque os
+umbrales já cumpriam. **Em UAT ele passa a ter função**, não para desbloquear a
+habilitação, e sim para a demo ter lead com score em cima de que falar. Se a demo aos
+diretores for em UAT, é aí que ele se aplica, apontado para UAT e com conversão.
+
+Antes de qualquer outro passo: **decidir em qual das duas orgs a demo acontece.** Estamos
+gastando esforço em duas frentes.
+
+### Três anomalias de dado em UAT
+
+1. **Um lead com `Status = 'Convertido'` e `IsConverted = false`.** `IsConverted` é de
+   leitura e quem escreve é a plataforma ao converter. O `Status` é picklist e qualquer
+   pessoa, ou qualquer Flow, escreve. Um lead parado no estado de convertido sem ter sido
+   convertido não tem conta, contato nem oportunidade, e mesmo assim sai do embudo em todo
+   relatório que filtre por `Status`. É lead perdido em silêncio;
+2. **22 dos 179 leads sem Record Type**, doze por cento. Em QA era 1 de 1448. Sem Record
+   Type não há layout, nem regra por linha de negócio, nem segmento possível;
+3. **A picklist de `Status` difere entre as duas orgs.** QA tem `New` ao lado de `Nuevo`,
+   UAT tem `No contactado` e não tem `New`. Os Record Types também: UAT tem
+   `GQLeadsFlotas` e não tem `FinancialLegalEntity`, QA o contrário. É deriva de
+   configuração entre ambientes, e enquanto existir, relatório de um não se compara com o
+   do outro.
+
+Para as três, `docs/scripts/check-lead-status-huerfano.apex`, só leitura. Ele mostra qual
+valor de `Status` a plataforma reconhece como conversão, lista os leads em estado de
+conversão sem conversão real com quem os modificou por último, e mostra quem está criando
+lead sem Record Type. Se concentrar num usuário de integração, o conserto é lá e não a
+mão.
+
 ## O que fazer, nesta ordem
 
 1. **Setup, Company Information, Match Production Licenses.** Leva as licenças de
