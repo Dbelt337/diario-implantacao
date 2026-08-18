@@ -22,7 +22,7 @@
 -->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>DemoVehicleAgenda_Diego_1</members>
+        <members>TestDriveSchedule_Diego_1</members>
         <name>OmniUiCard</name>
     </types>
     <version>65.0</version>
