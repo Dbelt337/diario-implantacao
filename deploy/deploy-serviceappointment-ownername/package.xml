@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Um campo formula em ServiceAppointment, para a agenda de prueba de manejo.
+
+    Por que criar: componente de lista liga por nome de campo plano e nao resolve
+    caminho de lookup, entao Owner.Name chega aninhado no JSON e a coluna fica
+    vazia. Achatando no proprio registro, o Data Table le direto e nao e preciso
+    Data Mapper.
+
+    Verificacao previa, exigida pela regra do projeto: o describe de
+    ServiceAppointment mostrou que os unicos campos custom sao
+    FSL__Related_Service__c e FSL__Scheduling_Policy_Used__c, os dois do pacote
+    gerenciado. Nao existe nada equivalente a este, entao nao ha duplicidade.
+
+    Formula, nao texto: nao ocupa armazenamento e nunca sai de sincronia.
+
+    Owner e polimorfico, usuario ou fila, e por isso a sintaxe Owner:User. Se o
+    dono for uma fila, o campo fica em branco em vez de falhar.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>ServiceAppointment.OwnerName__c</members>
+        <name>CustomField</name>
+    </types>
+    <version>63.0</version>
+</Package>
