@@ -1,10 +1,7 @@
 // HU-064, motor de descuentos. O que a org JA TEM antes de propor. Solo lectura.
-//
-// O log de 18/08 mostrou duas matrizes que a HU nao menciona: Discount_Rules_GrupoQ
-// e MatrizPisosPorRol. A HU propoe Custom Metadata Type para a escala e para o rango
-// do rol, e diz que o uso de Decision Matrix exige confirmar a disponibilidade na org.
-// Ela esta disponivel e ja tem duas matrizes de desconto construidas. Isso decide o
-// desenho, e nao pode ser resolvido por opiniao.
+// A HU propoe Custom Metadata para a escala e para o rango do rol, e pede confirmar
+// a disponibilidade de Decision Matrix. Ela esta disponivel e o log de 18/08 mostrou
+// Discount_Rules_GrupoQ e MatrizPisosPorRol ja criadas. Isso decide o desenho.
 
 Map<String, Schema.SObjectType> g = Schema.getGlobalDescribe();
 
@@ -30,9 +27,6 @@ try {
         System.debug('   linhas na matriz ' + a.get('m') + ': ' + a.get('q'));
     }
 } catch (Exception e) { System.debug('   ' + e.getMessage()); }
-System.debug('   SE Discount_Rules_GrupoQ e MatrizPisosPorRol ja cobrirem marca,');
-System.debug('   modelo, sociedade e rol, a HU nao cria Custom Metadata nenhum.');
-
 System.debug('=== 2. ONDE O DESCONTO MORA HOJE NO DOCUMENTO ===');
 for (String o : new List<String>{'Quote','QuoteLineItem','Order','OrderItem','Opportunity','OpportunityLineItem'}) {
     Schema.SObjectType t = g.get(o.toLowerCase());
@@ -52,7 +46,6 @@ for (String o : new List<String>{'Quote','QuoteLineItem','Order','OrderItem','Op
 }
 
 System.debug('=== 3. A BASE DE CALCULO DA ESCALA ===');
-System.debug('   RN5: todos os niveis se calculam sobre o Precio Minimo de Asesor.');
 Map<String, Schema.SObjectField> pbe = PricebookEntry.SObjectType.getDescribe().fields.getMap();
 for (String c : new List<String>{'PrecioMinimoAsesor__c','PrecioExoneradoMinimo__c',
                                  'PrecioExonerado__c','Gastos__c'}) {
@@ -82,8 +75,7 @@ for (String c : new List<String>{'BusinessBrandId','Family','ProductCode','Cost_
 }
 
 System.debug('=== 5. O NIVEL DO USUARIO, QUE A HU NAO DEFINE ===');
-System.debug('   A RN5 tem Gerente de Ventas, Gerente de Marca, Director e');
-System.debug('   Vicepresidencia. A HU nao diz de onde sai o nivel do usuario logado.');
+System.debug('   A HU nao diz de onde sai o nivel do usuario logado.');
 try {
     for (AggregateResult a : Database.query(
             'SELECT Name n, COUNT(Id) q FROM UserRole GROUP BY Name ORDER BY Name LIMIT 40')) {
@@ -100,9 +92,6 @@ try {
 } catch (Exception e) { System.debug('   PermissionSet: ' + e.getMessage()); }
 
 System.debug('=== 6. O QUE JA HA DE APROVACAO E DE METADATA DE DESCONTO ===');
-for (String s : new List<String>{'ProcessDefinition','EntityDefinition'}) {
-    System.debug('   ' + s + ': ' + (g.containsKey(s.toLowerCase()) ? 'consultavel' : 'nao'));
-}
 try {
     for (SObject pd : Database.query(
             'SELECT DeveloperName, TableEnumOrId, Type, State FROM ProcessDefinition'
@@ -121,10 +110,8 @@ for (String k : g.keySet()) {
 }
 
 System.debug('=== COMO LER ===');
-System.debug('   a) se as duas matrizes ja tiverem as colunas de marca, modelo,');
-System.debug('      sociedade e rol, a proposta de Custom Metadata da RN4 e da RN5');
-System.debug('      vira duplicidade e nao se empacota;');
-System.debug('   b) se PricebookEntry nao tiver campo de cashback, a RN11 depende da');
-System.debug('      HU-038 acrescentar, e isso e dependencia e nao tarefa desta HU;');
-System.debug('   c) se nao houver origem clara do nivel do usuario, esse e o buraco');
-System.debug('      real da historia: sem nivel nao ha rango do rol para validar.');
+System.debug('   a) matriz ja cobrindo marca, modelo, sociedade e rol: o Custom');
+System.debug('      Metadata da RN4 e da RN5 vira duplicidade e nao se empacota;');
+System.debug('   b) sem campo de cashback em PricebookEntry, a RN11 e dependencia');
+System.debug('      da HU-038 e nao tarefa desta historia;');
+System.debug('   c) sem origem clara do nivel do usuario nao ha rango do rol.');
