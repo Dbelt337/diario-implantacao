@@ -1,8 +1,7 @@
 // HU-017, cliente maestro. O que a plataforma e a org JA entregam. Solo lectura.
-//
-// Logs anteriores ja responderam tres coisas: as duas aprovacoes de dado sensivel
-// em Account estao ATIVAS, Account.Sociedad__c e TEXTAREA, e ha TaxID__c em Account
-// ao lado de BusinessProfile.BusinessTaxIdentifier. Este script fecha o resto.
+// Logs anteriores ja deram: as duas aprovacoes de dado sensivel em Account estao
+// ATIVAS, Account.Sociedad__c e TEXTAREA, e TaxID__c convive com
+// BusinessProfile.BusinessTaxIdentifier. Este fecha o resto.
 
 Map<String, Schema.SObjectType> g = Schema.getGlobalDescribe();
 
@@ -33,9 +32,6 @@ for (String o : new List<String>{'AccountContactRelation','AccountAccountRelatio
         + ' | campos=' + t.getDescribe().fields.getMap().size()
         + ' | registros=' + (q < 0 ? 'sem acesso' : String.valueOf(q)));
 }
-System.debug('   AccountContactRelation com registros significa que o muitos para');
-System.debug('   muitos da RN-04 ja esta ligado e a CA-03 sai sem construcao.');
-
 System.debug('=== 3. DOCUMENTO DE IDENTIDADE, A CHAVE DA RN-02 ===');
 for (String o : new List<String>{'IdentityDocument','PartyIdentification',
                                  'IdentityVerification','TaxIdentification'}) {
@@ -56,7 +52,6 @@ for (String o : new List<String>{'IdentityDocument','PartyIdentification',
 }
 
 System.debug('=== 4. CANAIS DE CONTATO E CONSENTIMENTO ===');
-System.debug('   ContactPointEmail separa correio de faturacao do comercial (RN-13).');
 for (String o : new List<String>{'Individual','ContactPointEmail','ContactPointPhone',
                                  'ContactPointAddress','ContactPointTypeConsent',
                                  'ContactPointConsent','AuthorizationFormConsent',
@@ -70,8 +65,6 @@ for (String o : new List<String>{'Individual','ContactPointEmail','ContactPointP
 }
 
 System.debug('=== 5. UNICIDADE E DUPLICADOS ===');
-System.debug('   Duplicate Rule pode ser burlada por header de API. So campo unico');
-System.debug('   e determinista, mesma licao do RequestKey__c da HU-039.');
 List<String> unicos = new List<String>();
 for (Schema.SObjectField f : ad.fields.getMap().values()) {
     Schema.DescribeFieldResult d = f.getDescribe();
@@ -92,8 +85,6 @@ try {
 } catch (Exception e) {}
 
 System.debug('=== 6. VISIBILIDADE POR SOCIEDADE ===');
-System.debug('   Restriction Rule NAO cobre Account. Com Sociedad fora da conta,');
-System.debug('   sobra compartilhamento gerido por Apex sobre AccountShare.');
 for (String o : new List<String>{'AccountShare','AccountTeamMember','Territory2',
                                  'ObjectTerritory2Association','UserTerritory2Association'}) {
     Schema.SObjectType t = g.get(o.toLowerCase());
@@ -104,7 +95,6 @@ for (String o : new List<String>{'AccountShare','AccountTeamMember','Territory2'
 }
 
 System.debug('=== 7. AUDITORIA, ARQUIVO E CAMPOS QUE JA EXISTEM ===');
-System.debug('   Historico nativo tem teto de 20 campos por objeto (RN-24).');
 System.debug('   AccountHistory: ' + (g.containsKey('accounthistory') ? 'existe' : 'NAO existe'));
 System.debug('   Account, total de campos: ' + ad.fields.getMap().size());
 Integer custom = 0;
