@@ -65,7 +65,7 @@ def b(n,tit): T.append([n,tit,'','','','','',''])
 b('BLOCO 0','VERIFICAR AS COLUNAS QUE JA EXISTEM')
 t('T01','Verificar as colunas padrao dos documentos','Verificacao','docs/scripts/check-hu064-columnas-estandar.apex',
   'Rodar e confirmar tipo, calculado e gravavel de cada coluna padrao de Quote, QuoteLineItem, Order e OrderItem, mais os valores de Quote.Status e onde mora o custo. Usar o resultado para fechar T14, T15, T20 e T35',
-  '','RN4, RN6, RN10','A FAZER')
+  '','RN4, RN6, RN10','FEITO 18/08')
 t('T02','Abrir as duas matrizes que ja existem','Verificacao','docs/scripts/check-hu064-matrices.apex',
   'Rodar e listar colunas e linhas de MatrizPisosPorRol e Discount_Rules_GrupoQ. Decidir se alguma ja e a escala da RN5 antes de criar tabela',
   '','RN4, RN5','A FAZER')
@@ -118,8 +118,8 @@ t('T16','Resolver o desconto de cabecalho de Autos','Decision','Discount Distrib
   'Quote.Discount e derivado das linhas e nao recebe escrita. Avaliar o Discount Distribution Service, que aplica desconto no cabecalho e distribui pelas linhas, antes de criar campo proprio',
   'T01','RN6, GQ-CA-01-064','A FAZER')
 t('T17','Desconto na linha do pedido','CustomField','OrderItem, campo de percentual de desconto',
-  'OrderItem nao tem Discount padrao. Criar so depois que o T01 confirmar, e com o mesmo nome e tipo do padrao da cotizacion',
-  'T01','Escenario 17','A FAZER')
+  'Criar o campo de percentual. Confirmado que OrderItem nao tem Discount padrao. O valor ja cabe em TotalLineAmount e em UnitPrice, que sao gravaveis, o que falta e so o percentual',
+  '','Escenario 17','CONFIRMADO, criar')
 t('T18','Usar o elemento Manual Discount do procedure','ExpressionSet','Passo Manual Discount no pricing procedure',
   'Aplicar o desconto digitado na linha pelo elemento nativo do motor de precos, em vez de calcular em Apex',
   'T14','RN4','A FAZER')
@@ -136,9 +136,12 @@ t('T21','Consolidar desconto mais cashback','ExpressionSet','Passo de consolidac
   'T13, T20','RN11, Escenario 8','A FAZER')
 
 b('BLOCO 5','VALIDACAO E ALERTA')
-t('T22','Avaliar Quote.Status antes de criar campo de autorizacao','Decision','Quote.Status',
-  'Ver no T01 se ja ha valor que sirva para requiere autorizacion. Se a picklist for restrita, acrescentar valor proprio faz a funcionalidade padrao ver algo que nao conhece',
-  'T01','Escenario 2','A FAZER')
+t('T22','Decidir o valor de Quote.Status para requiere autorizacion','Decision','Quote.Status',
+  'A picklist nao e restrita e ja tem Draft, Approved, Rejected, Accepted, Denied, mais Pendiente, Pedido futuro e En transito. Definir com o negocio se Pendiente serve ou se entra valor novo, antes de criar checkbox proprio',
+  '','Escenario 2','A FAZER')
+t('T22b','Levantar os valores em espanhol ja acrescentados a Quote.Status','Divida','Quote.Status',
+  'Pendiente, Pedido futuro e En transito estao com o valor de API em espanhol, contra a convencao GRPQM, e dois deles sao conceito de pedido dentro do status da cotizacion. Levantar quem criou e para que antes de acrescentar mais um valor',
+  '','Convencao GRPQM','ACHADO 18/08')
 t('T23','Passo de validacao contra o piso','ExpressionSet','Passo final do pricing procedure',
   'Comparar desconto mais cashback contra o piso do nivel do usuario e marcar a condicao quando exceder',
   'T13, T21','RN4, Escenario 2','A FAZER')
@@ -186,8 +189,8 @@ t('T36','Nao recalcular por condicao de pagamento, retencao ou moeda','Expressio
 
 b('BLOCO 7','MARGEM E RASTREABILIDADE')
 t('T37','Definir onde mora o custo estimado','Decision','PricebookEntry ou Product2',
-  'Nao ha campo de custo em Product2, PricebookEntry, Vehicle nem Asset. Definir onde mora e de onde vem antes de criar. Em Autos exonerados o custo e o do veiculo exonerado',
-  'T01','RN10','A FAZER')
+  'Confirmado que nao ha campo de custo em Product2, PricebookEntry, Vehicle, Asset nem QuoteLineItem. Definir onde mora e de onde vem antes de criar. Em Autos exonerados o custo e o do veiculo exonerado',
+  '','RN10','CONFIRMADO, decidir')
 t('T38','Campo de custo e campo de margem','CustomField','Campo de custo no T37 e margem na linha',
   'Criar o campo de custo definido no T37 e o campo de margem calculado sobre ele',
   'T37','RN10','A FAZER')
@@ -228,23 +231,26 @@ def c(*r):
 c('QuoteLineItem','Discount','Percent','Desconto manual por linha, RN6 e Escenario 16','REUSAR','Gravavel. E o campo natural do desconto manual')
 c('QuoteLineItem','ListPrice','Currency','Precio de Lista da linha','REUSAR','Somente leitura, vem da PricebookEntry')
 c('QuoteLineItem','UnitPrice','Currency','Precio negociado da linha','REUSAR','Gravavel. E onde o preco final por unidade fica')
-c('QuoteLineItem','Subtotal','Currency','Subtotal antes do desconto','REUSAR','Calculado, UnitPrice vezes Quantity')
-c('QuoteLineItem','TotalPrice','Currency','Total da linha com desconto','REUSAR','Calculado')
+c('QuoteLineItem','Subtotal','Currency','Subtotal antes do desconto','REUSAR','somente leitura, UnitPrice vezes Quantity')
+c('QuoteLineItem','TotalPrice','Currency','Total da linha com desconto','REUSAR','somente leitura')
 c('QuoteLineItem','Quantity','Double','Quantidade, base do desconto por volume','REUSAR','')
 c('QuoteLineItem','Description','TextArea','Justificativa do desconto na linha','AVALIAR','Ver se o negocio precisa de campo proprio ou se este serve')
-c('Quote','Discount','Percent','Desconto do documento em Autos, RN6','NAO SERVE','Derivado das linhas e somente leitura. Nao recebe desconto de cabecalho')
-c('Quote','Subtotal','Currency','Subtotal do documento','REUSAR','Calculado')
-c('Quote','TotalPrice','Currency','Total do documento','REUSAR','Calculado')
-c('Quote','GrandTotal','Currency','Total com impostos e frete','REUSAR','Calculado')
-c('Quote','Status','Picklist','Condicao requiere autorizacion, Escenario 2','AVALIAR PRIMEIRO','Ver no T01 se ja ha valor que sirva antes de criar campo')
+c('Quote','Discount','Percent','Desconto do documento em Autos, RN6','NAO SERVE','gravavel=false e criavel=false. E derivado das linhas e nao recebe escrita')
+c('Quote','Subtotal','Currency','Subtotal do documento','REUSAR','calculado=true, somente leitura')
+c('Quote','TotalPrice','Currency','Total do documento','REUSAR','calculado=true, somente leitura')
+c('Quote','GrandTotal','Currency','Total com impostos e frete','REUSAR','somente leitura')
+c('Quote','Tax','Currency','Imposto do documento','REUSAR','gravavel=true. Coluna padrao livre, serve tambem a HU-105')
+c('Quote','Status','Picklist','Condicao requiere autorizacion, Escenario 2','AVALIAR, VER T22','NAO restrita. Ja tem Draft, Approved, Rejected, Accepted, Denied, Pendiente, Pedido futuro e En transito')
 c('Quote','ExpirationDate','Date','Vigencia do documento','REUSAR','')
 c('Quote','Pricebook2Id','Lookup','Lista de precos vigente, premissa da HU-038','REUSAR','')
 c('OrderItem','UnitPrice','Currency','Preco da linha do pedido','REUSAR','')
 c('OrderItem','ListPrice','Currency','Precio de Lista da linha do pedido','REUSAR','Somente leitura')
-c('OrderItem','TotalPrice','Currency','Total da linha do pedido','REUSAR','')
-c('OrderItem','Discount','','Percentual de desconto no pedido, Escenario 17','NAO EXISTE, CRIAR','Confirmar no T01. E a unica coluna de desconto que falta de verdade')
+c('OrderItem','TotalPrice','Currency','Total da linha do pedido','REUSAR','somente leitura')
+c('OrderItem','TotalLineAmount','Currency','Total da linha ja com desconto, Escenario 17','REUSAR','gravavel=true. O VALOR do desconto cabe aqui, so o percentual e que nao')
+c('OrderItem','Discount','','Percentual de desconto no pedido, Escenario 17','NAO EXISTE, CRIAR','Confirmado no describe. E a unica coluna de desconto que falta de verdade')
 c('Order','TotalAmount','Currency','Total do pedido','REUSAR','Calculado')
 c('Order','Status','Picklist','Estado do pedido','REUSAR','')
+c('Order','StatusCode','Picklist','Estado interno do pedido','REUSAR','gravavel=true, criavel=false')
 c('PricebookEntry','PrecioMinimoAsesor__c','Currency','Base de calculo da escala, RN5','REUSAR','Ja existe na org')
 c('PricebookEntry','PrecioExoneradoMinimo__c','Currency','Base de calculo exonerada, RN5','REUSAR','Ja existe na org')
 c('PricebookEntry','PrecioExonerado__c','Currency','Preco exonerado','REUSAR','Ja existe na org')
@@ -263,11 +269,11 @@ c('Sociedad_Config__mdt','(metadata)','','Sociedade, chave da escala','REUSAR','
 c('Quote','(campo de cashback)','','Montante destinado a cashback, RN11','NAO EXISTE, CRIAR','Sem coluna padrao equivalente')
 c('QuoteLineItem','(origem do desconto)','','Automatico ou manual, RN13','NAO EXISTE, CRIAR','Sem coluna padrao equivalente')
 c('QuoteLineItem','(regra aplicada)','','Regra ou escalao que determinou, RN13','NAO EXISTE, CRIAR','Sem coluna padrao equivalente')
-c('Product2 ou PricebookEntry','(custo estimado)','','Base da margem, RN10','NAO EXISTE, CRIAR','Nenhum campo de custo em Product2, PricebookEntry, Vehicle nem Asset')
+c('Product2 ou PricebookEntry','(custo estimado)','','Base da margem, RN10','NAO EXISTE, CRIAR','Confirmado: nenhum campo de custo em Product2, PricebookEntry, Vehicle, Asset nem QuoteLineItem')
 c('QuoteLineItem','(margem)','','Margem resultante, RN10','NAO EXISTE, CRIAR','Precisa de FLS para esconder do assessor')
 
 TIT = 'HU-064 - Tarefas Tecnicas - Motor de Descuentos Multicriterio Omnicanal'
-TC  = 'HU-064 - Colunas padrao avaliadas antes de criar campo'
+TC  = 'HU-064 - Colunas padrao avaliadas antes de criar campo. Coluna Nota confirmada no describe de 18/08'
 build('/home/user/diario-implantacao/docs/hu064/HU064_Tarefas_Tecnicas.xlsx',
       [('Tarefas', [[TIT],[''],H]+T, [8,50,26,52,86,14,26,14]),
        ('Colunas Padrao', [[TC],[''],HC]+C, [24,30,12,50,22,58])])
