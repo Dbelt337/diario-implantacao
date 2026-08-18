@@ -38,8 +38,8 @@ t('T07','Ligar a relacao cliente x contato','Object Manager','AccountContactRela
 t('T08','Campos locais da extensao por sociedade','CustomField','AccountAccountRelation: area de ventas, canal de pago, canal de facturacion, estado',
   'Criar os campos que guardam o dado local de cada sociedade. O objeto ja existe e esta vazio, entra sem migracao',
   'T01','RN-05, CA-04','A FAZER')
-t('T09','Fluxo de extensao a outra sociedade','Flow ou LWC','Extender cliente a sociedad',
-  'Pedir apenas os dados locais faltantes e criar o registro de relacao, sem gerar novo identificador maestro',
+t('T09','Tela de extensao a outra sociedade','Screen Flow','ExtendCustomerToSociety',
+  'Pedir apenas os dados locais faltantes e criar o registro de relacao, sem gerar novo identificador maestro. Usar componentes reativos, GA no Winter 24. Sem LWC. Se precisar de mais de uma sociedade por vez, avaliar o Repeater, lembrando que componente reativo nao funciona dentro dele',
   'T08','RN-05, Escenario 2','A FAZER')
 t('T10','Aposentar Account.Sociedad__c','Divida','Account.Sociedad__c (TEXTAREA)',
   'Campo de sociedade em texto livre na conta, que contradiz a RN-05 e nao tem integridade. Fazer backfill para AccountAccountRelation, repontar o que usa e desativar. Nao sincronizar os dois por Flow',
@@ -96,14 +96,32 @@ t('T25','Reusar Aprobador_Config__mdt','Reuso','Aprobador_Config__mdt e Sensitiv
 t('T26','Historico de campo nos campos priorizados','Object Manager','Account, Field History Tracking',
   'Selecionar ate 20 campos, comecando pelos sensiveis da RN-23. Field Audit Trail nao esta licenciado e a propria HU reconhece',
   'T24','RN-24, CA-13','A FAZER')
-t('T27','Visibilidade da conta por sociedade','ApexClass','AccountShare, compartilhamento gerido por Apex',
-  'OWD de Account privada e compartilhamento calculado a partir dos registros de AccountAccountRelation. Restriction Rules nao cobrem Account e Sharing Rule so le campo da propria conta, que a RN-05 proibe',
-  'T08','RN-25, CA-15, Escenario 7','A FAZER')
+t('T27','OWD de Account privada','Setup','Organization Wide Defaults',
+  'Deixar Account como Private. Sharing rule concede acesso e nunca restringe, entao sem OWD privada a RN-25 nao se sustenta',
+  '','RN-25, CA-15','A FAZER')
+t('T27a','Verificar o operador do criterio de sharing rule','Verificacao','Setup, Sharing Settings',
+  'Abrir uma criteria-based sharing rule de Account e ver se o operador contains esta disponivel para campo texto. Decide entre um campo texto com 14 regras ou 14 checkbox com 14 regras',
+  '','RN-25','A FAZER')
+t('T27b','Marca das sociedades habilitadas na conta','CustomField','Account, um checkbox por sociedade, ou um texto com a lista',
+  'Criar a marca que a sharing rule vai ler. Nao e a chave maestra, e derivado da AccountAccountRelation, entao nao conflita com a unicidade da RN-05. Confirmar essa leitura com a Melisa antes de empacotar',
+  'T27a','RN-05, RN-25','A FAZER')
+t('T27c','Flow que estampa a marca de sociedade','Flow','AccountAccountRelation, apos criar, atualizar e excluir',
+  'Manter a marca da T27b sincronizada com os registros de relacao. E o contorno que a propria documentacao de sharing rule indica: automacao mantem o campo, a regra le o campo',
+  'T27b','RN-05, RN-25','A FAZER')
+t('T27d','Public group por sociedade','Group','Um public group por sociedade',
+  'Criar o grupo que recebe o acesso em cada regra, e definir quem entra em cada um',
+  '','RN-25','A FAZER')
+t('T27e','Criteria-based sharing rules por sociedade','SharingRules','Account, uma regra por sociedade',
+  'Uma regra por sociedade lendo a marca da T27b e concedendo ao grupo da T27d. Teto de 50 regras por criterio por objeto, e 14 sociedades cabem',
+  'T27b, T27c, T27d','RN-25, Escenario 7','A FAZER')
+t('T27f','Medir o recalculo de compartilhamento','Verificacao','Antes da carga inicial',
+  'Atualizar a marca em volume dispara recalculo assincrono de compartilhamento. Medir com a base real antes da carga de clientes',
+  'T27e','RN-25','A FAZER')
 t('T28','Modelo de permissoes e FLS','PermissionSet mais FLS','MasterDataAdmin, MasterDataRead',
   'Separar quem administra o maestro de quem so cria e atualiza dentro do perfil, com FLS nos campos sensiveis',
   'T27','RN-22, RN-25, CA-15','A FAZER')
 t('T29','Marca de nao sincronizado com SAP','CustomField','Account: estado de sincronizacao e ultimo erro',
-  'Marcar o cliente como nao sincronizado quando a replicacao falhar. Usar o Nebula Logger para o erro, sem criar campo de log',
+  'Marcar o cliente como nao sincronizado quando a replicacao falhar. Registrar o erro no Nebula Logger pela acao invocavel de Flow, sem escrever Apex e sem criar campo de log',
   '','RN-26, RN-27, CA-18, Escenario 8','A FAZER')
 t('T30','Atributos fiscais derivados por regra','Flow ou ExpressionSet','Account, derivacao automatica',
   'Derivar tipo de imposto, condicao de pagamento, classificacao B2C ou B2B, grupo de contas e lista de precos a partir do tipo de documento e de cliente. Nao se mostram na captura e sao sensiveis para a replicacao',
@@ -136,9 +154,9 @@ t('T37','Traduzir os rotulos para espanhol','Translation','Translation Workbench
 t('T38','Trigger Order nos flows criados','Object Manager','Trigger Order de cada flow em Account',
   'Account ja e um dos objetos com mais automacao na org. Definir a ordem em cada flow novo',
   'T20','Governanca','A FAZER')
-t('T39','Testes dos nove escenarios','ApexClass','Testes de unicidade, extensao e compartilhamento',
-  'Cobrir os escenarios 1 a 9, com enfase no 1, no 2 e no 7, que sao os que a RN-05 e a RN-25 tornam faceis de errar',
-  'T27','Todos','A FAZER')
+t('T39','Testes dos nove escenarios','Flow Test','Testes dos flows acionados por registro',
+  'Cobrir os escenarios 1 a 9 com Flow Test, que versiona junto com o flow. Enfase no 1, no 2 e no 7, e o 7 testado com usuario de outra sociedade, nunca com administrador',
+  'T27e','Todos','A FAZER')
 
 # ---------------------------------------------------------- aba nativo
 HN = ['#','Requisito (RN / CA)','Candidato nativo ou ja existente','Veredito','Nota']
@@ -159,6 +177,10 @@ n('N06','RN-05, CA-04 extensao por sociedade','AccountAccountRelation','REUSAR',
   'Existe na org, 26 campos, zero registro. Entra sem migracao')
 n('N07','RN-05 sociedade na conta','Account.Sociedad__c','DIVIDA A REMOVER',
   'TEXTAREA em texto livre. Contradiz a propria RN-05 e nao tem integridade referencial')
+n('N07b','RN-05, Escenario 2 tela de extensao','Screen Flow com componentes reativos','REUSAR, SEM LWC',
+  'Reactive Screen Components GA no Winter 24 e Repeater no Spring 24, com pre carga no Winter 25. Componente reativo nao funciona dentro do Repeater')
+n('N07c','Testes','Flow Test','REUSAR, SEM CLASSE DE TESTE',
+  'Sem Apex nao ha classe de teste. Flow Test versiona junto com o flow')
 n('N08','RN-11, CA-06 obrigatorios por pais e tipo','Dynamic Forms','REUSAR',
   'Suporta Person Account desde Winter 23 e permite comportamento Required condicional. Regra de secao so e avaliada depois de salvar, entao condicionar campo a campo')
 n('N09','RN-12, RN-14, RN-21 regras por pais','Custom Metadata Type','CONSTRUIR',
@@ -176,8 +198,12 @@ n('N16','RN-25, CA-15 visibilidade por sociedade','Restriction Rules','NAO SERVE
   'Nao cobre Account. Disponivel so para objetos custom, external, contratos, eventos, tarefas e time sheets')
 n('N17','RN-25 visibilidade por sociedade','Sharing Rule por criterio','NAO SERVE',
   'So le campo da propria conta, e a RN-05 proibe campo de sociedade na conta')
-n('N18','RN-25, Escenario 7 visibilidade por sociedade','Apex managed sharing sobre AccountShare','CONSTRUIR',
-  'Unico caminho que nao contradiz a RN-05. E codigo com teste, muda a estimativa')
+n('N18','RN-25, Escenario 7 visibilidade por sociedade','Flow que estampa a marca mais criteria-based sharing rule','CONSTRUIR DECLARATIVO',
+  'E o contorno que a propria doc de sharing rule indica para campo nao suportado: automacao mantem um campo texto ou checkbox, a regra le o campo. Zero Apex')
+n('N18b','RN-25 visibilidade por sociedade','Flow criando AccountShare direto','DESCARTADO',
+  'De fora do Apex so se escreve share com RowCause Manual, e share manual e apagado quando o dono muda. Motivo proprio de compartilhamento exige Apex Sharing Reason')
+n('N18c','RN-25 limite de regras','300 sharing rules por objeto, 50 por criterio','CABE',
+  '14 sociedades cabem com folga nas duas variantes')
 n('N19','RN-29 protecao de dado sensivel','FLS e masking','REUSAR',
   'Cobre visibilidade. Nao cobre cifra at rest, que exige Shield e nao esta licenciado')
 n('N20','RN-30 retencao e anonimizacao','Privacy Center','NAO LICENCIADO',
@@ -189,7 +215,7 @@ n('N23','RN-26, RN-27 erro de replicacao','Nebula Logger','REUSAR','Ja instalado
 n('N24','RN-06, CA-05 conta sem dono vendedor','Dono padrao e fila','REUSAR','Configuracao, nao construcao')
 n('N25','RN-09 pedido nao altera o maestro','Regra de processo','NAO CONSTRUIR','E criterio de desenho, nao componente')
 
-TIT = 'HU-017 - Tarefas Tecnicas - Busqueda y Gestion del Cliente Maestro en Salesforce'
+TIT = 'HU-017 - Tarefas Tecnicas - Busqueda y Gestion del Cliente Maestro en Salesforce. Native first: zero Apex e zero LWC'
 TN  = 'HU-017 - Nativo avaliado antes de criar. Verificar no T01 significa que o describe ainda nao rodou'
 build('/home/user/diario-implantacao/docs/hu017/HU017_Tarefas_Tecnicas.xlsx',
       [('Tarefas', [[TIT],[''],H]+T, [8,50,26,52,88,14,28,18]),
