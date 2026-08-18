@@ -39,8 +39,11 @@ t('T08','Campos locais da extensao por sociedade','CustomField','AccountAccountR
   'Criar os campos que guardam o dado local de cada sociedade. O objeto ja existe e esta vazio, entra sem migracao',
   'T01','RN-05, CA-04','A FAZER')
 t('T09','Tela de extensao a outra sociedade','Screen Flow','ExtendCustomerToSociety',
-  'Pedir apenas os dados locais faltantes e criar o registro de relacao, sem gerar novo identificador maestro. Usar componentes reativos, GA no Winter 24. Sem LWC. Se precisar de mais de uma sociedade por vez, avaliar o Repeater, lembrando que componente reativo nao funciona dentro dele',
+  'Pedir apenas os dados locais faltantes e criar o registro de relacao, sem gerar novo identificador maestro. Componentes reativos, GA no Winter 24, e sem LWC. A lista de sociedades onde o cliente ainda NAO esta estendido sai de um Collection Choice Set calculado antes da tela, porque Choice Option nao e reativa',
   'T08','RN-05, Escenario 2','A FAZER')
+t('T09a','Subir os flows para API 59.0 ou superior','Setup','Versao de API dos flows da HU',
+  'A preferencia de opt in da beta de componentes reativos expira. Sem API 59.0 a reatividade da tela nao vale',
+  'T09','RN-05','A FAZER')
 t('T10','Aposentar Account.Sociedad__c','Divida','Account.Sociedad__c (TEXTAREA)',
   'Campo de sociedade em texto livre na conta, que contradiz a RN-05 e nao tem integridade. Fazer backfill para AccountAccountRelation, repontar o que usa e desativar. Nao sincronizar os dois por Flow',
   'T08','RN-05, Governanca','ACHADO 18/08')
@@ -109,14 +112,17 @@ t('T27c','Flow que estampa a marca de sociedade','Flow','AccountAccountRelation,
   'Manter a marca da T27b sincronizada com os registros de relacao. E o contorno que a propria documentacao de sharing rule indica: automacao mantem o campo, a regra le o campo',
   'T27b','RN-05, RN-25','A FAZER')
 t('T27d','Public group por sociedade','Group','Um public group por sociedade',
-  'Criar o grupo que recebe o acesso em cada regra, e definir quem entra em cada um',
+  'Criar os grupos ANTES das regras. O Share With de uma sharing rule nao pode ser editado depois de salvar, so apagando e recriando a regra',
   '','RN-25','A FAZER')
 t('T27e','Criteria-based sharing rules por sociedade','SharingRules','Account, uma regra por sociedade',
-  'Uma regra por sociedade lendo a marca da T27b e concedendo ao grupo da T27d. Teto de 50 regras por criterio por objeto, e 14 sociedades cabem',
+  'Uma regra por sociedade lendo a marca da T27b e concedendo ao grupo da T27d. Teto de 50 regras por criterio por objeto, e 14 sociedades cabem. Decidir ANTES de salvar a opcao Include records owned by users who cannot have an assigned role, que vem marcada e nao pode ser editada depois',
   'T27b, T27c, T27d','RN-25, Escenario 7','A FAZER')
-t('T27f','Medir o recalculo de compartilhamento','Verificacao','Antes da carga inicial',
-  'Atualizar a marca em volume dispara recalculo assincrono de compartilhamento. Medir com a base real antes da carga de clientes',
+t('T27f','Diferir o recalculo na carga inicial','Setup','Defer Sharing Calculations',
+  'Ligar o Defer Sharing Calculations antes da carga em massa de clientes e recalcular depois. E o remedio que a propria documentacao recomenda para atualizacao em larga escala',
   'T27e','RN-25','A FAZER')
+t('T27g','Declarar o acesso implicito pela conta pai','Documentacao','Risco a escrever na HU',
+  'Quem tem acesso a uma Opportunity, Case ou Contact ganha visibilidade da conta pai. Entao o Escenario 7 nao e hermetico: o assessor ve o cliente pelo negocio que e dele, independente da sociedade. Escrever na HU antes de UAT. Se o negocio quiser hermetismo, a restricao sobe para Opportunity, Quote e Order, e isso e outra historia',
+  'T27e','RN-25, Escenario 7','A DECLARAR')
 t('T28','Modelo de permissoes e FLS','PermissionSet mais FLS','MasterDataAdmin, MasterDataRead',
   'Separar quem administra o maestro de quem so cria e atualiza dentro do perfil, com FLS nos campos sensiveis',
   'T27','RN-22, RN-25, CA-15','A FAZER')

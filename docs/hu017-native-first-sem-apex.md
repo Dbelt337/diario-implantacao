@@ -73,15 +73,49 @@ mantém, e não há registro nosso para se perder.
 ### O que declarar como consequência
 
 - **Sharing rule concede acesso, nunca restringe.** A RN-25 só se sustenta com
-  OWD privada e sem nada mais amplo por cima, como View All.
-- **Recalcular compartilhamento tem custo.** Atualizar o campo em volume grande
-  dispara recálculo assíncrono. Vale medir antes da carga inicial de clientes.
+  OWD privada e sem nada mais amplo por cima, como View All ou Modify All.
+- **Regra por critério quase não se edita depois de criada.** Dá para mudar
+  rótulo, nome, filtros e nível de acesso. O **Share With não se muda**: para
+  trocar o grupo destino é apagar e recriar. Então os public groups por
+  sociedade têm que existir e estar certos antes.
+- **A opção de incluir registros de dono sem papel é irreversível.** O
+  "Include records owned by users who can't have an assigned role" vem marcado
+  por padrão e **não pode ser editado depois de salvar**. Importa aqui porque a
+  RN-06 diz que a conta fica com o usuário de dados maestros: se esse usuário ou
+  o usuário de integração não tiver papel, decidir isso antes de salvar a
+  primeira regra.
+- **Recalcular compartilhamento tem custo, e a plataforma tem remédio.** A
+  própria documentação recomenda **Defer Sharing Calculations** antes de
+  atualização em massa, e recalcular depois. Usar na carga inicial de clientes.
 - **A leitura da RN-05.** Ela proíbe "un campo único de sociedad en la cuenta,
   que entraría en conflicto con la unicidad del maestro". Um campo que lista
   **todas** as sociedades onde o cliente está estendido não conflita com
   unicidade nenhuma: é derivado da `AccountAccountRelation` e não é a chave
   maestra. Mesmo assim toca uma frase explícita de arquitetura da HU, então
   confirmar com a Melisa antes de empacotar.
+
+### O furo que nenhuma regra fecha, e precisa estar escrito na HU
+
+A documentação de sharing rules diz:
+
+> Related records may also become visible. For example, sharing an opportunity
+> can also share its account, and sharing a case or contact can open up the
+> related account.
+
+Ou seja, quem tem acesso a uma **Opportunity**, a um **Case** ou a um
+**Contact** ganha visibilidade da **conta pai**. Na prática, um assessor que
+trabalha um negócio de um cliente vai enxergar aquele cliente independentemente
+da sociedade, porque o acesso vem pelo documento comercial e não pela regra de
+sociedade.
+
+Isso é como a plataforma funciona e provavelmente é até desejável. Mas significa
+que o **Escenario 7 não é hermético**, e isso tem que estar declarado na HU
+antes de UAT, não descoberto nela. A regra de sociedade governa quem **descobre**
+o cliente no maestro, não quem consegue vê lo por um negócio que já é seu.
+
+E o inverso também vale, como controle: se o negócio quiser hermetismo, a
+restrição tem que subir para `Opportunity`, `Quote` e `Order` também, e aí a
+conversa é outra história e outro custo.
 
 ---
 
@@ -100,13 +134,26 @@ A T09 estava como Flow ou LWC. É Screen Flow, e as últimas releases tiraram o
   comportamento **Required** condicional. É a RN-11, obrigatoriedade por país,
   sociedade, área e tipo, sem desenvolvimento.
 
-Uma limitação para o desenho, e não é pequena: **componente reativo não funciona
-dentro do Repeater**. Se a tela precisar de reatividade, ela não usa Repeater, e
-a extensão passa a ser uma sociedade por vez.
+### As limitações que decidem o desenho da tela
 
-E uma armadilha das Dynamic Forms: regra de visibilidade em **seção** só é
-avaliada depois de salvar, regra em **campo** reage enquanto o usuário digita.
-Condicionar campo a campo, nunca seção.
+- **Componente reativo não funciona dentro do Repeater.** Se a tela precisa de
+  reatividade, não usa Repeater, e a extensão passa a ser uma sociedade por vez.
+- **Choice Selection é reativa, Choice Option não é.** Não dá para gerar a lista
+  de opções dinamicamente na mesma tela. Para mostrar só as sociedades onde o
+  cliente **ainda não** está estendido, a coleção é calculada **antes** da tela,
+  num Collection Choice Set. Funciona, só não é reativo.
+- **Repeater é exclusivo de Screen Flow**, teto de **30 instâncias** em execução,
+  e a saída dele **não pode** ser usada em Transform, Collection Filter,
+  Collection Sort nem em outro Repeater. Action Button não entra dentro dele.
+- **Armadilha do Repeater:** o `AllItems` vem **vazio** se o Repeater só tiver
+  componentes de exibição, e vem **nulo**, que é diferente de vazio, se todos os
+  componentes dentro dele estiverem escondidos por visibilidade condicional.
+- **Os flows precisam estar em API 59.0 ou superior.** A preferência de opt in
+  da beta de componentes reativos expira, e sem a versão de API a reatividade
+  não vale.
+- **Armadilha das Dynamic Forms:** regra de visibilidade em **seção** só é
+  avaliada depois de salvar, regra em **campo** reage enquanto o usuário digita.
+  Condicionar campo a campo, nunca seção.
 
 ---
 
