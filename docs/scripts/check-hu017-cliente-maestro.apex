@@ -12,12 +12,14 @@ System.debug('   Person Account habilitado: '
 for (Schema.RecordTypeInfo ri : ad.getRecordTypeInfos()) {
     if (ri.getDeveloperName() == 'Master') { continue; }
     System.debug('   Account RT: ' + ri.getDeveloperName() + ' | ' + ri.getName()
-        + ' | ativo=' + ri.isActive() + ' | pessoal=' + ri.isPersonType());
+        + ' | ativo=' + ri.isActive() + ' | disponivel=' + ri.isAvailable());
 }
 try {
     for (AggregateResult a : Database.query(
-            'SELECT IsPersonAccount p, COUNT(Id) q FROM Account GROUP BY IsPersonAccount')) {
-        System.debug('   contas pessoais=' + a.get('p') + ' | ' + a.get('q'));
+            'SELECT RecordType.DeveloperName rt, IsPersonAccount p, COUNT(Id) q'
+            + ' FROM Account GROUP BY RecordType.DeveloperName, IsPersonAccount'
+            + ' ORDER BY COUNT(Id) DESC')) {
+        System.debug('   RT ' + a.get('rt') + ' | pessoal=' + a.get('p') + ' | ' + a.get('q'));
     }
 } catch (Exception e) { System.debug('   ' + e.getMessage()); }
 
