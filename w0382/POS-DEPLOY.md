@@ -43,16 +43,41 @@ Ou seja: o `FailNoApproverScreen` so protege o org em que **nao existe nenhum
 usuario ativo sem papel** -- situacao rara. O `IsActive = true` que foi
 adicionado reduziu o conjunto de candidatos, mas nao fechou o buraco.
 
-### Teste que decide
+### Teste que decide -- EXECUTADO, resultado 12
 
 ```sql
 SELECT COUNT() FROM User WHERE IsActive = true AND UserRoleId = null
+-- 12
 ```
 
-- Retorno **0** -> a protecao funciona; B2G cai na tela de erro.
-- Retorno **> 0** -> a protecao nao dispara, e a aprovacao de diretoria de uma
-  Oportunidade B2G esta sendo reatribuida a um desses usuarios. Rodar tambem em
-  producao e conferir quem esta com os work items.
+**Confirmado.** Ha 12 usuarios ativos sem papel. O `FailNoApproverScreen`
+nao dispara: o `getFirstRecordOnly` devolve um desses 12, a decisao responde
+"Sim" e a aprovacao e reatribuida.
+
+Sem `ORDER BY`, o Salesforce devolve por Id -- entao a vitima e sempre o mesmo
+usuario, o de menor Id entre os 12.
+
+Falta confirmar em qual org os 12 foram medidos (preprod ou producao) e rodar
+no outro. O rastreio do estrago:
+
+```sql
+-- quem o flow escolhe (o primeiro da lista)
+SELECT Id, Name, Username, Profile.Name
+FROM User WHERE IsActive = true AND UserRoleId = null ORDER BY Id
+
+-- Oportunidades B2G que passaram pelo caminho Head
+SELECT Id, Name, Type, StageName, ResponsibleTeam__c, OwnerId, LastModifiedDate
+FROM Opportunity
+WHERE Type = 'B2G' AND ResponsibleTeam__c = 'Head'
+
+-- os work items dessas Oportunidades e para quem foram
+SELECT Id, RelatedRecordId, AssignedToId, Status, CreatedDate
+FROM ApprovalWorkItem
+WHERE Status = 'Assigned' AND RelatedRecordId IN (<Ids da query acima>)
+```
+
+`AssignedToId` e polimorfico (User ou Group), entao vale colar os Ids em vez de
+usar semi-join.
 
 ### Correcao
 
