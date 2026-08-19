@@ -140,45 +140,23 @@ Os outros criterios ficam intactos: `ArchitectureApproved__c = false`,
 `ResponsibleTeam__c = Arquitetura`, `NOT($Permission.CustomPermission.SalesmanGR)`,
 `Type IN (B2B, B2G)`.
 
-## Papel B2B_Head_B2G
+## Papel B2B_Head_B2G -- CANCELADO
 
-Aprovado por Priscila De Lima em 2026-08-19. Metadata em `roles/`, deploy por
-`package.xml` desta pasta.
+A aprovacao da Priscila (2026-08-19) foi para criar o papel. **O papel nao deve
+ser criado.** A planilha de hierarquia mostrou que B2G nao e um canal com Head
+proprio: os vendedores B2G ficam sob `B2B_Gerente_Avato_B2G`, cujo Head e o
+`B2B_Head_B2B`, que ja existe e ja tem 2 usuarios.
 
-**Criar o papel nao conserta o B2G + Head.** O papel vazio nao muda nada: o
-`GetDirectorUser` continua sem achar ninguem. O que conserta e **atribuir o
-Head de B2G ao papel novo** -- e essa atribuicao tem efeito colateral em
-producao:
+Criar `B2B_Head_B2G` inventaria um cargo inexistente e, para funcionar, exigiria
+mover o Head B2B para ele -- o que quebraria a visibilidade dele sobre os 6
+gerentes Avato. Consertaria B2G quebrando B2B.
 
-> Um usuario tem UM papel. Atribuir o Head a `B2B_Head_B2G` o TIRA do papel
-> atual. Papel e hierarquia de compartilhamento: ele perde visibilidade dos
-> registros que enxergava pela posicao antiga, e o pai do papel novo passa a
-> enxergar os dele.
+O ajuste e no flow. Diagnostico completo e as tres opcoes em **HIERARQUIA.md**.
+Recomendacao: filas (`C-Level` e `Head B2B`) em `assigneeId`, que resolve junto
+o desempate dos 2 usuarios de `B2B_Head_B2B`.
 
-A aprovacao registrada cobre "criar o papel". **Qual usuario sera atribuido e
-de qual papel ele sai ainda precisa de confirmacao explicita.**
-
-Antes do deploy, preencher `<parentRole>` e conferir os access levels contra o
-papel irmao:
-
-```bash
-sf project retrieve start -m Role:B2B_Head_B2B -o <org>
-```
-
-Depois do deploy e da atribuicao, validar:
-
-```sql
-SELECT Id, Name, IsActive, UserRole.DeveloperName FROM User
-WHERE UserRole.DeveloperName = 'B2B_Head_B2G'
-```
-
-Tem de voltar **exatamente um** usuario ativo. Zero = o DeveloperName nao bate.
-Mais de um = acabamos de recriar o problema de desempate que ja existe em
-`B2B_Head_B2B`, porque o `GetDirectorUser` pega um usuario qualquer, sem
-`LIMIT` e sem `IsActive`.
-
-Ordem: sandbox -> testar caminho B2G + Head -> producao. O caminho ja esta
-quebrado em producao hoje, antes de qualquer mudanca desta entrega.
+O metadata do papel que estava nesta pasta foi removido de proposito, para nao
+sobrar arquivo deployavel que cria a coisa errada.
 
 ## FlexiPage: dois achados na tela de visibilidade (2026-08-19, sandbox Staging)
 
