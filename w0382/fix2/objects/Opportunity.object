@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>SolutionArchitect__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>W0382. Arquiteto que disparou a Revisão Diretoria. A orquestração usa este campo para devolver a aprovação ao arquiteto específico após o aval do C-Level/Head, em vez da fila Arquitetura.</description>
+        <label>Arquiteto da solução</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>OportunidadesArquitetoSolucao</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+</CustomObject>

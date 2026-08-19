@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>Opportunity.SolutionArchitect__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>OpportunityApprovalSteps_B2B</members>
+        <members>OpportunitySendCLevelApproval_B2B</members>
+        <members>OpportunityStageApprovalProcess_B2B</members>
+        <name>Flow</name>
+    </types>
+    <version>67.0</version>
+</Package>

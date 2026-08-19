@@ -73,7 +73,7 @@ Seguir esse padrao e criar as filas de diretoria, passando o Id da fila em
 
 Pergunta unica para o negocio: **quem entra em cada fila.**
 
-## 4. LACUNA DE REQUISITO -- volta ao arquiteto do inicio
+## 4. CONSTRUIDO (fix2/) -- volta ao arquiteto do inicio
 
 Requisito, na aprovacao da diretoria: "gerando uma nova solicitacao de aprovacao
 ao usuario de Arquitetura **definido no comeco do processo**".
