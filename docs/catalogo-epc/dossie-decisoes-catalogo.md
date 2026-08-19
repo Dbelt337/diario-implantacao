@@ -87,3 +87,17 @@ Já, na ordem do §41.1: (1) OTs base e layouts → (2) campos, atributos e pick
 
 **"Qual o risco de renomear os OTs depois?"**
 Layout é herdado por cópia no momento da criação do subtipo — mudanças no pai não propagam. Mudar parent após existirem descendentes é proibido sem ADR e plano de reconstrução (§35.3). Por isso a nomenclatura fecha na Onda 0.
+
+---
+
+## 6. Works criadas no Agile Accelerator (registro)
+
+Backlog existente (19/08): W-000051 (EPC-01 Attribute Categories) · W-000052 (EPC-04 Object Types) · W-000053 (EPC-05 Product Specifications) · W-000054 (EPC-09 Batch jobs/integridade) · W-000055 (EPC-03 parcial, sem atributos WITO).
+
+### US QUAL-01 (P) — Qualificação Tetra-pé (pedida pelo Davi em 19/08)
+
+**Resposta dada sobre nomes de catálogo:** catálogo é por MERCADO, não por família nem por canal (Manual §9.1, antipadrão §28.3): `CAT_B2C_EVO, CAT_B2S_EVO, CAT_B2B_EVO, CAT_B2G_EVO, CAT_WHOLESALE_EVO`. Internet/TV/Streaming são **Categorias** de navegação dentro do catálogo (apostila §11.2). B2G fora do e-commerce, sem análise de crédito (`CREDIT_NOT_REQUIRED`).
+
+**Escopo da work:** 5 catálogos + categorias por família + máx. 4 Rule Sets globais (QUAL_MERCADO, QUAL_CANAL, QUAL_TIPO_CLIENTE, QUAL_CIDADE) aplicados a Products e Promotions; cidade→zona via GeographicCommercialPolicy (P-17); preços B2C/B2B por Price Lists sem duplicar oferta. Bloqueio: domínios de valores aguardam P-19 (Joel). Não depende da EPC-02.
+
+**ACs:** (1) captura dos 4 parâmetros; (2) filtro CityIBGECode→AvailabilityZone sem Oferta×Cidade; (3) máx. 4 Rule Sets globais; (4) qualificação antes, viabilidade só após escolha da oferta; (5) preço por Price List sem duplicação de produto.
