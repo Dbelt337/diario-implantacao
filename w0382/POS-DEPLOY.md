@@ -129,3 +129,32 @@ O conflito de fase continua de pe: o requisito descreve a Fase 2 como
 'Viabilidade e desenho da solucao' e nunca cita 'Validacao tecnica'. O deploy
 mudou o botao para 'Validacao tecnica' e o retrieve confirma que essa mudanca
 esta salva na sandbox. Precisa de resposta antes de producao.
+
+## Correcao do aprovador aplicada em preprod (2026-08-19 21:08)
+
+`success: true`. Flow `OpportunitySendCLevelApproval_B2B` versao nova ativa
+(`301HZ00000wzEkEYAU`; a anterior era `301HZ00000wzEcfYAE`). Aviso de "Modo do
+sistema sem compartilhamento" e `Info` e pre-existente.
+
+A decisao `PapelEncontrado` agora barra o caminho antes do `UserRoleId = null`.
+O teste do B2G deixa de dar falso positivo.
+
+### Roteiro de teste, na ordem que importa
+
+1. **B2G + Head** -> tela de erro, e o item de aprovacao **permanece na fila
+   Arquitetura**. Antes desta correcao ele era reatribuido a um dos 12 usuarios
+   sem papel. Conferir os dois: a tela E o item.
+2. **B2B + Head** -> reatribui para um dos 2 usuarios de `B2B_Head_B2B`.
+   Anotar qual. Rodar duas vezes: se cair sempre no mesmo, e o de menor Id --
+   o desempate continua em aberto ate as filas existirem.
+3. **C-Level** -> reatribui para o unico usuario de `CLevel`.
+4. Tentar editar a Oportunidade com `ResponsibleTeam__c` em C-Level/Head ->
+   deve bloquear (VR `BloqueiaAlteracaoRevisaoDiretoria`).
+5. **C-Level aprova** -> `ResponsibleTeam__c = Arquitetura` e **nasce item novo
+   para a fila Arquitetura**. Este e o passo que nenhuma leitura de XML resolve.
+   Se travar, setar `Send4Approval__c` explicitamente.
+6. **C-Level reprova** -> volta para 'Em negociacao' e
+   `ResponsibleTeam__c = Vendedor/GR`.
+7. Confirmar que a Oportunidade **nao** pula para 'Aguardando contrato' na
+   aprovacao -- o salto ja foi corrigido pela troca de fase na regra
+   `SendStage_AprovacaoTecnica_CLevel`, e este teste confirma.
