@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  W0382 | Papel B2B_Head_B2G
+
+  NAO DEPLOYAR SEM PREENCHER <parentRole>.
+
+  O nome do ARQUIVO (B2B_Head_B2G) e o DeveloperName do papel -- e e por ele
+  que o GetDirectorUser encontra o usuario. Nao renomeie o arquivo. Criar o
+  papel pela tela de Setup e arriscado justamente aqui: o Setup deriva o
+  DeveloperName do rotulo e pode gravar B2B_Head_B2G_1 sem avisar.
+
+  Os tres access levels abaixo estao espelhando o que se supoe ser o padrao do
+  papel irmao B2B_Head_B2B. CONFIRME antes de deployar:
+
+      sf project retrieve start -m Role:B2B_Head_B2B -o <org>
+
+  e compare. Access level errado aqui nao quebra o deploy -- abre ou fecha
+  visibilidade de registro em silencio.
+-->
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>None</caseAccessLevel>
+    <contactAccessLevel>None</contactAccessLevel>
+    <description>Head responsavel pelo funil B2G. Destino das aprovacoes de diretoria quando Type = B2G (W0382).</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>B2B Head B2G</name>
+    <opportunityAccessLevel>None</opportunityAccessLevel>
+    <parentRole>__PREENCHER_COM_O_parentRole_DE_B2B_Head_B2B__</parentRole>
+</Role>

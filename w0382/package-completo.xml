@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  W0382 | Solicitação de aprovação C-Level pela arquitetura
+  Manifest completo da entrega. Serve para retrieve (conferir o estado de um
+  org) e para deploy (promover de sandbox para produção).
+
+  ATENÇÃO ao FlexiPage: o arquivo tem ~61 KB e dezenas de componentes. A nossa
+  mudança é UMA string na visibilidade do botão "Revisão Diretoria"
+  (StageName -> 'Validação técnica'). Deployar a página inteira já falhou uma
+  vez por causa do campo Record.SDR__c, que não tem relação com a W0382.
+  Se falhar de novo, remova o bloco FlexiPage e faça a alteração pelo
+  Lightning App Builder.
+
+  ESTADO 2026-08-19: o deploy em sandbox rodou SEM o bloco FlexiPage. Essa
+  alteração foi feita pelo App Builder e NÃO viaja com este manifest --
+  precisa ser refeita à mão em produção. Ver LEIAME.md.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <types>
+        <members>ApprovalWorkItemsController</members>
+        <members>ApprovalWorkItemsControllerTest</members>
+        <name>ApexClass</name>
+    </types>
+
+    <types>
+        <members>OpportunitySendCLevelApproval_B2B</members>
+        <members>OpportunityStageApprovalProcess_B2B</members>
+        <name>Flow</name>
+    </types>
+
+    <types>
+        <members>Opportunity</members>
+        <name>CustomObject</name>
+    </types>
+
+    <types>
+        <members>OpportunityRecordPageB2B</members>
+        <name>FlexiPage</name>
+    </types>
+
+    <version>67.0</version>
+</Package>
