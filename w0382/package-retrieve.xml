@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  W0382 | Retrieve para investigar a resolucao do aprovador
+  W0382 | Retrieve do estado PÓS-deploy (sandbox Staging)
 
-  O que precisa ser lido, em ordem de importancia:
+  Workbench: Migration > Retrieve > escolher este arquivo em "Unpackaged
+  Manifest", marcar "Single Package", Next > Retrieve.
 
-  1. OpportunitySendCLevelApproval_B2B  -> como o GetDirectorUser monta o nome
-     do papel. A hipotese e que ele concatena algo como 'B2B_Head_' + Type,
-     o que produz B2B_Head_B2G -- um papel que nao existe e NAO DEVE existir.
-     Ver HIERARQUIA.md.
-  2. OpportunityStageApprovalProcess_B2B -> onde o Head/C-Level e escolhido.
-  3. ApprovalWorkItemsController -> a query dos work items.
-  4. OpportunityRecordPageB2B -> a logica de filtro do botao (5 OR 6).
-  5. Queue (wildcard) -> se ja existe alguma fila de Head/C-Level aproveitavel.
-
-  sf project retrieve start --manifest w0382/package-retrieve.xml -o <org>
+  Enxuto de propósito: sem wildcard de FlexiPage/Flow/LWC, então volta em
+  segundos em vez de trazer 200 MB.
 -->
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 
@@ -25,7 +18,13 @@
 
     <types>
         <members>ApprovalWorkItemsController</members>
+        <members>ApprovalWorkItemsControllerTest</members>
         <name>ApexClass</name>
+    </types>
+
+    <types>
+        <members>Opportunity</members>
+        <name>CustomObject</name>
     </types>
 
     <types>
@@ -34,9 +33,19 @@
     </types>
 
     <types>
+        <members>Opportunity.ReassignCLevelApproval</members>
+        <name>QuickAction</name>
+    </types>
+
+    <types>
         <members>*</members>
         <name>Queue</name>
     </types>
 
-    <version>67.0</version>
+    <types>
+        <members>*</members>
+        <name>Role</name>
+    </types>
+
+    <version>63.0</version>
 </Package>
