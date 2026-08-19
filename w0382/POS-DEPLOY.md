@@ -158,3 +158,17 @@ O teste do B2G deixa de dar falso positivo.
 7. Confirmar que a Oportunidade **nao** pula para 'Aguardando contrato' na
    aprovacao -- o salto ja foi corrigido pela troca de fase na regra
    `SendStage_AprovacaoTecnica_CLevel`, e este teste confirma.
+
+## Retorno ao arquiteto aplicado em preprod (2026-08-19 21:38)
+
+`success: true`, 5 componentes. Campo `Opportunity.SolutionArchitect__c` criado
+(`00NHZ000009WE4H2AW`); versoes novas ativas dos tres flows
+(`301HZ00000x0VTFYA2`, `...VTGYA2`, `...VTHYA2`). Avisos todos `Info` e
+pre-existentes (email do usuario de processo automatizado; empacotamento de
+step com assignee).
+
+Desenho da solucao publicado para o usuario:
+https://claude.ai/code/artifact/692f77a5-04b4-4738-9fd8-ad4dc7dda304
+
+FLS do campo: visivel somente-leitura para admin + perfis do time de
+Arquitetura; ninguem precisa de edicao (flows gravam em modo sistema).
