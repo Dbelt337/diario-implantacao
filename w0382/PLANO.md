@@ -46,16 +46,16 @@ usuario ativo -- o caso de `B2B_Head_B2S`, `B2C_Head` e `Head`, todos com 0.
 Fazer pelo Flow Builder. Editar o XML a mao arrisca o problema de ordenacao de
 elementos por XSD que ja custou um commit neste repo.
 
-## 2. BLOQUEADOR -- o nome do arquivo tem underscore
+## 2. RETIRADO -- o underscore do AVAL-FINANCEIRA e proposital
 
-Requisito: arquivo de nome **`AVAL-FINANCEIRA`**.
-Codigo (`FilterNameFile`): `StartsWith 'AVAL-FINANCEIRA_'`.
+Eu tinha levantado que o `FilterNameFile` exige `AVAL-FINANCEIRA_` enquanto o
+requisito diz `AVAL-FINANCEIRA`. **Nao e defeito.** A propria tela do flow
+instrui o usuario:
 
-Um arquivo chamado `AVAL-FINANCEIRA.pdf` **nao passa**. So passa
-`AVAL-FINANCEIRA_algo.pdf`.
+> necessario adicionar o arquivo com nome no formato "AVAL-FINANCEIRA_XXXXX"
 
-Decidir: ou relaxar o filtro para `AVAL-FINANCEIRA`, ou instruir o usuario. Se
-ninguem decidir, o teste trava aqui e vira "bug" que nao e bug.
+O filtro e mais especifico que o requisito e se auto-documenta na UI. Nada a
+fazer.
 
 ## 3. DECISAO DE NEGOCIO -- roteamento do Head (resolve o B2G)
 
@@ -82,6 +82,31 @@ Hoje volta para a fila `Arquitetura` (6 membros), nao para o usuario. Exige
 campo novo na Oportunidade guardando o arquiteto inicial + mudanca na
 orquestracao. Estava listado como fora do pacote; o requisito confirma que e
 lacuna, nao escolha de escopo.
+
+## 4b. JA CORRIGIDO -- o salto para 'Aguardando contrato'
+
+Reportado a Priscila: escalando para C-Level em Validacao tecnica, na aprovacao
+a Oportunidade pulava para 'Aguardando contrato' e a confirmacao da Arquitetura
+era ignorada.
+
+Confirmado no diff producao x preprod, na decisao `ApprovalProcessPhases`:
+
+```
+regra 2  SendStage_AprovacaoTecnica_CLevel   oppStage = ...
+         producao: Viabilidade e desenho da solucao
+         preprod : Validacao tecnica            <- a mudanca
+regra 5  SendStage_ValidacaoTecnica           oppStage = Validacao tecnica
+                                              -> UpdateApproved_ExpressTech
+                                              -> StageName = Aguardando contrato
+```
+
+As regras sao avaliadas em ordem e a primeira que casa vence. Em producao a
+regra 2 exigia 'Viabilidade e desenho da solucao', entao uma Oportunidade em
+Validacao tecnica com ResponsibleTeam__c = C-Level caia na regra 5 e pulava
+para 'Aguardando contrato'. No preprod a regra 2 casa antes da 5 e captura o
+caminho da diretoria.
+
+**Ja esta corrigido no preprod.** Nada a fazer -- so confirmar no teste.
 
 ## 5. TESTE -- o re-disparo (passo 5)
 
