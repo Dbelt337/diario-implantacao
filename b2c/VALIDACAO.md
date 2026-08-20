@@ -67,3 +67,34 @@ Veredito mantido e reforcado: Premises/ServicePoint sem deprecacao; construir
 o B2C no pacote e consistente com o org; artefatos novos de OmniStudio ja no
 standard runtime; integracoes TMF em acesso direto; pedir ao AE a matriz
 core x package por escrito.
+
+## Registro de interfaces do CPQ em producao (2026-08-20)
+
+Fonte: InterfaceImplementation__c + InterfaceImplementationDetail__c, producao.
+
+1. PremisesInterface -> DefaultPremisesImplementation ATIVO. Hook existe e
+   nunca foi customizado. Adocao limpa do lado do motor.
+2. DESCOBERTA PRINCIPAL: o filtro de prateleira por contexto esta DESLIGADO.
+   ProductAvailabilityInterface e ProductEligibilityInterface rodam nas
+   implementacoes Default (que nao filtram nada); as alternativas
+   (FilterAvailability/FilterEligibility/CtxRulesProductsOpen/
+   AccountTypeProductEligibility) estao TODAS inativas. Context rules estao
+   ativas so para PRECO (CtxRulesPriceLists/PriceElements ativos). Ou seja:
+   hoje o org nao filtra catalogo por elegibilidade de contexto — a H13 nao e
+   ajuste, e ligar+implementar esse filtro.
+3. ValidateAddressInterface -> ValidateAddressImplementation ATIVO (o Default
+   esta inativo). Alguem ja customizou validacao de endereco. Verificar se e
+   classe custom (NamespacePrefix null) e o que faz — pode ser onde CEP/IBGE
+   ja entram ou deveriam entrar.
+4. OM DO PACOTE (XOM) EM USO: OdinAPIHandler -> XOMOMStandardOdinAPIHandler
+   ativo, XOMSupplementalOrderLifecycleImpl ativo, SendSubmitToOM/Freeze/
+   Unfreeze ativos. Confirma o sinal amarelo: o OM do pacote ficou sem
+   release notes no Summer '26 e a Salesforce posiciona DRO como substituto.
+   DRO ja aparece no registro (DROQualifier, DroReplacementHandler) = pacote
+   recente. Planejar avaliacao DRO no programa.
+5. Sabor telco do pacote confirmado: TelcoCloneAdditionalObjects e
+   TelcoUpdateFrameContract ativos.
+
+Pendente ainda: COUNT de Premises__c e ServicePoint__c; versao do pacote
+(Setup > Pacotes instalados); NamespacePrefix da ValidateAddressImplementation;
+COUNT de OrchestrationPlan__c (confirmacao de volume no XOM).
