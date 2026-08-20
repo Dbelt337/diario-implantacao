@@ -101,3 +101,20 @@ Fonte: InterfaceImplementation__c + InterfaceImplementationDetail__c, producao.
 Pendente ainda: COUNT de Premises__c e ServicePoint__c; versao do pacote
 (Setup > Pacotes instalados); NamespacePrefix da ValidateAddressImplementation;
 COUNT de OrchestrationPlan__c (confirmacao de volume no XOM).
+
+## Contagens: Premises 0, ServicePoint 0, OrchestrationPlan 0 (2026-08-20)
+
+- Premises__c = 0 e ServicePoint__c = 0: adocao limpa total. Nao ha dado
+  legado, nao ha migracao, o modelo pode ser desenhado do zero.
+- OrchestrationPlan__c = 0: CORRIGE minha leitura anterior. Os handlers XOM
+  ativos no registro de interfaces indicavam OM do pacote "em uso" — mas zero
+  planos de orquestracao significa que a decomposicao do OM nunca rodou (ou
+  nunca persistiu). Leitura provavel: OM configurado na implantacao, porem o
+  fulfillment real acontece FORA do Salesforce (ERP/Customer Core via
+  MuleSoft), como as proprias historias B2C assumem. Confirmacao final:
+  SELECT COUNT() FROM vlocity_cmt__FulfilmentRequest__c — se tambem for 0,
+  o XOM esta oficialmente sem uso e a avaliacao de DRO cai de "item do
+  programa" para "monitorar roadmap".
+
+Pendente: versao do pacote (Setup > Pacotes instalados) — decide se as
+interfaces de Availability & Eligibility do Summer '26 estao disponiveis.
