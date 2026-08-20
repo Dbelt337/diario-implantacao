@@ -223,3 +223,39 @@
 - CustomObject: Lead, Account, Order, WorkOrder, ServiceAppointment, Endereco__c, EntryChannel__c, EnderecoUtilizadoOpportunity__c, vlocity_cmt__Promotion__c, vlocity_cmt__Premises__c, vlocity_cmt__ServicePoint__c.
 - Flows citados como reuso, para leitura fina: LeadGetAddress, Get_CNPJ_Details, FLW_Approval_InstallationFee, OrderInstallationFeeExemptionOrDiscount, WorkOrder_Update_Zendesk_Status, Order.RetomarVenda (flow da action).
 2. Com esse pacote em mãos, cada seção CONSTRUIR deste documento desce para o nível "campo a campo, valor a valor" — e as estimativas da Sysmap podem ser conferidas contra ele.
+
+### Apêndice A — Inventário nível de campo (etapa 1: retrieve de produção 20/08)
+1. LEAD — 77 campos, record types B2B e B2C (B2C já existe)
+- Endereço: AddressNumber__c, AddressComplement__c, Neighborhood__c, District__c, Latitude__c, Longitude__c — falta apenas IBGECode__c e o trio de condomínio (IsCondominium/Block/ApartmentUnit).
+- REUSO MAIOR: vlocity_cmt__PremisesId__c — o Lead JÁ TEM lookup para Premises; a viabilidade da W-02 grava no campo do pacote, não cria relacionamento novo.
+- PJ pronto: DocumentNumber__c (CPF/CNPJ), LegalEntityType__c, CNAE__c, InscricaoEstadual__c, InscricaoMunicipal__c, FantasyName__c — a VR de PJ da W-01 valida campos existentes.
+- Perda: LossType__c (picklist motivo) + LossReason__c (texto detalhes) — atenção: nomenclatura INVERTIDA em relação à Opportunity (lá LossReason__c é a picklist); documentar para não confundir automações.
+- Framework de integração no Lead: IntegrationStatus__c, IntegrationAttempts__c, IntegrationError__c, IntegrationReturnCode__c, IntegrationPerformed__c.
+- Qualidade construída e DESLIGADA: ValidaCPFeCNPJ, DocumentValidation, PhoneValidationFormat, AddressComplementRequired, VRAddressFields (inativas) — a W-01 pode começar REATIVANDO e ajustando, não escrevendo VR nova.
+- Outros aproveitáveis: Segment__c, Cluster__c/ClusterManual__c, SDR__c, Stage__c, ProductInterestNew__c.
+2. REGRAS E ROTEAMENTO (produção)
+- Lead.assignmentRules: VAZIO — não existe roteamento automático de Lead hoje; o Omni-Channel da W-01 é greenfield.
+- Duplicate rules: apenas as STANDARD (Lead×Lead, Lead×Contact) — a dedup contra Conta ativa por CPF/CNPJ (DocumentNumber__c) precisa de Matching Rule custom.
+- Filas em PRODUÇÃO (10): Arquitetura, Auditoria, Backoffice, CreditTable (Order) e 5 de Case B2B + Especialistas. CORREÇÃO IMPORTANTE: as filas Viabilidade_B2B/B2G/B2W e DispatcherAprovadoresPrazoSla existem SÓ NO PREPROD — o padrão de fila por segmento citado nos desenhos anteriores ainda precisa ser promovido a produção. Nenhuma fila atende Lead.
+3. OWD (produção)
+- Opportunity: Private/Private — visibilidade por hierarquia funciona nativamente para os dashboards da W-05 (vendedor vê o seu, gestor vê a equipe).
+- Lead: Public Read interno — todo mundo LÊ leads; se o requisito de visibilidade da W-05 for rígido também para Lead, é filtro de relatório, não OWD (mudar OWD de Lead é pesado e afeta dedup).
+- Order: Read · Quote: ControlledByParent · Endereco__c e EntryChannel__c: Public Read/Write.
+4. QUOTE — 111 campos (80 custom)
+- MarketSegment__c e MarketType__c JÁ EXISTEM — candidatos diretos ao Segment da W-06 (conferir valores antes de criar Opportunity.Segment__c; talvez a segmentação B2C/B2S já tenha casa).
+- InstallationFeeRequired__c, AttachedViability__c, AttachedTerm__c, ContractStart/End — a espinha de contratação B2B a espelhar.
+5. ORDER — 177 campos
+- REUSO MAIOR (W-12): família COMPLETA da taxa de instalação já existe — InstallationFeeAmount__c, InstallationFeeStatus__c (o gate do agendamento é ESTE campo, não um novo), InstallationFeeDueDate__c, DiscountedInstallationFee__c (%), DiscountedInstallFeeApproved__c, FeeBillingType__c, PaymentMethod__c.
+- Agendamento: isScheduledInstallation__c, LastScheduleDateTime__c, vlocity_cmt__Delivery_Installation_Status__c.
+- W-09: AttachmentSignature__c já existe no Order.
+6. ACCOUNT — 162 campos
+- vlocity_cmt__CreditScore__c (Number) — o SCORE corrente tem campo nativo do pacote na Conta; o CreditAnalysis__c da W-03 continua valendo como snapshot por consulta, e o campo da Conta guarda o último valor.
+- EntryChannel__c (picklist "Origem do Cliente") na Conta + objeto EntryChannel__c (tabela de referência com ExternalId) — mesmo conceito em dois formatos; padronizar qual é a fonte na W-01.
+- Endereco__c confirmado como wrapper mínimo (5 campos: Account__c, AddresType__c, MainAddress__c, IsActive__c, ExternalId__c) — detalhe físico mora no Address; o IBGE deve nascer no Address/Premises, não aqui.
+7. AJUSTES QUE ESTE INVENTÁRIO IMPÕE AO DESENHO
+- W-01: reativar/ajustar as VRs desligadas antes de criar novas; dedup por DocumentNumber__c; canal = decidir entre Account.EntryChannel__c (picklist), objeto EntryChannel__c e vlocity_cmt__OriginatingChannel__c — três casas para o mesmo conceito, escolher UMA.
+- W-02: gravar o Premises no vlocity_cmt__PremisesId__c existente do Lead.
+- W-03: score corrente em Account.vlocity_cmt__CreditScore__c; snapshot na CreditAnalysis__c.
+- W-06: verificar valores de Quote.MarketSegment__c/MarketType__c antes de criar campo.
+- W-12: gate = Order.InstallationFeeStatus__c; desconto usa os campos Discounted* existentes.
+- Fila por segmento (inclusive a recomendação de filas de diretoria da W0382): promover as filas do preprod a produção faz parte do escopo.
