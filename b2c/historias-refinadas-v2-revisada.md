@@ -1,5 +1,6 @@
 # Histórias Refinadas B2C — versão revisada (20/08/2026)
 - [REVISÃO] Alterações desta versão: (1) consolidadas as duas histórias duplicadas de flag de endereço inadimplente; (2) a história de Governança/Unidade Operacional ganhou cabeçalho próprio (estava embutida no fim da história de Delivery); (3) números perdidos na formatação marcados como [DEFINIR]; (4) incluída a work nova de Acervo Jurídico (risco crítico apresentado em 20/08). Total: 14 works.
+- [PRINCÍPIO NATIVE-FIRST] Ordem de solução em toda work: 1º recurso padrão da plataforma/produto licenciado (páginas padrão + Dynamic Forms, Flow, OmniScript/FlexCard do OmniStudio, EPC/Promotion, BRE/Decision Matrix, FSL); 2º configuração/extensão suportada (interfaces do pacote, Custom Metadata); 3º e último, código custom (LWC/Apex) — apenas quando o item anterior comprovadamente não atende, com a justificativa registrada na work.
 
 ### W-B2C-01 — [SALESFORCE B2C / LEAD & TRIAGEM] - Captura, Triagem, Roteamento Omni-Channel e Regras de Condomínio
 1. NARRATIVA DE NEGÓCIO
@@ -14,7 +15,7 @@
 - Atribuição de Unidade Operacional e Regional: A Unidade Operacional e Regional deve ser derivada automaticamente pelo sistema com base no CEP do endereço de instalação do cliente , sendo editável apenas para as Unidades contidas no escopo permitido do perfil do usuário.
 - Deduplicação e Roteamento: Deduplicação automática com Leads abertos ou Contas ativas na base e roteamento automático via Omni-Channel por fila regional e habilidades (skills) do agente.
 3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE)
-- [ADERÊNCIA AO ORG BTP · 19-20/08] Omni-Channel roteia Lead com skills (doc oficial), porém exige licença Service Cloud User por agente no Omni — dimensionar para os perfis de venda [CONFIRMAR: licenças]. Dedup Lead×Conta ativa via Duplicate/Matching Rules nativas. O objeto de Canal de Entrada já existe no org. Confirmar se Person Account está habilitado para o funil PF.
+- [ADERÊNCIA AO ORG BTP · 19-20/08 · NATIVE-FIRST] A menção a "Screen Flow / LWC (Nova Venda)" da especificação original deve ser lida pela escada native-first: 1º página padrão de Lead com Dynamic Forms + validation rules (cobre obrigatoriedades e condomínio sem construir tela); 2º se a captura exigir jornada guiada multi-etapas, OmniScript — produto licenciado (OmniStudio ativo, 156 em uso) e padrão já adotado no org (jornada bTecParPF); LWC custom não deve constar como opção inicial. Dedup Lead×Conta via Duplicate/Matching Rules nativas; objeto de Canal de Entrada já existe. Omni-Channel roteia Lead com skills; licenças: org tem 3.968 licenças Salesforce full e PSL Service User com folga (1.867/11 usadas) — mapear cobertura de Omni por perfil de venda [CONFIRMAR]. Person Account a confirmar.
 - Objetos Impactados: Lead, Account (Person Account), Contact, Group (Queues).
 - Automação / Lógica: * Screen Flow / LWC (Nova Venda): Interface unificada de entrada.
 - Validation Rules: Exigência de Bloco e Apartamento quando IsCondominium__c = TRUE ; exigência de Razão Social e CPF Representante quando RecordType = PJ.
