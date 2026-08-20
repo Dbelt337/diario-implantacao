@@ -83,9 +83,12 @@ Fonte: InterfaceImplementation__c + InterfaceImplementationDetail__c, producao.
    hoje o org nao filtra catalogo por elegibilidade de contexto — a H13 nao e
    ajuste, e ligar+implementar esse filtro.
 3. ValidateAddressInterface -> ValidateAddressImplementation ATIVO (o Default
-   esta inativo). Alguem ja customizou validacao de endereco. Verificar se e
-   classe custom (NamespacePrefix null) e o que faz — pode ser onde CEP/IBGE
-   ja entram ou deveriam entrar.
+   esta inativo). RESOLVIDO: NamespacePrefix = vlocity_cmt — e classe DO
+   PACOTE, nao ha codigo custom de endereco. Alguem apenas trocou a
+   implementacao ativa por configuracao. Consequencia: o ponto de extensao ja
+   foi mexido uma vez e funciona; plugar CEP/ViaCEP/IBGE = criar UMA classe
+   custom implementando essa interface e registra-la como ativa — padrao
+   suportado, baixo risco.
 4. OM DO PACOTE (XOM) EM USO: OdinAPIHandler -> XOMOMStandardOdinAPIHandler
    ativo, XOMSupplementalOrderLifecycleImpl ativo, SendSubmitToOM/Freeze/
    Unfreeze ativos. Confirma o sinal amarelo: o OM do pacote ficou sem
