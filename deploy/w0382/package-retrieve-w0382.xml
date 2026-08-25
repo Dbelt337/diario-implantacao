@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  W0382 | Retrieve de diagnostico - rodar em STAGING via Workbench
+  (Migration > Retrieve > upload deste arquivo > marcar "Single Package")
+
+  Objetivo: inspecionar a implementacao da aprovacao C-Level e provar:
+  1. Se o campo ArchitectureApproved existe em staging (evidencia atual: NAO existe
+     - FieldDefinition LIKE 'Architecture%' retornou vazio em 25/08).
+  2. O que os flows realmente leem/escrevem.
+  3. Os filtros de visibilidade do botao na FlexiPage (suspeita: Type = B2B E B2G).
+  4. O developer name do QuickAction do botao (ausente no manifest original).
+
+  Nota: members de CustomField inexistentes na org geram apenas aviso no
+  retrieve (vem vazio) - nao e erro. O CustomObject Opportunity vem completo
+  (todos os campos e validation rules), o que fecha a questao do campo.
+
+  Depois, rodar o MESMO retrieve em PRODUCAO para comparar os ambientes.
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+
+    <types>
+        <members>ApprovalWorkItemsController</members>
+        <members>ApprovalWorkItemsControllerTest</members>
+        <name>ApexClass</name>
+    </types>
+
+    <types>
+        <members>OpportunitySendCLevelApproval_B2B</members>
+        <members>OpportunityStageApprovalProcess_B2B</members>
+        <name>Flow</name>
+    </types>
+
+    <types>
+        <members>OpportunityRecordPageB2B</members>
+        <name>FlexiPage</name>
+    </types>
+
+    <!-- Objeto completo: traz TODOS os campos e validation rules da
+         Opportunity de staging - prova definitiva de quais campos existem -->
+    <types>
+        <members>Opportunity</members>
+        <name>CustomObject</name>
+    </types>
+
+    <!-- Candidatos individuais: se nao existirem, vem so um aviso -->
+    <types>
+        <members>Opportunity.ArchitectureApproved__c</members>
+        <members>Opportunity.ResponsibleTeam__c</members>
+        <members>Opportunity.Send4Approval__c</members>
+        <members>Opportunity.ExpressViability__c</members>
+        <members>Opportunity.SDR__c</members>
+        <name>CustomField</name>
+    </types>
+
+    <!-- Todas as acoes rapidas do objeto: identifica o botao Aprovacao Diretoria -->
+    <types>
+        <members>Opportunity.*</members>
+        <name>QuickAction</name>
+    </types>
+
+    <types>
+        <members>SalesmanGR</members>
+        <name>CustomPermission</name>
+    </types>
+
+    <version>67.0</version>
+</Package>
