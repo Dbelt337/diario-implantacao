@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  W0382 | Retrieve das orquestracoes de aprovacao (ApprovalWorkflow) - STAGING
+  Workbench > Migration > Retrieve > upload deste arquivo > marcar "Single Package"
+
+  Objetivo:
+  1. Ler as condicoes da etapa "Aprovacao - Arquitetura" em OpportunityApprovalSteps_B2B
+     (quais campos a condicao vigia - causa do work item "Retirado" 2 min apos o clique).
+  2. Verificar se "Oportunidade_Controle_de_status_aprova_es_Approval_Proccess" e uma
+     duplicata do autolaunched OpportunityStageApprovalProcess_B2B (risco de copia
+     paralela sem o fix do Bypass).
+-->
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>OpportunityApprovalSteps_B2B</members>
+        <members>Oportunidade_Controle_de_status_aprova_es_Approval_Proccess</members>
+        <name>Flow</name>
+    </types>
+    <version>67.0</version>
+</Package>
