@@ -13,8 +13,10 @@ Fatos do metadado que os scripts respeitam:
 ## Script 1 — criar opp e disparar aprovação (item na fila Arquitetura)
 
 ```apex
-Id b2bRt = [SELECT Id FROM RecordType
-            WHERE SObjectType = 'Opportunity' AND DeveloperName = 'B2B' LIMIT 1].Id;
+// RecordType por DeveloperName='B2B' retornou id inválido para o usuário (duplicado/inativo na org);
+// o seguro é clonar o record type de um registro validado:
+Id b2bRt = [SELECT RecordTypeId FROM Opportunity
+            WHERE Name = 'Teste Sr Vilson Parte 20' LIMIT 1].RecordTypeId;
 Account acc = [SELECT Id FROM Account WHERE Name LIKE 'LOGITECH DO BRASIL%' LIMIT 1];
 Id tayza = '005HZ00000HDbCzYAL';
 
