@@ -39,13 +39,29 @@ Nota de método: a tela do App Builder lista os critérios sem exibir o `boolean
 
 **Correção aplicada em staging:** FLS Visible para os perfis *B2B - Especialistas* e *System Administrator* (via Set Field-Level Security). Botão passou a aparecer imediatamente (hard refresh).
 
+## Defeitos encontrados nos testes de 25/08 (todos corrigidos em staging)
+
+| # | Sintoma | Causa raiz | Correção (pacote) |
+|---|---|---|---|
+| 1 | Botão invisível para todos | `ArchitectureApproved__c` deployado sem FLS | FLS por perfil (paliativo) → PS `FunilB2B_CamposAprovacao` (v5) |
+| 2 | Submission "Errored" ao aprovar | Ramos `UpdateApproved_AprovacaoTecnica[_CLevel]` sem `Bypass__c=true` → validation rule derrubava o DML | `deploy-w0382-bypass-fix.zip` |
+| 3 | Work item "Retirado" ~2 min após o clique no botão | Botão setava `Send4Approval__c=false` → registro deixava de atender ao gatilho da orquestração → plataforma retirava a submission | v3 do botão (remove só o `Send4Approval=false`; mantém `ResponsibleTeam` e `SolutionArchitect`) |
+| 4 | Reprovação sem efeito na oportunidade | **Estágio "Send Approval - Arquitetura" nunca conclui**: tem 2 approval steps alternativos (fila × arquiteto nomeado); o que não se aplica fica `NotStarted` para sempre → o estágio 2 com o "Update record" nunca inicia. Provado via `FlowOrchestrationStepInstance` (step decidido `Completed` + irmão `NotStarted` + estágio `InProgress` + zero instâncias do estágio de update) | **v6**: `deploy-w0382-v6-orquestracao-update-no-estagio.zip` — os 2 background steps "Update record" movidos para DENTRO do estágio de aprovação, com entrada "quando `ApprovalStep_X.Status = Completed`"; estágio 2 morto removido |
+| 5 | `UNABLE_TO_LOCK_RECORD` no estágio de envio + rejeição em item órfão sem efeito | Registros de teste reutilizados (Parte 14–19) presos com lock de submissions antigas (`shouldLock`); runs velhos em versão antiga do flow | Cancelar runs presos (Automation App → Orchestration Runs) ou `Approval.unlock(recordId)`; **testar sempre em registro novo** |
+| 6 | Flow Builder acusa "field doesn't exist or you don't have access" (`BackofficeForm__c`, `ManagerAccount__r.Username`) ao abrir elementos do V7 | Mesma doença do item 1: campos deployados sem FLS; Builder valida com o acesso do usuário logado (runtime em system mode não é afetado, mas impede salvar nova versão pela UI) | v5 (PS de leitura dos 18 campos) atribuído a admins + personas |
+
+Aviso recorrente do deploy (Info): **"Automated Process User has no valid email address"** — sem esse e-mail a orquestração não envia notificações de step (nem e-mails de erro chegam). Preencher em Setup → Process Automation Settings. Fazer o mesmo em prod.
+
 ## Checklist para produção (fazer TUDO, na ordem)
 
 1. **Retrieve de conferência em prod** com o mesmo package (`deploy/w0382/package-retrieve-w0382.xml`) para verificar o estado real: campo existe? com FLS? QuickAction existe? qual versão da página?
 2. **FLS do `ArchitectureApproved__c`** — preferencialmente via **permission set** "Funil B2B - Campos de aprovação" (leitura; edição fica com os flows em system mode) atribuído às personas do funil: Especialistas/arquitetura, Vendedor/SDR, Backoffice, Gerência. Em staging foi feito por perfil (Especialistas + SysAdmin) — replicar a decisão final, não o paliativo.
 3. **Deploy do QuickAction** `Opportunity.ReassignCLevelApproval` (ausente no manifest original da W0382).
 4. **Deploy da FlexiPage** `OpportunityRecordPageB2B` retrieveada **de staging** (versão validada). Pré-requisito: prod ter todos os campos que a página referencia (em staging o deploy já falhou por `SDR__c` — a página atual de staging não referencia mais SDR__c, conferido no retrieve; validar a versão final antes).
-5. **Flows**: `OpportunitySendCLevelApproval_B2B` e `OpportunityStageApprovalProcess_B2B` — conferir se chegam ativos.
+5. **Flows** (versões validadas em staging): `OpportunitySendCLevelApproval_B2B` (v3 do botão), `OpportunityStageApprovalProcess_B2B` (com Bypass nos 2 ramos), `OpportunityApprovalSteps_B2B` (v6 — update dentro do estágio). Conferir se chegam ativos.
+5a. **Permission set `FunilB2B_CamposAprovacao`** (v5) no pacote + Manage Assignments para admins e personas do funil.
+5b. **E-mail do Automated Process User** preenchido em Process Automation Settings.
+5c. **Antes do go-live**: cancelar orchestration runs de teste pendentes e destravar registros com lock de aprovação (`Approval.unlock`); nunca validar em registro reutilizado/lockado.
 6. **Teste em prod**: registro B2B/B2G em "Validação técnica", equipe Arquitetura, não aprovado; usuário SEM SalesmanGR vê o botão; usuário COM SalesmanGR não vê; Login As para validar as duas personas.
 7. **Smoke test do "Anexar Arquivos"** nos ramos que dependem de `ArchitectureApproved__c` (a FLS nova muda o comportamento deles também).
 
