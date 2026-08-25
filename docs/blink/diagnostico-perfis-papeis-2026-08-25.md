@@ -31,18 +31,18 @@ A org já tem PSGs por persona — o desenho está meio pronto:
 | Supervisão (7) | Supervisão Comercial | PSG Supervisao Comercial (7) | — |
 | **Coordenação (5)** | Coordenação | **inexistente** | **única persona sem PSG — a mesma do chamado da Lilian** |
 | Gerência (5) | Gerência | PSG Gerencia (4) | 1 usuário fora |
-| Admin (4 humanos) | Administrador | PSG Administrador (14!) | limpar excedentes |
+| Admin (4 humanos) | Administrador | PSG Leads Multimarca (renomear) | tirar integrações do perfil admin |
 
 ## Plano de ação (ordem)
 
-1. Atribuir papel a Thiago Almeida e Mariana F. V. dos Santos.
-2. Auditar e limpar PSG Administrador (query acima) e Never Expires Password.
-3. Tirar perfil admin das integrações (Integration User, Usuário Chatbot) → Minimum Access API Only + PS.
+1. Atribuir papel a Thiago Almeida e Mariana F. V. dos Santos; confirmar autor do descongelamento no Setup Audit Trail.
+2. **Rebaixar o perfil Gerência** (remover as 6 permissões administrativas), repondo visão ampla via View All por objeto no PSG Gerencia; renomear "PSG Administrador" → "PSG Leads Multimarca"; validar Never Expires Password.
+3. Tirar administração das 3 integrações (Integration User, Usuário Chatbot, MC API User/perfil Integrações) → licença Salesforce Integration + Minimum Access API Only + PS; remover papel CEO do MC API User.
 4. Realocar papéis de parceiro (Erod, lcaet, ddrea duplicado, ljust, lmasc, falva, tsilv) sob Supervisão de parceiros.
 5. Criar **PSG Coordenacao Comercial** (incluindo acesso ao flow "Alterar Turno" — solução desenhada em 25/08 para o pedido da Lilian: screen flow em system context, sem Manage Internal Users).
 6. Criar **User Access Policies** por persona (critério = perfil; disparo on create/update; Apply Policy manual para o estoque).
 7. Poda: perfis sem usuários, árvore de papéis de Atendimento, raiz JustWeb, correção do typo "Desenvolverdor TI".
-8. Pendente para fechar o nível 3: rodar `ObjectPermissions` (perfil × objeto) e a query de permissões administrativas (`PermissionsManageUsers`, `PermissionsModifyAllData`...) por perfil.
+8. Nível 3 fechado em 25/08 (matriz de risco na planilha `blink-matriz-risco-plano-2026-08-25.xlsx`); opcional: `ObjectPermissions` perfil × objeto para o desenho fino dos PSGs.
 
 ## Referência
 
