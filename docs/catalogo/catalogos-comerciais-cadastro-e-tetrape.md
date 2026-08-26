@@ -79,6 +79,10 @@ Dependência: EPC-01 → EPC-04 → EPC-05 → catálogos + rule sets (QUAL-01) 
 
 Fontes adicionais: vlocitysfdc.com (Object Types; Product Specifications), howtosfdc.cloud (criação de Object Types), Apex Hours EPC/Best Practices.
 
+### 5a. Governança por frente (decisão 26/08 — Joel B2B, Rodrigo B2C/B2S)
+
+Ownership por frente vale no nível da **oferta**; **famílias e dicionário de atributos são únicos** e governados em conjunto (P-08/EPC-03). Evidências na própria guia Joel: Internet Home (B2C) e Basic (B2B) compartilham os mesmos atributos; Corporativa/PME atendem as duas frentes; "Pacote SVA (reaproveitado da Banda Larga)". Subtipo por característica técnica (Banda Larga × Dedicado), nunca por segmento — segmento é o pé 2 do Tetra-pé. Redistribuição das pendências: Smart PBX, SVA B2B e Fail-Over/Bastidor/Porta da Corporativa → **Joel**; Streaming/Playhub e SVA B2C/B2S → **Rodrigo** (entregar no template da guia Joel: oferta + atributos diretos + 4 colunas do Tetra-pé). Risco a evitar: cada frente criar seu dicionário → dois atributos "Banda", duas specs de Internet, carrinho e relatórios sem unificação.
+
 ## 6. Fontes
 
 - Trailhead — *Meet Context Rules / Create a Qualification Context Rule / Deploy the Qualification Context Rule* (módulo industries-cpq-context-rules)
