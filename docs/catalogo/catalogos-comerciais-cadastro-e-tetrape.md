@@ -60,7 +60,17 @@ Caminho documentado (Trailhead oficial Industries CPQ Context Rules + guia CME "
 
 Dependências registradas na US: P-19 (domínios de qualificação — fechar com o Joel a lista de valores por pé) e P-17 (fonte do código IBGE no endereço). **Nada disso bloqueia o passo 3 (criar catálogos) nem o esqueleto dos rule sets.**
 
-## 5. Fontes
+## 5. Famílias de produto (Object Types) — o que precisa
+
+"Família" no EPC = **hierarquia de Object Types** (`vlocity_cmt__ObjectClass__c`) sob Product2, com **herança dinâmica de atributos** por nível e layouts por tipo (EPC-04); **Product Specifications** ligam-se a um único tipo e herdam tudo (EPC-05); `Product2.Family` (picklist padrão Sales Cloud) espelha as famílias para relatórios/forecast.
+
+Ordem de cadastro: (1) ratificar hierarquia 35.3 em ata — P-08; (2) Attribute Categories (EPC-01); (3) Object Types no Product Console (raiz por família: Internet, Segurança, Wi-Fi, Voz, Streaming, SVA — 1:1 com os codes CAT_*), subtipos aninhados; (4) atributos por nível (comum no pai, específico no subtipo; trocar o tipo de um produto depois dessincroniza atributos — ratificar antes); (5) layouts por tipo; (6) Product Specs da Onda 1; (7) picklist `Product2.Family`; (8) DataPacks + compilação de atributos/batch (EPC-09).
+
+Dependência: EPC-01 → EPC-04 → EPC-05 → catálogos + rule sets (QUAL-01) → EPC-09. Nomes de catálogos podem ser cadastrados já; a vinculação de produtos depende das famílias ratificadas.
+
+Fontes adicionais: vlocitysfdc.com (Object Types; Product Specifications), howtosfdc.cloud (criação de Object Types), Apex Hours EPC/Best Practices.
+
+## 6. Fontes
 
 - Trailhead — *Meet Context Rules / Create a Qualification Context Rule / Deploy the Qualification Context Rule* (módulo industries-cpq-context-rules)
 - Trailhead — *Work with Rules and Manage Catalog Data* (módulo industries-shared-catalog)
