@@ -1,0 +1,68 @@
+# Catálogos comerciais — nomes propostos e cadastro no Vlocity CMT (US QUAL-01 "Tetra-pé")
+
+**Data:** 26/08/2026 · **Origem:** Produtos_SalesForce_2.xlsx (abas B2BB2G, B2C, Joel) + Works_B2C_Catalogo.xlsx (abas Catálogo, B2C) — lidas na íntegra.
+**Contexto:** pedido prioritário do Davi; US QUAL-01 (W-000056) "Qualificação de catálogo de ofertas comerciais via contexto de elegibilidade (Tetra-pé)" — bloqueada em P-19 (domínios de qualificação com o Joel) e P-17 (solução IBGE), mas a própria US registra: **"estrutura de catálogos/Rule Sets pode iniciar"**.
+
+## 1. O que as planilhas dizem (leitura integral)
+
+Ofertas mapeadas e seus metadados comerciais (aba Joel, que é a visão refinada):
+
+| Oferta | Segmentos | Tipo cliente | Canais | Cidade |
+|---|---|---|---|---|
+| Smart Firewall (modelos Forti/Huawei/Hillstone/Sophos + VDOM; licença Advanced/Premium; prazo 12–60m; WITO) | B2S/B2B/B2G/B2W | PJ | STORE, TELESALES, FIELD_SALES, ECOMMERCE | N/A |
+| Smart Wi-Fi (fabricante Ubiquiti/Huawei/Ruckus; nível Lite/Advanced/Premium; ambiente; prazo; WITO) | B2B/B2G/B2S/B2W (componentes também B2C) | PJ | os 4 | ALL |
+| Internet Home e MPE Urbana (GPON/rádio/satélite; 500M–1G; SVA/Serviços Digitais Aya) | B2C/B2S | PF/PJ | os 4 | ALL (por IBGE) |
+| Smart Internet Basic | B2B/B2G/B2W | PJ | os 4 | ALL (por IBGE) |
+| Smart Internet PME (semidedicado; NOC opcional) | B2C/B2S/B2B/B2G/B2W | PF/PJ | os 4 | ALL |
+| Smart Internet Corporativa (porta primária/secundária; 2M–10G; AntiDDoS; NOC Bronze/Prata/Ouro; Fail-Over) | B2B/B2G/B2W/B2C/B2S | PJ/PF | os 4 | ALL |
+| Smart PBX (ramais SIP 4–1024; módulos E1/FXS/FXO/GSM; bastidor) | B2B/B2G (aba B2BB2G) | PJ | — | — |
+| Streaming (Plataforma; licença Playhub Avançado/Top/Prime; combo com Internet Home Urbana) | B2C | PF | Todos | 0 |
+
+**Tetra-pé = as 4 colunas de qualificação presentes em todas as ofertas: Canal de Vendas · Mercado/Segmento · Tipo de Cliente (PF/PJ) · Município (código IBGE).** É o contexto de elegibilidade da US QUAL-01.
+
+## 2. Proposta de catálogos (por família de produto)
+
+Decisão de desenho (native-first): **catálogo = família/frente de produto; segmento/canal/cidade NÃO viram catálogos** — viram **regras de qualificação (context rules)** aplicadas sobre os catálogos. Duplicar catálogo por segmento (ex.: "Internet B2C", "Internet B2B") multiplica manutenção e é exatamente o que o motor de elegibilidade existe para evitar.
+
+| Code (proposto) | Nome | Ofertas (das planilhas) |
+|---|---|---|
+| `CAT_INTERNET` | Internet | Internet Home e MPE Urbana, Smart Internet Basic, Smart Internet PME, Smart Internet Corporativa |
+| `CAT_SEGURANCA` | Segurança | Smart Firewall (+ Suporte Firewall WITO) |
+| `CAT_WIFI` | Wi-Fi | Smart Wi-Fi (+ Suporte Wifi WITO) |
+| `CAT_VOZ` | Voz | Smart PBX |
+| `CAT_STREAMING` | Streaming | Streaming (Playhub) |
+| `CAT_SVA` | Serviços Digitais / SVA | Pacotes SVA Básico/Prime, Serviços Digitais (Aya Bancah/Books/Audiolivro) |
+
+Opcional para navegação por frente (hierarquia de catálogos pai→filho, suportada nativamente): `CAT_VAREJO` (filhos: Internet, Streaming, SVA, Wi-Fi) e `CAT_EMPRESAS` (filhos: Internet, Segurança, Wi-Fi, Voz). TV: reservar `CAT_TV` (citada como exemplo pelo negócio; sem oferta nas planilhas ainda).
+
+Convenção de código: prefixo `CAT_`, sem acento, maiúsculas — o Code é a chave usada pelas APIs (`getOffers` por catalogCode) e pelos DataPacks.
+
+## 3. Como cadastrar (Vlocity Product Console — sem objeto custom)
+
+Objetos do pacote: `vlocity_cmt__Catalog__c` (catálogo; hierarquia via catálogo-pai) e `vlocity_cmt__CatalogProductRelationship__c` (junção catálogo ↔ produto/promoção; matching key `CatalogId__c` + `Product2Id__c`).
+
+1. App Launcher → **Vlocity Product Console** → Dashboard → seção **Product Management → Catalogs** → **New Catalog**.
+2. Preencher: **Name** (ex.: Internet), **Code** (`CAT_INTERNET`), descrição, datas de vigência, **Active**. Para hierarquia, criar primeiro os pais (`CAT_VAREJO`/`CAT_EMPRESAS`) e nos filhos apontar o parent catalog.
+3. Abrir o catálogo → facet **Products**: adicionar as ofertas (cria os registros de `CatalogProductRelationship__c`). Promoções idem, no facet de promoções.
+4. Repetir por catálogo da tabela acima.
+5. **Versionamento/CI**: exportar como DataPack (Catalog) no vlocity_build para o repositório — mesmo tratamento dos demais metadados de EPC (alinha com EPC-09, compilação/integridade).
+
+## 4. Tetra-pé = Context Rules (qualificação dos catálogos)
+
+Caminho documentado (Trailhead oficial Industries CPQ Context Rules + guia CME "Defining Context Eligibility Rules"):
+
+1. **Context Dimensions** (Product Console → Dashboard → Rules → Context Dimension) — uma por pé: Canal de Vendas, Segmento de Mercado, Tipo de Cliente (PF/PJ), Município IBGE. (Conferir antes as dimensões que o pacote CMT já traz de fábrica — ex.: Account/market segment — e reaproveitar.)
+2. **Context Mapping/Scope** — mapear cada dimensão à fonte do dado: campos de Account/Opportunity/Order (ex.: segmento da conta, canal do usuário/loja, `Cod. Cidade` IBGE do endereço de instalação — dependência P-17).
+3. **Entity Filters / Rule Conditions** — condições por valor (ex.: Segmento IN B2B,B2G,B2W; TipoCliente = PJ; IBGE IN cobertura).
+4. **Rule Set** tipo **Qualification** — agrupa as condições; um rule set por combinação relevante do Tetra-pé.
+5. **Anexar o rule set** ao catálogo, à oferta (produto) ou à promoção — produtos não qualificados caem na aba Disqualified do CPQ Cart e somem do `getOffers` (Digital Commerce) para aquele contexto.
+6. Testar com contas de segmentos diferentes: mesma vitrine (`CAT_INTERNET`), resultados diferentes por contexto.
+
+Dependências registradas na US: P-19 (domínios de qualificação — fechar com o Joel a lista de valores por pé) e P-17 (fonte do código IBGE no endereço). **Nada disso bloqueia o passo 3 (criar catálogos) nem o esqueleto dos rule sets.**
+
+## 5. Fontes
+
+- Trailhead — *Meet Context Rules / Create a Qualification Context Rule / Deploy the Qualification Context Rule* (módulo industries-cpq-context-rules)
+- Trailhead — *Work with Rules and Manage Catalog Data* (módulo industries-shared-catalog)
+- Salesforce Developers (CME) — *Defining Context Eligibility Rules*; *Get Offers by Catalog API* (Digital Commerce); *Create Product Objects* (EPC REST)
+- vlocity_build (GitHub vlocityinc) — matching keys de `CatalogProductRelationship__c` para DataPacks/CI
