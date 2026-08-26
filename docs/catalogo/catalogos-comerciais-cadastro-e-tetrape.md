@@ -60,6 +60,15 @@ Caminho documentado (Trailhead oficial Industries CPQ Context Rules + guia CME "
 
 Dependências registradas na US: P-19 (domínios de qualificação — fechar com o Joel a lista de valores por pé) e P-17 (fonte do código IBGE no endereço). **Nada disso bloqueia o passo 3 (criar catálogos) nem o esqueleto dos rule sets.**
 
+## 4a. DECISÃO (26/08): fonte de verdade = aba Joel
+
+Joel confirmou que trabalhou apenas na guia "Joel" → abas B2BB2G e B2C são rascunho anterior, obsoletas. Efeitos:
+- **Licença Firewall = Advanced/Premium** (Basic/Advanced descartado) + prazo 12–60m (default 36).
+- **Modelagem por atributo direto** (picklists) vence a estrutura Oferta→Serviço→Componente→Opção — alinhada à prática EPC (atributo > SKU, hierarquia ≤4 níveis).
+- Prontas para vincular: Smart Firewall, Smart Wi-Fi, Internet Home/MPE Urbana, Smart Internet Basic, Corporativa, PME → `CAT_SEGURANCA`, `CAT_WIFI`, `CAT_INTERNET`.
+- **Pendentes de retrabalho pelo Joel (sem fonte de verdade)**: Smart PBX (`CAT_VOZ`), Streaming/Playhub (`CAT_STREAMING`), ofertas de suporte WITO (exclusão deliberada P-02 — decidir se entram na Onda 1), Tipo de Porta/Fail-Over/Bastidor da Corporativa (confirmar se descarte foi intencional), SVA/Serviços Digitais B2B ("a refinar" na própria guia Joel).
+- Registrar em ata junto com o P-08 (hierarquia 35.3).
+
 ## 5. Famílias de produto (Object Types) — o que precisa
 
 "Família" no EPC = **hierarquia de Object Types** (`vlocity_cmt__ObjectClass__c`) sob Product2, com **herança dinâmica de atributos** por nível e layouts por tipo (EPC-04); **Product Specifications** ligam-se a um único tipo e herdam tudo (EPC-05); `Product2.Family` (picklist padrão Sales Cloud) espelha as famílias para relatórios/forecast.
