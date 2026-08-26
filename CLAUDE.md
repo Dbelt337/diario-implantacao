@@ -8,3 +8,4 @@
 6. **Testes de aprovação/orquestração sempre em registro novo** (runs ficam presos na versão em que nasceram) e com usuários **ativos** nos lookups (staging tem duplicados inativos).
 7. **Ambientes:** prod `prod-brasiltecpar`, sandbox `preprod-brasiltecpar--staging`, org Blink separada (`blinktelecom`). Retrieve comparativo antes de promover qualquer coisa.
 8. **Idioma:** respostas e documentos em português.
+9. **Estilo:** nunca usar emojis nem travessões/separadores decorativos (como traço longo ou ponto central) em respostas, tabelas e documentos. Texto limpo, sem vestígios de IA. Hífen só quando faz parte da grafia (Wi-Fi, B2B).

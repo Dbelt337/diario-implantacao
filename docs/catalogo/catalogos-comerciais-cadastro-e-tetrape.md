@@ -60,6 +60,20 @@ Caminho documentado (Trailhead oficial Industries CPQ Context Rules + guia CME "
 
 Dependências registradas na US: P-19 (domínios de qualificação — fechar com o Joel a lista de valores por pé) e P-17 (fonte do código IBGE no endereço). **Nada disso bloqueia o passo 3 (criar catálogos) nem o esqueleto dos rule sets.**
 
+## 4b. De para consolidado (versão final, 26/08)
+
+| Code | Nome | Família (Object Type) | Ofertas (aba Joel) | Dono | Status |
+|---|---|---|---|---|---|
+| CAT_INTERNET | Internet | Internet | Internet Home e MPE Urbana, Smart Internet Basic, Smart Internet PME, Smart Internet Corporativa | Joel (B2B/B2G/B2W) e Rodrigo (B2C/B2S) | Pronto para vincular |
+| CAT_SEGURANCA | Segurança | Segurança | Smart Firewall (licença Advanced/Premium, prazo 12 a 60 meses) | Joel | Pronto. WITO fora da Onda 1 (P-02) |
+| CAT_WIFI | Wi-Fi | Wi-Fi | Smart Wi-Fi (Ubiquiti, Huawei, Ruckus; Lite, Advanced, Premium; prazo de locação) | Joel | Pronto. WITO fora da Onda 1 (P-02) |
+| CAT_VOZ | Voz | Voz | Smart PBX | Joel | Aguarda retrabalho no template da guia Joel |
+| CAT_STREAMING | Streaming | Streaming | Streaming Playhub (Avançado, Top, Prime) | Rodrigo | Aguarda retrabalho no template da guia Joel |
+| CAT_SVA | Serviços Digitais | Serviços Digitais | SVA Básico e Prime, Aya Bancah, Aya Books, Audiolivro | Rodrigo (B2C/B2S) e Joel (B2B a refinar) | Parcial |
+| CAT_TV | TV (reservado) | TV (reservada) | Sem oferta ainda | A definir | Reservar code e família |
+
+Nota de estilo (diretriz permanente): documentos e tabelas sem emojis e sem travessões ou separadores decorativos.
+
 ## 4a. DECISÃO (26/08): fonte de verdade = aba Joel
 
 Joel confirmou que trabalhou apenas na guia "Joel" → abas B2BB2G e B2C são rascunho anterior, obsoletas. Efeitos:
