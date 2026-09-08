@@ -121,3 +121,48 @@ Não é análise da org: é o aviso padrão. Passo 1 do readiness NÃO foi confi
   -> cliente ser um lookup próprio, e não ParentId.
 - Cada Person Account consome storage de Account e de Contact (um registro de cada): converter os
   53 mil "Pessoa Física" dobra o consumo dessa base.
+
+## 3ª rodada (08/09): o record type "Billing" não é Billing Account
+
+### Identificadores por record type
+| Record type | Contas | CPF/CNPJ | Código SAP | BillingAddressId | SourceSystemId |
+|---|---|---|---|---|---|
+| B2B - Pessoa jurídica | 54.485 | 54.485 | 87 | 0 | 0 |
+| Pessoa Física | 53.073 | 53.073 | 53.033 | 314 | 314 |
+| Pessoa Jurídica | 2.090 | 2.090 | 2.088 | 0 | 0 |
+| Billing | 1.938 | 1.938 | 1.936 | 0 | 0 |
+| (sem record type) | 4 | 0 | 0 | 0 | 0 |
+
+AccountNumber e AddressExternalId não são usados em conta nenhuma.
+
+### Amostra das 5 Billing mais recentes
+Todas são pessoas físicas: nome de pessoa, CPF de 11 dígitos em DocumentNumber__c, Código SAP
+(ex.: 0001229875), Party com o mesmo nome, criadas por vendedores/BKO (Nataniel Pacheco, Natanael
+Abreu Rocha) em agosto e setembro de 2026.
+
+### Pedidos
+Todas as 2.505 linhas com Billing/Service preenchidas (549 pedidos) usam a MESMA conta "Pessoa Física"
+do cliente nos três papéis: cliente do pedido, Billing Account e Service Account. Nenhuma conta do
+record type "Billing" aparece em pedido. (Corrige a leitura anterior: as 291 contas distintas
+referenciadas em OrderItem são "Pessoa Física", não "Billing".)
+
+### Party
+106.273 contas com Party, 106.273 parties distintos: relação 1:1, sem compartilhamento. Party não é
+vínculo entre contas.
+
+### Conclusões
+1. As 1.938 contas "Billing" são clientes PF cadastrados com o record type errado (CPF único garante
+   que não duplicam nenhuma "Pessoa Física"). O item (b) da nota de 08/09 na W-000117 ("record type
+   Billing já existe, não criar outro, auditar ParentId") está errado: essas contas devem ser
+   reclassificadas como "Pessoa Física", e o papel Billing Account precisa de record type limpo.
+2. A jornada atual já opera com "cliente = Billing = Service" no carrinho (549 pedidos). Isso abre a
+   opção de manter esse padrão na Onda 1 e criar Billing/Service Account separadas só nos casos de
+   pagador diferente ou segundo endereço, evitando criar ~106 mil contas auxiliares na migração.
+3. O vínculo Billing/Service -> cliente não pode ser ParentId (não usado; incompatível com Person
+   Account) nem Party (1:1). Precisa de lookup próprio "Conta cliente".
+4. CPF/CNPJ é External ID único em Account, então uma Billing Account nunca repete o documento do
+   cliente; sua chave é o ID externo da conta de cobrança + lookup do cliente.
+5. Código SAP do Cliente (ExternalId__c) é o ID externo de fato para PF, PJ e "Billing" (99,9%), mas
+   só 87 das 54.485 "B2B - Pessoa jurídica" têm: a base B2B não está integrada ao ERP/Customer Core.
+6. Pendente de confirmação com o cliente: Customer Core = SAP? Que sistema é o "Usuário de
+   Integração" (cria as "Pessoa Jurídica")? O que é a "Ordem Manual" (cria as "Billing")?
