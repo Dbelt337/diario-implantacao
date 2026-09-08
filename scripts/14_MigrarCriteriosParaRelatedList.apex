@@ -4,7 +4,7 @@
 //   "1. Dado ..., quando ..., entao ..."   ou   "Cenário 1: Titulo. Dado ... quando ... entao ..."
 // A secao termina na linha em branco seguinte ou na 1a nota ("--- "). O corpo recebe um ponteiro.
 // DRY_RUN = true: so lista o que faria. Troque para false para gravar. Idempotente (so roda onde ACCount = 0).
-Boolean DRY_RUN = true;
+Boolean DRY_RUN = false;
 String DE = 'W-000051', ATE = 'W-000117';
 
 List<agf__ADM_Acceptance_Criterion__c> novos = new List<agf__ADM_Acceptance_Criterion__c>();

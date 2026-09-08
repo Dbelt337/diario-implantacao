@@ -83,3 +83,9 @@ Status, Responsável, Data), Descrição (Como/Quero/Para que), seções do Deta
   Stream, Câmera, Móvel). Precisa de nota de refinamento ou de decisão explícita.
 - Tamanho de Details divergente em 1 a 3 chars em 6 works (065, 080, 081, 090, 094, 102): quebras
   CRLF normalizadas pelo log. Sem impacto.
+- **W-000070, AC "3" com 6.569 chars**: além do critério 3, guarda o texto "Decisões do cliente —
+  fechamento das pendências P-01 a P-19" (18 decisões da Onda 0, registro de 26/08), invisível no
+  Details e ausente dos docs. Numeração conflita com QUAL-01/B2C-13/CAT-ZON-01 (P-17 e P-19) e o
+  texto diz "não há itens abertos" enquanto 3 works tratam P-19 como pendente. Script 15 move o
+  texto para nota e registra as pendências de alinhamento (estrutura por família x mercado, lista de
+  famílias, marcas x nomes genéricos, numeração), sem decidir.
