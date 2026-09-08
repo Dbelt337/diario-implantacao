@@ -54,3 +54,16 @@ Não existe lookup customizado "conta pagadora"/"conta principal" fora do pacote
 2. Explicar a diferença entre os dois record types de PJ pelos criadores/ano.
 3. Identificar o External ID usado pela integração "Ordem Manual" nas Billing.
 4. Registrar na W-000117 (script 11) o ajuste da RN-01/Cenário E com o campo de vínculo real.
+
+## Person Accounts (Setup > Person Accounts, produção, 08/09)
+Não habilitados. Readiness com 3 de 4 passos concluídos:
+- Org Impact Acknowledgement: pendente (único passo que falta; o botão "Enable Person Accounts" fica cinza por causa dele).
+- Create Accounts Record Type: ok (já existe record type de conta business).
+- Set Read Permissions: ok.
+- Set Organization-Wide Sharing: ok (Contact = Controlled By Parent, pré-requisito que costuma ser o bloqueio real).
+
+Leitura: a habilitação é viável tecnicamente e não depende de projeto de preparação; a barreira é só
+a decisão de negócio e a conversão dos 53 mil "Pessoa Física" (irreversível, um Contact por conta,
+janela). Mantém a recomendação BTP da nota: opção (ii) na Onda 1 ("Pessoa Física" como Consumer,
+Contact titular obrigatório, CPF único), reavaliar após go-live. NÃO clicar em "Enable Person Accounts"
+sem decisão registrada com SysMap e Joel.
