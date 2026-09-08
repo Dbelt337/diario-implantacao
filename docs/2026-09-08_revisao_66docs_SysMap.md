@@ -89,3 +89,8 @@ Status, Responsável, Data), Descrição (Como/Quero/Para que), seções do Deta
   texto diz "não há itens abertos" enquanto 3 works tratam P-19 como pendente. Script 15 move o
   texto para nota e registra as pendências de alinhamento (estrutura por família x mercado, lista de
   famílias, marcas x nomes genéricos, numeração), sem decidir.
+- Script 14 (DRY_RUN=false): 64 Acceptance Criteria inseridos, 16 works atualizadas (corpo com
+  ponteiro). Script 15: AC 3 da W-000070 reduzida a 335 chars, 6.231 chars de decisões movidos para
+  nota + nota de pendências (Details 2.369 -> 10.542, 2 notas). 04 v8 compacto depois de tudo:
+  `81 OK, 0 FALTANDO, 0 DUPLICADOS`. Itens B.5, "critérios no corpo" e "AC 3" resolvidos.
+  A extração em docs/extracao/ é ANTERIOR aos scripts 14 e 15; regerar com o 13 antes de produzir docs.

@@ -13,3 +13,5 @@
 | 15 | 15_W70_MoverDecisoesDaAC_0809.apex | W-000070: move o texto "Decisões do cliente P-01..P-19" da AC 3 para nota no Details e registra pendências de alinhamento | Sim (1 AC + 1 work) |
 
 Ordem em 08/09: rodar o 11 (grava 2 notas) e depois o 04 v8 (esperado 81 OK). O v8 foi reconstruído a partir do v4 e do log do v7; os scripts 01, 02, 03, 05, 07, 08, 09 e o 04 v7 ficaram na sessão anterior e não estão neste repositório.
+
+Executados em produção em 08/09, nesta ordem: 09, 04 v7 (79 OK), 10, 11, 04 v8 compacto (81 OK), 12, 13, 14 (dry run), 14 (64 AC), 15, 04 v8 compacto (81 OK).
