@@ -67,3 +67,47 @@ a decisão de negócio e a conversão dos 53 mil "Pessoa Física" (irreversível
 janela). Mantém a recomendação BTP da nota: opção (ii) na Onda 1 ("Pessoa Física" como Consumer,
 Contact titular obrigatório, CPF único), reavaliar após go-live. NÃO clicar em "Enable Person Accounts"
 sem decisão registrada com SysMap e Joel.
+
+## Vínculos e identificadores (consultas de 08/09, 2ª rodada)
+
+### Lookups preenchidos por record type
+| Record type | Contas | RootAccount | Grupo econ. | Contato prim. | Premises | Party |
+|---|---|---|---|---|---|---|
+| B2B - Pessoa jurídica | 54.485 | 0 | 28 | 0 | 0 | 49.668 |
+| Pessoa Física | 53.062 | 0 | 0 | 0 | 0 | 52.704 |
+| Pessoa Jurídica | 2.089 | 0 | 0 | 0 | 0 | 2.089 |
+| Billing | 1.938 | 0 | 0 | 0 | 0 | 1.800 |
+| (sem record type) | 4 | 2 | 0 | 0 | 0 | 0 |
+
+Conclusão: nenhum lookup de Account liga a Billing ao cliente (nem ParentId, nem RootAccount,
+nem grupo econômico). O único vínculo possível dentro de Account é o Party (Vlocity), se a Billing
+compartilhar o mesmo Party do cliente. Premises não é usado em conta nenhuma.
+
+### Referências nas linhas de pedido
+OrderItem com Billing Account preenchida: 2.505 linhas, 549 pedidos, 291 Billing distintas e
+291 Service distintas (mesma contagem: provável que a mesma conta esteja nos dois campos).
+Só 291 das 1.938 Billing aparecem em pedido; as outras 1.647 não têm nenhum vínculo conhecido.
+
+### Origem dos dois record types de PJ
+| Record type | Origem |
+|---|---|
+| B2B - Pessoa jurídica | Carga de 2025 por 2 usuários (Caio 44.838, Iago 4.688 = 49.526) e depois criação manual por vendedores B2B em 2026 |
+| Pessoa Jurídica | 2.087 de 2.089 criadas por "Usuário de Integração" em 2026 |
+
+Conclusão para o item (d) da nota: "B2B - Pessoa jurídica" é o Business da RN-01 (base importada +
+operação B2B manual). "Pessoa Jurídica" é criado por integração, não por pessoa; falta identificar qual
+integração e se ela cria junto a Billing (volumes próximos: 2.089 x 1.938, ambos só em 2026).
+
+### Identificadores externos existentes em Account
+| Campo | Rótulo | Tipo |
+|---|---|---|
+| DocumentNumber__c | CPF/CNPJ | Text(20), External ID, único |
+| ExternalId__c | Código SAP do Cliente | Text(255), External ID |
+| AddressExternalId__c | Código externo do endereço | Text(80), External ID |
+| BillingAddressId__c / ShippingAddressId__c | ids de endereço | Text(18), External ID, únicos |
+| SourceSystemIdentifier | Source System ID | padrão |
+
+Conclusão: a RN-07 ("Consumer por CPF, Business por CNPJ") já tem campo: DocumentNumber__c, único.
+Consequência: uma Billing NÃO pode repetir o CNPJ/CPF do cliente nesse campo; o ID externo da conta
+de cobrança do Customer Core (RN-06/RN-07) precisa ser outro campo, provavelmente ExternalId__c
+("Código SAP do Cliente") ou um campo novo. Não há Service Account nem External ID para ela.
