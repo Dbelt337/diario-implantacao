@@ -56,3 +56,7 @@ Status, Responsável, Data), Descrição (Como/Quero/Para que), seções do Deta
    Critérios sempre antes das notas, Responsável = Assignee real (ou remover a linha).
 3. Regerar o pacote completo (67 docs) depois do script 12, agora com as notas dos scripts 09 e 11.
 4. Rodar o 04 v8 compacto depois do 12 (esperado continua 81 OK; o 12 não mexe em marcador).
+
+## Execução
+- Script 12 rodado em produção (08/09): W-000073 (-25 chars), W-000075 (-41), W-000083 (-36),
+  `works limpas: 3, puladas: 0`. Os três fragmentos "## n." saíram do Details. Item B.5 resolvido.
