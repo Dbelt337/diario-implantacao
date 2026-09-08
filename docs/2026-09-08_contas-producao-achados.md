@@ -166,3 +166,10 @@ vínculo entre contas.
    só 87 das 54.485 "B2B - Pessoa jurídica" têm: a base B2B não está integrada ao ERP/Customer Core.
 6. Pendente de confirmação com o cliente: Customer Core = SAP? Que sistema é o "Usuário de
    Integração" (cria as "Pessoa Jurídica")? O que é a "Ordem Manual" (cria as "Billing")?
+
+### Confirmado com Diego (08/09)
+Customer Core é o sistema legado, chamado internamente de "plataforma". Não é o SAP. Logo:
+- `ExternalId__c` (Código SAP do Cliente) é o código do ERP, não o ID do Customer Core.
+- Não existe campo em Account com o ID do Customer Core. A RN-06/RN-07 e o passo 2 da CAT-MIG-01
+  precisam de um External ID novo ("ID Customer Core") na conta e na Billing Account.
+- Ainda em aberto: sistema por trás do "Usuário de Integração" e o que é a "Ordem Manual".

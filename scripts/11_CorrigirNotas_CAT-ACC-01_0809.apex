@@ -3,7 +3,8 @@
 // Grava 1 nota por work no final do Details. Idempotente: se o cabecalho ja existir, pula.
 // Esperado na 1a execucao: 2 notas gravadas. Rode o 04 (v8) depois para validar.
 //
-// ANTES DE RODAR, confirmar os 3 pontos marcados com [CONFIRMAR] no texto e ajustar se preciso.
+// Confirmado em 08/09: Customer Core = plataforma legada (nao e o SAP). Restam 2 pontos [CONFIRMAR]
+// no texto (sistema do "Usuario de Integracao" e o que e a "Ordem Manual"); podem ficar como pendencia.
 
 Map<String, String> cabecalho = new Map<String, String>{
     'W-000117' => '--- CORRECAO APOS AUDITORIA DAS CONTAS BILLING (08/09) ---',
@@ -21,14 +22,14 @@ corpo.put('W-000117',
   + '(2) Nos pedidos, as 2.505 linhas com Billing/Service preenchidas (549 pedidos) usam a própria conta "Pessoa Física" do cliente nos três papéis (cliente, Billing e Service); nenhuma conta "Billing" aparece em pedido. '
   + '(3) Party é 1:1 com Account (106.273 contas, 106.273 parties): não é vínculo entre contas. '
   + '(4) ParentId não é usado na org (2 contas em 111 mil) e Person Accounts, se habilitados, não participam de hierarquia de contas. '
-  + '(5) External IDs existentes em Account: CPF/CNPJ (DocumentNumber__c, único), Código SAP do Cliente (ExternalId__c: 53.033 PF, 2.088 PJ, 1.936 "Billing", apenas 87 das 54.485 "B2B - Pessoa jurídica"), BillingAddressId/ShippingAddressId. '
+  + '(5) External IDs existentes em Account: CPF/CNPJ (DocumentNumber__c, único), Código SAP do Cliente (ExternalId__c, código do ERP: 53.033 PF, 2.088 PJ, 1.936 "Billing", apenas 87 das 54.485 "B2B - Pessoa jurídica"), BillingAddressId/ShippingAddressId. NÃO existe campo com o ID do Customer Core (plataforma legada): o Customer Core e o SAP são sistemas distintos. '
   + '(6) "B2B - Pessoa jurídica" é a base importada em 2025 (49.526 contas por 2 usuários) mais a criação manual dos vendedores B2B em 2026; "Pessoa Jurídica" (2.089) é criada pelo "Usuário de Integração" em 2026 [CONFIRMAR qual sistema]. '
   + '(7) Readiness de Person Accounts em produção: 3 de 4 passos ok (Contact já em Controlled By Parent); falta só o acknowledgement, deixado sem confirmar de propósito.\n'
   + 'AJUSTES NA US (substituem os itens (b) e (d) da nota anterior): '
   + '(b\') o record type "Billing" atual não pode ser reaproveitado como Billing Account: reclassificar as 1.938 contas como "Pessoa Física" (mesmo CPF, mesmo Código SAP, sem perda de dado) e só então usar o record type "Billing" para o papel de cobrança, ou criar "Billing Account" novo e desativar o antigo. '
   + '(d\') o Business da RN-01 é "B2B - Pessoa jurídica"; as "Pessoa Jurídica" de integração devem ser unificadas nele (ou documentadas como PJ do canal B2C) antes da migração. '
   + 'RN-01: o vínculo Billing/Service -> cliente NÃO será ParentId (não usado na org e incompatível com Person Account) nem Party (1:1): criar lookup "Conta cliente" (Account) obrigatório nos record types Billing e Service, com External ID por papel. '
-  + 'RN-06/RN-07: CPF/CNPJ é único em Account, logo a Billing Account não repete o documento do cliente; sua chave é o ID externo da conta de cobrança do Customer Core [CONFIRMAR se Customer Core = SAP e se o campo é ExternalId__c] mais o lookup do cliente. '
+  + 'RN-06/RN-07: CPF/CNPJ é único em Account, logo a Billing Account não repete o documento do cliente; sua chave é o ID externo da conta de cobrança do Customer Core (plataforma legada), que exige campo novo (External ID, único) porque hoje Account só carrega o código SAP do ERP; mais o lookup do cliente. Ambos os IDs (Customer Core e SAP) ficam na Billing Account, cada um em seu campo. '
   + 'RN-02/RN-03/RN-04 (proposta para decisão com SysMap): manter na Onda 1 o padrão já exercitado em 549 pedidos, em que a conta do cliente é a própria Billing e Service padrão no Create Cart, e criar Billing Account separada só quando o pagador é outro (aprovação do BKO) e Service Account só a partir do segundo endereço; isso evita criar ~106 mil contas auxiliares na migração e mantém a decomposição do OM funcionando como hoje. '
   + 'Governança: unificar os dois usuários "Integracao/Integraçao Ordem Manual" [CONFIRMAR o que é a Ordem Manual], excluir ou inativar as 112 contas do "Usuario Teste", sanear as 4 contas sem record type, e carregar o Código SAP nas contas B2B antes da migração de ativos.\n'
   + 'CENÁRIO E (substitui o anterior): Dado a base atual, quando a US for entregue, então nenhuma conta com CPF/CNPJ de cliente está no record type Billing, toda Billing Account tem o lookup de cliente e o ID externo de cobrança preenchidos, e nenhuma conta fica sem record type.');
@@ -36,7 +37,7 @@ corpo.put('W-000117',
 corpo.put('W-000103',
     'Auditoria de 08/09 (ver nota "CORRECAO APOS AUDITORIA DAS CONTAS BILLING" na W-000117): as 1.938 contas "Billing" existentes são clientes pessoa física com CPF e Código SAP, não contas de cobrança. '
   + 'O passo (2) da ordem de carga passa a ser: reclassificar essas contas como "Pessoa Física" e, se a decisão da CAT-ACC-01 mantiver a conta do cliente como Billing/Service padrão na Onda 1, não há Billing Accounts a carregar além dos casos de pagador diferente. '
-  + 'Chave de reconciliação com o Customer Core: Código SAP do Cliente (ExternalId__c) [CONFIRMAR], preenchido em 99,9% das contas PF e PJ de 2026 e em apenas 87 das 54.485 "B2B - Pessoa jurídica": a base B2B precisa receber o código antes da carga de ativos (novo pré-requisito do passo 1). '
+  + 'Chaves de reconciliação: com o ERP, o Código SAP do Cliente (ExternalId__c), preenchido em 99,9% das contas PF e PJ de 2026 e em apenas 87 das 54.485 "B2B - Pessoa jurídica"; com o Customer Core (plataforma legada), NÃO há campo hoje: criar External ID "ID Customer Core" em Account antes da carga. A base B2B precisa receber o código SAP e o ID Customer Core antes da carga de ativos (novo pré-requisito do passo 1). '
   + 'Limpeza prévia ao passo 1: 112 contas do "Usuario Teste", 4 contas sem record type, usuário de integração "Ordem Manual" em duplicidade. '
   + 'Volumetria confirmada em 08/09: 111.590 contas, 1 Asset, 549 pedidos com Billing/Service preenchidos.');
 
