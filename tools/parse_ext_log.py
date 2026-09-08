@@ -20,11 +20,11 @@ for e in entries:
     tipo = parts[1]
     if tipo == 'F':
         k, v = parts[2], ' | '.join(parts[3:])
-        if k.startswith('AC'):
+        if re.match(r'AC\d\d\.', k):
             n, f = k.split('.', 1); wk['ac'].setdefault(n, {})[f] = v
-        elif k.startswith('CM'):
+        elif re.match(r'CM\d\d\.', k):
             n, f = k.split('.', 1); wk['comments'].setdefault(n, {})[f] = v
-        elif k.startswith('TK'):
+        elif re.match(r'TK\d\d$', k):
             wk['tasks'][k] = v
         else:
             wk['fields'][k] = v

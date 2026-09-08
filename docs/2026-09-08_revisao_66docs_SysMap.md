@@ -23,8 +23,11 @@ Status, Responsável, Data), Descrição (Como/Quero/Para que), seções do Deta
    W-000090: o gerador abre "Notas de Refinamento e Decisões Registradas" na primeira nota que
    encontra (ALINHAMENTO COM B2B / COMPLEMENTO DE ARQUITETURA) e os Critérios ficam depois, no meio
    das notas. Ordem esperada: Critérios antes das notas.
-4. **"Responsável: Davi Israel de Abreu" nos 66 docs.** Verificar se é o Assignee real de todas as
-   works ou valor fixo do gerador (as 16 works novas do script 02 foram criadas sem assignee).
+4. ~~"Responsável" fixo~~ **Confirmado pela extração (script 13): Davi é o Assignee real das 67 works.**
+   Sem erro aqui. Em compensação, o **nome do épico B2B está errado nos docs**: os 7 docs B2B
+   (W-000096 a 101 e W-000107) mostram "B2B - Jornadas de Venda e Gestão de Contratos", e na org o
+   épico se chama "B2B - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente". O gerador tem o
+   nome antigo fixo em código ou o épico foi renomeado depois.
 
 ### B. Problemas no conteúdo da org (script 12 corrige)
 5. Fragmentos de markdown do documento de origem colados no Details:
@@ -60,3 +63,23 @@ Status, Responsável, Data), Descrição (Como/Quero/Para que), seções do Deta
 ## Execução
 - Script 12 rodado em produção (08/09): W-000073 (-25 chars), W-000075 (-41), W-000083 (-36),
   `works limpas: 3, puladas: 0`. Os três fragmentos "## n." saíram do Details. Item B.5 resolvido.
+
+## Extração completa (script 13, 08/09 18:04) — docs/extracao/
+- 67 works (W-000051..117), todas User Story, Status New, Product Tag "Salesforce", Assignee Davi.
+  Scrum Team: 54 SysMap, 13 Salesforce. Épicos: 45 B2C, 15 Catálogo, 7 B2B. Priority, Story Points
+  e Sprint vazios em todas. Product Owner: Priscila De Lima (54), Thiago Campos Almeida (5, EPC-01..05),
+  **sem PO em 8**: W-000102, 103, 104, 108, 111, 112, 113, 114 (todas de catálogo, time Salesforce).
+- Acceptance Criteria: 51 works com registros (1 a 6 cada); **16 sem nenhum** (W-000102..117), com os
+  critérios no corpo. Script 14 em DRY_RUN: 16 works, 64 critérios, títulos corretos
+  ("Critério n" nos formatos numerados, "Cenário n: Título" nos demais).
+- 49 comentários, todos automáticos do Agile Accelerator (troca de assignee, épico e subject); nenhum
+  conteúdo de refinamento fora do Details. 0 tasks. Campo Description vazio em todas.
+- W-000070 (EPC-10, time SysMap, 3 AC, sem notas) **conflita com decisões posteriores**: define
+  catálogos POR FAMÍLIA (CAT_INTERNET, CAT_SEGURANCA, CAT_WIFI, CAT_VOZ, CAT_STREAMING, CAT_SVA,
+  CAT_TV) enquanto a QUAL-01 (W-000056) define catálogos POR MERCADO com família como categoria de
+  navegação e "proibido catálogo por família"; cita marcas (Playhub, Aya, Ubiquiti, Huawei, Ruckus)
+  contra a decisão de nomes genéricos; reserva CAT_TV contra o "sem TV" de 03/09; lista de famílias
+  (Internet, Segurança, Wi-Fi, Voz, Streaming, Serviços Digitais) diferente da de 03/09 (Internet,
+  Stream, Câmera, Móvel). Precisa de nota de refinamento ou de decisão explícita.
+- Tamanho de Details divergente em 1 a 3 chars em 6 works (065, 080, 081, 090, 094, 102): quebras
+  CRLF normalizadas pelo log. Sem impacto.
