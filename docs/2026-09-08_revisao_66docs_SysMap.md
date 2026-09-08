@@ -94,3 +94,12 @@ Status, Responsável, Data), Descrição (Como/Quero/Para que), seções do Deta
   nota + nota de pendências (Details 2.369 -> 10.542, 2 notas). 04 v8 compacto depois de tudo:
   `81 OK, 0 FALTANDO, 0 DUPLICADOS`. Itens B.5, "critérios no corpo" e "AC 3" resolvidos.
   A extração em docs/extracao/ é ANTERIOR aos scripts 14 e 15; regerar com o 13 antes de produzir docs.
+
+## Pacote corrigido (gerado por tools/gerar_docs.py, 08/09 18:31)
+`docs/Works_Requisitos_SysMap_0809_67docs_corrigido.zip`: 67 docs a partir de docs/extracao/works.json
+(extração 18:04, com o delta do script 15 aplicado à W-000070). Mesmo visual do pacote da SysMap (capa,
+logos, tabela, cabeçalho, rodapé). Correções: W-000070 incluída; notas dos scripts 09 e 11 em W-000117 e
+W-000103; Critérios de Aceite sempre antes das notas; épico lido da org; fragmentos "## n." ausentes;
+tabela com Product Tag, Product Owner, última alteração e hora real de geração. Checagens automáticas
+do pacote: 67 docs, 5 docs com ordem corrigida, 0 fragmentos, épico B2B correto.
+Fonte de dados anterior aos scripts 14 e 15 (exceto o delta da W-000070): regerar com o próximo log do 13.
