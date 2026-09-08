@@ -23,7 +23,7 @@ List<agf__ADM_Work__c> ws = [
     SELECT Id, Name, RecordType.Name, agf__Subject__c, agf__Details__c, agf__Description__c, agf__Status__c,
            agf__Priority__c, agf__Story_Points__c, agf__Priority_Rank__c, agf__Type__c,
            agf__Epic__r.Name, agf__Scrum_Team__r.Name, agf__Product_Tag__r.Name, agf__Sprint__r.Name,
-           agf__Theme__r.Name, agf__Assignee__r.Name, agf__Product_Owner__r.Name, agf__QA_Engineer__r.Name,
+           agf__Assignee__r.Name, agf__Product_Owner__r.Name, agf__QA_Engineer__r.Name,
            agf__Due_Date__c, agf__Related_URL__c, CreatedDate, CreatedBy.Name, LastModifiedDate, LastModifiedBy.Name,
            (SELECT Id, Name, agf__Status__c, agf__Description__c, CreatedDate FROM agf__Acceptance_Criteria__r ORDER BY CreatedDate),
            (SELECT Id, CreatedDate, CreatedBy.Name, agf__Body__c FROM agf__Comment__r ORDER BY CreatedDate),
@@ -47,7 +47,6 @@ for (agf__ADM_Work__c w : ws) {
     campo(n, 'ScrumTeam', w.agf__Scrum_Team__r == null ? null : w.agf__Scrum_Team__r.Name);
     campo(n, 'ProductTag', w.agf__Product_Tag__r == null ? null : w.agf__Product_Tag__r.Name);
     campo(n, 'Sprint', w.agf__Sprint__r == null ? null : w.agf__Sprint__r.Name);
-    campo(n, 'Theme', w.agf__Theme__r == null ? null : w.agf__Theme__r.Name);
     campo(n, 'Assignee', w.agf__Assignee__r == null ? null : w.agf__Assignee__r.Name);
     campo(n, 'ProductOwner', w.agf__Product_Owner__r == null ? null : w.agf__Product_Owner__r.Name);
     campo(n, 'QAEngineer', w.agf__QA_Engineer__r == null ? null : w.agf__QA_Engineer__r.Name);
