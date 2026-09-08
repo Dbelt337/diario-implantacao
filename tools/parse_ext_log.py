@@ -10,7 +10,7 @@ entries = re.split(r'\n(?=\d{2}:\d{2}:\d{2}\.\d+ \(\d+\)\|)', log)
 works = {}
 for e in entries:
     if '|USER_DEBUG|' not in e: continue
-    body = html.unescape(e.split('|DEBUG|', 1)[1])
+    body = html.unescape(e.split('|DEBUG|', 1)[1]).rstrip('\n')
     if not body.startswith('EXT| '): continue
     parts = body[5:].split(' | ', 4)
     w = parts[0]
@@ -19,7 +19,7 @@ for e in entries:
     if parts[1] == 'FIM': continue
     tipo = parts[1]
     if tipo == 'F':
-        k, v = parts[2], parts[3] if len(parts) > 3 else ''
+        k, v = parts[2], ' | '.join(parts[3:])
         if k.startswith('AC'):
             n, f = k.split('.', 1); wk['ac'].setdefault(n, {})[f] = v
         elif k.startswith('CM'):
