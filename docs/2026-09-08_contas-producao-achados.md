@@ -111,3 +111,13 @@ Conclusão: a RN-07 ("Consumer por CPF, Business por CNPJ") já tem campo: Docum
 Consequência: uma Billing NÃO pode repetir o CNPJ/CPF do cliente nesse campo; o ID externo da conta
 de cobrança do Customer Core (RN-06/RN-07) precisa ser outro campo, provavelmente ExternalId__c
 ("Código SAP do Cliente") ou um campo novo. Não há Service Account nem External ID para ela.
+
+### Org Impact Acknowledgement (texto genérico da Salesforce, lido em 08/09)
+Não é análise da org: é o aviso padrão. Passo 1 do readiness NÃO foi confirmado (Cancel), para o botão
+"Enable Person Accounts" continuar bloqueado em produção. Dois pontos do aviso que entram na decisão:
+- Person Accounts NÃO participam de hierarquia de contas (não têm Parent Account nem contas filhas).
+  Logo, com Person Account como Consumer, a RN-01 ("Billing e Service filhas do cliente via ParentId")
+  seria impossível no B2C. Mais um motivo para a opção (ii) na Onda 1 e para o vínculo Billing/Service
+  -> cliente ser um lookup próprio, e não ParentId.
+- Cada Person Account consome storage de Account e de Contact (um registro de cada): converter os
+  53 mil "Pessoa Física" dobra o consumo dessa base.
