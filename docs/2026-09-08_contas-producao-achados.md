@@ -173,3 +173,13 @@ Customer Core é o sistema legado, chamado internamente de "plataforma". Não é
 - Não existe campo em Account com o ID do Customer Core. A RN-06/RN-07 e o passo 2 da CAT-MIG-01
   precisam de um External ID novo ("ID Customer Core") na conta e na Billing Account.
 - Ainda em aberto: sistema por trás do "Usuário de Integração" e o que é a "Ordem Manual".
+
+## Encerramento da rodada (08/09, fim do dia)
+- Script 11 executado em produção: notas "CORRECAO APOS AUDITORIA DAS CONTAS BILLING (08/09)" em
+  W-000117 e "CORRECAO DO PASSO 2 DA CARGA (08/09)" em W-000103 gravadas.
+- Script 04 v8 compacto executado: `81 OK, 0 FALTANDO, 0 DUPLICADOS` (79 do v7 + 2 do script 11).
+- O 04 v8 completo (10,5 KB) falhou com HTTP 431 no Developer Console; o compacto (8,3 KB) passou.
+  Regra prática: manter scripts de Execute Anonymous abaixo de ~9 KB.
+- Pendências abertas: (1) confirmar com a SysMap o sistema do "Usuário de Integração" e o que é a
+  "Ordem Manual"; (2) decisão sobre a proposta "cliente = Billing = Service na Onda 1";
+  (3) reclassificação das 1.938 contas "Billing"; (4) campo "ID Customer Core" em Account.
