@@ -161,3 +161,5 @@ Ordem de execução dos scripts (todos idempotentes, um por vez, filtrar o log p
 4. `19_ValidarDepois_Gerson_1509.apex` (VAL19|): esperado 0 problemas; lista também a sprint das W-000142 a 145 (ainda sem sprint).
 
 Pendente de decisão: sprint das W-000142 a W-000145; responsável de cada work do Gerson (sugestões no Details); e-mail ao Bismarck (rascunho em `docs/2026-09-15-email-evidencias-licenca-om.md`).
+
+Execução (logs de 15/09, 15:00-15:10): **18a OK** (W-000133: Details 2.536 chars, 5 critérios criados). 18b a 18g rodaram em branco na primeira vez (versão abreviada com comentários no lugar do cabeçalho/rodapé; nenhum SOQL/DML) e foram reenviados completos. Sem log ainda de 17, 14 (fase 2) e 19.
