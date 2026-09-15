@@ -45,10 +45,10 @@ A numeração 1-29 abaixo é a ordem das histórias no docx e é a mesma que as 
 | 23 | Upgrade SEM refidelização (vigência original) | W-000100 B2B-05 | nota (d) e "TRAVAS E FISCAL" (b) |
 | 24 | Cancelamento, Esteira Sequencial e Billing Stop (TMF622) | W-000099 B2B-04 + W-000128 CAT-RET-01 | nota (a) esteira sequencial; Promotions de retenção na CAT-RET-01 |
 | 25 | Downgrade Contratual, Delta MRR, Fidelidade | W-000125 B2B-12 | história integral |
-| **26** | **Refidelização Pura e Simples (renovação sem alteração de escopo)** | **nenhuma** | W-000100 só trata refidelização junto com upgrade; não há fluxo de renovação isolada (OmniScript simplificado, aditivo de tempo, aprovação BKO, trava contra MACD simultâneo) |
-| **27** | **Aviso Prévio de Cancelamento (30/60/90 dias), reversão e corte automático** | **nenhuma** | nenhuma work cita "aviso prévio"; W-000099 vai direto do cálculo de multa ao Billing Stop |
-| **28** | **Condições Especiais de Faturamento e Intervalos de Cobrança B2B** | **nenhuma** | W-000081 B2C-24 fixa "Mensal" em somente leitura; falta picklist mensal/bimestral/trimestral/semestral/anual, condição de vencimento, alçada para não padrão e payload Billing Cycle/Payment Terms ao SAP |
-| **29** | **Cadência automática de notificações de assinatura (proposta e contrato)** | **parcial: W-000122 RN-05** | RN-05 avisa só o GR (1, 3, 7 dias; gestor em 15; expira em 30) e só para contrato. A história 29 pede e-mail ao cliente com cópia ao GR em D0, D+2, D+4, D+7, D+15, D+30, às 08h (fuso -03:00), para proposta e contrato, com Task na Oportunidade e quebra da cadência pelo callback de assinatura |
+| 26 | Refidelização Pura e Simples (renovação sem alteração de escopo) | **W-000142 B2B-13** (criada 15/09) | W-000100 só trata refidelização junto com upgrade; não há fluxo de renovação isolada (OmniScript simplificado, aditivo de tempo, aprovação BKO, trava contra MACD simultâneo) |
+| 27 | Aviso Prévio de Cancelamento (30/60/90 dias), reversão e corte automático | **W-000143 B2B-14** (criada 15/09) | nenhuma work cita "aviso prévio"; W-000099 vai direto do cálculo de multa ao Billing Stop |
+| 28 | Condições Especiais de Faturamento e Intervalos de Cobrança B2B | **W-000144 B2B-15** (criada 15/09) | W-000081 B2C-24 fixa "Mensal" em somente leitura; falta picklist mensal/bimestral/trimestral/semestral/anual, condição de vencimento, alçada para não padrão e payload Billing Cycle/Payment Terms ao SAP |
+| 29 | Cadência automática de notificações de assinatura (proposta e contrato) | **W-000145 B2B-16** (criada 15/09) + W-000122 RN-05 | RN-05 avisa só o GR (1, 3, 7 dias; gestor em 15; expira em 30) e só para contrato. A história 29 pede e-mail ao cliente com cópia ao GR em D0, D+2, D+4, D+7, D+15, D+30, às 08h (fuso -03:00), para proposta e contrato, com Task na Oportunidade e quebra da cadência pelo callback de assinatura |
 
 ## O que falta criar (B2B)
 
@@ -145,3 +145,4 @@ Produção não tem licença de Industries Order Management: as licenças eram t
 - Script 12 v1 falhou na compilação (variável `desc`, palavra reservada). v2 reescrita com nomes confirmados.
 
 - **Produção, 15/09 (Usage-Based Entitlements)**: "Maximum B2C orders submitted via Industries Order Management" com Allowance 0, vencido em 16/06/2026, 252 ordens usadas, último uso 29/05/2026; nenhuma linha de ordens B2B. As licenças de OM não foram compradas até hoje. Bloqueio de go-live registrado; W-000134 (Gerson) é a work que trata disso.
+- **Rodada concluída (logs de 15/09)**: script 12 v2 criou 32 critérios (9+8+7+8); script 13 fechou com **25 OK, 0 faltando, 0 duplicados**. Works finais: **W-000142 (B2B-13), W-000143 (B2B-14), W-000144 (B2B-15), W-000145 (B2B-16)**, todas User Story, SysMap, tag Salesforce, assignee Davi, épico B2B - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente, status New. Pendente: sprint e squad (condição do Gerson) e a exclusão das W-000138/139 após consolidação.
