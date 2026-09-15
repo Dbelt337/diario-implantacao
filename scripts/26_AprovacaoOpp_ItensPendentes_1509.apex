@@ -39,17 +39,28 @@ if (!subIds.isEmpty()) {
     dump('DETALHE', 'ApprovalSubmissionDetail', 'ApprovalSubmissionId IN ' + lista);
     dump('ITEM', 'ApprovalWorkItem', 'ApprovalSubmissionId IN ' + lista);
 } else System.debug('APR26| nenhuma ApprovalSubmission para a oportunidade');
-// orquestracao (caso o approval rode como orchestration)
-dump('ORQUESTRACAO', 'FlowOrchestrationInstance', 'ContextRecordId = \'' + oppId + '\'');
-List<Id> orqIds = new List<Id>();
-if (gd.containsKey('floworchestrationinstance')) for (SObject s : Database.query('SELECT Id FROM FlowOrchestrationInstance WHERE ContextRecordId = :oppId')) orqIds.add(s.Id);
-if (!orqIds.isEmpty()) {
-    String lista = '(\'' + String.join(orqIds, '\',\'') + '\')';
-    dump('ETAPA ORQ', 'FlowOrchestrationStageInstance', 'FlowOrchestrationInstanceId IN ' + lista);
-    dump('ITEM ORQ', 'FlowOrchestrationWorkItem', 'FlowOrchestrationInstanceId IN ' + lista);
+// interviews do flow ligadas a oportunidade (FlowRecordRelation) e orquestracao a partir delas
+List<Id> intIds = new List<Id>();
+try {
+    for (SObject r : Database.query('SELECT FlowInterviewId FROM FlowRecordRelation WHERE RelatedRecordId = :oppId')) intIds.add((Id) r.get('FlowInterviewId'));
+} catch (Exception e) { System.debug('APR26| FlowRecordRelation falhou: ' + e.getMessage().left(150)); }
+System.debug('APR26| interviews ligadas a oportunidade: ' + intIds.size());
+if (!intIds.isEmpty()) {
+    String lista = '(\'' + String.join(intIds, '\',\'') + '\')';
+    dump('INTERVIEW', 'FlowInterview', 'Id IN ' + lista);
+    dump('ORQUESTRACAO', 'FlowOrchestrationInstance', 'InterviewId IN ' + lista);
+    List<Id> orqIds = new List<Id>();
+    try {
+        for (SObject r : Database.query('SELECT Id FROM FlowOrchestrationInstance WHERE InterviewId IN :intIds')) orqIds.add(r.Id);
+    } catch (Exception e) { System.debug('APR26| FlowOrchestrationInstance por InterviewId falhou: ' + e.getMessage().left(150)); }
+    if (!orqIds.isEmpty()) {
+        String lo = '(\'' + String.join(orqIds, '\',\'') + '\')';
+        dump('ETAPA ORQ', 'FlowOrchestrationStageInstance', 'FlowOrchestrationInstanceId IN ' + lo);
+        dump('ITEM ORQ', 'FlowOrchestrationWorkItem', 'FlowOrchestrationInstanceId IN ' + lo);
+    }
 }
-// interviews pausadas do flow na oportunidade (aprovacao pode estar aguardando como interview)
-dump('INTERVIEW', 'FlowInterview', 'CurrentElement != null AND Name LIKE \'%\' AND Id IN (SELECT FlowInterviewId FROM FlowRecordRelation WHERE RelatedRecordId = \'' + oppId + '\')');
+// itens de orquestracao pendentes atribuidos ao dono ou ao gerente, independentemente do vinculo com a oportunidade
+dump('ITENS ORQ DO DONO/GERENTE', 'FlowOrchestrationWorkItem', 'Status = \'Assigned\' AND AssigneeId IN (\'005V200000KJxorIAD\', \'005V200000JWLWDIA5\')');
 
 // abrangencia: outras oportunidades B2B abertas em "Aprovacao comercial" com Gerente da Conta = dono
 Integer n = 0;
