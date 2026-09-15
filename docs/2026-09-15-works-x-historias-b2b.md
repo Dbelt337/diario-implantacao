@@ -174,3 +174,5 @@ Fase 1 do script 22 (15/09 15:57): 22 de 22 elegíveis (todas SysMap, status New
 Diego (15/09): apagar as 22 works inclusive as 141 tasks. Fase 2 do 22 ajustada para excluir as tasks explicitamente antes das works.
 
 **Script 22 fase 2 executado (15/09 16:05): 141 tasks e 22 works excluídas (W-000029 a W-000050), restantes na faixa 0, total de works na org 111.** Script 23 rodou antes e o dump das tasks está em `docs/2026-09-15-tasks-excluidas-W41-50.md` (todas Not Started, 0 h, criadas por Thiago em 29-31/07, atribuídas ao Davi). Log do script 21 (time SysMap nas 51/52/55) ainda não recebido.
+
+**Pacote validado para o Marcelo (15/09, fim do dia)**: `Pacote_Works_Validadas_BTP_SysMap_1509.zip` com 93 docs (81 do export de 11/09, sem a W-000041 excluída; W-000070; W-000142 a 145; W-000133 a 137, 140 e 141 gerados hoje a partir do conteúdo gravado) e a lista `docs/2026-09-15-works-validadas-pacote-marcelo.csv` (colunas em branco para prioridade, prazo e squad). Fora do pacote: as 18 works internas de BTP (W-000010 a 028). Por épico: B2C 51, Catálogo 18, B2B 13 + 6 (contratos), Integração/CI-CD 3, Arquitetura 2.
