@@ -141,3 +141,35 @@ Leitura:
 - Platform events: 16 entregues em agosto contra 750.000/mês; a conta da TEC-INT-01 (W-000105) tem folga.
 - Marketing Email Sends do Salesforce Starter era trial e venceu em 24/06/2026; o e-mail da B2B-16 sai pelo Marketing Cloud Engagement (pacote et4ae5 262.0), não por esse recurso. Confirmar que a conta MC está contratada.
 - Falta ainda: a mesma tela na preprod (00DHZ000006zyyM), onde o suporte viu OrderManagement + add-ons, e a lista de Permission Set Licenses das duas orgs (a platform license "OrderManagement" aparece lá, não em entitlements).
+
+### Permission Set Licenses — PRODUÇÃO (Quick Query de 15/09, 190 linhas; extrato do que interessa ao projeto)
+| PSL (DeveloperName) | Label | Total | Usadas | Status | Expira |
+|---|---|---|---|---|---|
+| vlocity_cmt_CommunicationsCloudPlusPsl | **Comms Cloud Plus** | 2.100 | 1.950 | Active | 17/06/2028 |
+| vlocity_cmt_CommunicationsCloudPsl | Comms Cloud (sem Plus) | 0 | 0 | Disabled | 15/02/2026 |
+| CommsCloudSalesPsl | Comms Sales | 2.100 | 258 | Active | 17/06/2028 |
+| vlocity_cmt_DocGenIndCmeUserPsl | Document Generation User for CME Industries | 2.100 | 624 | Active | 17/06/2028 |
+| OmniStudioDesigner | OmniStudio | 2.100 | 262 | Active | 17/06/2028 |
+| CommsB2CBusinessProcessesPsl | Business Processes for Communications | 2.100 | 0 | Active | 17/06/2028 |
+| CommsB2CServiceConsolePsl | Service Console for Communications | 2.100 | 0 | Active | 17/06/2028 |
+| BREDesigner | Business Rules Engine Designer | 2.100 | 0 | Active | 17/06/2028 |
+| ContextServiceAdminPsl / ContextServiceRuntimePsl | Context Service Admin / Runtime | 1.204.200 / 2.404.200 | 5 / 0 | Active | 17/06/2028 |
+| ProductCatalogManagementAdministratorPsl / ViewerPsl | Product Catalog Management Admin / Viewer | 1.200.000 / 2.400.000 | 5 / 3 | Active | 17/06/2028 |
+| UnifiedCatalogAdminPsl, ProductDiscoveryUserPsl | Unified Catalog Admin, Product Discovery User | 1.200.000 | 5 / 5 | Active | 17/06/2028 |
+| RevPromotionsManagementPsl, RevLifecycleMgmtMultiRecipientPsl | Revenue Management Promotions Run Time, RLM MultiRecipient | 2.100 | 0 | Active | 17/06/2028 |
+| IndustriesStageManagementPsl | Industries Stage Management | 2.100 | 254 | Active | 17/06/2028 |
+| ActionableEventOrchDesigner/RuntimePsl | Actionable Event Orchestration | 2.100 | 255 / 254 | Active | 17/06/2028 |
+| FieldServiceStandard / Mobile / Scheduling / Dispatcher / Appointment Assistant | Field Service | 18.661.867 / 2.688 / 2.688 / 1.448 / 2.687 | 1.431 / 1.445 / 1.118 / 422 / 1.116 | Active | 17/06/2028 |
+| EinsteinGPTCopilotPsl (Agentforce Default), EinsteinGPTPromptTemplatesPsl, EinsteinFieldServicePsl | Agentforce / Prompt Templates / Einstein for Field Service | 1.553 | 1.012 | Active | 17/06/2028 |
+| SalesforceAPIIntegrationPsl | Salesforce API Integration | 5 | 1 | Active | 17/06/2028 |
+| CommerceAdminUserPsl, CommerceUserPsl | Commerce (B2B/D2C Commerce) | 0 | 1 / 0 | Disabled | 24/06/2026 |
+
+Leitura:
+- **Não existe nenhuma PSL de Order Management** (nem "OrderManagement", nem "Industries Order Management") em produção. Junto com o entitlement de ordens B2C vencido em 16/06/2026 e Allowance 0, fecha a evidência: OM não está licenciado em produção.
+- **Comms Cloud Plus** é a licença efetiva de Communications Cloud em produção: 2.100 assentos, 1.950 atribuídos, válida até 17/06/2028. O "Allowed 1 / Used 1" do pacote Vlocity CMT em Installed Packages não é o que controla o acesso (1.950 usuários já usam o pacote); confirmar em Manage Licenses se o pacote está marcado como gerenciado por usuário, mas não é bloqueio.
+- Document Generation (624 usuários) e OmniStudio Designer (262) estão licenciados e em uso: W-000082/W-000089/W-000106 e B2B-13/16 têm base.
+- **Business Rules Engine Designer** licenciado (2.100, 0 em uso): a CPQ-BRE-01 (W-000107) tem licença.
+- **Atenção: PSLs de Product Catalog Management, Unified Catalog, Context Service e Revenue Management (a pilha "Salesforce Pricing/RLM") estão ativas e 5 administradores as usam.** É um segundo catálogo, diferente do EPC do Vlocity CMT onde as works EPC/CAT foram escritas. A página "Standard Salesforce Pricing for CME" (índice de Pricing Definition) descreve essa alternativa. Registrar como pergunta de governança: quem está usando PCM/Unified Catalog em produção e para quê, e confirmar que a decisão de catálogo do projeto é EPC.
+- Field Service tem 1.445 usuários mobile e 1.118 de scheduling: a base de W-000063/W-000094/W-000131 é grande e já em produção.
+- Nenhuma PSL de Digital Commerce/B2B Commerce ativa (Commerce disabled): CAT-API-01 (W-000113) usa as Digital Commerce APIs do próprio vlocity_cmt, não o Commerce Cloud.
+- Falta a mesma lista na preprod (00DHZ000006zyyM), onde o suporte viu OrderManagement, para comparar.
