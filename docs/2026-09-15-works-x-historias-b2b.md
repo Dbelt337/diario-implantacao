@@ -163,3 +163,4 @@ Ordem de execução dos scripts (todos idempotentes, um por vez, filtrar o log p
 Pendente de decisão: sprint das W-000142 a W-000145; responsável de cada work do Gerson (sugestões no Details); e-mail ao Bismarck (rascunho em `docs/2026-09-15-email-evidencias-licenca-om.md`).
 
 Execução (logs de 15/09, 15:00-15:10): **18a OK** (W-000133: Details 2.536 chars, 5 critérios criados). 18b a 18g rodaram em branco na primeira vez (versão abreviada com comentários no lugar do cabeçalho/rodapé; nenhum SOQL/DML) e foram reenviados completos. Sem log ainda de 17, 14 (fase 2) e 19.
+Logs seguintes (15/09): **18b OK** (W-000134, 2.613 chars, 4 critérios), **18c OK** (W-000135, 2.358, 3), **18d OK** (W-000136, 1.846, 4), **18e OK** (W-000137, 2.105, 4), **18g OK** (W-000141, 2.416, 3). Falta log do 18f (W-000140), do 17, do 14 fase 2 e do 19. Todas as sete continuam sem assignee.
