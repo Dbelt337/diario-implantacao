@@ -1,13 +1,8 @@
-// 12 - Cria os Acceptance Criteria (lista relacionada da work) das works B2B-13 a B2B-16.
-// Rodar DEPOIS dos scripts 11a-11d e DEPOIS de conferir no log do script 10 (linhas AC-OBJETO / AC-CAMPO) os nomes
-// abaixo. Se o objeto ou os campos tiverem outro nome, ajuste SOMENTE as 5 constantes. Reexecutar e seguro
-// (checa por work + Name antes de criar). Filtre o log por AC12|.
-String OBJ      = 'agf__ADM_Acceptance_Criterion__c';   // objeto da lista "Acceptance Criteria"
-String F_WORK   = 'agf__Work__c';                        // lookup para a work
-String F_DESC   = 'agf__Description__c';                 // campo Description da tela
-String F_STATUS = 'agf__Status__c';                      // campo Status da tela
-String STATUS   = 'New';                                 // valor inicial mostrado na tela
-
+// 12 v2 - Cria os Acceptance Criteria (lista relacionada da work) das works B2B-13 a B2B-16.
+// v2: objeto e campos confirmados pelo log do script 10 (agf__ADM_Acceptance_Criterion__c; Name editavel; agf__Work__c;
+// agf__Description__c; agf__Status__c com New/Passed/Failed/Deferred); sem SOQL dinamica; variavel "desc" renomeada
+// (desc e palavra reservada do Apex). Padrao de Name igual ao ja usado na W-000087 ("Critério N").
+// Rodar DEPOIS dos scripts 11a-11d. Reexecutar e seguro (checa por work + Name antes de criar). Filtre o log por AC12|.
 Map<String, List<String>> crit = new Map<String, List<String>>();
 crit.put('US B2B-13%', new List<String>{
  'Criterio 1 - Elegibilidade e trava|Dado um contrato B2B ativo com uma Opportunity de Alteracao Contratual aberta, quando o GR aciona "Refidelizar" na 360, entao o sistema bloqueia e exibe o numero da oportunidade em andamento.',
@@ -46,37 +41,28 @@ crit.put('US B2B-16%', new List<String>{
  'Criterio 7 - Contingencia|Dado o Marketing Cloud indisponivel e a contingencia ativa, quando o schedule-triggered flow roda as 08:00, entao os envios com 2, 4, 7, 15 ou 30 dias recebem o e-mail pelo endereco organizacional, com o e-mail registrado na Opportunity e sem envio a quem ja assinou.',
  'Criterio 8 - E-mail corrigido|Dado um envio pendente cujo signatario teve o e-mail corrigido pelo GR em D+3, quando o D+4 dispara, entao o e-mail vai para o endereco corrigido do Contact.' });
 
-Schema.SObjectType t = Schema.getGlobalDescribe().get(OBJ);
-if (t == null) { System.debug('AC12| ERRO: objeto ' + OBJ + ' nao existe. Use o nome da linha AC-OBJETO do script 10.'); return; }
-Map<String, Schema.SObjectField> fm = t.getDescribe().fields.getMap();
-for (String f : new List<String>{ F_WORK, F_DESC, F_STATUS }) {
-    if (!fm.containsKey(f.toLowerCase())) { System.debug('AC12| ERRO: campo ' + f + ' nao existe em ' + OBJ + '. Ajuste as constantes.'); return; }
-}
-Boolean nomeEditavel = fm.get('name').getDescribe().isCreateable();
-
 Integer criados = 0, existentes = 0;
 for (String prefixo : crit.keySet()) {
     List<agf__ADM_Work__c> ws = [SELECT Id, Name FROM agf__ADM_Work__c WHERE agf__Subject__c LIKE :prefixo];
     if (ws.size() != 1) { System.debug('AC12| ' + prefixo + ' | PULADO: encontradas ' + ws.size() + ' works (esperado 1)'); continue; }
     agf__ADM_Work__c w = ws[0];
     Set<String> nomesJa = new Set<String>();
-    for (SObject e : Database.query('SELECT Name FROM ' + OBJ + ' WHERE ' + F_WORK + ' = :wid'.replace(':wid', '\'' + w.Id + '\''))) {
-        nomesJa.add((String) e.get('Name'));
+    for (agf__ADM_Acceptance_Criterion__c e : [SELECT Name FROM agf__ADM_Acceptance_Criterion__c WHERE agf__Work__c = :w.Id]) {
+        nomesJa.add(e.Name);
     }
-    List<SObject> novos = new List<SObject>();
+    List<agf__ADM_Acceptance_Criterion__c> novos = new List<agf__ADM_Acceptance_Criterion__c>();
+    Integer i = 0;
     for (String linha : crit.get(prefixo)) {
-        String nome = linha.substringBefore('|'), desc = linha.substringAfter('|');
+        i++;
+        String nome = 'Critério ' + i + ' - ' + linha.substringBefore('|').substringAfter(' - ');
+        String texto = linha.substringAfter('|');
         if (nomesJa.contains(nome)) { existentes++; continue; }
-        SObject ac = t.newSObject();
-        if (nomeEditavel) ac.put('Name', nome);
-        ac.put(F_WORK, w.Id);
-        ac.put(F_DESC, (nomeEditavel ? '' : nome + ': ') + desc);
-        ac.put(F_STATUS, STATUS);
-        novos.add(ac);
+        novos.add(new agf__ADM_Acceptance_Criterion__c(Name = nome, agf__Work__c = w.Id,
+            agf__Description__c = texto, agf__Status__c = 'New'));
     }
     if (!novos.isEmpty()) insert novos;
     criados += novos.size();
     System.debug('AC12| ' + w.Name + ' | ' + prefixo + ' | criados agora=' + novos.size() + ' | ja existiam=' + nomesJa.size()
         + ' | total esperado=' + crit.get(prefixo).size());
 }
-System.debug('AC12| RESULTADO: ' + criados + ' criterios criados, ' + existentes + ' ja existiam. Name editavel=' + nomeEditavel);
+System.debug('AC12| RESULTADO: ' + criados + ' criterios criados, ' + existentes + ' ja existiam.');

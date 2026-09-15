@@ -1,7 +1,5 @@
 // 13 - VALIDACAO FINAL das works B2B-13 a B2B-16 (rodar por ultimo). Esperado: 4 works OK e 32 criterios (9+8+7+8).
 // Somente SELECT + System.debug. Filtre o log por VAL13| e mande as linhas + RESULTADO.
-String OBJ = 'agf__ADM_Acceptance_Criterion__c';   // mesmo nome usado no script 12
-String F_WORK = 'agf__Work__c';
 
 Map<String, Integer> esperado = new Map<String, Integer>{ 'US B2B-13%' => 9, 'US B2B-14%' => 8, 'US B2B-15%' => 7, 'US B2B-16%' => 8 };
 Map<String, List<String>> marcas = new Map<String, List<String>>{
@@ -34,12 +32,11 @@ for (String prefixo : esperado.keySet()) {
         if (tem) ok++; else falta++;
     }
     Integer n = 0;
-    try {
-        n = Database.countQuery('SELECT COUNT() FROM ' + OBJ + ' WHERE ' + F_WORK + ' = \'' + w.Id + '\'');
-        for (SObject c : Database.query('SELECT Name FROM ' + OBJ + ' WHERE ' + F_WORK + ' = \'' + w.Id + '\' ORDER BY Name')) {
-            System.debug('VAL13|    ' + w.Name + ' | criterio | ' + c.get('Name'));
-        }
-    } catch (Exception e) { System.debug('VAL13|    ' + w.Name + ' | ERRO ao ler criterios: ' + e.getMessage()); }
+    for (agf__ADM_Acceptance_Criterion__c c : [SELECT Name, agf__Status__c FROM agf__ADM_Acceptance_Criterion__c
+                                               WHERE agf__Work__c = :w.Id ORDER BY Name]) {
+        n++;
+        System.debug('VAL13|    ' + w.Name + ' | criterio | ' + c.Name + ' | ' + c.agf__Status__c);
+    }
     String r = n == esperado.get(prefixo) ? 'OK' : (n < esperado.get(prefixo) ? 'FALTA' : 'DUPLICADO');
     System.debug('VAL13|    ' + w.Name + ' | ' + r + ' | criterios=' + n + ' esperado=' + esperado.get(prefixo));
     if (r == 'OK') ok++; else if (r == 'FALTA') falta++; else dup++;
