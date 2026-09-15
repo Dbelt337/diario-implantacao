@@ -18,6 +18,13 @@ META = {
  'W-000049': dict(codigo='', titulo='Comercial - Alteração via Asset-to-Order e histórico de base', epico=EPC, time='SysMap', status='New', responsavel='Thiago Campos Almeida', sprint='Sprint Catálogo - 1a e 2a Semana', criada='30/07/2026 por Priscila De Lima'),
  'W-000050': dict(codigo='', titulo='Comercial - Cotação de múltiplas filiais em lote e geração do código RGC', epico=EPC, time='SysMap', status='New', responsavel='Thiago Campos Almeida', sprint='Sprint Catálogo - 1a e 2a Semana', criada='30/07/2026 por Priscila De Lima'),
  'W-000070': dict(codigo='EPC-10', titulo='Criação dos catálogos comerciais por família e estrutura B2B/B2C', epico=EPC, time='SysMap', status='New', responsavel='Davi Israel de Abreu', sprint='(sem sprint)', criada='26/08/2026 por Diego Beltrão de Moraes'),
+ 'W-000133': dict(codigo='', titulo='INTEGRAÇÕES - CI/CD: subir repositório GitLab e implementar esteira básica de CI/CD', epico='Integração, Barramento (MuleSoft) e CI/CD', time='Brasil TecPar', status='New', responsavel='(a definir)', sprint='Sprint 1 - Brasil TecPar (15-26/09)', criada='15/09/2026 por Gerson Da Silva Pereira'),
+ 'W-000134': dict(codigo='', titulo='INTEGRAÇÕES - Ambientes: formalizar licenciamento e ajustes das Sandboxes junto à Salesforce (destravar O&M)', epico='Integração, Barramento (MuleSoft) e CI/CD', time='Brasil TecPar', status='New', responsavel='(a definir)', sprint='Sprint 1 - Brasil TecPar (15-26/09)', criada='15/09/2026 por Gerson Da Silva Pereira'),
+ 'W-000135': dict(codigo='', titulo='INTEGRAÇÕES - MuleSoft: cobrar orçamento da avaliação do arquiteto e mapear demandas pendentes do barramento', epico='Integração, Barramento (MuleSoft) e CI/CD', time='Brasil TecPar', status='New', responsavel='(a definir)', sprint='Sprint 1 - Brasil TecPar (15-26/09)', criada='15/09/2026 por Gerson Da Silva Pereira'),
+ 'W-000136': dict(codigo='', titulo='ARQUITETURA - Mapear fluxo e arquitetura das APIs do B2B (sessão Victor/David/Zildo/Priscila/Fernanda)', epico='Arquitetura da Solução e Ambientes', time='Brasil TecPar', status='New', responsavel='(a definir)', sprint='Sprint 1 - Brasil TecPar (15-26/09)', criada='15/09/2026 por Gerson Da Silva Pereira'),
+ 'W-000137': dict(codigo='', titulo='ARQUITETURA - Finalizar decomposição e camada técnica do catálogo (discussão de OM)', epico='Arquitetura da Solução e Ambientes', time='Brasil TecPar', status='New', responsavel='(a definir)', sprint='Sprint 1 - Brasil TecPar (15-26/09)', criada='15/09/2026 por Gerson Da Silva Pereira'),
+ 'W-000140': dict(codigo='', titulo='B2B - Habilitar integração B2B para permitir execução de testes (urgente)', epico='B2B - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente', time='SysMap', status='New', responsavel='(a definir)', sprint='Sprint 1 - SysMap (15-26/09)', criada='15/09/2026 por Gerson Da Silva Pereira'),
+ 'W-000141': dict(codigo='', titulo='B2B - Escrever histórias funcionais/técnicas B2B (onboarding 3 novos profissionais SysMap)', epico='B2B - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente', time='SysMap', status='New', responsavel='(a definir)', sprint='Sprint 1 - SysMap (15-26/09)', criada='15/09/2026 por Gerson Da Silva Pereira'),
 }
 HEADINGS = {  # texto normalizado -> titulo da secao no doc
  'contexto da funcionalidade': 'Contexto da Funcionalidade', '(user story classica)': 'Descrição', '(user story)': 'Descrição',
@@ -28,6 +35,10 @@ HEADINGS = {  # texto normalizado -> titulo da secao no doc
  'riscos e impactos no sistema': 'Riscos e Impactos no Sistema', 'cenario e contexto de negocio': 'Cenário e Contexto de Negócio',
  'regras de negocio associadas': 'Regras de Negócio Associadas', 'configuracao de componentes': 'Configuração de Componentes',
  'configuracao de componentes no epc/cpq': 'Configuração de Componentes no EPC/CPQ',
+ 'objetivo': 'Objetivo', 'escopo': 'Escopo', 'escopo (esteira basica)': 'Escopo (esteira básica)', 'escopo da sessao': 'Escopo da Sessão',
+ 'entregas': 'Entregas', 'fora de escopo nesta work': 'Fora de Escopo nesta Work', 'dependencias e riscos': 'Dependências e Riscos',
+ 'situacao encontrada em 15/09 (producao)': 'Situação Encontrada em 15/09 (produção)', 'situacao em 15/09': 'Situação em 15/09',
+ 'premissas ja decididas': 'Premissas já Decididas', 'inventario inicial de demandas do barramento (extraido das works, 15/09)': 'Inventário Inicial de Demandas do Barramento (extraído das works, 15/09)',
 }
 def norm(s):
     s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower().strip()
