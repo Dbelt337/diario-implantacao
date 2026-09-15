@@ -45,9 +45,14 @@ for (ProcessInstance pi : [SELECT TargetObjectId, Status, ProcessDefinition.Name
 }
 // todas as definicoes de aprovacao ativas da org (qualquer objeto) e flows ativos disparados por Opportunity
 for (ProcessDefinition pd : [SELECT Name, DeveloperName, TableEnumOrId FROM ProcessDefinition WHERE State = 'Active' ORDER BY TableEnumOrId]) System.debug('APR25| DEF APROVACAO ATIVA | ' + pd.TableEnumOrId + ' | ' + pd.Name);
+// FlowDefinitionView nao aceita OR no WHERE ("Disjuncoes nao suportadas"): consulta so os ativos e filtra em Apex
 try {
-    for (FlowDefinitionView fv : Database.query('SELECT ApiName, Label, ProcessType, TriggerType, TriggerObjectOrEventLabel, IsActive, LastModifiedDate FROM FlowDefinitionView WHERE IsActive = true AND (TriggerObjectOrEventLabel = \'Opportunity\' OR TriggerObjectOrEventLabel = \'Oportunidade\' OR Label LIKE \'%provac%\' OR Label LIKE \'%Opp%\') ORDER BY Label')) {
-        System.debug('APR25| FLOW ATIVO | ' + fv.Label + ' (' + fv.ApiName + ') | ' + fv.ProcessType + ' | ' + fv.TriggerType + ' | objeto=' + fv.TriggerObjectOrEventLabel + ' | alterado ' + fv.LastModifiedDate);
+    for (FlowDefinitionView fv : Database.query('SELECT ApiName, Label, ProcessType, TriggerType, TriggerObjectOrEventLabel, LastModifiedDate FROM FlowDefinitionView WHERE IsActive = true ORDER BY Label')) {
+        String lab = (fv.Label == null ? '' : fv.Label).toLowerCase();
+        String obj = fv.TriggerObjectOrEventLabel == null ? '' : fv.TriggerObjectOrEventLabel;
+        if (obj == 'Opportunity' || obj == 'Oportunidade' || lab.contains('aprova') || lab.contains('approv') || lab.contains('opp') || lab.contains('oportun')) {
+            System.debug('APR25| FLOW ATIVO | ' + fv.Label + ' (' + fv.ApiName + ') | ' + fv.ProcessType + ' | ' + fv.TriggerType + ' | objeto=' + obj + ' | alterado ' + fv.LastModifiedDate);
+        }
     }
 } catch (Exception e) { System.debug('APR25| FlowDefinitionView indisponivel: ' + e.getMessage().left(120)); }
 System.debug('APR25| fim');
