@@ -11,3 +11,11 @@ Contexto relacionado: o mesmo campo Gerente da Conta foi a causa do chamado da T
 ## Fase 1 do script 29 (log de 16/09)
 
 Time do Rodrigo (papéis "B2B Vendedor Alt e GGNet Operadoras / Utilities", "... - Terceiro" e "B2B Coordenador ... - Terceiro"): Bruno Tavares Jose, Gabriel Henrique De Freitas Feliciano, Luan Jair Geraldo, Lucas Teixeira Dos Santos, Lucidia Anzanello Ampessan, Tamires Moreira Antero, Tatiane Pompermaier (7). Números batem com o levantamento de 15/09: **33 contas** (6 com Wesley: TELEFONICA SP, TIM MS, TIM SC do Gabriel; FLIX FIBRA, QUALITYFIBRA, TELESPAZIO da Tatiane; 27 em branco: 9 Luan, 8 Lucidia, 9 Tamires, 1 Tatiane) e **13 oportunidades** abertas com aprovador ≠ Rodrigo: 6 do Gabriel (gerente Wesley) travadas na aprovação de Arquitetura (fase "Viabilidade e desenho da solução"); 4 do Luan (Ronimar Brugnerotto / Erich Hannes), 1 da Tamires (em branco), 2 da Tatiane (Wesley), todas destravadas. Fase 2 autorizada pela decisão da Tatiane; as 6 travadas devem falhar na regra de validação e serão tratadas quando chegarem à etapa comercial (reatribuição) ou após a aprovação.
+
+## Fase 2 do script 29 (log de 16/09)
+
+**Contas: 30 de 33 atualizadas.** As 3 que falharam continuam com Wesley; erro de regra de validação "seu usuário não está definido a um cluster" (depende do usuário que executa, não da conta). Depois: 235 contas do time com gerente Rodrigo, 3 com Wesley, 0 em branco.
+
+**Oportunidades: 8 de 13 atualizadas** (as 6 do Gabriel travadas em Arquitetura entraram; 2 do Luan em "Aguardando instalação" entraram). 5 falharam por regra de validação de fase: FIREWALL - NOVOS SO GRUPO V ARAUCARIA (Luan, "Aguardando contrato": só a seção Informações pode ser editada), VIA CAMPO (Luan), SONDA DO BRASIL (Tamires), COTAÇÃO LINK TERRESTRE - COT CAMPINAS e COTAÇÃO TELESPAZIO 4 LINKS (Tatiane), todas "Análise cliente": "usuário não possui autorização para manipular o registro nesta fase". Nenhum dono alterado. O trigger de Opportunity criou 1 Task durante o update (a identificar, script 30).
+
+Resíduo: 3 contas + 5 oportunidades. Script 30 (leitura) identifica os registros, os campos de cluster do usuário e a task criada; a solução passa pelo bypass das regras de validação (formulas a obter) ou pela execução por usuário autorizado.
