@@ -8,7 +8,7 @@ Map<String, List<String>> marcas = new Map<String, List<String>>{
     'US B2B-13%' => new List<String>{ 'RN-12', 'Amend Frame Agreement', 'Contract State Model', 'Repricing Batch Processor' },
     'US B2B-14%' => new List<String>{ 'RN-11', 'Point of No Return', 'scheduled path', 'case Salesforce 473919801' },
     'US B2B-15%' => new List<String>{ 'RN-09', 'pricing variable', 'Billing Frequency', 'record lock' },
-    'US B2B-16%' => new List<String>{ 'RN-11', 'Salesforce Data Event', 'Re-entry only after exiting', 'Organization-Wide Email Address' }
+    'US B2B-16%' => new List<String>{ 'RN-12', 'DocuSignReminderEnabled', 'Salesforce Data Event', 'Re-entry only after exiting', 'Organization-Wide Email Address' }
 };
 agf__ADM_Work__c ref = [SELECT agf__Epic__c, agf__Scrum_Team__c, RecordTypeId FROM agf__ADM_Work__c WHERE Name = 'W-000122' LIMIT 1];
 
@@ -44,4 +44,4 @@ for (String prefixo : esperado.keySet()) {
     System.debug('VAL13|    ' + w.Name + ' | ' + r + ' | criterios=' + n + ' esperado=' + esperado.get(prefixo));
     if (r == 'OK') ok++; else if (r == 'FALTA') falta++; else dup++;
 }
-System.debug('VAL13| RESULTADO: ' + ok + ' OK, ' + falta + ' FALTANDO, ' + dup + ' DUPLICADOS (esperado 24 OK)');
+System.debug('VAL13| RESULTADO: ' + ok + ' OK, ' + falta + ' FALTANDO, ' + dup + ' DUPLICADOS (esperado 25 OK)');
