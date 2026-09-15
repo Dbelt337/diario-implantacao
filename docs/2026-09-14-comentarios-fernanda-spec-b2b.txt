@@ -1,0 +1,273 @@
+[1. [LEAD & ACCOUNT MANAGEMENT] - Escalonamento de Inatividade de Leads B2] Fernanda da Silveira Duarte 2026-09-14T16:48
+   trecho: Negócio
+   comentário: Os períodos podem ser parametrizáveis de acordo com a regra de negócio.
+
+[1. [LEAD & ACCOUNT MANAGEMENT] - Escalonamento de Inatividade de Leads B2] Fernanda da Silveira Duarte 2026-09-14T16:47
+   trecho: alertas progressivos
+   comentário: - Envio via notificação na ferramenta Salesforce e e-mail.
+
+[1. [LEAD & ACCOUNT MANAGEMENT] - Escalonamento de Inatividade de Leads B2] Fernanda da Silveira Duarte 2026-09-14T16:46
+   trecho: Red
+   comentário: Head
+
+[2. [ENTERPRISE CPQ / FEASIBILITY] - Endereçamento Geocodificado, Viabilid] Fernanda da Silveira Duarte 2026-09-14T17:03
+   trecho: API
+   comentário: Integração com o site dos Correios?
+
+[2. [ENTERPRISE CPQ / FEASIBILITY] - Endereçamento Geocodificado, Viabilid] Fernanda da Silveira Duarte 2026-09-14T17:10
+   trecho: Requisitos
+   comentário: Além dos dados registrados manualmente pelo vendedor na documentação de escopo, o sistema deve trazer de forma automática os demais dados registrados na oportunidade, para auxílio no entendimento do Arquiteto de Soluções.
+
+[2. [ENTERPRISE CPQ / FEASIBILITY] - Endereçamento Geocodificado, Viabilid] Fernanda da Silveira Duarte 2026-09-14T17:10
+   trecho: tipo de link (dedicado, banda larga, MPLS, rede própria/terceiros)
+   comentário: Sistema já tem que puxar essa info
+
+[2. [ENTERPRISE CPQ / FEASIBILITY] - Endereçamento Geocodificado, Viabilid] Fernanda da Silveira Duarte 2026-09-14T17:15
+   trecho: e avança automaticamente a Cotação para o estágio "Proposta Comercial", sem passar pela fila da Arquitetura[
+   comentário: A partir do resultado da viabilidade de rede "Viável" ainda assim terá que estar disponível o botão / flag para ação manual do GR solicitando auxílio do time de Arquitetura. Ou seja, mesmo que os produtos add sejam considerados de "prateleira" e a viabilidade tenha retorno "Viável" o GR poderá encaminhar a solicitação ao Arquiteto dependendo da venda / negociação.
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:19
+   trecho: /DOCX
+   comentário: Ao meu ver a proposta comercial já tem que sair em formato PDF. Pois se for baixada em formato docx poderão haver edições não aprovadas e perdermos o histório...
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:24
+   trecho: Regras
+   comentário: - Concessões de períodos de testes ou isenção de mensalidade requerem aprovação gerencial obrigatória para preservar as margens de lucro. Essa medida centralizada visa prevenir fraudes e garantir a viabilidade técnica dos pedidos antes do faturamento. - Prazo customizável de acordo com a regra de negócio;  - Opções que estarão disponíveis: 30, 60 e 90 dias.
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:25
+   trecho: xige o envio formal
+   comentário: - Sugestão de botão: "Enviar proposta comercial ao cliente"; - Utilização de template padrão. - A formalização da aceitação da proposta comercial pelo cliente é obrigatória e deve ser registrada no sistema para que o processo de venda prossiga; - Os dados de faturamento devem constar na proposta para garantir que o cliente dê o "de acordo" com todas as premissas. - O sistema deve permitir ajustes manuais no processo de assinatura da proposta técnica comercial: como a alteração do endereço de e-mail  ou o reenvio manual de comunicações, caso ocorram falhas ou problemas de recebimento.
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:35
+   trecho: Geração de Documentos via DocGen e Alerta de Compras
+   comentário: São situações distintas...
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:27
+   trecho: Alerta de Compras
+   comentário: - Visando resolver a falta de visibilidade sobre materiais necessários para projetos complexos, deverá ser criado um dashboard para as áreas de logística e compras; - Isso permitirá que essas equipes visualizem oportunidades próximas ao fechamento (temperatura em 90%), possibilitando a programação e orçamentação de materiais com antecedência, sem necessidade de customização complexa.
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:36
+   trecho: o sistema disparará um alerta automático para a equipe de Suprimentos/Compras
+   comentário: Não será realizado nehum aviso, será criado um dash de acompanhamentoo..
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:36
+   trecho: o sistema disparará um alerta automático para a equipe de Suprimentos/Compras
+   comentário: *Dashboards para Logística e Compras: - Visando resolver a falta de visibilidade sobre materiais necessários para projetos complexos, deverá ser criado um dashboard para as áreas de logística e compras; - Isso permitirá que essas equipes visualizem oportunidades próximas ao fechamento (temperatura em 90%), possibilitando a programação e orçamentação de materiais com antecedência, sem necessidade de customização complexa.
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:31
+   trecho: Regra 4:
+   comentário: Acredito que aqui deveria vir a regra referente a falta de retorno do aceite ou recusa da proposta..  "Enviar uma notificação alertando sobre a necessidade do aceite da proposta": - A obrigatoriedade do aceite formal da proposta técnica comercial foi estabelecida como passo essencial para garantir respaldo jurídico;  - Prazo de 30 dias; - A oportunidade ficará com o status de "aguardando assinatura"; - Este acompanhamento, via dashboard, é essencial para que a área Comercial possa monitorar e abordar proativamente os clientes que ainda não realizaram a assinatura. - Notificação via régua de co
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:34
+   trecho: provação gerencial de desconto e disparo de alerta para Suprimentos
+   comentário: Ponto importante aqui: são temas diferentes..  A cotação pode ir para aprovação e não estar em seus 90% de temperatura.. da mesma forma que nem toda a cotação vai para a aprovação, mas a temperatura quando chegar aos 90% será registrada em um dash de acompanhamento que o time de compras poderá ter acesso...
+
+[3. [ENTERPRISE CPQ / PROPOSAL & CLM] - Cotação Multi-Site, Alçadas de Des] Fernanda da Silveira Duarte 2026-09-14T17:34
+   trecho: dispara um alerta automático para o setor de Compras
+   comentário: Não será disparo nenhum aviso. Somente a criação de um dash para acompanhamento voluntário...
+
+[4. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Esteiras ] Fernanda da Silveira Duarte 2026-09-14T17:45
+   trecho: [Regra 1: Upload Obrigatório de Evidência Formal] A abertura do fluxo de cancelamento em contrato ativo exige o upload obrigatório da notificação formal do clie
+   comentário: Aguardando retorno Tayza
+
+[4. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Esteiras ] Fernanda da Silveira Duarte 2026-09-14T17:52
+   trecho: Esteiras Sequenciais
+   comentário: A primeira esteira é a do GR: "Apresentar as opções de ofertas de retenção (%)". Se cliente não aceitar, vai para Segunda esteira da célula de retenção, com opções mais robustas de retenção..  O time de Arquitetura não atua como retenção, mas sim na elaboração da viabilidade e pré projeto técnico..
+
+[4. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Esteiras ] Fernanda da Silveira Duarte 2026-09-14T17:53
+   trecho: Diretor Comercial
+   comentário: Seria por alçadas de aprovação, dependendo do valor...
+
+[4. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Esteiras ] Fernanda da Silveira Duarte 2026-09-14T17:55
+   trecho: da Arquitetura
+   comentário: e do GR.  A Arquitetura não atua na retenção e sim no auxílio na viabilidade da nova proposta..
+
+[5. [MACD - UPGRADE & SWAP] - Alteração Contratual B2B (Upgrade/Swap) com ] Fernanda da Silveira Duarte 2026-09-14T17:58
+   trecho: Contexto: Processamento de ordens MACD em contratos vigentes, garantindo que Ativos atuais sejam espelhados de forma imutável e que modificações de serviço pass
+   comentário: Aqui está falando de 4 processos distintos do fluxo.. ficou misturado...
+
+[5. [MACD - UPGRADE & SWAP] - Alteração Contratual B2B (Upgrade/Swap) com ] Fernanda da Silveira Duarte 2026-09-14T18:00
+   trecho: [Regra 1: Espelhamento de Ativos e Imutabilidade] A criação de ordens de Upgrade ou Swap herda automaticamente os Ativos (Assets) vigentes do contrato de forma 
+   comentário: Não entendi.. mas parece que ficou misturado os assuntos...
+
+[6. [BACKOFFICE & EOM] - Auditoria de Vendas B2B pelo BKO, Análise de Créd] Fernanda da Silveira Duarte 2026-09-14T18:06
+   trecho: (período de auditoria mantido por 6 meses)
+   comentário: Ainda a ser discutido este tópico.. dependerá de como o processo vai ser executado pelos GR's....
+
+[6. [BACKOFFICE & EOM] - Auditoria de Vendas B2B pelo BKO, Análise de Créd] Fernanda da Silveira Duarte 2026-09-14T18:07
+   trecho: Correção
+   comentário: - A equipe de BKO não terá permissão para realizar ajustes de valores ou condições comerciais. Caso sejam identificadas divergências, o vendedor deverá realizar uma nova cotação; - O perfil do BackOffice manterá acesso aberto para realizar auditorias prévias e correções operacionais antes de acionar o botão de envio dos dados para o Customer Core / Plataforma de Serviços.
+
+[6. [BACKOFFICE & EOM] - Auditoria de Vendas B2B pelo BKO, Análise de Créd] Fernanda da Silveira Duarte 2026-09-14T18:07
+   trecho: período inicial de 6 meses
+   comentário: Ainda a ser discutido este tópico.. dependerá de como o processo vai ser executado pelos GR's....
+
+[6. [BACKOFFICE & EOM] - Auditoria de Vendas B2B pelo BKO, Análise de Créd] Fernanda da Silveira Duarte 2026-09-14T18:08
+   trecho: "Imputar Venda"
+   comentário: Aceitar a criação do contrato
+
+[6. [BACKOFFICE & EOM] - Auditoria de Vendas B2B pelo BKO, Análise de Créd] Fernanda da Silveira Duarte 2026-09-14T18:08
+   trecho: Internos
+   comentário: - Consulta de débitos internos; - Consulta externa para risco de crédito; - Se o lead possuir débitos internos e externos: a regularização de débitos internos foi classificada como prioridade absoluta sobre restrições externas.
+
+[6. [BACKOFFICE & EOM] - Auditoria de Vendas B2B pelo BKO, Análise de Créd] Fernanda da Silveira Duarte 2026-09-14T18:10
+   trecho: "Imputar Venda"
+   comentário: Antes do input da venda em si, tem o processo de assinatura..
+
+[8. [ENTERPRISE CPQ] - Configuração de Taxa Única (CAPEX) no Carrinho B2B] Fernanda da Silveira Duarte 2026-09-14T18:24
+   trecho: Como Engenheiro de Soluções / Gestor de Telecom do Cliente Corporativo
+   comentário: Como Gerente de Relacionamento.  Arquiteto não faz essa etapa
+
+[8. [ENTERPRISE CPQ] - Configuração de Taxa Única (CAPEX) no Carrinho B2B] Fernanda da Silveira Duarte 2026-09-14T18:29
+   trecho: produto técnico e marca o atributo de Taxa Única na composição de preço
+   comentário: Essa ação vai ficar dentro da composição do produto? pois mapeamentos que seria realizada na etapa de "preencher os dados de faturamento, fidelidade e tempo de contrato"... no caso, quero dizer que: a seleção dos produtos que irão compor o carrinho já terá sido feita e após a "gravação" dos produtos no carrinho, abriria a tela para preencher todos os dados que competem a forma de pagamento e etc....
+
+[9. [CONTRACT LIFECYCLE MANAGEMENT - CLM] - Geração de Contrato Padrão e O] Fernanda da Silveira Duarte 2026-09-14T18:32
+   trecho: NARRATIVA DE NEGÓCIO
+   comentário: - Deve ser possível criar subcategorias para diferenciar contatos / e-mails principais ou específicos para nota fiscal, financeiro ou de pesquisa NPS;
+
+[9. [CONTRACT LIFECYCLE MANAGEMENT - CLM] - Geração de Contrato Padrão e O] Fernanda da Silveira Duarte 2026-09-14T18:30
+   trecho: Gerente de Contas B2B
+   comentário: Gerente de Relacionamento
+
+[9. [CONTRACT LIFECYCLE MANAGEMENT - CLM] - Geração de Contrato Padrão e O] Fernanda da Silveira Duarte 2026-09-14T18:34
+   trecho: Dado que o GR solicita a geração do documento oficial de contrato
+   comentário: Não é o GR que solicita a criação do contrato e sim o BKO. O Objetivo é que o sistema barre a continuação do processo antes de ir para o BKO fazer o restante do fluxo...
+
+[10. [ENTERPRISE ORDER MANAGEMENT - EOM] - Restrição de Edição pelo BKO e B] Fernanda da Silveira Duarte 2026-09-14T18:37
+   trecho: Regra 1: A validação técnica (Arquitetura) é dispensada sistemicamente para cotações classificadas como vendas padrão (expressas).
+   comentário: Lembrando que ainda assim precisa ter o botão de solicitação de análise se o GR verificar a necessidade....
+
+[10. [ENTERPRISE ORDER MANAGEMENT - EOM] - Restrição de Edição pelo BKO e B] Fernanda da Silveira Duarte 2026-09-14T18:38
+   trecho: deverá ser devolvida (rejeitada)
+   comentário: - Limitar e padronizar a lista de motivos e submotivos para oportunidades não convertidas, utilizando listas dependentes para guiar o usuário na seleção correta;  - As alterações de valor ou produto exigirão o abandono da cotação e o recomeço do processo, responsabilizando diretamente a Equipe Comercial.
+
+[11. [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Lead] Fernanda da Silveira Duarte 2026-09-14T18:46
+   trecho: [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Leads e Oportunidades
+   comentário: - O botão para registrar a perda da venda / oportunidade será disponibilizado ao longo de todo o processo, sendo desabilitado apenas após a assinatura do contrato;
+
+[11. [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Lead] Fernanda da Silveira Duarte 2026-09-14T18:42
+   trecho: [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Leads e Oportunidades
+   comentário: Pegar a lista com a Tayza
+
+[11. [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Lead] Fernanda da Silveira Duarte 2026-09-14T18:44
+   trecho: Representante Comercial
+   comentário: Gerente de Relacionamento
+
+[11. [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Lead] Priscila De Lima 2026-09-09T22:53
+   trecho: Adicionada em 09/09/26
+   comentário: @diegomoraes.t@brasiltecpar.com.br  a partir daqui temos nova histórias ok. _Atribuído a diegomoraes.t@brasiltecpar.com.br_
+
+[11. [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Lead] Diego Beltrao De Moraes 2026-09-10T16:44
+   trecho: Adicionada em 09/09/26
+   comentário: _Marcado como concluído_
+
+[11. [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Lead] Diego Beltrao De Moraes 2026-09-10T16:50
+   trecho: Adicionada em 09/09/26
+   comentário: _Reaberta_ Blz
+
+[13. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Retenção ] Fernanda da Silveira Duarte 2026-09-14T18:55
+   trecho: com upload obrigatório de evidências
+   comentário: Aguardando retorno Tayza
+
+[13. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Retenção ] Fernanda da Silveira Duarte 2026-09-14T18:56
+   trecho: formalização documental no ato da solicitação
+   comentário: Aguardando retorno Tayza
+
+[13. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Retenção ] Fernanda da Silveira Duarte 2026-09-14T18:57
+   trecho: obrigatoriamente pelo GR
+   comentário: *Possíveis entradas: - Célula de Retenção; - Central de Cancelamento; - Gerente de Relacionamento; - OBSERV: O GR poderá consultar somente os clientes que façam parte da sua carteira.
+
+[13. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Retenção ] Fernanda da Silveira Duarte 2026-09-14T18:58
+   trecho: Dado que o GR
+   comentário: *Possíveis entradas: - Célula de Retenção; - Central de Cancelamento; - Gerente de Relacionamento; - OBSERV: O GR poderá consultar somente os clientes que façam parte da sua carteira.
+
+[13. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Retenção ] Fernanda da Silveira Duarte 2026-09-14T18:58
+   trecho: sem anexar a evidência formal do cliente Então o sistema bloqueia o avanço e exige o upload do arquivo comprobatório.
+   comentário: Aguardando retorno da Tayza
+
+[13. [MACD - RETENÇÃO & CHURN] - Solicitação de Cancelamento B2B, Retenção ] Fernanda da Silveira Duarte 2026-09-14T18:58
+   trecho: o GR
+   comentário: *Possíveis entradas: - Célula de Retenção; - Central de Cancelamento; - Gerente de Relacionamento; - OBSERV: O GR poderá consultar somente os clientes que façam parte da sua carteira.
+
+[14. [MACD - UPGRADE & SWAP] - Visão 360º, Alteração Contratual B2B e Refid] Fernanda da Silveira Duarte 2026-09-14T19:11
+   trecho: Refidelização
+   comentário: - A refidelização contempla todas as etiquetas da proposta (contrato guarda-chuva).
+
+[14. [MACD - UPGRADE & SWAP] - Visão 360º, Alteração Contratual B2B e Refid] Fernanda da Silveira Duarte 2026-09-14T19:00
+   trecho: Upgrades/Swaps
+   comentário: Upgrades, downgrades e retenção de cancelamento...
+
+[14. [MACD - UPGRADE & SWAP] - Visão 360º, Alteração Contratual B2B e Refid] Fernanda da Silveira Duarte 2026-09-14T19:02
+   trecho: Upgrade
+   comentário: ou downgrade
+
+[14. [MACD - UPGRADE & SWAP] - Visão 360º, Alteração Contratual B2B e Refid] Fernanda da Silveira Duarte 2026-09-14T19:03
+   trecho: meses
+   comentário: e outros
+
+[14. [MACD - UPGRADE & SWAP] - Visão 360º, Alteração Contratual B2B e Refid] Fernanda da Silveira Duarte 2026-09-14T19:09
+   trecho: Upgrade
+   comentário: ou downgrade
+
+[14. [MACD - UPGRADE & SWAP] - Visão 360º, Alteração Contratual B2B e Refid] Fernanda da Silveira Duarte 2026-09-14T19:09
+   trecho: Upgrade
+   comentário: ou downgrade
+
+[14. [MACD - UPGRADE & SWAP] - Visão 360º, Alteração Contratual B2B e Refid] Fernanda da Silveira Duarte 2026-09-14T19:10
+   trecho: /Swap
+   comentário: downgrade
+
+[15. [CONTRACT LIFECYCLE MANAGEMENT - CLM] - Geração de Contrato, Contato d] Fernanda da Silveira Duarte 2026-09-14T19:21
+   trecho: Gerente de Contas
+   comentário: Gerente de Relacionamento
+
+[15. [CONTRACT LIFECYCLE MANAGEMENT - CLM] - Geração de Contrato, Contato d] Fernanda da Silveira Duarte 2026-09-14T19:24
+   trecho: Regras de Negócio:
+   comentário: - Deve ser possível criar subcategorias para diferenciar contatos / e-mails principais ou específicos para nota fiscal, financeiro ou de pesquisa NPS;
+
+[15. [CONTRACT LIFECYCLE MANAGEMENT - CLM] - Geração de Contrato, Contato d] Fernanda da Silveira Duarte 2026-09-14T19:24
+   trecho: Antes da efetivação da assinatura do contrato/geração da proposta final,
+   comentário: Antes do envio da solicitação ao BKO para finalização do processo..
+
+[15. [CONTRACT LIFECYCLE MANAGEMENT - CLM] - Geração de Contrato, Contato d] Fernanda da Silveira Duarte 2026-09-14T19:25
+   trecho: [Regra 3: Alertas Matinais de Assinatura] O sistema deve realizar disparos de notificações/e-mails automáticos no período da manhã para clientes corporativos qu
+   comentário: - Notificação via régua de comunicação MKT Cloud (necessária a criação de templates); - Envio via e-mail; *Períodos de envio: D + 2: 08:00am; D + 4: 8:00am D + 7: 8:00am D + 15: 8:00am D + 30: 8:00am - Nos demais dias o contato ficará sob a responsabilidade do vendedor.
+
+[15. [CONTRACT LIFECYCLE MANAGEMENT - CLM] - Geração de Contrato, Contato d] Fernanda da Silveira Duarte 2026-09-14T19:27
+   trecho: emissão do contrato B2B
+   comentário: encaminhamento da solicitação ao BKO
+
+[15. [CONTRACT LIFECYCLE MANAGEMENT - CLM] - Geração de Contrato, Contato d] Fernanda da Silveira Duarte 2026-09-14T19:28
+   trecho: 24h sem assinatura
+   comentário: Não após 24h. Segue as regras: - Notificação via régua de comunicação MKT Cloud (necessária a criação de templates); - Envio via e-mail; *Períodos de envio: D + 2: 08:00am; D + 4: 8:00am D + 7: 8:00am D + 15: 8:00am D + 30: 8:00am - Nos demais dias o contato ficará sob a responsabilidade do vendedor.
+
+[16. [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Lead] Fernanda da Silveira Duarte 2026-09-14T19:30
+   trecho: Motivos e Submotivos
+   comentário: Pegar lista com a Tayza...
+
+[17. [ENTERPRISE CPQ] - Configuração e Precificação de Produtos na Modalida] Fernanda da Silveira Duarte 2026-09-14T19:32
+   trecho: O fluxo de cortesia não deve ser um processo apartado.
+   comentário: Ele também pode ser apartado. Já iniciar com a inserção do tipo de negociação: cortesia. O que tem que ser deixado claro aqui é que uma oportunidade até então considerada como 'venda" (com faturamento) pode ser ajustada para cortesia dependendo do andar da negociação. E o faturamento será zerado.
+
+[17. [ENTERPRISE CPQ] - Configuração e Precificação de Produtos na Modalida] Fernanda da Silveira Duarte 2026-09-14T19:33
+   trecho: marque o produto como cortesia ou degustação
+   comentário: Não fica a cargo do produto, fica a cargo da negociação como um todo...
+
+[17. [ENTERPRISE CPQ] - Configuração e Precificação de Produtos na Modalida] Fernanda da Silveira Duarte 2026-09-14T19:35
+   trecho: O carrinho (CPQ Cart) deve permitir a seleção do atributo ou flag "Tipo de Negociação" = "Cortesia" ou "Degustação/Trading".
+   comentário: Não será na composição do carrinho, o tipo de negociação será definido no momento do preenchimento dos dados básicos da oportunidade.
+
+[17. [ENTERPRISE CPQ] - Configuração e Precificação de Produtos na Modalida] Fernanda da Silveira Duarte 2026-09-14T19:36
+   trecho: Produtos puramente de cortesia não geram carência ou fidelidade financeira, exceto quando amarrados a um contrato maior de outros serviços pagos.
+   comentário: Contratos cortesias também são amarrados a uma fidelidade. E estas informações serão preenchidas na etapa "preencher o periodo do contrato e fidelidade".  *Preenchimento obrigatório: - Tempo de contrato (meses): 12, 24, 36, 48, 60 ou outros (se "outros" habilitar o campo para inserção do período); - Tempo de término do contrato (preenchido automaticamente conforme o tempo de contrato estipulado); - Tempo de fidelização (meses): 12, 24, 36, 48, 60 ou outros (se "outros" habilitar o campo para inserção do período). Obs: se o tempo de contrato for diferente do tempo da fidelidade é necessário hab
+
+[17. [ENTERPRISE CPQ] - Configuração e Precificação de Produtos na Modalida] Fernanda da Silveira Duarte 2026-09-14T19:47
+   trecho: ESPECIFICAÇÃO
+   comentário: PAREI AQUI
+
+[26. Histórias novas [MACD / CLM] - Refidelização Pura e Simples B2B (Renov] Priscila De Lima 2026-09-10T22:24
+   trecho: Histórias novas
+   comentário: Novas histórias @diegomoraes.t@brasiltecpar.com.br
+
+total comentários: 68 ancorados: 68

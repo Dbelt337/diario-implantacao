@@ -100,3 +100,34 @@ Works existentes afetadas, para alinhar quando as filhas abrirem (nenhuma work c
 ### Achado na planilha v3
 
 O código do atributo Prazo de Contrato está grafado `ATR_PRAZO_CONTRATO` na aba Atribuição por Produto e `ATR_PRAZO_DE_CONTRATO` na aba Picklists. Os outros 24 códigos batem entre as abas. Corrigir antes de virar template de carga (CAT-TPL-01).
+
+## Revisão de negócio no Google Doc (comentários do docx reenviado em 15/09)
+
+O docx reenviado tem o mesmo texto, mas traz 68 comentários do Google Doc. Extrato completo, com trecho anotado e história, em `docs/2026-09-14-comentarios-fernanda-spec-b2b.txt`.
+
+Marcos:
+- **Priscila De Lima, 09/09 22:53** (na história 11): "a partir daqui temos novas histórias" → histórias 12 a 25 são as de 09/09 (batem com as notas de 10/09 das works).
+- **Priscila De Lima, 10/09 22:24 (19:24 BRT)**: "Novas histórias" → histórias 26 a 29 entraram na noite de 10/09, depois do refinamento de 10/09 e antes do export de 11/09. Por isso nenhuma work as cobre.
+- **Fernanda da Silveira Duarte, 14/09 16:46 a 19:47**: 64 comentários nas histórias 1 a 17. Parou na 17 ("PAREI AQUI"). Histórias 18 a 29 ainda sem revisão de negócio.
+- Itens marcados "Aguardando retorno Tayza": evidência formal no cancelamento (histórias 4 e 13) e lista de motivos/submotivos (11 e 16).
+
+### Impacto dos comentários da Fernanda nas works
+
+| Hist. | Comentário (resumo) | Work | Efeito |
+|---|---|---|---|
+| 1 | Alertas por notificação no Salesforce e e-mail; períodos parametrizáveis; "Diretor/Red" é "Head" | W-000096 | ajuste de regra |
+| 2 | Mesmo com viabilidade "Viável", GR pode acionar a Arquitetura por botão/flag; sistema deve trazer automaticamente os dados da oportunidade para o Arquiteto; tipo de link vem do sistema; endereço via Correios? | W-000097 | ajuste de regra (bypass não é absoluto) |
+| 3 | Proposta sai em PDF, nunca DOCX; aceite formal registrado no sistema, dados de faturamento na proposta, reenvio manual e troca de e-mail; sem alerta a Compras: dashboard para Logística/Compras com oportunidades a 90%; aprovação de desconto e temperatura 90% são temas distintos; prazos de degustação 30/60/90 dias com aprovação gerencial | W-000098 | ajuste de regra; dashboard de Compras é item novo |
+| 4 | Esteiras: 1ª do GR (ofertas de retenção em %), 2ª da célula de retenção; Arquitetura NÃO faz retenção, só viabilidade da nova proposta; isenção de multa por alçada de valor, não Diretor fixo | W-000099 | **conflito** com a nota (a) de 10/09, que abre tarefa da Arquitetura para readequação técnica |
+| 5 | "Mistura 4 processos distintos"; regra de espelhamento não entendida | W-000100 | reescrever narrativa separando upgrade, downgrade, swap e retenção |
+| 6 | BKO não ajusta valores nem condições (vendedor faz nova cotação), mas tem acesso aberto para correções operacionais; "Imputar Venda" = aceitar a criação do contrato; assinatura vem antes do input da venda; débito interno tem prioridade absoluta sobre restrição externa; 6 meses de auditoria ainda em discussão | W-000101 | coerente com a nota (b); ajustar sequência assinatura → imputar |
+| 8 | Persona é o GR, não o Arquiteto; Taxa Única é escolhida na etapa "dados de faturamento, fidelidade e tempo de contrato", depois do carrinho, não na composição do produto | W-000121 | **conflito** com a modelagem por atributo no produto; decidir onde o atributo é preenchido |
+| 9 | Quem solicita o contrato é o BKO, não o GR; sistema barra antes de chegar ao BKO; subcategorias de contato (NF, financeiro, NPS); "Gerente de Contas" é "Gerente de Relacionamento" | W-000122 | ajuste de regra e de Contact Roles |
+| 10 | Venda expressa ainda precisa do botão de pedir análise da Arquitetura; alteração de valor/produto obriga abandonar a cotação | W-000101, W-000098 | já coberto na W-000098 (abandono); botão na W-000097 |
+| 11/16 | Botão de perda disponível o processo todo, desabilitado só após assinatura; lista com a Tayza | W-000096, W-000073 | ajuste de regra; lista pendente |
+| 13 | Entradas do cancelamento: Célula de Retenção, Central de Cancelamento e GR (só a própria carteira); evidência aguarda Tayza | W-000099 | ajuste de perfis e visibilidade |
+| 14 | Toda menção a upgrade vale também para downgrade; refidelização cobre todas as etiquetas da proposta (contrato guarda-chuva); prazo "e outros" | W-000100, W-000123, W-000125 | ajuste de regra |
+| 15 | Régua de assinatura: MKT Cloud com templates, e-mail em D+2, D+4, D+7, D+15 e D+30 às 08h; não é "24h"; nos demais dias é o vendedor | W-000122 | **conflito** com RN-05 (1, 3 e 7 dias só para o GR). Bate com a história 29 |
+| 17 | Tipo de negociação (cortesia) é definido nos dados básicos da oportunidade, não no carrinho nem no produto; venda pode virar cortesia no meio da negociação; **cortesia também tem fidelidade**, preenchida na etapa "período do contrato e fidelidade" (contrato e fidelidade em 12/24/36/48/60/outros, motivo obrigatório se diferirem) | W-000115 | **conflito** com a nota de 10/09 (a) atributo no carrinho e (b) cortesia pura sem fidelidade |
+
+Decisões a levar para a Fernanda/Priscila antes de mexer nas works: Arquitetura na esteira de retenção (4), onde se preenche Taxa Única e Tipo de Negociação (8 e 17), fidelidade em cortesia (17), régua de assinatura (15 e 29).
