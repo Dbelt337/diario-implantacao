@@ -120,3 +120,24 @@ Custom settings de org: Auto Generate Doc Template, Contract Document Access Con
 
 ### OM: o que a página de Troubleshooting acrescenta
 Existe o **painel XOM Administration com o botão "Configure for Order Management Standard"**; se o painel disser "not configured", o OM Standard não foi configurado. CPQ e OM precisam estar no mesmo modelo de atributos (V2). LoggingEnabled = true causa "Apex CPU time limit exceeded" na submissão. Fulfillment Request Lines não são criadas ao desconectar um order line item em ordem suplementar (caso conhecido, relevante para a B2B-14). Verificação: abrir a aba XOM Administration nas duas orgs e registrar o estado; consultar Setup > Company Information > Usage-Based Entitlements (lista no fim da página) para os add-ons de OM.
+
+### Usage-Based Entitlements — PRODUÇÃO (prints de 15/09)
+| Recurso | Início | Fim | Frequência | Allowance | Usado | Último uso |
+|---|---|---|---|---|---|---|
+| **Maximum B2C orders submitted via Industries Order Management allowed for an org** | 11/06/2025 | **16/06/2026** | Once | **0** | **252** | 29/05/2026 |
+| High-volume platform events and change events delivered per month | 15/10/2018 | 17/06/2028 | Monthly | 750.000 | 16 | 07/08/2026 |
+| Maximum Flow Interviews Without UI per Month | 15/10/2018 | 17/06/2028 | Monthly | 10.000.000.000 | 77.142 | 14/09/2026 |
+| Maximum Flow Interviews with UI per Month | 15/10/2018 | 17/06/2028 | Monthly | 20.093.350 | 1.049 | 14/09/2026 |
+| Maximum Orchestration Runs (Flow Orchestration, não é IOM) | 21/07/2023 | 17/06/2028 | Yearly | 600 | | |
+| API Request Limit per Month | 07/01/2021 | 17/06/2028 | Monthly | 7.329.150.000 | 5.243 | 14/09/2026 |
+| Service Documents generation base limit | 11/06/2025 | 17/06/2028 | Once | 10.000 | 0 | 15/09/2026 |
+| Service Document generations per Month | 11/06/2025 | 17/06/2028 | Monthly | 1.034.000 | 979 | 15/09/2026 |
+| Salesforce Starter (Trial): Marketing Email Sends per Day / per Month | 14/02/2025 | 24/06/2026 | | 0 | 0 | |
+| Maximum survey responses allowed for an org | 08/09/2023 | 17/06/2028 | Once | 300 | | |
+
+Leitura:
+- **O direito de ordens B2C do Industries OM em produção venceu em 16/06/2026 e está com Allowance 0.** Foram consumidas 252 ordens no período trial, com último uso em 29/05/2026, o que bate com o "último orchestration plan em 28/05" que o suporte viu no case. **Não existe linha de ordens B2B** em produção. Ou seja, até 15/09 as licenças de OM não foram compradas: a W-000134 do Gerson ("formalizar licenciamento ... destravar O&M") continua aberta e é bloqueio de go-live de W-000088, W-000093, W-000118, W-000101, W-000100, W-000125 e B2B-14 (W-000143).
+- Document Generation: 979 gerações em setembro contra 1.034.000/mês; sem risco para W-000082/W-000089/W-000106.
+- Platform events: 16 entregues em agosto contra 750.000/mês; a conta da TEC-INT-01 (W-000105) tem folga.
+- Marketing Email Sends do Salesforce Starter era trial e venceu em 24/06/2026; o e-mail da B2B-16 sai pelo Marketing Cloud Engagement (pacote et4ae5 262.0), não por esse recurso. Confirmar que a conta MC está contratada.
+- Falta ainda: a mesma tela na preprod (00DHZ000006zyyM), onde o suporte viu OrderManagement + add-ons, e a lista de Permission Set Licenses das duas orgs (a platform license "OrderManagement" aparece lá, não em entitlements).
