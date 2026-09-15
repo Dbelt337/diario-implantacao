@@ -59,13 +59,16 @@ A numeração 1-29 abaixo é a ordem das histórias no docx e é a mesma que as 
 
 ## Catálogo: plano acordado por e-mail em 14/09 (Modelagem v3)
 
-O e-mail de 14/09 (resposta à estrutura do Davi, com a v3 anexa) fechou o seguinte:
+Cadeia de e-mails de 14/09:
+
+- **Davi (SysMap), 14:58**: envia a estrutura montada na sexta a partir da grade de conectividade do Joel (Excel com hierarquia, produtos e ofertas, produto x Object Type, atributos) e pede avaliação do Joel e da governança Salesforce. Pede ao Diego que, **após o OK do Joel, ajuste as US 51, 52 e 55 para que passem a ter US filhas** com base na estrutura dos produtos: v0 = ofertas de conectividade; as demais ofertas (Joel) e a frente Rodrigo/Varejo geram outras filhas depois, para controle das entregas.
+- **Diego, 18:01**: avaliação de governança contra as decisões de 10/09, com a Modelagem v3 anexa (mesmo arquivo analisado aqui). Fechou o seguinte:
 
 - O conteúdo comercial da v2 (SysMap) fica: adicionais como produtos filhos, camada de oferta sem atributos de configuração, validação de valores por oferta.
 - Cinco ajustes: (1) um produto tem um único Object Type, logo 9 produtos Conectividade, um por oferta, sem override por bundle; (2) árvore em dois níveis, de 17 tipos de produto para 3 famílias (Conectividade, Adicional, Equipamento Gerenciado); (3) tipos de oferta sem atributo saem, viram Catálogo/Categoria e Família do Product2, e o tipo base de oferta carrega Prazo de Contrato, Modalidade de Pagamento, Tipo de Negociação e Marca; (4) "Nenhum"/"Desativado" viram cardinalidade mínima zero e saem da picklist; (5) preço por atributo com matriz (Fibra Ponto a Ponto, blocos IPv4, Banda, nível de NOC), sem regra de preço zerando nada.
-- **Works de catálogo: filhas de W-000051 (EPC-01 Attribute Categories), W-000052 (EPC-04 hierarquia) e W-000055 (EPC-03 dicionário), por família e não por oferta.** As três de Conectividade **já existem no Agile Accelerator** (confirmado em 15/09); não estão no export de 11/09, então os números W ainda precisam ser anotados aqui. O conteúdo delas depende de P1 (prazo na oferta ou no componente) e P2 (valores dos adicionais por oferta). Voz, TV, Wi-Fi e Dispositivos e SVA seguem o mesmo trio quando chegarem as grades do Joel e do Rodrigo.
+- **Works de catálogo: W-000051 (EPC-01 Attribute Categories), W-000052 (EPC-04 hierarquia) e W-000055 (EPC-03 dicionário) já existem e são as pais. Não se abre nada novo para elas: a ação é ajustá-las para receberem filhas por família, não por oferta** (instrução do Diego em 15/09: "abrir não, porque elas já existem"). O trio de Conectividade fica pronto para tramitar quando o Joel responder P1 (prazo na oferta ou no componente) e P2 (valores dos adicionais por oferta), porque os dois mudam o conteúdo. Voz, TV, Wi-Fi e Dispositivos e SVA seguem o mesmo trio quando chegarem as grades do Joel e do Rodrigo. Os números W das filhas, quando existirem no Agile Accelerator, devem ser anotados aqui (não constam do export de 11/09).
 
-### Works filhas de Conectividade (existentes; conteúdo aguarda P1 e P2)
+### Filhas de Conectividade (conteúdo aguarda P1 e P2)
 
 | Work filha | Pai | Conteúdo que sai da v3 |
 |---|---|---|
