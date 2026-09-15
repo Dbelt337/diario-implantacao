@@ -19,3 +19,11 @@ Time do Rodrigo (papéis "B2B Vendedor Alt e GGNet Operadoras / Utilities", "...
 **Oportunidades: 8 de 13 atualizadas** (as 6 do Gabriel travadas em Arquitetura entraram; 2 do Luan em "Aguardando instalação" entraram). 5 falharam por regra de validação de fase: FIREWALL - NOVOS SO GRUPO V ARAUCARIA (Luan, "Aguardando contrato": só a seção Informações pode ser editada), VIA CAMPO (Luan), SONDA DO BRASIL (Tamires), COTAÇÃO LINK TERRESTRE - COT CAMPINAS e COTAÇÃO TELESPAZIO 4 LINKS (Tatiane), todas "Análise cliente": "usuário não possui autorização para manipular o registro nesta fase". Nenhum dono alterado. O trigger de Opportunity criou 1 Task durante o update (a identificar, script 30).
 
 Resíduo: 3 contas + 5 oportunidades. Script 30 (leitura) identifica os registros, os campos de cluster do usuário e a task criada; a solução passa pelo bypass das regras de validação (formulas a obter) ou pela execução por usuário autorizado.
+
+## Script 30 (log de 16/09): resíduo identificado
+
+- **3 contas pendentes**: TELESPAZIO BRASIL S/A, FLIX FIBRA LTDA, QUALITYFIBRA E MONITORAMENTO ELETRONICO LTDA (todas da Tatiane, RT "B2B - Pessoa jurídica", gerente Wesley). As 3 do Gabriel com Wesley entraram. Campo `User.Cluster__c` existe e está vazio tanto no Diego (Administrador do sistema) quanto no Rodrigo (perfil B2B - Gerência); a conta tem `Cluster__c` e `ClusterManual__c`. A regra "seu usuário não está definido a um cluster" disparou só nessas 3, então depende de algo da conta (provavelmente cluster em branco) combinado com o cluster do usuário.
+- **5 oportunidades pendentes** (RT B2B): COTAÇÃO LINK TERRESTRE - COT CAMPINAS (006V200000lw281IAA) e COTAÇÃO TELESPAZIO 4 LINKS (006V200000gRYBuIAO), Tatiane, gerente Wesley; SONDA DO BRASIL (006V200000d9ULNIA2), Tamires, gerente vazio; VIA CAMPO (006V200000u8m41IAA), Luan, gerente Erich Hannes, todas em "Análise cliente"; FIREWALL - NOVOS SO GRUPO V ARAUCARIA (006V200000iJjw9IAC), Luan, gerente Erich Hannes, "Aguardando contrato".
+- Nenhuma Task criada hoje pelo usuário executor: o insert visto no log da fase 2 pertencia ao trigger de uma oportunidade que falhou e foi desfeito junto.
+
+Próximo passo depende das fórmulas das 3 regras de validação (Conta: cluster; Oportunidade: "não possui autorização nesta fase" e "Aguardando contrato").
