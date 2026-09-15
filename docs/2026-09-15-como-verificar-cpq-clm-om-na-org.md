@@ -173,3 +173,8 @@ Leitura:
 - Field Service tem 1.445 usuários mobile e 1.118 de scheduling: a base de W-000063/W-000094/W-000131 é grande e já em produção.
 - Nenhuma PSL de Digital Commerce/B2B Commerce ativa (Commerce disabled): CAT-API-01 (W-000113) usa as Digital Commerce APIs do próprio vlocity_cmt, não o Commerce Cloud.
 - Falta a mesma lista na preprod (00DHZ000006zyyM), onde o suporte viu OrderManagement, para comparar.
+
+### Licença do pacote Vlocity CMT em produção (Execute Anonymous, 15/09)
+`UserPackageLicense` do namespace vlocity_cmt: **1 assento, atribuído a Caio Konichi De Moraes (perfil Field Service Admin)**. Como 1.950 usuários têm a PSL Comms Cloud Plus e 262 usam OmniStudio, o acesso ao pacote não está sendo controlado por essa licença de pacote (o controle é pela PSL). Sem bloqueio, mas registrar: se algum dia o pacote passar a exigir licença por usuário, só o Caio teria acesso.
+
+Observação de método: `TenantUsageEntitlement` não é consultável por API nesta org (INVALID_TYPE via Salesforce Inspector). Para entitlements, usar a tela Setup > Company Information > Usage-Based Entitlements, que foi a fonte dos dados acima.
