@@ -59,15 +59,26 @@ for (String api : Schema.getGlobalDescribe().keySet()) {
             + (pl == '' ? '' : ' | valores=' + pl) + (fd.isNillable() ? '' : ' | OBRIGATORIO'));
     }
 }
-// contagem de criterios ja cadastrados nas works B2B e na W-000087 (tela mostrou 3)
+// contagem de criterios ja cadastrados nas works B2B e na W-000087 (tela mostrou 3). Sem GROUP BY: Name da work e auto-number.
 try {
-    for (AggregateResult ar : Database.query('SELECT agf__Work__r.Name n, COUNT(Id) c FROM agf__ADM_Acceptance_Criterion__c '
+    Map<String, Integer> cont = new Map<String, Integer>();
+    for (SObject c : Database.query('SELECT agf__Work__r.Name FROM agf__ADM_Acceptance_Criterion__c '
             + 'WHERE agf__Work__r.Name IN (\'W-000087\',\'W-000096\',\'W-000097\',\'W-000098\',\'W-000099\',\'W-000100\',\'W-000101\','
-            + '\'W-000119\',\'W-000120\',\'W-000122\',\'W-000123\',\'W-000124\',\'W-000125\') GROUP BY agf__Work__r.Name')) {
-        System.debug('VAL10| AC-EXISTENTES | ' + ar.get('n') + ' | ' + ar.get('c') + ' criterio(s)');
+            + '\'W-000119\',\'W-000120\',\'W-000122\',\'W-000123\',\'W-000124\',\'W-000125\')')) {
+        String n = (String) c.getSObject('agf__Work__r').get('Name');
+        cont.put(n, (cont.containsKey(n) ? cont.get(n) : 0) + 1);
+    }
+    if (cont.isEmpty()) System.debug('VAL10| AC-EXISTENTES | nenhum criterio cadastrado nessas works');
+    for (String n : cont.keySet()) System.debug('VAL10| AC-EXISTENTES | ' + n + ' | ' + cont.get(n) + ' criterio(s)');
+    // amostra da W-000087 para ver como os 3 criterios da tela foram gravados (Name, Status, inicio da Description)
+    for (SObject c : Database.query('SELECT Name, agf__Status__c, agf__Description__c FROM agf__ADM_Acceptance_Criterion__c '
+            + 'WHERE agf__Work__r.Name = \'W-000087\' ORDER BY Name')) {
+        String d = (String) c.get('agf__Description__c');
+        System.debug('VAL10| AC-AMOSTRA | W-000087 | ' + c.get('Name') + ' | ' + c.get('agf__Status__c') + ' | '
+            + (d == null ? '' : d.left(80)));
     }
 } catch (Exception e) {
-    System.debug('VAL10| AC-EXISTENTES | objeto agf__ADM_Acceptance_Criterion__c nao encontrado com esse nome: ' + e.getMessage()
-        + ' | usar o nome listado em AC-OBJETO no script 12');
+    System.debug('VAL10| AC-EXISTENTES | erro ao consultar agf__ADM_Acceptance_Criterion__c: ' + e.getMessage()
+        + ' | conferir os nomes nas linhas AC-OBJETO / AC-CAMPO e ajustar o script 12');
 }
 System.debug('VAL10| FIM');
