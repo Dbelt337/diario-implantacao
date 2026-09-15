@@ -33,7 +33,8 @@ void dump(String prefixo, String objeto, String filtro) {
 // flow approval process (Winter 25+): submissao, detalhes e itens de trabalho
 dump('SUBMISSAO', 'ApprovalSubmission', 'RelatedRecordId = \'' + oppId + '\'');
 List<Id> subIds = new List<Id>();
-if (gd.containsKey('approvalsubmission')) for (SObject s : Database.query('SELECT Id FROM ApprovalSubmission WHERE RelatedRecordId = :oppId')) subIds.add(s.Id);
+try { for (SObject s : Database.query('SELECT Id FROM ApprovalSubmission WHERE RelatedRecordId = :oppId')) subIds.add(s.Id); }
+catch (Exception e) { System.debug('APR26| ApprovalSubmission falhou: ' + e.getMessage().left(150)); }
 if (!subIds.isEmpty()) {
     String lista = '(\'' + String.join(subIds, '\',\'') + '\')';
     dump('DETALHE', 'ApprovalSubmissionDetail', 'ApprovalSubmissionId IN ' + lista);
@@ -64,7 +65,7 @@ dump('ITENS ORQ DO DONO/GERENTE', 'FlowOrchestrationWorkItem', 'Status = \'Assig
 
 // abrangencia: outras oportunidades B2B abertas em "Aprovacao comercial" com Gerente da Conta = dono
 Integer n = 0;
-for (Opportunity x : [SELECT Id, Name, Owner.Name, ManagerAccount__r.Name, Account.AccountManager__r.Name, StageName, LastModifiedDate
+for (Opportunity x : [SELECT Id, Name, OwnerId, Owner.Name, ManagerAccount__c, ManagerAccount__r.Name, Account.AccountManager__r.Name, StageName, LastModifiedDate
                       FROM Opportunity WHERE IsClosed = false AND StageName = 'Aprovação comercial' ORDER BY LastModifiedDate]) {
     Boolean desvio = x.ManagerAccount__c == x.OwnerId;
     if (desvio) n++;
