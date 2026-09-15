@@ -31,15 +31,19 @@ for (agf__ADM_Work__c w : ws) {
     for (agf__ADM_Acceptance_Criterion__c c : [SELECT Name, agf__Status__c, agf__Description__c FROM agf__ADM_Acceptance_Criterion__c WHERE agf__Work__c = :w.Id]) {
         System.debug('DEL14| ' + w.Name + ' | criterio | ' + c.Name + ' | ' + c.agf__Status__c + ' | ' + c.agf__Description__c);
     }
-    for (agf__ADM_Task__c t : [SELECT Subject__c, agf__Status__c, agf__Assigned_To__r.Name FROM agf__ADM_Task__c WHERE agf__Work__c = :w.Id]) {
-        System.debug('DEL14| ' + w.Name + ' | task | ' + t.Subject__c + ' | ' + t.agf__Status__c + ' | ' + t.agf__Assigned_To__r.Name);
-    }
-    for (agf__ADM_Comment__c c : [SELECT CreatedBy.Name, CreatedDate, agf__Comment__c FROM agf__ADM_Comment__c WHERE agf__Work__c = :w.Id ORDER BY CreatedDate]) {
-        System.debug('DEL14| ' + w.Name + ' | comentario | ' + c.CreatedBy.Name + ' ' + c.CreatedDate.format('dd/MM HH:mm') + ' | '
-            + (c.agf__Comment__c == null ? '' : c.agf__Comment__c.left(300)));
-    }
-    for (agf__ADM_Theme_Assignment__c ta : [SELECT agf__Theme__r.Name FROM agf__ADM_Theme_Assignment__c WHERE agf__Work__c = :w.Id]) {
-        System.debug('DEL14| ' + w.Name + ' | tema | ' + ta.agf__Theme__r.Name);
+    // filhos cujo nome de campo pode variar por versao do pacote: consulta dinamica em try/catch para nao quebrar a fase 1
+    for (String q : new List<String>{
+            'SELECT Id, Name, agf__Subject__c, agf__Status__c FROM agf__ADM_Task__c WHERE agf__Work__c = :wid',
+            'SELECT Id, Name, CreatedBy.Name, agf__Comment__c FROM agf__ADM_Comment__c WHERE agf__Work__c = :wid',
+            'SELECT Id, agf__Theme__r.Name FROM agf__ADM_Theme_Assignment__c WHERE agf__Work__c = :wid' }) {
+        try {
+            Id wid = w.Id;
+            for (SObject o : Database.query(q)) {
+                System.debug('DEL14| ' + w.Name + ' | filho ' + o.getSObjectType() + ' | ' + JSON.serialize(o.getPopulatedFieldsAsMap()).left(400));
+            }
+        } catch (Exception e) {
+            System.debug('DEL14| ' + w.Name + ' | consulta de filhos nao aplicavel: ' + e.getMessage().left(120));
+        }
     }
     if (bate) paraExcluir.add(w);
 }
