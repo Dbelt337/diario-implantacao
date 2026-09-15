@@ -31,6 +31,6 @@ Próximo passo depende das fórmulas das 3 regras de validação (Conta: cluster
 ## Regras de validação (texto enviado pelo Diego, 16/09)
 
 - Conta: `AND(RecordTypeName__c = "B2B - Pessoa jurídica", ISPICKVAL($User.Cluster__c, ""), OR(ISPICKVAL(ClusterManual__c, ""), ISBLANK(TEXT(ClusterManual__c))))`. Explica o resíduo: as 3 contas da Tatiane estão sem ClusterManual e o executor (admin) não tem cluster; as do Gabriel tinham ClusterManual preenchido.
-- Oportunidade `BloqueiaAlteracaoAnaliseCliente`: RT B2B, não nova, fase "Análise cliente", `Bypass__c = false` e `NOT(ISCHANGED(Bypass__c))`, salvo mudanças de fase/aprovação/data/valor. Ou seja, mudar `Bypass__c` no mesmo update libera a edição (mecanismo de bypass previsto na org). A regra de "Aguardando contrato" não foi enviada; presume-se o mesmo padrão.
+- Oportunidade `BloqueiaAlteracaoAnaliseCliente`: RT B2B, não nova, fase "Análise cliente", `Bypass__c = false` e `NOT(ISCHANGED(Bypass__c))`, salvo mudanças de fase/aprovação/data/valor. Ou seja, mudar `Bypass__c` no mesmo update libera a edição (mecanismo de bypass previsto na org). Oportunidade `BloqueiaAlteracaoAguardandoContrato`: RT B2B, fase "Aguardando contrato", `NOT(Bypass__c)` e `NOT(ISCHANGED(Bypass__c))`, salvo mudanças dos campos de contrato. Mesmo mecanismo de bypass.
 
 Script 31 (duas fases): contas com cluster temporário no executor (copiado da Tatiane) e limpeza em seguida; oportunidades com `Bypass__c = true` junto com a troca e `false` logo depois. Não altera regra nenhuma nem donos.
