@@ -131,3 +131,8 @@ Marcos:
 | 17 | Tipo de negociação (cortesia) é definido nos dados básicos da oportunidade, não no carrinho nem no produto; venda pode virar cortesia no meio da negociação; **cortesia também tem fidelidade**, preenchida na etapa "período do contrato e fidelidade" (contrato e fidelidade em 12/24/36/48/60/outros, motivo obrigatório se diferirem) | W-000115 | **conflito** com a nota de 10/09 (a) atributo no carrinho e (b) cortesia pura sem fidelidade |
 
 Decisões a levar para a Fernanda/Priscila antes de mexer nas works: Arquitetura na esteira de retenção (4), onde se preenche Taxa Única e Tipo de Negociação (8 e 17), fidelidade em cortesia (17), régua de assinatura (15 e 29).
+
+
+## Achado do case Salesforce #473919801 (PDF colado em 15/09)
+
+Produção não tem licença de Industries Order Management: as licenças eram trial, a decomposição falha lá e o último orchestration plan em produção é de 28/05/2026. A preprod (00DHZ000006zyyM) tem OrderManagement (platform), OrderManagementAddon, IndustriesOMB2BOrders1000AddOn e IndustriesOMB2COrders5000AddOn. Em 02/07 o João fechou o case dizendo que a empresa compraria as licenças após definir o volume de ordens por mês. **Pendência de projeto: confirmar se a compra ocorreu.** Sem ela, W-000088, W-000093, W-000118, W-000101, W-000100, W-000125 e B2B-14 não vão a produção. Roteiro de verificação em `docs/2026-09-15-como-verificar-cpq-clm-om-na-org.md`.
