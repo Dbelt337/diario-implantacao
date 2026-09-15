@@ -128,3 +128,31 @@ Fonte: 22 páginas do Salesforce Help coladas pelo Diego em 15/09/2026 (lista em
 
 ### Order Decomposition Configuration (`ind.comms_t_order_decomposition_configuration`)
 - Decomposição transforma ordem comercial em técnica e gera fulfillment requests; configura-se **relação (source = produto comercial, target = produto técnico), mapping rules (como os campos/atributos do source vão ao target) e condition rules (avaliadas em runtime)**.
+
+## Páginas de prioridade B (coladas em 15/09, segunda rodada)
+
+### Reprice Existing Prices (`ind.comms_reprice_existing_prices`)
+- Reprecifica line items de opportunities, orders, quotes **e assets**, em processo de background (batch); reavalia efetividade das price list entries e das promoções aplicadas; **re-executa só as context rules das price list entries**, não as de produto/promoção; ajustes manuais inválidos voltam ao preço original.
+- **"Repricing updates the effectivity dates of promotion adjustment records based on the price list definitions at the time of repricing."**
+- Guias: rodar em batch (não em tempo real), objectList com no máximo 20 line items, resultado ordenado por OrderId/QuoteId/OpportunityId/AccountId.
+- Repricing API (VlocityOpenInterface) reprecifica OrderItem, QuoteLineItem, OpportunityLineItem, promoções aplicadas, ajustes de oferta e overrides; **Repricing Batch Processor trabalha com assets e orderItems e pode ser restrito por conta, ordem, período ou condição**.
+- Winter '22+: **é possível desabilitar a reprecificação de assets** para manter preços e continuar usando promoções expiradas/desqualificadas; "Maintain Asset Price during MACD" e "Retain Original Price During MACD" impedem repricing automático ao converter asset em order line (compatível com ABP).
+
+### Convert an Asset to a Quote or an Order (`ind.comms_convert_an_asset_to_a_quote_or_an_order`, trecho)
+- Toda mudança de asset passa por quote ou order. **One-time charges não são levadas do asset para as linhas da ordem. Quantidades das linhas ficam desabilitadas ao converter asset em quote/order.**
+
+### Contract State Model and the Contract Workflow (`ind.v_contracts_contract_state_model_and_the_contract_workflow`)
+- O State Model é a lista de estados válidos e transições do Contract Document; **Vlocity Actions** definem, por estado, quais ações existem e para quem (campos To State, Filter/Filter Criteria, **Applicable User Profile**, Active); a ação só aparece se todas as condições valem.
+- Só transições iniciadas pela toolbar de Vlocity Actions podem mudar o Contract Record Type; **não há State Transition Rules nem Vlocity Actions customizadas** no State Model.
+- Aprovações: aprovadores por contrato ou por contexto de conta/ordem, nomeados ou por título/papel, com sequência e escalonamento.
+
+### Journey Settings (`mktg.mc_jb_journey_settings`)
+- **Contact Entry**: No re-entry (não muda após ativar; Test Mode não suporta), Re-entry at any time (pode entrar várias vezes simultaneamente), **Re-entry only after exiting** (indicado para "renovação anual", não concorrente).
+- **Default Email Address**: "Use email attribute from Contacts" quando o e-mail pode mudar durante uma jornada longa; "from Entry Source" quando não muda. Campos EmailAddress só aparecem após o entry source configurado.
+- Transaction Key só para Custom Events (API), não para Salesforce Data Event. HTS aumenta throughput de e-mail e não pode ser desligado na jornada depois.
+- A página **não trata critério de saída**; a Data Extension do Salesforce Data Event é preenchida na entrada e "existing rows aren't updated" (página do Data Event), logo o status atual precisa ser lido em cada passo por decisão sobre dado sincronizado, não pelo dado de entrada.
+
+### Sales and Service Cloud Activities (`mktg.mc_jb_sales_service_cloud_activities`)
+- Atividades de canvas que criam/atualizam registros do Sales/Service Cloud via SOAP API: **Object activity (standard ou custom, Create / Simple Update / Find and Update), Task activity (cria Task com campos pré-preenchidos, atribuída ao owner do contato/lead, usuário de sistema ou usuário definido)**, Account, Contact, Case, Lead, Opportunity, Campaign Member, Convert Lead.
+- **Assíncronas: a atualização pode levar até 24 horas; só erros UNABLE_TO_LOCK_ROW são retentados (até 10 vezes).** O ID criado fica disponível como Journey Data.
+- Permissões: Email | Integrations | Salesforce CRM e Journey Builder | Sales and Service Cloud. Copiar a atividade exige reconfigurar.
