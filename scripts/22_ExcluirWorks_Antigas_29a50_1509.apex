@@ -3,7 +3,7 @@
 // decisao do Diego em 15/09. DUAS FASES, igual ao 14. Fase 1 (EXCLUIR = false): so lista o que seria apagado, com criterios,
 // tasks e temas filhos. Fase 2 (EXCLUIR = true): apaga (Lixeira, 15 dias). Travas: numero na faixa, time SysMap, status New e
 // nenhuma work fora da lista esperada; se qualquer trava falhar em uma work, ela fica de fora e o log avisa. Filtre por DEL22|.
-Boolean EXCLUIR = false;
+Boolean EXCLUIR = true;   // fase 2 autorizada pelo Diego em 15/09 (inclusive as 141 tasks de W-000041 a 050)
 Set<String> esperadas = new Set<String>();
 for (Integer i = 29; i <= 50; i++) esperadas.add('W-0000' + i);
 
@@ -33,6 +33,10 @@ for (String n : esperadas) if (!achadas.contains(n)) System.debug('DEL22| ' + n 
 if (!EXCLUIR) {
     System.debug('DEL22| FASE 1 concluida: nada excluido. ' + paraExcluir.size() + ' de ' + ws.size() + ' work(s) elegivel(is). Confira a lista e rode com EXCLUIR = true.');
 } else {
+    // tasks das works elegiveis: apagadas explicitamente antes (o relacionamento pode ser lookup, o que travaria a exclusao da work)
+    List<agf__ADM_Task__c> tasks = [SELECT Id FROM agf__ADM_Task__c WHERE agf__Work__c IN :paraExcluir];
+    if (!tasks.isEmpty()) delete tasks;
+    System.debug('DEL22| FASE 2: ' + tasks.size() + ' task(s) excluida(s).');
     delete paraExcluir;   // criterios de aceite (master-detail) vao junto; tudo para a Lixeira, restauravel por 15 dias
     System.debug('DEL22| FASE 2: ' + paraExcluir.size() + ' work(s) excluida(s) e enviada(s) a Lixeira.');
     for (agf__ADM_Work__c w : paraExcluir) System.debug('DEL22| EXCLUIDA | ' + w.Name + ' | ' + w.agf__Subject__c);
