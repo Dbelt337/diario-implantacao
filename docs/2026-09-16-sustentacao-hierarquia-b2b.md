@@ -27,3 +27,10 @@ Resíduo: 3 contas + 5 oportunidades. Script 30 (leitura) identifica os registro
 - Nenhuma Task criada hoje pelo usuário executor: o insert visto no log da fase 2 pertencia ao trigger de uma oportunidade que falhou e foi desfeito junto.
 
 Próximo passo depende das fórmulas das 3 regras de validação (Conta: cluster; Oportunidade: "não possui autorização nesta fase" e "Aguardando contrato").
+
+## Regras de validação (texto enviado pelo Diego, 16/09)
+
+- Conta: `AND(RecordTypeName__c = "B2B - Pessoa jurídica", ISPICKVAL($User.Cluster__c, ""), OR(ISPICKVAL(ClusterManual__c, ""), ISBLANK(TEXT(ClusterManual__c))))`. Explica o resíduo: as 3 contas da Tatiane estão sem ClusterManual e o executor (admin) não tem cluster; as do Gabriel tinham ClusterManual preenchido.
+- Oportunidade `BloqueiaAlteracaoAnaliseCliente`: RT B2B, não nova, fase "Análise cliente", `Bypass__c = false` e `NOT(ISCHANGED(Bypass__c))`, salvo mudanças de fase/aprovação/data/valor. Ou seja, mudar `Bypass__c` no mesmo update libera a edição (mecanismo de bypass previsto na org). A regra de "Aguardando contrato" não foi enviada; presume-se o mesmo padrão.
+
+Script 31 (duas fases): contas com cluster temporário no executor (copiado da Tatiane) e limpeza em seguida; oportunidades com `Bypass__c = true` junto com a troca e `false` logo depois. Não altera regra nenhuma nem donos.
