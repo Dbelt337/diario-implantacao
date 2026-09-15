@@ -99,10 +99,10 @@ O CLM faz parte do pacote CME (a página de Communications Cloud lista "Contract
 
 ## 8. Evidências recebidas em 15/09 (segunda rodada)
 
-### Installed Packages (org não identificada: confirmar se é preprod ou produção)
+### Installed Packages — PRODUÇÃO (prod-brasiltecpar, confirmado pelo Diego em 15/09)
 | Pacote | Namespace | Versão | Instalado em | Observação |
 |---|---|---|---|---|
-| Vlocity CMT | vlocity_cmt | **900.650.3** (1GP) | 13/09/2025 | 7 apps, 110 tabs, 395 objetos. **Allowed Licenses 1 / Used 1**: só um usuário com licença do pacote nesta org; conferir em Manage Licenses antes de qualquer teste com outros perfis |
+| Vlocity CMT | vlocity_cmt | **900.650.3** (1GP) | 13/09/2025 | 7 apps, 110 tabs, 395 objetos. **Allowed Licenses 1 / Used 1 em PRODUÇÃO**: só um usuário com licença do pacote; conferir em Manage Licenses antes de qualquer piloto com GR/BKO |
 | Salesforce Agile Accelerator | agf | 1.181 | 10/06/2026 | onde as works vivem |
 | Marketing Cloud (Connect) | et4ae5 | 262.0 | 21/03/2026 | atende o pré-requisito "5.496 ou superior" do Salesforce Data Event (numeração nova por release) |
 | MarketingCloudConnectedApp | MCCA5PROD | 1.5 | 20/03/2026 | |
