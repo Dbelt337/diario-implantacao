@@ -34,3 +34,13 @@ Próximo passo depende das fórmulas das 3 regras de validação (Conta: cluster
 - Oportunidade `BloqueiaAlteracaoAnaliseCliente`: RT B2B, não nova, fase "Análise cliente", `Bypass__c = false` e `NOT(ISCHANGED(Bypass__c))`, salvo mudanças de fase/aprovação/data/valor. Ou seja, mudar `Bypass__c` no mesmo update libera a edição (mecanismo de bypass previsto na org). Oportunidade `BloqueiaAlteracaoAguardandoContrato`: RT B2B, fase "Aguardando contrato", `NOT(Bypass__c)` e `NOT(ISCHANGED(Bypass__c))`, salvo mudanças dos campos de contrato. Mesmo mecanismo de bypass.
 
 Script 31 (duas fases): contas com cluster temporário no executor (copiado da Tatiane) e limpeza em seguida; oportunidades com `Bypass__c = true` junto com a troca e `false` logo depois. Não altera regra nenhuma nem donos.
+
+## Fase 2 do script 31 (log de 16/09 18:2x): resíduo fechado
+
+Contas: 3 de 3 atualizadas com cluster temporário "ALT/GGNET" no executor, limpo em seguida (executor cluster = null no fim). Oportunidades: 5 de 5 com gerente Rodrigo. O "desligar bypass" falhou nas 5 porque o trigger de Opportunity já devolve `Bypass__c = false` no próprio save (DEPOIS mostra bypass=false em todas), então o segundo update não mudava nada e a regra barrou; estado final correto. O trigger inseriu 1 Task no update das 5 (desta vez commitada): script 32 lista e, se for efeito colateral, apaga.
+
+**Resultado consolidado do chamado**: 33 contas e 13 oportunidades abertas do time do Rodrigo com Gerente da conta = Rodrigo Nascimento Piccolo; nenhum dono de conta ou de oportunidade alterado; nenhuma regra de validação alterada.
+
+Contas (33): Gabriel: TELEFONICA BRASIL S.A. - SP, TIM S A - MS, TIM S A - SC. Luan: AETE-AMAZONIA, AUTOPISTA LITORAL SUL, CPFL TRANSMISSAO, ETVG VARZEA GRANDE, ETAP AGRESTE POTIGUAR, ETC CAPIXABA, LIG GESTAO E GERACAO, TCC CAMINHO DO CAFE, TPE PARAISO DE ENERGIA. Lucidia: CLARO, CLARO S.A. - MG, CLARO SA, OI GO, OI MS, OI SP, TELMEX MS, TELMEX RS. Tamires: ADYL NET, ALGAR MULTIMIDIA S A, ALGAR MULTIMIDIA S/A, ALGAR MULTIMIDIA SA -MS, ALGAR SOLUCOES EM TIC (BAIXADA), VERO S.A - RS, VERO S.A., VOGEL (2). Tatiane: Condominio Century Residence Service, FLIX FIBRA, QUALITYFIBRA, TELESPAZIO.
+
+Oportunidades (13): Gabriel: 5 Transportes 100 Mbps, Projeto TIM Campo Grande, PROJETO #157100, PROJETO #157554, Estudo de viabilidades #157671, SPODIP534832 AVIPAM (6, em aprovação de Arquitetura). Luan: 500 MBIT/S IJACI/MG, EXPRESSA 100 MBIT/S CAMPO GRANDE, FIREWALL GRUPO V ARAUCARIA, VIA CAMPO. Tamires: SONDA DO BRASIL. Tatiane: COTAÇÃO LINK TERRESTRE COT CAMPINAS, COTAÇÃO TELESPAZIO 4 LINKS.
