@@ -26,17 +26,21 @@ for (String f : userFields) {
 }
 
 for (ProcessInstance pi : [SELECT Id, Status, ProcessDefinition.Name, ProcessDefinition.DeveloperName, SubmittedBy.Name, CreatedDate, CompletedDate,
-                                  (SELECT Id, StepStatus, Actor.Name, ActorId, OriginalActor.Name, OriginalActorId, Comments, CreatedDate, ProcessNode.Name FROM Steps ORDER BY CreatedDate),
-                                  (SELECT Id, Actor.Name, ActorId, OriginalActor.Name, OriginalActorId, ProcessNode.Name, CreatedDate FROM Workitems)
+                                  (SELECT Id, StepStatus, Actor.Name, ActorId, OriginalActor.Name, OriginalActorId, Comments, CreatedDate FROM Steps ORDER BY CreatedDate),
+                                  (SELECT Id, Actor.Name, ActorId, OriginalActor.Name, OriginalActorId, CreatedDate FROM Workitems),
+                                  (SELECT ProcessNodeName, NodeStatus, LastActor.Name, CompletedDate FROM Nodes)
                            FROM ProcessInstance WHERE TargetObjectId = :oppId ORDER BY CreatedDate DESC]) {
     System.debug('APR24| PROCESSO | ' + pi.ProcessDefinition.Name + ' (' + pi.ProcessDefinition.DeveloperName + ') | status=' + pi.Status
         + ' | submetido por ' + pi.SubmittedBy.Name + ' em ' + pi.CreatedDate.format('dd/MM HH:mm') + ' | concluido=' + pi.CompletedDate);
     for (ProcessInstanceStep s : pi.Steps) {
-        System.debug('APR24|   ETAPA | ' + s.ProcessNode.Name + ' | ' + s.StepStatus + ' | ator=' + s.Actor.Name + ' | ator original=' + s.OriginalActor.Name
+        System.debug('APR24|   ETAPA | ' + s.StepStatus + ' | ator=' + s.Actor.Name + ' | ator original=' + s.OriginalActor.Name
             + ' | ' + s.CreatedDate.format('dd/MM HH:mm') + ' | ' + s.Comments);
     }
+    for (ProcessInstanceNode n : pi.Nodes) {
+        System.debug('APR24|   NO DO PROCESSO | ' + n.ProcessNodeName + ' | ' + n.NodeStatus + ' | ultimo ator=' + n.LastActor.Name + ' | concluido=' + n.CompletedDate);
+    }
     for (ProcessInstanceWorkitem w : pi.Workitems) {
-        System.debug('APR24|   PENDENTE | ' + w.ProcessNode.Name + ' | aguardando ' + w.Actor.Name + ' (' + w.ActorId + ')' + ' | ator original=' + w.OriginalActor.Name
+        System.debug('APR24|   PENDENTE | aguardando ' + w.Actor.Name + ' (' + w.ActorId + ')' + ' | ator original=' + w.OriginalActor.Name
             + (w.ActorId == o.OwnerId ? ' | ATENCAO: aprovador e o proprio dono da oportunidade' : '') + ' | workitem=' + w.Id);
     }
 }
