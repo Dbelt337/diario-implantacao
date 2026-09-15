@@ -158,7 +158,8 @@ Ordem de execução dos scripts (todos idempotentes, um por vez, filtrar o log p
 1. `17_ConsolidarFilhas_51_52_55_1509.apex` (CON17|): anexa a nota "FILHAS POR FAMILIA" nas W-000051/052/055 (absorve o conteúdo pretendido das W-000138/139: filhas por família, ajustes da v3, pendências P1-P8 com dono, achado ATR_PRAZO) e coloca as três na sprint "Sprint 1 - SysMap (15-26/09)" (condição do Gerson).
 2. `14_ExcluirWorks_Gerson_EPC_1509.apex` com `EXCLUIR = true` (DEL14|): exclui W-000138 e W-000139 (Lixeira, 15 dias).
 3. `18a` a `18g` (CMP18|): Details e critérios (3 a 5 por work) nas W-000133 CI/CD, W-000134 licenças OM/sandboxes (com as evidências de 15/09), W-000135 MuleSoft (orçamento + inventário de 9 demandas do barramento extraído das works), W-000136 arquitetura das APIs B2B, W-000137 decomposição/camada técnica (= P5 da v3), W-000140 integrações B2B em sandbox para testes, W-000141 onboarding + histórias TEC-B2B-01 a 07. Não mexem em Subject, time, sprint nem responsável (responsável sugerido fica no texto).
-4. `19_ValidarDepois_Gerson_1509.apex` (VAL19|): esperado 0 problemas; lista também a sprint das W-000142 a 145 (ainda sem sprint).
+4. `20_AlocarSprint_B2B13a16_1509.apex` (SPR20|): aloca W-000142 a 145 na "Sprint 1 - SysMap (15-26/09)" (constante SPRINT trocável).
+5. `19_ValidarDepois_Gerson_1509.apex` (VAL19|): esperado 0 problemas.
 
 Pendente de decisão: sprint das W-000142 a W-000145; responsável de cada work do Gerson (sugestões no Details); e-mail ao Bismarck (rascunho em `docs/2026-09-15-email-evidencias-licenca-om.md`).
 
