@@ -57,14 +57,43 @@ A numeração 1-29 abaixo é a ordem das histórias no docx e é a mesma que as 
 3. **B2B-15 — Condições Especiais de Faturamento e Intervalos de Cobrança** (história 28). Dependências W-000081 (campos B2C), W-000098 (cotação), W-000101 (handoff), SAP/Customer Core aceitarem as novas chaves.
 4. **Cadência de notificações de assinatura** (história 29): decidir entre (a) ampliar a W-000122 (RN-05 passa a cobrir cliente, proposta, D0..D+30 e 08h) ou (b) work própria TEC-CLM-02. Recomendação: work própria, porque a régua vale também para proposta (Quote) e reutiliza a régua B2C da W-000066.
 
-## Catálogo: impacto da Modelagem v3 (14/09) nas works existentes
+## Catálogo: plano acordado por e-mail em 14/09 (Modelagem v3)
 
-A v3 é posterior a todas as works (11/09) e "substitui a hierarquia da planilha ObjectTypes-EPC v2 (SysMap)". Nenhuma work cita 12, 13 ou 14/09. Works a revisar:
+O e-mail de 14/09 (resposta à estrutura do Davi, com a v3 anexa) fechou o seguinte:
 
-- **W-000041 EPC-04 (revisão 10/09)**: modela um único tipo base "BTP Produto Base" com 5 famílias. A v3 separa duas árvores (Oferta: OT_OFFER_BASE > Conectividade / Equipamento Gerenciado; Produto: OT_PROD_BASE > Conectividade / Adicional de Conectividade / Equipamento Gerenciado) e move Código SAP e descrição fiscal para campos do Product2 (Regra 7). A lista de atributos de Conectividade também mudou (v3: Meio de Acesso, Last Mile, Rede Neutra, Banda, Upload, IPv4, IPv6, Tipo de conexão VPN, Sessão BGP, Burstable 95th, Tipo de Serviço).
-- **W-000052 EPC-04 original** e **W-000053 EPC-05**: hierarquia e Product Specs precisam refletir os 9 produtos Conectividade (um por oferta, Regra 3) e as 11 ofertas.
-- **W-000112 CAT-CHD-01**: v3 confirma os 5 adicionais e 2 equipamentos como filhos compartilhados (Regra 4) e a cardinalidade mínima zero quando havia "Nenhum/Desativado" (Regra 5); alinhar picklists.
-- **W-000108 CAT-PRC-01**: aba "Preço por Atributo" só tem Smart Internet Corporativa; depende da pendência P4.
-- **W-000127 CAT-EQP-01**: ficha técnica de Firewall/Wi-Fi entra por aqui (aba Hierarquia OT).
+- O conteúdo comercial da v2 (SysMap) fica: adicionais como produtos filhos, camada de oferta sem atributos de configuração, validação de valores por oferta.
+- Cinco ajustes: (1) um produto tem um único Object Type, logo 9 produtos Conectividade, um por oferta, sem override por bundle; (2) árvore em dois níveis, de 17 tipos de produto para 3 famílias (Conectividade, Adicional, Equipamento Gerenciado); (3) tipos de oferta sem atributo saem, viram Catálogo/Categoria e Família do Product2, e o tipo base de oferta carrega Prazo de Contrato, Modalidade de Pagamento, Tipo de Negociação e Marca; (4) "Nenhum"/"Desativado" viram cardinalidade mínima zero e saem da picklist; (5) preço por atributo com matriz (Fibra Ponto a Ponto, blocos IPv4, Banda, nível de NOC), sem regra de preço zerando nada.
+- **Works de catálogo: filhas de W-000051 (EPC-01 Attribute Categories), W-000052 (EPC-04 hierarquia) e W-000055 (EPC-03 dicionário), por família e não por oferta.** As três de Conectividade abrem quando o Joel responder P1 (prazo na oferta ou no componente) e P2 (valores dos adicionais por oferta), porque mudam o conteúdo. Voz, TV, Wi-Fi e Dispositivos e SVA seguem o mesmo trio quando chegarem as grades do Joel e do Rodrigo.
 
-Pendências da v3 e donos: P1 prazo na oferta (Joel), P2 valores de adicionais por oferta (Joel), P3 cardinalidade dos adicionais (Joel), P4 preços das outras 10 ofertas (Joel), P5 camada técnica CFS/RFS/Recurso (SysMap com OM), P6 SAP/fiscal por filho (Rodrigo/fiscal), P7 anomalia NOC no Serviço VPN (Joel), P8 Marca, Tipo de Negociação e Taxa Única (Comercial).
+### Works a criar no catálogo (bloqueadas por P1 e P2)
+
+| Work filha | Pai | Conteúdo que sai da v3 |
+|---|---|---|
+| EPC-01 Conectividade — categorias da família | W-000051 | categorias dos 25 atributos da v3 (Leia-me + aba Atribuição por Produto); confrontar com a taxonomia CAT_ de 8 categorias da W-000051 |
+| EPC-03 Conectividade — dicionário de atributos | W-000055 | 25 atributos (ATR_*) com picklists PL_* da aba Picklists; 4 transversais no tipo base de oferta, 11 no tipo Conectividade, 1 por adicional, os de Firewall/Wi-Fi atribuídos no produto |
+| EPC-04 Conectividade — hierarquia e atribuição | W-000052 | aba Hierarquia OT (OT_OFFER_BASE > OT_OFFER_CONECTIVIDADE / OT_OFFER_EQUIP_GERENCIADO; OT_PROD_BASE > OT_PROD_CONECTIVIDADE / OT_PROD_ADICIONAL / OT_PROD_EQUIP_GERENCIADO), aba Atribuição por Produto (herdado x atribuído no produto, valores habilitados e ocultos) |
+
+Works existentes afetadas, para alinhar quando as filhas abrirem (nenhuma work cita 12, 13 ou 14/09):
+
+- **W-000041** (revisão 10/09 da EPC-04): modela um único "BTP Produto Base" com 5 famílias e põe Código SAP e Descrição Fiscal como atributos do tipo base. Na v3 são campos do Product2 (Regra 7) e os transversais ficam no tipo base de **oferta**, não de produto. Conflito a registrar na filha EPC-04 Conectividade.
+- **W-000053 EPC-05** (Product Specs da Onda 1) e **W-000112 CAT-CHD-01** (filhos): passam a seguir as abas Produtos (11 ofertas + 16 filhos: 9 Conectividade, 5 adicionais, 2 equipamentos) e Estrutura (cardinalidades).
+- **W-000108 CAT-PRC-01**: aba Preço por Atributo, só Smart Internet Corporativa até P4.
+- **W-000121 CAT-CPX-01**: Taxa Única só nas ofertas elegíveis (P8).
+- **W-000127 CAT-EQP-01**: ficha técnica de Firewall/Wi-Fi.
+
+### Pendências da v3 e donos
+
+| # | Pendência | Dono |
+|---|---|---|
+| P1 | Prazo de Contrato na oferta ou no componente Conectividade | Joel |
+| P2 | Valores dos adicionais variam por oferta ou lista completa vale para todas | Joel |
+| P3 | Cardinalidade da Locação de Roteador (obrigatória em todas?) | Joel |
+| P4 | Preços das outras 10 ofertas no formato da Corporativa | Joel |
+| P5 | Camada técnica CFS/RFS/Recurso e decomposição | SysMap com OM |
+| P6 | Código SAP, descrição e documento fiscal dos 16 filhos | Rodrigo / fiscal |
+| P7 | Anomalia NOC sem cabeçalho no Serviço VPN | Joel |
+| P8 | Valores de Marca, Tipo de Negociação e quais ofertas aceitam Taxa Única | Comercial |
+
+### Achado na planilha v3
+
+O código do atributo Prazo de Contrato está grafado `ATR_PRAZO_CONTRATO` na aba Atribuição por Produto e `ATR_PRAZO_DE_CONTRATO` na aba Picklists. Os outros 24 códigos batem entre as abas. Corrigir antes de virar template de carga (CAT-TPL-01).
