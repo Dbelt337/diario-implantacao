@@ -20,13 +20,13 @@ for (Integer nivel = 0; nivel < 3 && !fronteira.isEmpty(); nivel++) {
     for (UserRole r : [SELECT Id, Name FROM UserRole WHERE ParentRoleId IN :fronteira]) { prox.add(r.Id); System.debug('HIE29| papel filho (nivel ' + (nivel + 1) + '): ' + r.Name); }
     papeis.addAll(prox); fronteira = prox;
 }
-Map<Id, User> time = new Map<Id, User>([SELECT Id, Name, UserRole.Name FROM User WHERE IsActive = true AND UserRoleId IN :papeis AND Id != :rodrigo.Id ORDER BY Name]);
-for (User u : time.values()) System.debug('HIE29| membro do time: ' + u.Name + ' | ' + u.UserRole.Name);
-System.debug('HIE29| time do Rodrigo: ' + time.size() + ' usuario(s)');
+Map<Id, User> equipe = new Map<Id, User>([SELECT Id, Name, UserRole.Name FROM User WHERE IsActive = true AND UserRoleId IN :papeis AND Id != :rodrigo.Id ORDER BY Name]);
+for (User u : equipe.values()) System.debug('HIE29| membro do time: ' + u.Name + ' | ' + u.UserRole.Name);
+System.debug('HIE29| time do Rodrigo: ' + equipe.size() + ' usuario(s)');
 
 // contas do time com gerente = Wesley ou em branco
 List<Account> contas = [SELECT Id, Name, Owner.Name, AccountManager__c, AccountManager__r.Name FROM Account
-                        WHERE OwnerId IN :time.keySet() AND (AccountManager__c = :wesley.Id OR AccountManager__c = null) ORDER BY Owner.Name, Name];
+                        WHERE OwnerId IN :equipe.keySet() AND (AccountManager__c = :wesley.Id OR AccountManager__c = null) ORDER BY Owner.Name, Name];
 Integer nW = 0, nB = 0;
 for (Account a : contas) {
     if (a.AccountManager__c == null) nB++; else nW++;
@@ -37,7 +37,7 @@ System.debug('HIE29| contas a alterar: ' + contas.size() + ' (' + nW + ' com Wes
 
 // oportunidades abertas do time com aprovador (Gerente da Conta na opp) diferente do Rodrigo
 List<Opportunity> opps = [SELECT Id, Name, Owner.Name, StageName, ManagerAccount__c, ManagerAccount__r.Name, Send4Approval__c FROM Opportunity
-                          WHERE IsClosed = false AND OwnerId IN :time.keySet() AND (ManagerAccount__c != :rodrigo.Id OR ManagerAccount__c = null) ORDER BY Owner.Name, Name];
+                          WHERE IsClosed = false AND OwnerId IN :equipe.keySet() AND (ManagerAccount__c != :rodrigo.Id OR ManagerAccount__c = null) ORDER BY Owner.Name, Name];
 for (Opportunity o : opps) {
     System.debug('HIE29| OPP | ' + o.Name.left(50) + ' | dono=' + o.Owner.Name + ' | fase=' + o.StageName + ' | em aprovacao=' + o.Send4Approval__c
         + ' | travada=' + Approval.isLocked(o.Id) + ' | gerente atual=' + (o.ManagerAccount__c == null ? '(em branco)' : o.ManagerAccount__r.Name) + ' -> ' + rodrigo.Name);
@@ -57,7 +57,7 @@ for (Integer i = 0; i < rs.size(); i++) { if (rs[i].isSuccess()) okO++; else err
 System.debug('HIE29| OPORTUNIDADES: ' + okO + ' atualizada(s), ' + errO.size() + ' falha(s) - as que falharam por aprovacao ficam para depois da aprovacao ou reatribuicao (script 27)');
 for (String e : errO) System.debug('HIE29|   falha opp ' + e);
 // conferencia
-System.debug('HIE29| DEPOIS | contas do time com gerente Rodrigo: ' + [SELECT COUNT() FROM Account WHERE OwnerId IN :time.keySet() AND AccountManager__c = :rodrigo.Id]
-    + ' | com Wesley: ' + [SELECT COUNT() FROM Account WHERE OwnerId IN :time.keySet() AND AccountManager__c = :wesley.Id]
-    + ' | em branco: ' + [SELECT COUNT() FROM Account WHERE OwnerId IN :time.keySet() AND AccountManager__c = null]);
-System.debug('HIE29| DEPOIS | opps abertas do time com aprovador diferente do Rodrigo: ' + [SELECT COUNT() FROM Opportunity WHERE IsClosed = false AND OwnerId IN :time.keySet() AND (ManagerAccount__c != :rodrigo.Id OR ManagerAccount__c = null)]);
+System.debug('HIE29| DEPOIS | contas do time com gerente Rodrigo: ' + [SELECT COUNT() FROM Account WHERE OwnerId IN :equipe.keySet() AND AccountManager__c = :rodrigo.Id]
+    + ' | com Wesley: ' + [SELECT COUNT() FROM Account WHERE OwnerId IN :equipe.keySet() AND AccountManager__c = :wesley.Id]
+    + ' | em branco: ' + [SELECT COUNT() FROM Account WHERE OwnerId IN :equipe.keySet() AND AccountManager__c = null]);
+System.debug('HIE29| DEPOIS | opps abertas do time com aprovador diferente do Rodrigo: ' + [SELECT COUNT() FROM Opportunity WHERE IsClosed = false AND OwnerId IN :equipe.keySet() AND (ManagerAccount__c != :rodrigo.Id OR ManagerAccount__c = null)]);
