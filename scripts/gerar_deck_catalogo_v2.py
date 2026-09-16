@@ -215,7 +215,7 @@ sh.append(footer(9)); S.append(slide(sh))
 # 10. Garantias
 g = [('Ferramenta padrão, suportada', 'Product Designer e DataPacks são os caminhos documentados pela Salesforce; nada depende de código nosso.'),
      ('Validação ao salvar', 'Tipo de objeto, atributos, cardinalidade e preço são conferidos pela interface antes de existir a oferta.'),
-     ('Sandbox antes de produção', 'Toda oferta nasce em sandbox, é testada no carrinho e só então migra, pelo IDX Workbench, a partir do projeto Released.'),
+     ('Sandbox antes de produção', 'Toda oferta nasce em sandbox num projeto do EPC e passa por Draft, In-Review e In-Test; só em Released migra pelo IDX Workbench.'),
      ('Evidência e versionamento', 'O projeto do EPC lista cada item alterado (Add, Change, Delete); o DataPack de cada onda fica guardado; versionamento é nativo.'),
      ('Pós-carga em janela', 'Product Hierarchy Maintenance e Refresh Platform Cache na ordem documentada, em janela fora do horário de venda: a Help manda não rodar jobs em produção ao vivo.'),
      ('Reversibilidade e donos', 'Oferta errada é aposentada pelo ciclo de vida, não excluída; cada etapa tem dono e substituto nomeados.')]
@@ -236,7 +236,7 @@ for i, (t, via) in enumerate(procs):
     sh.append(shape(x, 1.25, 1.74, 1.0, [P(t, 12, True, WHITE, 'ctr', space_after=2), P(via, 9.5, False, PALE, 'ctr', space_after=0)], fill=BLUE, round_=True, anchor='ctr', ins=0.06, name='Proc'))
 sh.append(card(0.5, 2.45, 4.4, 3.6, 'Cada procedimento tem', [
     ('Pré-requisitos: ', 'oferta aprovada pelo comercial, códigos e preços na planilha de levantamento; projeto do EPC do evento aberto e definido como padrão.'),
-    ('Quem cadastra e quem aprova: ', 'nomes, não áreas.'),
+    ('Quem faz cada etapa: ', 'o status do projeto do EPC marca a etapa: Draft (analista), In-Review (governança), In-Test (comercial no carrinho), Released (publicação). Nomes, não áreas.'),
     ('Passo a passo com telas: ', 'sequência exata no Product Designer, campo a campo.'),
     ('Pós-carga: ', 'Product Hierarchy Maintenance e Refresh Platform Cache (Incremental) em janela; roteiro de teste no carrinho.'),
     ('Evidência: ', 'projeto do EPC Released e migrado pelo IDX, resultado do teste e registro no diário.')], border=NAVY, sz=10.5))
@@ -249,9 +249,9 @@ sh.append(card(5.1, 2.45, 4.4, 3.6, 'Anexos do manual', [
 sh.append(pill(0.5, 6.25, 9.0, 0.55, 'Entrega: rascunho na Onda 2, versão final e treinamento na Onda 3. Mantido pela governança Salesforce a cada mudança de modelagem.', GREEN, 11))
 sh.append(footer(11)); S.append(slide(sh))
 # 12. Papeis e rotina
-roles = [('Dono do catálogo (Comercial)', 'Define e aprova ofertas, preços e promoções; responde às pendências de negócio; assina a homologação no carrinho.', GREEN),
-         ('Analistas de catálogo (2 pessoas)', 'Cadastram no Product Designer pelo manual; exportam o DataPack; rodam o checklist pós-carga.', BLUE),
-         ('Governança Salesforce (BTP)', 'Valida o levantamento contra a org, aprova a publicação, mantém o manual e o diário de cargas.', NAVY),
+roles = [('Dono do catálogo (Comercial)', 'Define e aprova ofertas, preços e promoções; responde às pendências de negócio; homologa no carrinho na etapa In-Test.', GREEN),
+         ('Analistas de catálogo (2 pessoas)', 'Abrem o projeto do EPC e cadastram no Product Designer pelo manual (Draft); rodam o checklist pós-carga em janela.', BLUE),
+         ('Governança Salesforce (BTP)', 'Revisa o projeto (In-Review), marca Released e publica pelo IDX; mantém o manual e o diário de cargas.', NAVY),
          ('SysMap (projeto)', 'Modelagem nova (tipo, atributo, regra), migração das ondas e correções em produção sob demanda.', BLUE),
          ('Agentforce (fase 2)', 'Vendedor: cotação e pedido pelo carrinho, pronto no pacote. Catálogo: explica o manual, monta checklist, confere pós-carga. Nunca publica.', AMBER)]
 sh = [header('Pessoas e rotina', 'Quem faz o quê, para o catálogo não depender de uma pessoa só')]

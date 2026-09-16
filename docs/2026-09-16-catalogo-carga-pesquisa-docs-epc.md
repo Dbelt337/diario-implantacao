@@ -113,3 +113,8 @@ os links foram passados ao Diego para colar o conteudo integral no chat e fechar
   criacao/alteracao/exclusao; lista de itens com acao Add/Change/Delete e versao; IDX Workbench migra as
   mudancas de um projeto em status Released para outra org. Regra: um projeto por onda/evento, Released ao
   homologar, migrado pelo IDX. Deck ajustado (slides 3, 6, 9, 10, 11 e 12). Validacao concluida.
+- Help "EPC Project Management": status Draft > In-Review > In-Test > Released (ou Canceled); ao mudar o status
+  do projeto, produtos, tipos de objeto e picklists versionados vao para o mesmo estado; em Released nao se move
+  nem remove item; so o dono do projeto move itens ou muda o padrao; mover so pacotes inteiros a partir do
+  produto raiz. Regra para o manual: Draft = analista cadastra; In-Review = governanca revisa; In-Test =
+  comercial homologa no carrinho; Released = governanca publica pelo IDX. Deck ajustado (slides 10, 11 e 12).
