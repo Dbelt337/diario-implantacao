@@ -153,3 +153,13 @@ prazo e pre-requisitos (Onda 1 em 1 a 2 semanas; P1/P2 travam); decisoes e proxi
 com xmllint (OK). LibreOffice continua sem carregar arquivos neste ambiente; revisar a renderizacao no PowerPoint.
 Ponto em aberto com o Davi: o Claude gera DataPacks (rota suportada) ou chama as EPC REST APIs direto; o slide 2 assume
 DataPacks/Vlocity Build.
+
+## Resposta ao Michel (16/09, tarde): works de catalogo da SysMap
+
+Michel pediu "so as works que a SysMap deveria atuar" nos 3 topicos (jornada, fundacao 100%, integracao). Pelo CSV
+validado de 15/09: SysMap = W-000051/052/055 (Sprint 1), W-000056 e W-000070 (sem sprint), W-000140/141 e W-000142 a 145
+(Sprint 1). Decisao do Diego (16/09): **W-000053 (EPC-05) e W-000102 (CAT-TPL-01) tambem sao da SysMap** (estavam como
+time Salesforce). Script 38 (molde do 21) troca time e tag das duas; CSV validado ajustado ("SysMap (alterado em 16/09)").
+Pacote_Works_SysMap_1609.zip entregue ao Diego: 77 docs da SysMap (75 + 053 + 102) e CSV filtrado; fora: 11 works de
+catalogo do time Salesforce (054, 103, 104, 108, 111, 112, 113, 114, 121, 127, 128) e 5 do Gerson (133 a 137).
+Pendente: rodar o script 38 e decidir se 053, 056, 070 e 102 entram na Sprint 1 ou ficam para a Sprint 2.
