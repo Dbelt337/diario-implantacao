@@ -125,3 +125,31 @@ Office descartava esses textos (slide 10 ficou so com titulos). Corrigido no ger
 spcPts; titulo vazio nao gera run). Validacao passou a ser feita com xmllint contra o XSD oficial pml.xsd
 (scripts/validar_pptx_xsd.sh): 13 slides + presentation.xml validam; teste negativo com sz="1050.0" falha como
 esperado; content types, rels e zip conferidos. Deck regerado e reenviado.
+
+## Correcao de rota (16/09, 11:30-11:45): a v2 errou o alvo
+
+Davi (WhatsApp, 11:32-11:41): "nao e isso nao". O agente da proposta dele nao e Agentforce nem wizard em Apex/Flow:
+"a ideia e que o agente execute a leitura do template e execute via cli"; "na vdd e um agente custom mesmo";
+"o claude conectado agora com a salesforce ele vai fazer isso"; "claude e o executor, ele nao vai desenvolver nada,
+ele vai auxiliar na execucao das coisas que vierem no template". Pediu tambem menos informacao no deck, para nao
+confundir na apresentacao.
+
+Onde a v2 errou: leu "agente" como Agentforce (slides 1, 2, 6, 7, 12, 13); recomendou suspender o wizard e cair no
+cadastro manual pelo Product Designer (slides 4 e 5), derrubando as duas alternativas sem apresentar a do Davi;
+13 slides de pesquisa de documentacao.
+
+O que continua valido e sustenta a proposta do Davi: DataPacks/IDX sao a rota suportada de migracao (o Claude gera os
+DataPacks a partir do template e publica com o Vlocity Build, sem gravar registro direto); jobs pos-carga disparaveis
+por API; padrao do projeto "validar antes, executar, conferir depois, registrar". Restricao que permanece: as EPC REST
+APIs nao cobrem preco nem atributo (resolvida via DataPack, nao e argumento contra). Nota para o Diego: a frase
+"teria que criar classes e fluxos" nao vale nesse modelo; via CLI nao ha Apex nem Flow. Pre-requisitos reais: acesso
+autenticado a sandbox (usuario de integracao), Vlocity Build e sf CLI instalados, template com os codigos exatos da org.
+
+Entregue: docs/deck-catalogo/Catalogo_Carga_e_Manutencao_v3_Template_Claude_CLI.pptx (6 slides), gerado por
+scripts/gerar_deck_catalogo_v3.py sobre o pacote do deck original. Slides: capa; como funciona (5 passos: negocio
+preenche o template, Claude le e confere, Claude executa na sandbox via CLI, comercial homologa no carrinho, pessoas
+publicam por DataPack/IDX); por que este caminho (wizard x manual x template + Claude); seguranca (4 garantias);
+prazo e pre-requisitos (Onda 1 em 1 a 2 semanas; P1/P2 travam); decisoes e proximos passos. Validado contra pml.xsd
+com xmllint (OK). LibreOffice continua sem carregar arquivos neste ambiente; revisar a renderizacao no PowerPoint.
+Ponto em aberto com o Davi: o Claude gera DataPacks (rota suportada) ou chama as EPC REST APIs direto; o slide 2 assume
+DataPacks/Vlocity Build.
