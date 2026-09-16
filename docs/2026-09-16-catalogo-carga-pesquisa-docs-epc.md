@@ -204,3 +204,7 @@ P4 = cotacao, pedido e pos-venda (demais B2C/B2B, TEC-B2C-01/05/06, TEC-OM-01, T
 service). Contagem: P0 2, P1 21, P2 14, P3 18, P4 38. Nao mexe em sprint. Ponto de atencao: B2B-13 a 16 (142-145) estao na
 Sprint 1 com P1 do Gerson e pela regra ficam P4; sprint e prioridade passam a dizer coisas diferentes. Pendente: Diego
 confirmar a classificacao e rodar.
+Ajuste do Diego (v2): catalogo em P1 (ha squad de catalogo) e esteira de CI/CD em P0. Escala final do script 40: P0 = 134,
+140, 132, 133 (4); P1 = fundacao + catalogo + integracoes (32); P2 = lead e oportunidade (18); P3 = cotacao, pedido, contrato,
+ativacao e instalacao (24); P4 = pos-venda: retencao, cancelamento, MACD, 360, dashboards (14). B2B-15 e 16 (cotacao e
+assinatura) em P3; B2B-13 e 14 (refidelizacao e aviso de cancelamento) em P4.
