@@ -1,7 +1,8 @@
 // 34 - Chamado da Tayza (16/09): "nao consigo ver esta opp", link da CONTA 001V200000lodzIIAQ. Somente leitura: existe? esta
 // na Lixeira? dono, record type, cluster; oportunidades da conta (inclusive excluidas); acesso da Tayza a conta e a cada
 // oportunidade (UserRecordAccess); ultimas alteracoes. Filtre por CTA34|.
-// v3: corpo dentro de um metodo (o parser do Execute Anonymous rejeitou declaracoes/atribuicoes no nivel raiz apos os loops).
+// v4: causa real dos erros de parse das versoes 1 a 3 era a clausula ALL ROWS antes de ORDER BY na consulta de Opportunity
+// (ALL ROWS tem de ser a ultima clausula); o parser apontava o inicio do statement/metodo. Corrigido.
 void run() {
     Id accId = '001V200000lodzIIAQ';
     User tayza = [SELECT Id, Name, Profile.Name, UserRole.Name, Cluster__c FROM User WHERE Name = 'Tayza Apollo' AND IsActive = true LIMIT 1];
@@ -22,7 +23,7 @@ void run() {
 
     // oportunidades da conta, inclusive na Lixeira
     List<Opportunity> opps = [SELECT Id, Name, IsDeleted, StageName, IsClosed, Owner.Name, Owner.IsActive, RecordType.Name, ManagerAccount__r.Name, Send4Approval__c,
-                                     CreatedDate, LastModifiedBy.Name, LastModifiedDate FROM Opportunity WHERE AccountId = :accId ALL ROWS ORDER BY CreatedDate DESC];
+                                     CreatedDate, LastModifiedBy.Name, LastModifiedDate FROM Opportunity WHERE AccountId = :accId ORDER BY CreatedDate DESC ALL ROWS];
     System.debug('CTA34| oportunidades da conta (inclusive excluidas): ' + opps.size());
     Set<Id> ids = new Set<Id>();
     for (Opportunity o : opps) {
