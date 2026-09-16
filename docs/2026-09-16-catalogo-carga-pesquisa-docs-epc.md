@@ -192,3 +192,15 @@ Works do Gerson (133 a 137) não tocadas: Priority delas fica com ele.
 
 **Estado consolidado das works de catálogo em 16/09 (fim do dia)**: todas SysMap, assignee Davi. Sprint 1 SysMap: 051 P1,
 052 P1, 055 P1, 053 P1, 054 P2. Backlog: 056 P2, 070 P2, 102 P2, 103/104/108/111/112/113/114/121/127/128 P3.
+
+## Regra de prioridade do projeto (Diego, 16/09, fim do dia) e script 40
+
+"As prioridades estao erradas: primeiro licenciamento, depois fundacao, depois catalogo, lead, oportunidade, cotacao e
+geracao de pedido. As integracoes correm em paralelo." Script 40 (duas fases) aplica a regra a TODAS as 93 works do pacote:
+P0 = 134 (licencas) e 140 (integracao B2B para testes); P1 = fundacao (051-055, 102, 117, 086, 087, 090, 092, 132) e
+integracoes em paralelo (105, 110, 130, 131, 133, 135, 136, 137, 141); P2 = catalogo (056, 070, 085, 103, 104, 107, 108,
+111-114, 121, 127, 128); P3 = lead e oportunidade (B2C-01/02/03/04/06/08/10/11/14/15/16/17/26, TEC-B2C-08, B2B-01/02/07/08);
+P4 = cotacao, pedido e pos-venda (demais B2C/B2B, TEC-B2C-01/05/06, TEC-OM-01, TEC-CLM-01, B2B-13 a 16, dashboards, field
+service). Contagem: P0 2, P1 21, P2 14, P3 18, P4 38. Nao mexe em sprint. Ponto de atencao: B2B-13 a 16 (142-145) estao na
+Sprint 1 com P1 do Gerson e pela regra ficam P4; sprint e prioridade passam a dizer coisas diferentes. Pendente: Diego
+confirmar a classificacao e rodar.
