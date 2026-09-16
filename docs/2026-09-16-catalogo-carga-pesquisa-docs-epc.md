@@ -68,3 +68,20 @@ os links foram passados ao Diego para colar o conteudo integral no chat e fechar
 - https://developer.salesforce.com/docs/industries/cme/guide/comms-t-running-maintenance-and-digital-commerce-cache-jobs-remotely.html
 - https://www.salesforce.com/news/stories/agentforce-for-communications-announcement/
 - https://github.com/vlocityinc/vlocity_build/blob/master/README.md
+
+## Validacao com o conteudo integral colado pelo Diego (16/09, tarde)
+- Help "Enterprise Product Catalog (EPC)": "Allows you to import products from other systems. For example, if you
+  want to move from a development to a production environment, you can use Vlocity DataPacks"; "EPC uses the
+  IDX Workbench build tool"; Product Designer e "the administration application for the product catalog";
+  Pricing Designer cuida de precos, promocoes e regras de preco. Confirma a rota padrao.
+- Help "Running EPC Jobs for a New Installation": jobs de instalacao (Install Default Objects and Layouts,
+  Create Default Pricing Variables and Bindings, Install Default Pricing Plan Data), na aba Vlocity CMT
+  Administration, em sequencia. Nao sao os jobs pos-carga (esses estao em "Administration Jobs Reference for CME").
+- Developer Docs "EPC REST APIs": CRUD de Product2, Product Version, Product Child, Picklist, Picklist Version,
+  PicklistItem, Promotion, PromotionItem. Nao ha API de price list entry nem de atribuicao de atributos:
+  um wizard teria de gravar preco e atributo direto na base, sem a validacao da interface. Argumento extra
+  contra o conversor custom.
+- Anuncio Salesforce 26/02/2026 "Agentforce for Communications": Billing Resolution, SLO Insights, Quoting,
+  Site Grouping, Guided Selling. Todos consomem o catalogo; nenhum cria ou mantem catalogo. O Quoting Agent
+  monta cotacoes seguindo regras de negocio, o que depende de um catalogo bem cadastrado.
+- Deck ajustado nos slides 3, 4 e 6 com esses pontos.

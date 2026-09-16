@@ -87,19 +87,19 @@ S.append(slide([
     footer(2)]))
 # 3. O que a documentacao diz
 S.append(slide([
-    header('O que a documentação oficial diz', 'Salesforce Help, Trailhead e Developer Docs (EPC, CPQ e Agentforce), consultados em 16/09'),
+    header('O que a documentação oficial diz', 'Salesforce Help, Developer Docs e anúncio oficial, conferidos em 16/09'),
     card(0.5, 1.25, 4.4, 2.35, 'Product Designer (interface padrão do EPC)', [
         'App Lightning oficial, foco das novas funcionalidades; substitui o Product Console.',
         'Cria a oferta em sequência: produto, aba Estrutura (filhos e cardinalidade), atributos, aba Preços (lista de preço e promoção) e regras de contexto.'], border=BLUE, sz=10.5),
     card(5.1, 1.25, 4.4, 2.35, 'DataPacks, IDX Workbench e Vlocity Build', [
-        'Forma oficial de mover o catálogo entre orgs; o DataPack de Product2 já carrega as entradas de preço.',
-        'Chaves globais geradas por job do EPC; a doc é explícita: produtos não migram entre orgs por CSV.'], border=BLUE, sz=10.5),
+        'Help do EPC: para mover de desenvolvimento para produção, usa-se Vlocity DataPacks; o EPC usa o IDX Workbench como ferramenta de build.',
+        'O DataPack de Product2 já carrega as entradas de preço; produtos não migram entre orgs por CSV.'], border=BLUE, sz=10.5),
     card(0.5, 3.75, 4.4, 2.35, 'EPC REST APIs', [
-        'APIs oficiais (Admin Configure: Product, Picklist e Promotion v2) para criar produtos, filhos, versões e promoções.',
+        'CRUD oficial só de Product2, versão, filho, picklist e promoção. Não cobrem preço nem atributo: um carregador teria de gravar isso por fora, sem validação.',
         'Se algum dia um carregador for justificado, é sobre estas APIs, não gravando registros direto.'], border=BLUE, sz=10.5),
     card(5.1, 3.75, 4.4, 2.35, 'Jobs pós-carga e Agentforce', [
         'Após mudar estrutura: Product Hierarchy Maintenance, Clear Managed Platform Cache e Refresh Platform Cache, nesta ordem; executáveis por API.',
-        'Agentforce for Communications (GA 2026) traz 5 agentes: faturamento, SLO, cotação, agrupamento de sites e venda guiada. Nenhum cria catálogo.'], border=BLUE, sz=10.5),
+        'Agentforce for Communications (26/02/2026): 5 agentes, faturamento, SLO, cotação, agrupamento de sites e venda guiada. Todos consomem o catálogo; nenhum o cria.'], border=BLUE, sz=10.5),
     pill(0.5, 6.25, 9.0, 0.55, 'Atenção: a importação por CSV com templates DPE é do Revenue Cloud (Product Catalog Management), não do EPC do Communications Cloud.', AMBER, 10.5),
     footer(3)]))
 # 4. Opcao 1: template + wizard
@@ -112,7 +112,7 @@ S.append(slide([
         'Arquivo aprovado antes de publicar: evidência de cada carga.',
         'Existe precedente na comunidade (EPC on Steroids), o que mostra que é viável.'], border=GREEN, sz=11),
     card(5.1, 1.95, 4.4, 4.1, 'Contras', [
-        'Reimplementa validações que o Product Designer já faz: cada regra esquecida vira erro no carrinho.',
+        'Reimplementa validações que o Product Designer já faz; as APIs oficiais nem cobrem preço e atributo, então o wizard gravaria isso direto na base.',
         'Fora do suporte Salesforce; quebra silenciosa a cada atualização do pacote.',
         'Não cria tipo de objeto, atributo ou regra nova: o especialista continua necessário.',
         'Exige congelar a modelagem durante o desenvolvimento e manter template e código sincronizados.',
@@ -140,9 +140,9 @@ S.append(slide([
 S.append(slide([
     header('Opção 3: híbrido com Agentforce', 'É possível, mas hoje é desenvolvimento custom com licença; cabe como assistente, não como autor'),
     card(0.5, 1.2, 2.9, 2.55, 'O que existe pronto', [
-        'Agentforce for Communications: agentes de faturamento, SLO, cotação, sites e venda guiada. Nenhum tópico ou ação pré-construída cria ou mantém catálogo.'], border=BLUE, sz=11, bullet=False),
+        'Agentforce for Communications: faturamento, SLO, cotação, sites e venda guiada. Nenhum cria ou mantém catálogo; o de cotação depende de um catálogo bem cadastrado.'], border=BLUE, sz=11, bullet=False),
     card(3.55, 1.2, 2.9, 2.55, 'O que teria de ser construído', [
-        'Ações em Flow ou Apex sobre as EPC REST APIs, prompt templates, testes e guardrails. Volta a ser código custom, com a mesma manutenção do wizard.'], border=BLUE, sz=11, bullet=False),
+        'Ações em Flow ou Apex sobre as EPC REST APIs (que não cobrem preço nem atributo), prompt templates, testes e guardrails. Volta a ser código custom.'], border=BLUE, sz=11, bullet=False),
     card(6.6, 1.2, 2.9, 2.55, 'Onde cabe bem', [
         'Explicar o manual, montar o checklist do evento, conferir a planilha de levantamento contra a org e validar o pós-carga. Sem publicar nada.'], border=BLUE, sz=11, bullet=False),
     card(0.5, 3.95, 4.4, 2.2, 'Prós', [
