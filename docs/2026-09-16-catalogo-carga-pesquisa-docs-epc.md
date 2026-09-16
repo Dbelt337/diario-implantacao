@@ -91,3 +91,10 @@ os links foram passados ao Diego para colar o conteudo integral no chat e fechar
   lista "Agentforce for Cart Operations in CME Managed Package" e "Flows and Invocable Actions in CME": as acoes
   padrao de Agentforce no pacote sao para o carrinho (venda), nao para autoria de catalogo. Deck ajustado
   (slides 3, 10 e 11: jobs em janela de manutencao, nunca em producao ao vivo).
+- Help "Create Products in the Product Designer": "administration application for the product catalog", para
+  usuarios de negocio e de TI. "Plan Your Product Catalog": antes da oferta, criar tipos de objeto, atributos e
+  especificacoes; depois pacotes e preco. "Track Product Catalog Changes with Projects": projetos do EPC
+  registram todas as mudancas (historico para gestao de mudanca). "Product Versioning" e "Product Lifecycles"
+  (current, future, past, retired) nativos. Restricao: sem virgulas em valores de picklist. Recomendacao: view
+  All Products como padrao. Deck ajustado (slides 3, 10 e 11): sequencia oficial, projetos do EPC como evidencia,
+  descontinuacao = aposentar pelo ciclo de vida.

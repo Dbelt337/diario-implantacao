@@ -89,8 +89,8 @@ S.append(slide([
 S.append(slide([
     header('O que a documentação oficial diz', 'Salesforce Help, Developer Docs e anúncio oficial, conferidos em 16/09'),
     card(0.5, 1.25, 4.4, 2.35, 'Product Designer (interface padrão do EPC)', [
-        'App Lightning oficial, foco das novas funcionalidades; substitui o Product Console.',
-        'Cria a oferta em sequência: produto, aba Estrutura (filhos e cardinalidade), atributos, aba Preços (lista de preço e promoção) e regras de contexto.'], border=BLUE, sz=10.5),
+        'Help: é a aplicação de administração do catálogo, para usuários de negócio e de TI. Sequência oficial: tipos de objeto e atributos, especificação, oferta, pacote com cardinalidade, preço e promoção.',
+        'Projetos do EPC registram toda mudança no catálogo; versionamento de produto e ciclo de vida (atual, futuro, passado, aposentado) são nativos.'], border=BLUE, sz=10.5),
     card(5.1, 1.25, 4.4, 2.35, 'DataPacks, IDX Workbench e Vlocity Build', [
         'Help do EPC: para mover de desenvolvimento para produção, usa-se Vlocity DataPacks; o EPC usa o IDX Workbench como ferramenta de build.',
         'O DataPack de Product2 já carrega as entradas de preço; produtos não migram entre orgs por CSV.'], border=BLUE, sz=10.5),
@@ -216,9 +216,9 @@ sh.append(footer(9)); S.append(slide(sh))
 g = [('Ferramenta padrão, suportada', 'Product Designer e DataPacks são os caminhos documentados pela Salesforce; nada depende de código nosso.'),
      ('Validação ao salvar', 'Tipo de objeto, atributos, cardinalidade e preço são conferidos pela interface antes de existir a oferta.'),
      ('Sandbox antes de produção', 'Toda oferta nasce em sandbox, é testada no carrinho e só então migra, por DataPack.'),
-     ('Evidência e versionamento', 'O DataPack de cada onda fica guardado; o histórico do Salesforce registra quem alterou o quê.'),
+     ('Evidência e versionamento', 'Projetos do EPC registram toda mudança do catálogo; o DataPack de cada onda fica guardado; versionamento de produto é nativo.'),
      ('Pós-carga em janela', 'Jobs de hierarquia e cache na ordem documentada, em janela fora do horário de venda: a Help manda não rodar jobs de administração em produção ao vivo.'),
-     ('Reversibilidade e donos', 'Oferta errada é inativada, não excluída; cada etapa tem dono e substituto nomeados.')]
+     ('Reversibilidade e donos', 'Oferta errada é aposentada pelo ciclo de vida, não excluída; cada etapa tem dono e substituto nomeados.')]
 sh = [header('Segurança para decidir', 'Seis garantias da rota padrão')]
 for i, (t, d) in enumerate(g):
     col = i % 2; row = i // 2
@@ -229,7 +229,7 @@ for i, (t, d) in enumerate(g):
 sh.append(pill(0.5, 6.25, 9.0, 0.55, 'O mesmo método já usado no projeto: validar antes, executar, conferir depois, registrar no diário.', NAVY, 11))
 sh.append(footer(10)); S.append(slide(sh))
 # 11. Manual de configuracao
-procs = [('Produto novo', 'Product Designer'), ('Pacote ou combo', 'aba Estrutura'), ('Promoção', 'aba Preços + regra'), ('Alteração de preço', 'lista de preço'), ('Descontinuação', 'inativar + jobs')]
+procs = [('Produto novo', 'tipo de objeto + oferta'), ('Pacote ou combo', 'estrutura e cardinalidade'), ('Promoção', 'promoção no pacote'), ('Alteração de preço', 'Pricing Designer'), ('Descontinuação', 'ciclo de vida: aposentar')]
 sh = [header('Manual de configuração do catálogo', 'Um procedimento por evento: o que fazer, quem faz, quem aprova, o que conferir')]
 for i, (t, via) in enumerate(procs):
     x = 0.5 + i * 1.84
@@ -239,12 +239,12 @@ sh.append(card(0.5, 2.45, 4.4, 3.6, 'Cada procedimento tem', [
     ('Quem cadastra e quem aprova: ', 'nomes, não áreas.'),
     ('Passo a passo com telas: ', 'sequência exata no Product Designer, campo a campo.'),
     ('Pós-carga: ', 'jobs de hierarquia e cache na ordem, em janela de manutenção; roteiro de teste no carrinho.'),
-    ('Evidência: ', 'DataPack exportado, resultado do teste e registro no diário.')], border=NAVY, sz=10.5))
+    ('Evidência: ', 'projeto do EPC aberto para o evento, DataPack exportado, resultado do teste e registro no diário.')], border=NAVY, sz=10.5))
 sh.append(card(5.1, 2.45, 4.4, 3.6, 'Anexos do manual', [
     'Dicionário de códigos: catálogos, categorias, picklists e atributos.',
     'Planilha de levantamento (o template) preenchida por tipo de oferta.',
     'Calendário: janela mensal de manutenção e 3 a 4 cargas por ano.',
-    'Erros comuns e como corrigir (oferta não aparece no carrinho, job não executado, preço errado).',
+    'Erros comuns e como corrigir (oferta não aparece no carrinho, job não executado, preço errado, vírgula em valor de picklist).',
     'Roteiro do Agentforce, quando entrar: o que faz e o que sempre pede aprovação.'], border=NAVY, sz=10.5))
 sh.append(pill(0.5, 6.25, 9.0, 0.55, 'Entrega: rascunho na Onda 2, versão final e treinamento na Onda 3. Mantido pela governança Salesforce a cada mudança de modelagem.', GREEN, 11))
 sh.append(footer(11)); S.append(slide(sh))
