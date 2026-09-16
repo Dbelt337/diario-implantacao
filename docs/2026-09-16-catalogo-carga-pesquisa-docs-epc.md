@@ -183,3 +183,12 @@ Diego (16/09): "precisamos ajustar, achei que estava tudo certo ontem". Script 3
 nossos: Priority nas works de catalogo agora SysMap (053 P1, 054 P2, 102/056/070 P2, demais CAT P3, valores ajustaveis no
 mapa), 053 e 054 saem da sprint BTP para a Sprint 1 SysMap, e PUXAR_PARA_SPRINT1 decide se 056, 070 e 102 entram na Sprint 1.
 Nao toca nas works do Gerson (133 a 137): Priority delas e decisao dele. Pendente: decidir prioridades e rodar o 39.
+
+**Script 39 executado (logs de 16/09, fase 1 e fase 2, sem erros): 13 works alteradas.** Priority da org = P0 a P4.
+DEPOIS: W-000053 P1 e W-000054 P2 na "Sprint 1 - SysMap (15-26/09)" (saíram da sprint de Brasil TecPar); W-000102 P2,
+backlog; W-000056 e W-000070 seguem P2, backlog (sem mudança); W-000103, 104, 108, 111, 112, 113, 114, 121, 127 e 128 P3,
+backlog. PUXAR_PARA_SPRINT1 ficou false: 056, 070 e 102 continuam fora da Sprint 1 (decisão pendente com o Michel/Davi).
+Works do Gerson (133 a 137) não tocadas: Priority delas fica com ele.
+
+**Estado consolidado das works de catálogo em 16/09 (fim do dia)**: todas SysMap, assignee Davi. Sprint 1 SysMap: 051 P1,
+052 P1, 055 P1, 053 P1, 054 P2. Backlog: 056 P2, 070 P2, 102 P2, 103/104/108/111/112/113/114/121/127/128 P3.
