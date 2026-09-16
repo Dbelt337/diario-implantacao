@@ -208,3 +208,10 @@ Ajuste do Diego (v2): catalogo em P1 (ha squad de catalogo) e esteira de CI/CD e
 140, 132, 133 (4); P1 = fundacao + catalogo + integracoes (32); P2 = lead e oportunidade (18); P3 = cotacao, pedido, contrato,
 ativacao e instalacao (24); P4 = pos-venda: retencao, cancelamento, MACD, 360, dashboards (14). B2B-15 e 16 (cotacao e
 assinatura) em P3; B2B-13 e 14 (refidelizacao e aviso de cancelamento) em P4.
+
+**Script 40 v2 executado (logs de 16/09, fases 1 e 2, sem erros): 72 works alteradas, 21 ja estavam certas.** DEPOIS por
+prioridade = P0 4, P1 33, P2 18, P3 24, P4 14 (igual ao plano). Quedas relevantes em relacao ao que o Gerson tinha setado:
+B2B-05 (100) P1 -> P4; B2B-13/14 (142/143) P1 -> P4; B2B-15/16 (144/145) P1 -> P3; B2B-01/02 (096/097) P1 -> P2;
+B2B-10/11/12 (123-125) P2 -> P4. As quatro B2B-13 a 16 seguem na Sprint 1 com prioridade baixa (sprint e prioridade
+dizem coisas diferentes; se incomodar, tirar da sprint, nao subir a prioridade). Coluna "Prioridade (Agile, 16/09)"
+acrescentada ao CSV validado. Diego decidiu conectar o Claude direto na org pelo VS Code (sf CLI) para as proximas rodadas.
