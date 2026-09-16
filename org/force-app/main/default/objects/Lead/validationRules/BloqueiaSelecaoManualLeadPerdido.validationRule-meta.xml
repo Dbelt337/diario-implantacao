@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BloqueiaSelecaoManualLeadPerdido</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+				    ISCHANGED(Status),
+				    ISPICKVAL(Status, &apos;Unqualified&apos;),
+				    ISBLANK(TEXT(LossType__c))
+)</errorConditionFormula>
+    <errorMessage>Atenção: apenas é possível perder o lead através do botão &quot;Perder Lead&apos;.</errorMessage>
+</ValidationRule>

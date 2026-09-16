@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BloqueiaAlteracaoCluster</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+$Profile.Name &lt;&gt; &apos;System Administrator&apos;,
+TEXT($User.Cluster__c) != TEXT(Cluster__c),
+TEXT(PRIORVALUE(Cluster__c)) != TEXT(Cluster__c),
+NOT(ISBLANK(TEXT(PRIORVALUE(Cluster__c))))
+)</errorConditionFormula>
+    <errorMessage>Atenção: não é possível criar ou editar registros que não sejam do seu cluster. Contate o administrador para suporte</errorMessage>
+</ValidationRule>

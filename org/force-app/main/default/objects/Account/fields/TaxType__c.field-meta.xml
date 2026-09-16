@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TaxType__c</fullName>
+    <label>Tipo tributação</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>CPF / CNPJ simples</fullName>
+                <default>false</default>
+                <label>CPF / CNPJ simples</label>
+            </value>
+            <value>
+                <fullName>CNPJ com ICMS 0%</fullName>
+                <default>false</default>
+                <label>CNPJ com ICMS 0%</label>
+            </value>
+            <value>
+                <fullName>CNPJ em geral</fullName>
+                <default>false</default>
+                <label>CNPJ em geral</label>
+            </value>
+            <value>
+                <fullName>CNPJ e Federal com ISS</fullName>
+                <default>false</default>
+                <label>CNPJ e Federal com ISS</label>
+            </value>
+            <value>
+                <fullName>Orgão Federal sem ISS</fullName>
+                <default>false</default>
+                <label>Orgão Federal sem ISS</label>
+            </value>
+            <value>
+                <fullName>Orgão Federal com ISS, CSRF, IR 4,8%</fullName>
+                <default>false</default>
+                <label>Orgão Federal com ISS, CSRF, IR 4,8%</label>
+            </value>
+            <value>
+                <fullName>Orgão Federal com ISS, IR 1,5%</fullName>
+                <default>false</default>
+                <label>Orgão Federal com ISS, IR 1,5%</label>
+            </value>
+            <value>
+                <fullName>Orgão Federal com ISS, IR 4,8%</fullName>
+                <default>false</default>
+                <label>Orgão Federal com ISS, IR 4,8%</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EconomicGroup__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <label>Grupo econômico</label>
+    <referenceTo>EconomicGroup__c</referenceTo>
+    <relationshipLabel>Accounts</relationshipLabel>
+    <relationshipName>AccountsEconomicGroup</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ValidaPreenchimentoCluster</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+				RecordType__c = &quot;LegalEntity_B2B&quot;,
+    ISPICKVAL($User.Cluster__c, &quot;&quot;),
+    OR(
+        ISPICKVAL(ClusterManual__c, &quot;&quot;),
+        ISBLANK(TEXT(ClusterManual__c))
+    )
+)</errorConditionFormula>
+    <errorDisplayField>ClusterManual__c</errorDisplayField>
+    <errorMessage>Atenção: seu usuário não está definido a um cluster. Necessário preenchimento do campo para seguir.</errorMessage>
+</ValidationRule>

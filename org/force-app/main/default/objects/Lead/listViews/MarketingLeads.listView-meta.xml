@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MarketingLeads</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>DocumentNumber__c</columns>
+    <columns>LEAD.RECORDTYPE</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>LEAD.COMPANY</columns>
+    <columns>FantasyName__c</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.PHONE</columns>
+    <columns>LEAD.MOBILE_PHONE</columns>
+    <columns>BaseClient__c</columns>
+    <columns>LEAD.STATE_CODE</columns>
+    <columns>LEAD.LEAD_SOURCE</columns>
+    <filterScope>Everything</filterScope>
+    <label>Leads Marketing</label>
+    <sharedTo>
+        <group>MarketingDigital</group>
+    </sharedTo>
+</ListView>

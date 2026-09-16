@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Leads_B2B</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>DocumentNumber__c</columns>
+    <columns>LEAD.CREATED_DATE</columns>
+    <columns>LEAD.COMPANY</columns>
+    <columns>FantasyName__c</columns>
+    <columns>LEAD.EMAIL</columns>
+    <columns>LEAD.PHONE</columns>
+    <columns>LEAD.MOBILE_PHONE</columns>
+    <columns>Stage__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LEAD.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Lead.B2B</value>
+    </filters>
+    <label>Leads B2B - Todos os Leads</label>
+    <sharedTo>
+        <roleAndSubordinatesInternal>CLevel</roleAndSubordinatesInternal>
+    </sharedTo>
+</ListView>

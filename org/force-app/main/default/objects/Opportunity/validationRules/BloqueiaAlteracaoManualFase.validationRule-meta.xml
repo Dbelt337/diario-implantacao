@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BloqueiaAlteracaoManualFase</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+				RecordTypeName__c = &apos;B2B&apos;,
+				ISCHANGED(StageName),
+				NOT(Bypass__c)
+)</errorConditionFormula>
+    <errorMessage>Atenção: não é possível editar manualmente a fase do registro.</errorMessage>
+</ValidationRule>

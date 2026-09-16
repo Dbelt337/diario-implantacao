@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CancellationType__c</fullName>
+    <label>Motivo do cancelamento</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Desistencia cliente</fullName>
+                <default>false</default>
+                <label>Desistencia cliente</label>
+            </value>
+            <value>
+                <fullName>Falta de interesse</fullName>
+                <default>false</default>
+                <label>Falta de interesse</label>
+            </value>
+            <value>
+                <fullName>Concorrência</fullName>
+                <default>false</default>
+                <label>Concorrência</label>
+            </value>
+            <value>
+                <fullName>Fora de cobertura</fullName>
+                <default>false</default>
+                <label>Fora de cobertura</label>
+            </value>
+            <value>
+                <fullName>Falta de interação das partes</fullName>
+                <default>false</default>
+                <label>Falta de interação das partes</label>
+            </value>
+            <value>
+                <fullName>Preço do concorrente mais atrativo</fullName>
+                <default>false</default>
+                <label>Preço do concorrente mais atrativo</label>
+            </value>
+            <value>
+                <fullName>Viabilidade aprovada com custo inviável (fora do target)</fullName>
+                <default>false</default>
+                <label>Viabilidade aprovada com custo inviável (fora do target)</label>
+            </value>
+            <value>
+                <fullName>Tempo de análise de pré-vendas acima do esperado</fullName>
+                <default>false</default>
+                <label>Tempo de análise de pré-vendas acima do esperado</label>
+            </value>
+            <value>
+                <fullName>Atraso na entrega</fullName>
+                <default>false</default>
+                <label>Atraso na entrega</label>
+            </value>
+            <value>
+                <fullName>Contrato vigente com outro fornecedor/ renegociação futura</fullName>
+                <default>false</default>
+                <label>Contrato vigente com outro fornecedor/ renegociação futura</label>
+            </value>
+            <value>
+                <fullName>Conflito de interesse</fullName>
+                <default>false</default>
+                <label>Conflito de interesse</label>
+            </value>
+            <value>
+                <fullName>Erro / teste Salesforce</fullName>
+                <default>false</default>
+                <label>Erro / teste Salesforce</label>
+            </value>
+            <value>
+                <fullName>Falta de retorno do cliente</fullName>
+                <default>false</default>
+                <label>Falta de retorno do cliente</label>
+            </value>
+            <value>
+                <fullName>Desistência</fullName>
+                <default>false</default>
+                <label>Desistência</label>
+            </value>
+            <value>
+                <fullName>Pendência de infraestrutura do cliente</fullName>
+                <default>false</default>
+                <label>Pendência de infraestrutura do cliente</label>
+            </value>
+            <value>
+                <fullName>Informações incorretas na oportunidade</fullName>
+                <default>false</default>
+                <label>Informações incorretas na oportunidade</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

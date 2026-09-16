@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AddressComplementRequired</fullName>
+    <active>false</active>
+    <description>Regra de validação criada para obrigatoriedade no campo de endereço e complemento.</description>
+    <errorConditionFormula>AND(
+RecordType.DeveloperName = &quot;B2C&quot;,
+OR(
+     ISBLANK(Address),
+     ISBLANK(AddressComplement__c ),
+     ISBLANK( District__c ),
+     ISBLANK( AddressNumber__c )
+    )
+)</errorConditionFormula>
+    <errorMessage>As informações de endereço são obrigatórios no Lead.</errorMessage>
+</ValidationRule>

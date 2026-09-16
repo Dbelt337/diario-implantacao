@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BloqueiaEdicaoLeadSource</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    NOT(ISNEW()),
+				LeadConverted__c,
+				ISCHANGED(LeadSource)
+)</errorConditionFormula>
+    <errorDisplayField>LeadSource</errorDisplayField>
+    <errorMessage>Atenção: o campo &apos;Origem do Lead&apos; não pode ser modificado na Oportunidade.</errorMessage>
+</ValidationRule>

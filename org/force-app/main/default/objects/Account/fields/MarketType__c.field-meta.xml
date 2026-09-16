@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MarketType__c</fullName>
+    <label>Tipo de Mercado</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Corporativo</fullName>
+                <default>false</default>
+                <label>Corporativo</label>
+            </value>
+            <value>
+                <fullName>Atacado</fullName>
+                <default>false</default>
+                <label>Atacado</label>
+            </value>
+            <value>
+                <fullName>Varejo</fullName>
+                <default>false</default>
+                <label>Varejo</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

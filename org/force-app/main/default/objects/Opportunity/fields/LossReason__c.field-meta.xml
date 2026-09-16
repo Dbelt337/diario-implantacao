@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LossReason__c</fullName>
+    <label>Motivos de perda</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Não quis pagar ativação da análise</fullName>
+                <default>false</default>
+                <label>Não quis pagar ativação da análise</label>
+            </value>
+            <value>
+                <fullName>Cliente da Base</fullName>
+                <default>false</default>
+                <label>Cliente da Base</label>
+            </value>
+            <value>
+                <fullName>Pesquisando Preço</fullName>
+                <default>false</default>
+                <label>Pesquisando Preço</label>
+            </value>
+            <value>
+                <fullName>Inviabilidade cidade não atendida</fullName>
+                <default>false</default>
+                <label>Inviabilidade cidade não atendida</label>
+            </value>
+            <value>
+                <fullName>Sem rede AMIGO, inviabilidade VTAL</fullName>
+                <default>false</default>
+                <label>Sem rede AMIGO, inviabilidade VTAL</label>
+            </value>
+            <value>
+                <fullName>Não interagiu</fullName>
+                <default>false</default>
+                <label>Não interagiu</label>
+            </value>
+            <value>
+                <fullName>Pendência Interna</fullName>
+                <default>false</default>
+                <label>Pendência Interna</label>
+            </value>
+            <value>
+                <fullName>Inviabilidade rua/bairro não atendidos</fullName>
+                <default>false</default>
+                <label>Inviabilidade rua/bairro não atendidos</label>
+            </value>
+            <value>
+                <fullName>Oportunidade Duplicada</fullName>
+                <default>false</default>
+                <label>Oportunidade Duplicada</label>
+            </value>
+            <value>
+                <fullName>Preço da mensalidade</fullName>
+                <default>false</default>
+                <label>Preço da mensalidade</label>
+            </value>
+            <value>
+                <fullName>Cadastro errôneo</fullName>
+                <default>false</default>
+                <label>Cadastro errôneo</label>
+            </value>
+            <value>
+                <fullName>Permaneceu com o antigo provedor</fullName>
+                <default>false</default>
+                <label>Permaneceu com o antigo provedor</label>
+            </value>
+            <value>
+                <fullName>Prazo adequação prédio (sem CTO interna)</fullName>
+                <default>false</default>
+                <label>Prazo adequação prédio (sem CTO interna)</label>
+            </value>
+            <value>
+                <fullName>Endereço inadimplente</fullName>
+                <default>false</default>
+                <label>Endereço inadimplente</label>
+            </value>
+            <value>
+                <fullName>Local sem oferta de produto</fullName>
+                <default>false</default>
+                <label>Local sem oferta de produto</label>
+            </value>
+            <value>
+                <fullName>Não interagiu tecfriend parceiro</fullName>
+                <default>false</default>
+                <label>Não interagiu tecfriend parceiro</label>
+            </value>
+            <value>
+                <fullName>Fidelidade do contrato</fullName>
+                <default>false</default>
+                <label>Fidelidade do contrato</label>
+            </value>
+            <value>
+                <fullName>Informações de lead incompletas/inexistente</fullName>
+                <default>false</default>
+                <label>Informações de lead incompletas/inexistente</label>
+            </value>
+            <value>
+                <fullName>Tempo de agendamento/ prazo ativação</fullName>
+                <default>false</default>
+                <label>Tempo de agendamento/ prazo ativação</label>
+            </value>
+            <value>
+                <fullName>VTAL - Área em construção</fullName>
+                <default>false</default>
+                <label>VTAL - Área em construção</label>
+            </value>
+            <value>
+                <fullName>Desistiu atend. automat: envio dados/doc</fullName>
+                <default>false</default>
+                <label>Desistiu atend. automat: envio dados/doc</label>
+            </value>
+            <value>
+                <fullName>Área impedida</fullName>
+                <default>false</default>
+                <label>Área impedida</label>
+            </value>
+            <value>
+                <fullName>Inviabilidade  CTOs  lotadas</fullName>
+                <default>false</default>
+                <label>Inviabilidade  CTOs  lotadas</label>
+            </value>
+            <value>
+                <fullName>Local afetado enchentes RS</fullName>
+                <default>false</default>
+                <label>Local afetado enchentes RS</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

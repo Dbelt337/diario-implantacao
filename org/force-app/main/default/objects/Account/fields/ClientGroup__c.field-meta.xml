@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ClientGroup__c</fullName>
+    <label>Grupo Cliente</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>B2B - Corporativo</fullName>
+                <default>false</default>
+                <label>B2B - Corporativo</label>
+            </value>
+            <value>
+                <fullName>B2W - Operadoras</fullName>
+                <default>false</default>
+                <label>B2W - Operadoras</label>
+            </value>
+            <value>
+                <fullName>B2G - Governo</fullName>
+                <default>false</default>
+                <label>B2G - Governo</label>
+            </value>
+            <value>
+                <fullName>B2W - Provedores</fullName>
+                <default>false</default>
+                <label>B2W - Provedores</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

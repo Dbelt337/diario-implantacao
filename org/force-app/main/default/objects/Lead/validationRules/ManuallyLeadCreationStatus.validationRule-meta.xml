@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ManuallyLeadCreationStatus</fullName>
+    <active>false</active>
+    <description>Regra criada para impossibilitar a criação do Lead fora do status &apos;Novo&apos;</description>
+    <errorConditionFormula>ISNEW() &amp;&amp;
+NOT(ISPICKVAL(Status, &quot;Novo&quot;))</errorConditionFormula>
+    <errorMessage>O lead deve ser criado com o status “Novo”</errorMessage>
+</ValidationRule>

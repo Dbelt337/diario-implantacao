@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RecordType__c</fullName>
+    <description>Used to determine the Account RecordType during Lead conversion.</description>
+    <externalId>false</externalId>
+    <formula>IF(RecordType.DeveloperName == &apos;B2B&apos;, &apos;LegalEntity_B2B&apos;, &apos;&apos;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>DO NOT ADD THIS TO THE PAGE LAYOUT.</inlineHelpText>
+    <label>Record Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

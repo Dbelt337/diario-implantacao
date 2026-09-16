@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ByPassStamp__c</fullName>
+    <description>Used to bypass some rules when necessary.</description>
+    <inlineHelpText>DO NOT ADD THIS TO THE LAYOUT.</inlineHelpText>
+    <label>ByPassStamp</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>DateTime</type>
+</CustomField>

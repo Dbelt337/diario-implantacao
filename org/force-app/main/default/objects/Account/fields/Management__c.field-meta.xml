@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Management__c</fullName>
+    <label>Gerência</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>DMR - Gerencia de Mercado Residencial</fullName>
+                <default>false</default>
+                <label>DMR - Gerencia de Mercado Residencial</label>
+            </value>
+            <value>
+                <fullName>102</fullName>
+                <default>false</default>
+                <label>CENTRO OESTE Residencial</label>
+            </value>
+            <value>
+                <fullName>101</fullName>
+                <default>false</default>
+                <label>SUL Residencial</label>
+            </value>
+            <value>
+                <fullName>103</fullName>
+                <default>false</default>
+                <label>SUDESTE Residencial</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

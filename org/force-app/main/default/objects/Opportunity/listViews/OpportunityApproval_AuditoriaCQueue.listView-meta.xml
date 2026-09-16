@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OpportunityApproval_AuditoriaCQueue</fullName>
+    <columns>OPPORTUNITY.NAME</columns>
+    <columns>OpportunityNumber__c</columns>
+    <columns>ACCOUNT.NAME</columns>
+    <columns>ProposalSubmitted__c</columns>
+    <columns>OPPORTUNITY.CREATED_DATE</columns>
+    <columns>OPPORTUNITY.STAGE_NAME</columns>
+    <columns>OPPORTUNITY.CLOSE_DATE</columns>
+    <columns>OPPORTUNITY.AMOUNT</columns>
+    <columns>Cluster__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Send4Approval__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.STAGE_NAME</field>
+        <operation>equals</operation>
+        <value>Aprovação comercial</value>
+    </filters>
+    <label>Oport. B2B - Aprovação Comercial</label>
+    <sharedTo>
+        <role>B2B_Gerente_Alt_e_GGNet_CO</role>
+        <role>B2B_Gerente_Alt_e_GGNet_Operadoras_Utilities</role>
+        <role>B2B_Gerente_Alt_e_GGNet_SUDESTE</role>
+        <role>B2B_Gerente_Alt_e_GGNet_Sul</role>
+        <role>B2B_Gerente_Avato_B2G</role>
+        <role>B2B_Gerente_Avato_CO</role>
+        <role>B2B_Gerente_Avato_MG</role>
+        <role>B2B_Gerente_Avato_PR</role>
+        <role>B2B_Gerente_Avato_RS</role>
+        <role>B2B_Gerente_Avato_SC</role>
+        <role>B2B_Gerente_Avato_SP</role>
+        <role>B2B_Gerente_Blink</role>
+        <role>B2B_Gerente_SEMPRE</role>
+    </sharedTo>
+</ListView>

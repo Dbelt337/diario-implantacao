@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ValidaCPFvalido</fullName>
+    <active>false</active>
+    <errorConditionFormula>AND(
+    /* regras gerais */
+    NOT(IsInternational__c),
+    RecordType.DeveloperName  = &quot;PersonEntity_B2B&quot;,
+    /*Valida o formato correto do CPF*/
+    OR(
+        NOT(
+            AND(
+                LEN(DocumentNumber__c) = 14,
+                MID(DocumentNumber__c, 4, 1) = &quot;.&quot;,
+                MID(DocumentNumber__c, 8, 1) = &quot;.&quot;,
+                MID(DocumentNumber__c, 12, 1) = &quot;-&quot;
+            )
+        ),
+    /*Valida os digitos verificadores do CPF*/
+        NOT(
+            OR(
+                LEN(DocumentNumber__c)=0,
+                AND(
+                    MOD(MOD(11-MOD(
+                    VALUE(MID(DocumentNumber__c,1,1))*10+
+                    VALUE(MID(DocumentNumber__c,2,1))*9+
+                    VALUE(MID(DocumentNumber__c,3,1))*8+
+                    VALUE(MID(DocumentNumber__c,5,1))*7+
+                    VALUE(MID(DocumentNumber__c,6,1))*6+
+                    VALUE(MID(DocumentNumber__c,7,1))*5+
+                    VALUE(MID(DocumentNumber__c,9,1))*4+
+                    VALUE(MID(DocumentNumber__c,10,1))*3+
+                    VALUE(MID(DocumentNumber__c,11,1))*2,11),11),10)=
+                    VALUE(MID(DocumentNumber__c,13,1)),
+                    MOD(MOD(11-MOD(
+                    VALUE(MID(DocumentNumber__c,1,1))*11+
+                    VALUE(MID(DocumentNumber__c,2,1))*10+
+                    VALUE(MID(DocumentNumber__c,3,1))*9+
+                    VALUE(MID(DocumentNumber__c,5,1))*8+
+                    VALUE(MID(DocumentNumber__c,6,1))*7+
+                    VALUE(MID(DocumentNumber__c,7,1))*6+
+                    VALUE(MID(DocumentNumber__c,9,1))*5+
+                    VALUE(MID(DocumentNumber__c,10,1))*4+
+                    VALUE(MID(DocumentNumber__c,11,1))*3+
+                    VALUE(MID(DocumentNumber__c,13,1))*2,11),11),10)=
+                    VALUE(MID(DocumentNumber__c,14,1))
+                )
+            )
+        )
+    )
+)</errorConditionFormula>
+    <errorDisplayField>DocumentNumber__c</errorDisplayField>
+    <errorMessage>Atenção, o CPF informado é incorreto para este tipo de registro. Informar um valor válido e formato correto. Ex:
+CPF: XXX.XXX.XXX-XX</errorMessage>
+</ValidationRule>

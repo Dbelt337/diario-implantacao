@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CreditProfile__c</fullName>
+    <label>Pendência financeira</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Débito interno</fullName>
+                <default>false</default>
+                <label>Débito interno</label>
+            </value>
+            <value>
+                <fullName>Elegível</fullName>
+                <default>false</default>
+                <label>Elegível</label>
+            </value>
+            <value>
+                <fullName>Não Elegível</fullName>
+                <default>false</default>
+                <label>Não Elegível</label>
+            </value>
+            <value>
+                <fullName>Possui debito interno</fullName>
+                <default>false</default>
+                <label>Possui debito interno</label>
+            </value>
+            <value>
+                <fullName>Elegivel</fullName>
+                <default>false</default>
+                <label>Cliente elegível</label>
+            </value>
+            <value>
+                <fullName>Nao Elegivel</fullName>
+                <default>false</default>
+                <label>Cliente não elegível</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

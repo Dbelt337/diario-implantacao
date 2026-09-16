@@ -112,3 +112,20 @@ comando pedir senha, pare e me avise.
    validador, script 37 fase 1.
 3. Decisão de 056, 070 e 102 na Sprint 1 (script 39 com `PUXAR_PARA_SPRINT1`).
 4. Retrieve das regras de validação e flows de Account, Opportunity e Lead para o diário.
+
+## 9. Aprendido na primeira sessão conectada (16/09)
+
+- **Conectado só na produção.** `sf org list` mostra `btp-prod` ativa; `uat` e `galcorr` estão com token expirado e não
+  existe `btp-preprod`. Para o ensaio do script 37 na sandbox, rode `sf org login web --alias btp-preprod --instance-url https://test.salesforce.com`.
+- **`sf` no Git Bash quebra com `%` e parênteses na SOQL** (o shim `sf.cmd` do Windows expande `%x%` e perde o caminho do
+  node: erro `'C:\Program' não é reconhecido`). Solução: gravar a consulta num arquivo e usar `sf data query --file consulta.soql`.
+  Para o log do Apex, `sf apex run --file script.apex --json` e filtrar `USER_DEBUG`.
+- **HTTP 431 (Request Header Fields Too Large)** quando a cláusula `IN` passa de ~50 KB (1.500 CNPJs nos dois formatos).
+  `tools/gerente_conta/exportar_contas_lotes.js` fatia em lotes de 250 e junta no formato `--json`.
+- **Python não vinha instalado** (só o atalho da Microsoft Store). Instalado `Python.Python.3.12` via winget em escopo de
+  usuário: `C:\Users\DIego\AppData\Local\Programs\Python\Python312\python.exe`. Os validadores usam só biblioteca padrão.
+- **Escrita na prod pede aprovação sua.** O modo automático do Claude Code bloqueou `sf data create file` (subir os CSVs
+  A como arquivo) e o `sf apex run` do script 37, mesmo em fase 1. Leitura, retrieve e Apex sem DML passaram. Ao dizer
+  "vai", aprove esses dois comandos quando ele pedir.
+- **Projeto SFDX** em `org/` (545 arquivos, 3 MB): objetos Account, Opportunity e Lead com campos, regras de validação,
+  record types e 18 flows. Está no git; `.sf/` e `.sfdx/` ficam fora.

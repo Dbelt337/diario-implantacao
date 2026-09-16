@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>B2B</fullName>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Aguardando contrato</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Aguardando instalação</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Análise cliente</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Análise financeira</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Aprovação comercial</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Aprovação crédito</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Contrato assinado</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Em negociação</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Fechado%2FPerdido</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Instalado</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Validação técnica</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Viabilidade e desenho da solução</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

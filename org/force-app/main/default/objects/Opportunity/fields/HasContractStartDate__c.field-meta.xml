@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HasContractStartDate__c</fullName>
+    <formula>NOT(ISNULL(ContractStartDate__c))</formula>
+    <label>Has Contract Start Date</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

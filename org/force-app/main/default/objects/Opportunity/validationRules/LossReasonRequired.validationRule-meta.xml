@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LossReasonRequired</fullName>
+    <active>true</active>
+    <description>Regra de validação para preenchimento do motivo de perda quando alterar a fase da oportunidade para fechada/perdida</description>
+    <errorConditionFormula>AND(
+    ISPICKVAL(StageName, &quot;Fechado/Perdido&quot;),
+    ISBLANK(TEXT( LossReason__c )),
+    $RecordType.Name = &quot;B2C&quot;
+)</errorConditionFormula>
+    <errorMessage>É obrigatório preencher o campo &quot;Motivo de Perda&quot; quando a Fase for &quot;Fechado/Perdido&quot;</errorMessage>
+</ValidationRule>

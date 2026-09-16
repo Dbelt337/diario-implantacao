@@ -1,0 +1,1891 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>vlocity_cmt__Advertiser</fullName>
+    <active>false</active>
+    <description>Use the Advertiser Account to create an Entity which buys Ad-Deals directly from Publisher.</description>
+    <label>Advertiser</label>
+    <picklistValues>
+        <picklist>AccountSource</picklist>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>AverageInstallRate__c</picklist>
+        <values>
+            <fullName>700Mb</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ClientGroup__c</picklist>
+        <values>
+            <fullName>B2B - Corporativo</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ClusterManual__c</picklist>
+        <values>
+            <fullName>ALT%2FGGNET</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AVATO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>BLINK</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SEMPRE</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>CompanySAPCode__c</picklist>
+        <values>
+            <fullName>0200</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A201</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>A202</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A203</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A204</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A205</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A207</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A208</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A209</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A211</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A212</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A213</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A214</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A215</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A216</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A217</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A218</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A219</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A220</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A221</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A222</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A223</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A224</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A225</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A228</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A229</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A230</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A231</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A232</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A233</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A234</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A235</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A236</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A237</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A238</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A239</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A240</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A241</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A242</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>A243</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D200</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D201</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D202</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D203</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D204</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D205</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D206</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D207</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D208</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D209</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>D210</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>E201</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>E202</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>E203</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>E204</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>H201</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>H202</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>H203</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>H204</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>H205</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>H206</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I200</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I201</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I202</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I203</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I204</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I205</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I206</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I207</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I208</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I209</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I210</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I211</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I212</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I213</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I214</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I216</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I218</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I219</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I221</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I222</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I223</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I224</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I225</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I226</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I228</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I229</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I230</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I231</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>I232</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>CreditProfile__c</picklist>
+        <values>
+            <fullName>Elegivel</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Possui debito interno</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>EntryChannel__c</picklist>
+        <values>
+            <fullName>Inside Sales</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PaP Terceiros</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>RD02</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Terceiro Digital</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Unidades</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>GroupCompany__c</picklist>
+        <values>
+            <fullName>Amigo BST</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Outro</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Industry</picklist>
+        <values>
+            <fullName>Agriculture</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Apparel</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Banking</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Biotechnology</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Chemicals</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Communications</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Construction</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Consulting</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Education</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Electronics</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Energy</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Engineering</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Entertainment</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Environmental</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Finance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Food %26 Beverage</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Government</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Healthcare</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Hospitality</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Insurance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Machinery</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Manufacturing</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Media</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not For Profit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Recreation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Retail</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Shipping</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Technology</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Telecommunications</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Transportation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Utilities</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>LegalEntityType__c</picklist>
+        <values>
+            <fullName>LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>MEI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Simples</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sociedade Limitada</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Management__c</picklist>
+        <values>
+            <fullName>101</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>102</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>103</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>DMR - Gerencia de Mercado Residencial</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>MarketSegment__c</picklist>
+        <values>
+            <fullName>1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>5</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>6</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>7</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>8</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>9</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Empresarial</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Residencial</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Residencial Rural</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>MarketType__c</picklist>
+        <values>
+            <fullName>Varejo</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>NetworkType__c</picklist>
+        <values>
+            <fullName>Neutra</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Própria</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>OperatingUnit__c</picklist>
+        <values>
+            <fullName>876</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>886</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>896</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>905</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>909</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>918</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>921</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>938</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>962</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MS KCA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MS PDG</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MS RVG</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MS SWZ</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MS SYW</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT ALT</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT ALU</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT CDZ</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT CGI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT CZV</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT DQN</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT FZNL</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT GDN</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT GGA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT ITQ</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT IUZ</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT JCR</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT JIA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT LRV</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT MTK</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT PNE</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT PVT</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT PXP</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT PXZ</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT ROI - La Salle II</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT SNO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT TDN</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT TGS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO MT VER</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RJ IGGR</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RJ RBT</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RJ SQR</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS CBM</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS DPO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS ETA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS FRL</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS GRD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS GTI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS IGJH</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS IQI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS ITAA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS IVI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS JOW</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS LJO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS NHO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS NVP</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS PAE USF</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SBC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SCR</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SFP</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SIV</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SJA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SMA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SMA - CAM</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SPG</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SPL</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS STO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS SVD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS TQR</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS TSS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS TUN</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO RS UGN</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO SP FAV</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO SP GRS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO SP GRS II - PONTE ALTA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO SP IAQ</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO SP SPB</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO SP SPO I</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO SP SPO II</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AMIGO SP SZN</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Ownership</picklist>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Private</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Public</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Subsidiary</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ProductInterest__c</picklist>
+        <values>
+            <fullName>CamerasSegurança</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Fibra</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Outros</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>TV</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>TelefoniaMovel</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Rating</picklist>
+        <values>
+            <fullName>Cold</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Hot</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Warm</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Regional__c</picklist>
+        <values>
+            <fullName>141</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>142</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>143</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>144</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>144_146</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>145</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>146</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>147</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>148</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Regional Fronteira IS RS</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>SalesSupplier__c</picklist>
+        <values>
+            <fullName>ANTONIO CARLOS BITENCOURT RIBEIRO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>ELEVARE SERVICOS EM TELEFONIA LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FG TELECOM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FIDELIZAÇAO CO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FIDELIZAÇAO RJ</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FIDELIZAÇAO RS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>FIDELIZAÇAO SP</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>INSIDE CO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>INSIDE RJ</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>INSIDE RS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>INSIDE SP</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>MORAES E SILVA LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT BR JOY TELECOM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT BR MUNDIALE TECNOLOGIA DA INFOR LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT BR UPWT SERVICOS TIAGO D PORTA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO ALPHA LOCACAO VENDA IMOVEIS LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO AVILA CABRERA DA SILVA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO E%2E DE SOUZA %26 CIA LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO EMMANUEL LUIZ DA SILVA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO FLEX TELHAS ISOTERMICAS LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO FORBS COM E SERV DE COMUN LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO HIGOR FELIPE DE MORAES LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO INFINITY APARECIDA ALVES DE PAULA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO J RICHARD GOMES REPRESENTACAO LTD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO JHONATAM LUIZ DE LIMA SILVA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO JORNET NEGOCIOS E SERVICOS LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO JUNIOR NEGOCIOS LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO LIDIANA MITEV DE LIMA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO LOG TELECOM SERVICOS DE COMUN LTD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO LUCIANNA MOREIRA DA SILVA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO MD SAT COMERCIO E REPRESENTACAO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO PANDA COMERCIO E SERVICE LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO S R P V ZANUZO LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT CO WAVE TELECOM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT LUIZ CARLOS FLORES MOREIRA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RJ LEONARDO VARELLA PUCETTI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RJ MARCIA BEATRIZ S C LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RJ RUANA QUINTANILHA DE MENEZES</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS - TEC SERVICOS DE INST DE REDES LTDA %28BST%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS A9 BUSINESS LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS ALLNET TELECOM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS CRISTIANO MARQUES ZOTTIS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS DANIEL FRANCISCO DECKMANN</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS DIEGO BORTOLI LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS DIGIFORCE CONSULT E NEGOCIOS LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS DM TELECOM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS DS SOLUCOES EM TELECOM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS EXACT JOEL ROBERVAL DE M OLIVEIRA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS FERNANDA DELIBERALLI 53937772</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS GABRIEL FLORES CARVALHO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS GRAZIELA CASSEL</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS HALTEC PROSPECCOES LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS JW MACHADO SERVICOS DE TELEC LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS KELVES PEREIRA GOMES</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS KERNOVI ELISANDRO DUTRA QUARESMA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS LL ROCHA REPRESENTACAO COM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS MARCELO COSTA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS MARILZA APARECIDA LEMOS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS MATEUS SILVEIRA DO COUTO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS NOVA CONEXAO REPRESENTACOES LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS PAKAN COM DE COMPONENTES LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS PAX SOLUCOES FINANCEIRAS LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS PROSPECT JANICE MARIA RAACH LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS QUALILAGOS REPRESENTACAO COM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS SA FIBER THOMAS DOS SANTOS SILVEI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS SEAMAX TELECOM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS SERVCOM SOLUCOES INTELIGENT LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS SERVICOS PRATES LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS SKY LINK CONECTIVIDADE LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS SOMMED SOMMED SOLUCOES TECNOL</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS VIA FIBRA JESSICA TEIXEIRA VARGAS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS VMAR TELEC VOINER CORSINI MARTINS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT RS WILLIAM RAMOS MENEZES</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT SP APEXTEL SOLUTIONS FOR YOU LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT SP BJ TELECOM BRUNO JOSE PEREIRA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT SP EVOLUTION EXPRESS TELECOM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT SP FASTWEB TELECOMUNICACOES E SERVIC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT SP FJ TELECOM LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT SP FLASH FIBER SOLUTIONS LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT SP INVICTA TAYS BISCARO LEMES DE OLI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT SP ROCKET NEILSON BOMFIM BRANDAO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PVT SP TELECIVIL ENGENHARIA LTDA</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UNIDADES CO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UNIDADES RJ</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UNIDADES RS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>UNIDADES SP</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ServiceFeasibility__c</picklist>
+        <values>
+            <fullName>Nao viavel</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Parcialmente viavel</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Viavel</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Status2__c</picklist>
+        <values>
+            <fullName>Ativo</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Cancelado</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Inativo</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Suspenso</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>StatusAccountNew__c</picklist>
+        <values>
+            <fullName>Ativo</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Cancelado</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Suspenso</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>StatusB2B__c</picklist>
+        <values>
+            <fullName>Ativo</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Inativo</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Suspenso</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>TaxType__c</picklist>
+        <values>
+            <fullName>CNPJ com ICMS 0%25</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>CNPJ e Federal com ISS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>CNPJ em geral</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>CPF %2F CNPJ simples</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Orgão Federal com ISS%2C CSRF%2C IR 4%2C8%25</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Orgão Federal com ISS%2C IR 1%2C5%25</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Orgão Federal com ISS%2C IR 4%2C8%25</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Orgão Federal sem ISS</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Customer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Prospect</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__AccountPaymentType__c</picklist>
+        <values>
+            <fullName>Postpaid</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Prepaid</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__Active__c</picklist>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__AutoPaymentAmount__c</picklist>
+        <values>
+            <fullName>Full Balance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Minimum Due</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__BillCycle__c</picklist>
+        <values>
+            <fullName>1</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>2</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>3</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__BillDeliveryMethod__c</picklist>
+        <values>
+            <fullName>Electronic Statements Online</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Paper Billing</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>eMail</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__BillFormat__c</picklist>
+        <values>
+            <fullName>Detail</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Summary</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__BillFrequency__c</picklist>
+        <values>
+            <fullName>Monthly</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Quarterly</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Weekly</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__BillingAccountStatus__c</picklist>
+        <values>
+            <fullName>Current</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>In Collections</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Overdue</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__ContactPreferences__c</picklist>
+        <values>
+            <fullName>Mail</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Phone</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>eMail</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__CustomerClass__c</picklist>
+        <values>
+            <fullName>C%26I</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Residential</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SMB</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__CustomerOfBrand__c</picklist>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__CustomerPriority__c</picklist>
+        <values>
+            <fullName>High</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Low</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Medium</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__CustomerValue__c</picklist>
+        <values>
+            <fullName>Bronze</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Diamond</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Gold</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Platinum</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Silver</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__Juridsiction1__c</picklist>
+        <values>
+            <fullName>Company</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Region</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>State</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__Jurisdiction2__c</picklist>
+        <values>
+            <fullName>Secondary jurisdiction A</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Secondary jurisdiction B</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__LegalForm__c</picklist>
+        <values>
+            <fullName>Corporation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>LLC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>LLP</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not for Profit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Partnership</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sole Proprietorship</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__SLA__c</picklist>
+        <values>
+            <fullName>Bronze</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Gold</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Platinum</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Silver</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__Status__c</picklist>
+        <values>
+            <fullName>Active</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__TaxExemptionType__c</picklist>
+        <values>
+            <fullName>Exempt</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Non-exempt</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__UpsellOpportunity__c</picklist>
+        <values>
+            <fullName>Maybe</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Yes</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__vCustomerPriority__c</picklist>
+        <values>
+            <fullName>High</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Low</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Medium</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__vSLA__c</picklist>
+        <values>
+            <fullName>Bronze</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Gold</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Platinum</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Silver</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

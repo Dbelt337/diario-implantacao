@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Region__c</fullName>
+    <label>Regional</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>OperationUnit__c</controllingField>
+        <valueSetDefinition>
+            <sorted>true</sorted>
+            <value>
+                <fullName>BH</fullName>
+                <default>false</default>
+                <label>BH</label>
+            </value>
+            <value>
+                <fullName>Centro-Oeste</fullName>
+                <default>false</default>
+                <label>Centro-Oeste</label>
+            </value>
+            <value>
+                <fullName>CO</fullName>
+                <default>false</default>
+                <label>CO</label>
+            </value>
+            <value>
+                <fullName>DF</fullName>
+                <default>false</default>
+                <label>DF</label>
+            </value>
+            <value>
+                <fullName>GO</fullName>
+                <default>false</default>
+                <label>GO</label>
+            </value>
+            <value>
+                <fullName>MG</fullName>
+                <default>false</default>
+                <label>MG</label>
+            </value>
+            <value>
+                <fullName>MT</fullName>
+                <default>false</default>
+                <label>MT</label>
+            </value>
+            <value>
+                <fullName>Nacional</fullName>
+                <default>false</default>
+                <label>Nacional</label>
+            </value>
+            <value>
+                <fullName>Operadoras/Data Center/OTTS</fullName>
+                <default>false</default>
+                <label>Operadoras/Data Center/OTTS</label>
+            </value>
+            <value>
+                <fullName>PR</fullName>
+                <default>false</default>
+                <label>PR</label>
+            </value>
+            <value>
+                <fullName>RS</fullName>
+                <default>false</default>
+                <label>RS</label>
+            </value>
+            <value>
+                <fullName>SC</fullName>
+                <default>false</default>
+                <label>SC</label>
+            </value>
+            <value>
+                <fullName>SP</fullName>
+                <default>false</default>
+                <label>SP</label>
+            </value>
+            <value>
+                <fullName>Sudeste</fullName>
+                <default>false</default>
+                <label>Sudeste</label>
+            </value>
+            <value>
+                <fullName>Sul</fullName>
+                <default>false</default>
+                <label>Sul</label>
+            </value>
+            <value>
+                <fullName>Utilities</fullName>
+                <default>false</default>
+                <label>Utilities</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>B2B SEMPRE</controllingFieldValue>
+            <controllingFieldValue>B2G SEMPRE</controllingFieldValue>
+            <controllingFieldValue>B2W SEMPRE</controllingFieldValue>
+            <controllingFieldValue>B2B ALLREDE</controllingFieldValue>
+            <controllingFieldValue>B2G ALLREDE</controllingFieldValue>
+            <controllingFieldValue>B2W ALLREDE</controllingFieldValue>
+            <controllingFieldValue>B2B AVATO</controllingFieldValue>
+            <valueName>MG</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2B ALLREDE</controllingFieldValue>
+            <controllingFieldValue>B2G ALLREDE</controllingFieldValue>
+            <controllingFieldValue>B2W ALLREDE</controllingFieldValue>
+            <valueName>DF</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2B ALLREDE</controllingFieldValue>
+            <controllingFieldValue>B2G ALLREDE</controllingFieldValue>
+            <controllingFieldValue>B2W ALLREDE</controllingFieldValue>
+            <valueName>GO</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2B ALLREDE</controllingFieldValue>
+            <controllingFieldValue>B2G ALLREDE</controllingFieldValue>
+            <controllingFieldValue>B2W ALLREDE</controllingFieldValue>
+            <valueName>MT</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2B BLINK</controllingFieldValue>
+            <controllingFieldValue>B2G BLINK</controllingFieldValue>
+            <controllingFieldValue>B2W BLINK</controllingFieldValue>
+            <valueName>BH</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2W ALT</controllingFieldValue>
+            <controllingFieldValue>B2W AVATO</controllingFieldValue>
+            <valueName>Centro-Oeste</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2W ALT</controllingFieldValue>
+            <controllingFieldValue>B2W AVATO</controllingFieldValue>
+            <valueName>Operadoras/Data Center/OTTS</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2W ALT</controllingFieldValue>
+            <controllingFieldValue>B2W AVATO</controllingFieldValue>
+            <valueName>Sudeste</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2W ALT</controllingFieldValue>
+            <controllingFieldValue>B2W AVATO</controllingFieldValue>
+            <valueName>Sul</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2W ALT</controllingFieldValue>
+            <controllingFieldValue>B2W AVATO</controllingFieldValue>
+            <valueName>Utilities</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2B ALT</controllingFieldValue>
+            <controllingFieldValue>B2B AVATO</controllingFieldValue>
+            <valueName>PR</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2B ALT</controllingFieldValue>
+            <controllingFieldValue>B2B AVATO</controllingFieldValue>
+            <valueName>SC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2G ALT</controllingFieldValue>
+            <controllingFieldValue>B2G AVATO</controllingFieldValue>
+            <valueName>Nacional</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2B AVATO</controllingFieldValue>
+            <valueName>CO</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2B AVATO</controllingFieldValue>
+            <valueName>RS</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>B2B AVATO</controllingFieldValue>
+            <valueName>SP</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

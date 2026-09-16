@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>B2B</fullName>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Em Contato</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Novo</fullName>
+        <default>true</default>
+    </values>
+    <values>
+        <fullName>Não Qualificado</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Qualificado</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Qualificando</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

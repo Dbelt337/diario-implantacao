@@ -11,6 +11,7 @@ Campos: `Account.AccountManager__c` ("Gerente da conta") e `Opportunity.ManagerA
 | Arquivo | O que é |
 |---|---|
 | `gerar_template_gerente.py` | Gera `Template_Alterar_Gerente_Conta.xlsx` (abas Contas, Oportunidades, Listas, Instrucoes). Com `--contas` e `--opps` despeja as planilhas do comercial no template. |
+| `exportar_contas_lotes.js` | Roda as 3 consultas de `saida/consultas.soql` na org e grava `accounts.json`, `opps.json` e `users.json`; contas em lotes de 250 CNPJs (o `sf data query` devolve HTTP 431 com a lista inteira). |
 | `validar_gerente.py` | Cruza com a org e gera `A_contas_update.csv` e `A_opps_update.csv` (por Id), `B_retidos.csv`, `C_sem_mudanca.csv`. Não faz DML. |
 | `scripts/37_AlterarGerente_Planilha_1609.apex` | Aplica os arquivos A na org em duas fases, tratando cluster, bypass e item de aprovação. |
 
@@ -25,7 +26,7 @@ Campos: `Account.AccountManager__c` ("Gerente da conta") e `Opportunity.ManagerA
    ```bash
    python3 validar_gerente.py --arquivo Alterar_Gerente_Marcelo.xlsx --out saida/
    ```
-3. Exportar da org as 3 consultas de `saida/consultas.soql` (`sf data query -o <org> --json -q "..." > accounts.json`, idem `opps.json` e `users.json`).
+3. Exportar da org as 3 consultas de `saida/consultas.soql`: `node exportar_contas_lotes.js btp-prod saida` (contas em lotes de 250 por causa do HTTP 431; consultas por arquivo porque o shim `sf.cmd` do Windows quebra com `%` no `-q`).
 4. Passada online:
    ```bash
    python3 validar_gerente.py --arquivo Alterar_Gerente_Marcelo.xlsx --accounts accounts.json --opps opps.json --users users.json --out saida/

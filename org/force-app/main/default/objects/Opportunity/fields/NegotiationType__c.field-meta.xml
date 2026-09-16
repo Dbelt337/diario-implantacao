@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>NegotiationType__c</fullName>
+    <label>Tipo negociação</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Venda</fullName>
+                <default>true</default>
+                <label>Venda</label>
+            </value>
+            <value>
+                <fullName>Upgrade</fullName>
+                <default>false</default>
+                <label>Upgrade</label>
+            </value>
+            <value>
+                <fullName>Swap</fullName>
+                <default>false</default>
+                <label>Swap</label>
+            </value>
+            <value>
+                <fullName>Troca de endereço</fullName>
+                <default>false</default>
+                <label>Troca de endereço</label>
+            </value>
+            <value>
+                <fullName>Transferência de titularidade</fullName>
+                <default>false</default>
+                <label>Transferência de titularidade</label>
+            </value>
+            <value>
+                <fullName>Cortesia</fullName>
+                <default>false</default>
+                <label>Cortesia</label>
+            </value>
+            <value>
+                <fullName>Refidelização/Renovação</fullName>
+                <default>false</default>
+                <label>Refidelização/Renovação</label>
+            </value>
+            <value>
+                <fullName>Downgrade</fullName>
+                <default>false</default>
+                <label>Downgrade</label>
+            </value>
+            <value>
+                <fullName>Cancelamento/Churn</fullName>
+                <default>false</default>
+                <label>Cancelamento/Churn</label>
+            </value>
+            <value>
+                <fullName>Alterações técnicas</fullName>
+                <default>false</default>
+                <label>Alterações técnicas</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

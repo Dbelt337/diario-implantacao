@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VRCellphoneMask</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+ 		RecordType__c = &quot;LegalEntity_B2B&quot;,
+   NOT(ISBLANK(MobilePhone)),
+   NOT(
+      OR(
+      
+         REGEX(MobilePhone, &quot;^[1-9]{2}9[0-9]{8}$&quot;),
+         REGEX(MobilePhone, &quot;^\\+[1-9][0-9]{7,14}$&quot;)
+      )
+   )
+)</errorConditionFormula>
+    <errorDisplayField>MobilePhone</errorDisplayField>
+    <errorMessage>Atenção, o Celular informado é incorreto. Informar um valor válido e formato correto. Ex:
+Nacional: 11987654321
+Internacional: +5511987654321 ou +14155552671</errorMessage>
+</ValidationRule>

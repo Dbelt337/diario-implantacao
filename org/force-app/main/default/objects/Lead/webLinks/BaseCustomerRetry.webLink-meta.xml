@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BaseCustomerRetry</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <height>600</height>
+    <linkType>url</linkType>
+    <masterLabel>Consulta cliente base</masterLabel>
+    <openType>noSidebar</openType>
+    <protected>false</protected>
+    <url>https://dev-brasiltecpar--devb2c.sandbox.lightning.force.com/lightning/cmp/vlocity_cmt__vlocityLWCOmniWrapper?c__target=c:bTecParPFAddressAndClientDataPortugueseBrazil&amp;c__layout=lightning&amp;c__tabIcon=custom:custom18&amp;c__tabLabel=BTecParPF_AddressAndClientData&amp;c__ContextId={!Lead.Id}</url>
+</WebLink>

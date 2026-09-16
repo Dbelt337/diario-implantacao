@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ValidaCNPJvalido</fullName>
+    <active>false</active>
+    <errorConditionFormula>AND(
+    /* regras gerais */
+    NOT(IsInternational__c),
+				!ISBLANK(DocumentNumber__c), 
+    RecordTypeName__c = &quot;B2B - Pessoa jurídica&quot;,
+    /*Valida o formato correto do CNPJ*/
+    OR(
+      NOT(
+          AND(
+              LEN(DocumentNumber__c) = 18,
+              MID(DocumentNumber__c, 3, 1) = &quot;.&quot;,
+              MID(DocumentNumber__c, 7, 1) = &quot;.&quot;,
+              MID(DocumentNumber__c, 11, 1) = &quot;/&quot;,
+              MID(DocumentNumber__c, 16, 1) = &quot;-&quot;
+          )
+      ),
+      /*Valida os digitos verificadores do CNPJ*/
+      IF(LEN(DocumentNumber__c)=18,
+      OR(
+          AND(
+              MOD((
+                  (VALUE(MID(DocumentNumber__c,1,1))*6)+
+                  (VALUE(MID(DocumentNumber__c,2,1))*5)+
+                  (VALUE(MID(DocumentNumber__c,4,1))*4)+
+                  (VALUE(MID(DocumentNumber__c,5,1))*3)+
+                  (VALUE(MID(DocumentNumber__c,6,1))*2)+
+                  (VALUE(MID(DocumentNumber__c,8,1))*9)+
+                  (VALUE(MID(DocumentNumber__c,9,1))*8)+
+                  (VALUE(MID(DocumentNumber__c,10,1))*7)+
+                  (VALUE(MID(DocumentNumber__c,12,1))*6)+
+                  (VALUE(MID(DocumentNumber__c,13,1))*5)+
+                  (VALUE(MID(DocumentNumber__c,14,1))*4)+
+                  (VALUE(MID(DocumentNumber__c,15,1))*3)+
+                  (VALUE(MID(DocumentNumber__c,17,1))*2)
+              ),11)&lt;=1,
+              VALUE(MID(DocumentNumber__c,18,1))!=0
+          ),
+          AND(
+              MOD((
+                  (VALUE(MID(DocumentNumber__c,1,1))*6)+
+                  (VALUE(MID(DocumentNumber__c,2,1))*5)+
+                  (VALUE(MID(DocumentNumber__c,4,1))*4)+
+                  (VALUE(MID(DocumentNumber__c,5,1))*3)+
+                  (VALUE(MID(DocumentNumber__c,6,1))*2)+
+                  (VALUE(MID(DocumentNumber__c,8,1))*9)+
+                  (VALUE(MID(DocumentNumber__c,9,1))*8)+
+                  (VALUE(MID(DocumentNumber__c,10,1))*7)+
+                  (VALUE(MID(DocumentNumber__c,12,1))*6)+
+                  (VALUE(MID(DocumentNumber__c,13,1))*5)+
+                  (VALUE(MID(DocumentNumber__c,14,1))*4)+
+                  (VALUE(MID(DocumentNumber__c,15,1))*3)+
+                  (VALUE(MID(DocumentNumber__c,17,1))*2)
+              ),11)&gt;1,
+              (11-MOD((
+                      (VALUE(MID(DocumentNumber__c,1,1))*6)+
+                      (VALUE(MID(DocumentNumber__c,2,1))*5)+
+                      (VALUE(MID(DocumentNumber__c,4,1))*4)+
+                      (VALUE(MID(DocumentNumber__c,5,1))*3)+
+                      (VALUE(MID(DocumentNumber__c,6,1))*2)+
+                      (VALUE(MID(DocumentNumber__c,8,1))*9)+
+                      (VALUE(MID(DocumentNumber__c,9,1))*8)+
+                      (VALUE(MID(DocumentNumber__c,10,1))*7)+
+                      (VALUE(MID(DocumentNumber__c,12,1))*6)+
+                      (VALUE(MID(DocumentNumber__c,13,1))*5)+
+                      (VALUE(MID(DocumentNumber__c,14,1))*4)+
+                      (VALUE(MID(DocumentNumber__c,15,1))*3)+
+                      (VALUE(MID(DocumentNumber__c,17,1))*2)
+                      ),11)
+              )!=VALUE(MID(DocumentNumber__c,18,1))
+          )
+      ), false)
+    )
+)</errorConditionFormula>
+    <errorDisplayField>DocumentNumber__c</errorDisplayField>
+    <errorMessage>Atenção, o CNPJ informado é incorreto para este tipo de registro. Informar um valor válido e formato correto. Ex:
+CNPJ: XX.XXX.XXX/XXXX-XX</errorMessage>
+</ValidationRule>

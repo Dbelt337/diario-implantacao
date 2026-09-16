@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Segment__c</fullName>
+    <label>Segmento</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Corporativo</fullName>
+                <default>false</default>
+                <label>B2B - Corporativo</label>
+            </value>
+            <value>
+                <fullName>Governo</fullName>
+                <default>false</default>
+                <label>B2G - Governo</label>
+            </value>
+            <value>
+                <fullName>Varejo</fullName>
+                <default>false</default>
+                <label>B2C - Varejo</label>
+            </value>
+            <value>
+                <fullName>B2W - Wholesale</fullName>
+                <default>false</default>
+                <label>B2W - Wholesale</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

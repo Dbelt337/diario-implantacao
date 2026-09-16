@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OperatingUnit__c</fullName>
+    <label>Unidade Operacional</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>896</fullName>
+                <default>false</default>
+                <label>AMIGO MS CXM</label>
+            </value>
+            <value>
+                <fullName>AMIGO MS KCA</fullName>
+                <default>false</default>
+                <label>AMIGO MS KCA</label>
+            </value>
+            <value>
+                <fullName>AMIGO MS PDG</fullName>
+                <default>false</default>
+                <label>AMIGO MS PDG</label>
+            </value>
+            <value>
+                <fullName>AMIGO MS RVG</fullName>
+                <default>false</default>
+                <label>AMIGO MS RVG</label>
+            </value>
+            <value>
+                <fullName>AMIGO MS SWZ</fullName>
+                <default>false</default>
+                <label>AMIGO MS SWZ</label>
+            </value>
+            <value>
+                <fullName>AMIGO MS SYW</fullName>
+                <default>false</default>
+                <label>AMIGO MS SYW</label>
+            </value>
+            <value>
+                <fullName>886</fullName>
+                <default>false</default>
+                <label>AMIGO MT AFL</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT ALT</fullName>
+                <default>false</default>
+                <label>AMIGO MT ALT</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT ALU</fullName>
+                <default>false</default>
+                <label>AMIGO MT ALU</label>
+            </value>
+            <value>
+                <fullName>876</fullName>
+                <default>false</default>
+                <label>AMIGO MT CBA</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT CDZ</fullName>
+                <default>false</default>
+                <label>AMIGO MT CDZ</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT CGI</fullName>
+                <default>false</default>
+                <label>AMIGO MT CGI</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT CZV</fullName>
+                <default>false</default>
+                <label>AMIGO MT CZV</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT DQN</fullName>
+                <default>false</default>
+                <label>AMIGO MT DQN</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT FZNL</fullName>
+                <default>false</default>
+                <label>AMIGO MT FZNL</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT GDN</fullName>
+                <default>false</default>
+                <label>AMIGO MT GDN</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT GGA</fullName>
+                <default>false</default>
+                <label>AMIGO MT GGA</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT ITQ</fullName>
+                <default>false</default>
+                <label>AMIGO MT ITQ</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT IUZ</fullName>
+                <default>false</default>
+                <label>AMIGO MT IUZ</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT JCR</fullName>
+                <default>false</default>
+                <label>AMIGO MT JCR</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT JIA</fullName>
+                <default>false</default>
+                <label>AMIGO MT JIA</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT LRV</fullName>
+                <default>false</default>
+                <label>AMIGO MT LRV</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT MTK</fullName>
+                <default>false</default>
+                <label>AMIGO MT MTK</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT PNE</fullName>
+                <default>false</default>
+                <label>AMIGO MT PNE</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT PVT</fullName>
+                <default>false</default>
+                <label>AMIGO MT PVT</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT PXP</fullName>
+                <default>false</default>
+                <label>AMIGO MT PXP</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT PXZ</fullName>
+                <default>false</default>
+                <label>AMIGO MT PXZ</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT ROI - La Salle II</fullName>
+                <default>false</default>
+                <label>AMIGO MT ROI - La Salle II</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT SNO</fullName>
+                <default>false</default>
+                <label>AMIGO MT SNO</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT TDN</fullName>
+                <default>false</default>
+                <label>AMIGO MT TDN</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT TGS</fullName>
+                <default>false</default>
+                <label>AMIGO MT TGS</label>
+            </value>
+            <value>
+                <fullName>AMIGO MT VER</fullName>
+                <default>false</default>
+                <label>AMIGO MT VER</label>
+            </value>
+            <value>
+                <fullName>905</fullName>
+                <default>false</default>
+                <label>AMIGO RJ AMA</label>
+            </value>
+            <value>
+                <fullName>AMIGO RJ IGGR</fullName>
+                <default>false</default>
+                <label>AMIGO RJ IGGR</label>
+            </value>
+            <value>
+                <fullName>AMIGO RJ RBT</fullName>
+                <default>false</default>
+                <label>AMIGO RJ RBT</label>
+            </value>
+            <value>
+                <fullName>AMIGO RJ SQR</fullName>
+                <default>false</default>
+                <label>AMIGO RJ SQR</label>
+            </value>
+            <value>
+                <fullName>962</fullName>
+                <default>false</default>
+                <label>AMIGO RS CAN NSG</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS CBM</fullName>
+                <default>false</default>
+                <label>AMIGO RS CBM</label>
+            </value>
+            <value>
+                <fullName>918</fullName>
+                <default>false</default>
+                <label>AMIGO RS CLB</label>
+            </value>
+            <value>
+                <fullName>938</fullName>
+                <default>false</default>
+                <label>AMIGO RS CQI</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS DPO</fullName>
+                <default>false</default>
+                <label>AMIGO RS DPO</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS ETA</fullName>
+                <default>false</default>
+                <label>AMIGO RS ETA</label>
+            </value>
+            <value>
+                <fullName>921</fullName>
+                <default>false</default>
+                <label>AMIGO RS FIZ</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS FRL</fullName>
+                <default>false</default>
+                <label>AMIGO RS FRL</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS GRD</fullName>
+                <default>false</default>
+                <label>AMIGO RS GRD</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS GTI</fullName>
+                <default>false</default>
+                <label>AMIGO RS GTI</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS IGJH</fullName>
+                <default>false</default>
+                <label>AMIGO RS IGJH</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS IQI</fullName>
+                <default>false</default>
+                <label>AMIGO RS IQI</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS ITAA</fullName>
+                <default>false</default>
+                <label>AMIGO RS ITAA</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS IVI</fullName>
+                <default>false</default>
+                <label>AMIGO RS IVI</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS JOW</fullName>
+                <default>false</default>
+                <label>AMIGO RS JOW</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS LJO</fullName>
+                <default>false</default>
+                <label>AMIGO RS LJO</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS NHO</fullName>
+                <default>false</default>
+                <label>AMIGO RS NHO</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS NVP</fullName>
+                <default>false</default>
+                <label>AMIGO RS NVP</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS PAE USF</fullName>
+                <default>false</default>
+                <label>AMIGO RS PAE USF</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SBC</fullName>
+                <default>false</default>
+                <label>AMIGO RS SBC</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SCR</fullName>
+                <default>false</default>
+                <label>AMIGO RS SCR</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SFP</fullName>
+                <default>false</default>
+                <label>AMIGO RS SFP</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SIV</fullName>
+                <default>false</default>
+                <label>AMIGO RS SIV</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SJA</fullName>
+                <default>false</default>
+                <label>AMIGO RS SJA</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SMA</fullName>
+                <default>false</default>
+                <label>AMIGO RS SMA</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SMA - CAM</fullName>
+                <default>true</default>
+                <label>AMIGO RS SMA - CAM</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SPG</fullName>
+                <default>false</default>
+                <label>AMIGO RS SPG</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SPL</fullName>
+                <default>false</default>
+                <label>AMIGO RS SPL</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS STO</fullName>
+                <default>false</default>
+                <label>AMIGO RS STO</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS SVD</fullName>
+                <default>false</default>
+                <label>AMIGO RS SVD</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS TQR</fullName>
+                <default>false</default>
+                <label>AMIGO RS TQR</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS TSS</fullName>
+                <default>false</default>
+                <label>AMIGO RS TSS</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS TUN</fullName>
+                <default>false</default>
+                <label>AMIGO RS TUN</label>
+            </value>
+            <value>
+                <fullName>AMIGO RS UGN</fullName>
+                <default>false</default>
+                <label>AMIGO RS UGN</label>
+            </value>
+            <value>
+                <fullName>909</fullName>
+                <default>false</default>
+                <label>AMIGO SP AUJ</label>
+            </value>
+            <value>
+                <fullName>AMIGO SP FAV</fullName>
+                <default>false</default>
+                <label>AMIGO SP FAV</label>
+            </value>
+            <value>
+                <fullName>AMIGO SP GRS</fullName>
+                <default>false</default>
+                <label>AMIGO SP GRS</label>
+            </value>
+            <value>
+                <fullName>AMIGO SP GRS II - PONTE ALTA</fullName>
+                <default>false</default>
+                <label>AMIGO SP GRS II - PONTE ALTA</label>
+            </value>
+            <value>
+                <fullName>AMIGO SP IAQ</fullName>
+                <default>false</default>
+                <label>AMIGO SP IAQ</label>
+            </value>
+            <value>
+                <fullName>AMIGO SP SPB</fullName>
+                <default>false</default>
+                <label>AMIGO SP SPB</label>
+            </value>
+            <value>
+                <fullName>AMIGO SP SZN</fullName>
+                <default>false</default>
+                <label>AMIGO SP SZN</label>
+            </value>
+            <value>
+                <fullName>AMIGO SP SPO I</fullName>
+                <default>false</default>
+                <label>AMIGO SP SPO I</label>
+            </value>
+            <value>
+                <fullName>AMIGO SP SPO II</fullName>
+                <default>false</default>
+                <label>AMIGO SP SPO II</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

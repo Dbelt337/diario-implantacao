@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>OperationUnit__c</fullName>
+    <label>Unidade Operacional</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>AVATO PSI GO GNA</fullName>
+                <default>false</default>
+                <label>AVATO PSI GO GNA</label>
+            </value>
+            <value>
+                <fullName>B2W ALT</fullName>
+                <default>false</default>
+                <label>B2W ALT</label>
+            </value>
+            <value>
+                <fullName>B2B ALT</fullName>
+                <default>false</default>
+                <label>B2B ALT</label>
+            </value>
+            <value>
+                <fullName>B2G ALT</fullName>
+                <default>false</default>
+                <label>B2G ALT</label>
+            </value>
+            <value>
+                <fullName>B2B AVATO</fullName>
+                <default>false</default>
+                <label>B2B AVATO</label>
+            </value>
+            <value>
+                <fullName>B2G AVATO</fullName>
+                <default>false</default>
+                <label>B2G AVATO</label>
+            </value>
+            <value>
+                <fullName>B2W AVATO</fullName>
+                <default>false</default>
+                <label>B2W AVATO</label>
+            </value>
+            <value>
+                <fullName>B2B SEMPRE</fullName>
+                <default>false</default>
+                <label>B2B SEMPRE</label>
+            </value>
+            <value>
+                <fullName>B2G SEMPRE</fullName>
+                <default>false</default>
+                <label>B2G SEMPRE</label>
+            </value>
+            <value>
+                <fullName>B2W SEMPRE</fullName>
+                <default>false</default>
+                <label>B2W SEMPRE</label>
+            </value>
+            <value>
+                <fullName>B2B ALLREDE</fullName>
+                <default>false</default>
+                <label>B2B ALLREDE</label>
+            </value>
+            <value>
+                <fullName>B2G ALLREDE</fullName>
+                <default>false</default>
+                <label>B2G ALLREDE</label>
+            </value>
+            <value>
+                <fullName>B2W ALLREDE</fullName>
+                <default>false</default>
+                <label>B2W ALLREDE</label>
+            </value>
+            <value>
+                <fullName>B2B BLINK</fullName>
+                <default>false</default>
+                <label>B2B BLINK</label>
+            </value>
+            <value>
+                <fullName>B2G BLINK</fullName>
+                <default>false</default>
+                <label>B2G BLINK</label>
+            </value>
+            <value>
+                <fullName>B2W BLINK</fullName>
+                <default>false</default>
+                <label>B2W BLINK</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

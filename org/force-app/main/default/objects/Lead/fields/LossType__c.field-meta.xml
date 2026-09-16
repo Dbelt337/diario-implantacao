@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LossType__c</fullName>
+    <label>Motivo da Perda</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Desistencia cliente</fullName>
+                <default>false</default>
+                <label>Desistencia cliente</label>
+            </value>
+            <value>
+                <fullName>Falta de interesse</fullName>
+                <default>false</default>
+                <label>Falta de interesse</label>
+            </value>
+            <value>
+                <fullName>Concorrência</fullName>
+                <default>false</default>
+                <label>Concorrência</label>
+            </value>
+            <value>
+                <fullName>Fora de cobertura</fullName>
+                <default>false</default>
+                <label>Fora de cobertura</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

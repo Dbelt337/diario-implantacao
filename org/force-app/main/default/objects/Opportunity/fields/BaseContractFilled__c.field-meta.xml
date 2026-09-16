@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BaseContractFilled__c</fullName>
+    <formula>AND(
+				NOT(ISBLANK(TEXT(ContractStartType__c))),
+				NOT(ISBLANK(TEXT(ContractStartDate__c))),
+				NOT(ISBLANK(TEXT(ContractEndManual__c))),
+				ContractEndManual__c &gt; 0
+)</formula>
+    <label>Base Preenchida</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

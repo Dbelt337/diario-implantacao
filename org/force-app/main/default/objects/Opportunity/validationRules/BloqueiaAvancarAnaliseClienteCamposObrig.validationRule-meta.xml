@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BloqueiaAvancarAnaliseClienteCamposObrig</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+				RecordTypeName__c = &apos;B2B&apos;,
+    NOT(ISNEW()),
+    PRIORVALUE(StageName) = &apos;Análise cliente&apos;,
+    NOT(BaseContractFilled__c),
+				ISCHANGED(StageName),
+				OR(
+				    TEXT(StageName) = &apos;Análise financeira&apos;,
+								Text(StageName) = &apos;Validação técnica&apos;
+				)
+)</errorConditionFormula>
+    <errorMessage>Atenção: Necessário preencher os campos obrigatórios da fase &apos;Análise cliente&apos; para avançar a fase.</errorMessage>
+</ValidationRule>

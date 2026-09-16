@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ClusterManual__c</fullName>
+    <inlineHelpText>Necessário preencher quando o usuário não tiver este campo cadastrado.</inlineHelpText>
+    <label>Time / Cluster</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Time_Cluster</valueSetName>
+    </valueSet>
+</CustomField>

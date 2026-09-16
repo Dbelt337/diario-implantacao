@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ObrigaCamposFechadoPerdido</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+				ISPICKVAL(StageName, &apos;Fechado/Perdido&apos;),
+				NOT(Bypass__c),
+				OR(
+								ISBLANK(TEXT(CancellationType__c)),
+								ISBLANK(CancellationDetails__c )
+				)
+)</errorConditionFormula>
+    <errorMessage>Atenção: Necessário preencher o &apos;Motivo de cancelamento&apos; e &apos;Descrição do cancelamento&apos; para finalizar a Oportunidade.</errorMessage>
+</ValidationRule>

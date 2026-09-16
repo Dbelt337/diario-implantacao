@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>vlocity_cmt__MediaCampaign</fullName>
+    <active>true</active>
+    <businessProcess>vlocity_cmt__AdSales</businessProcess>
+    <description>Use the Media Campagin to create Media Campaign and associated Media Plans and Ad Placements.</description>
+    <label>Media Campaign</label>
+    <picklistValues>
+        <picklist>CancellationType__c</picklist>
+        <values>
+            <fullName>Concorrência</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Desistencia cliente</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Falta de interesse</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Fora de cobertura</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Cluster__c</picklist>
+        <values>
+            <fullName>ALT%2FGGNET</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>AVATO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>BLINK</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SEMPRE</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ContractPendencies__c</picklist>
+        <values>
+            <fullName>Aguardando contrato assinado</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Aguardando informações GR</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ContractStartType__c</picklist>
+        <values>
+            <fullName>Após a ativação</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>DeliveryTerm__c</picklist>
+        <values>
+            <fullName>12</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>24</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>36</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>48</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>60</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>DueDate__c</picklist>
+        <values>
+            <fullName>15</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>30</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>45</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>90</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ForecastCategoryName</picklist>
+        <values>
+            <fullName>Best Case</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Closed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Commit</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Omitted</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pipeline</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>LeadSource</picklist>
+        <values>
+            <fullName>MKT Cloud E-mail</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Outbound Mailing Cancelados</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Outbound Mailing Last Mile</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Outbound indicação GR p%2F aquecer</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>LossReason__c</picklist>
+        <values>
+            <fullName>Cadastro errôneo</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Cliente da Base</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Desistiu atend%2E automat%3A envio dados%2Fdoc</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Endereço inadimplente</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Fidelidade do contrato</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Informações de lead incompletas%2Finexistente</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Inviabilidade  CTOs  lotadas</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Inviabilidade cidade não atendida</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Inviabilidade rua%2Fbairro não atendidos</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Local afetado enchentes RS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Local sem oferta de produto</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Não interagiu</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Não interagiu tecfriend parceiro</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Não quis pagar ativação da análise</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Oportunidade Duplicada</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pendência Interna</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Permaneceu com o antigo provedor</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pesquisando Preço</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Prazo adequação prédio %28sem CTO interna%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Preço da mensalidade</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sem rede AMIGO%2C inviabilidade VTAL</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Tempo de agendamento%2F prazo ativação</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>VTAL - Área em construção</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Área impedida</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Loss_Reason__c</picklist>
+        <values>
+            <fullName>Lost to Competitor</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No Budget %2F Lost Funding</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>No Decision %2F Non-Responsive</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Other</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Price</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>NegotiationType__c</picklist>
+        <values>
+            <fullName>Upgrade</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Venda</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>OperationUnit__c</picklist>
+        <values>
+            <fullName>AVATO PSI GO GNA</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>PaymentType__c</picklist>
+        <values>
+            <fullName>Boleto</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Cartão</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Depósito</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PIX</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Region__c</picklist>
+        <values>
+            <fullName>Sudeste</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sul</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ResponsibleTeam__c</picklist>
+        <values>
+            <fullName>Arquitetura</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Backoffice</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>C-Level</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Gerência</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Head</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Vendedor%2FGR</fullName>
+            <default>true</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>SourceOrigin__c</picklist>
+        <values>
+            <fullName>Callcenter</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Email</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Telefone</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Website</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Stage__c</picklist>
+        <values>
+            <fullName>0</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>10</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>100</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>20</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>50</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>70</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>Type</picklist>
+        <values>
+            <fullName>Existing Business</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New Business</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>ViabilityType__c</picklist>
+        <values>
+            <fullName>Rede própria</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rede terceira</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__AsyncOperation__c</picklist>
+        <values>
+            <fullName>Price</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Validate</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__DefaultCurrencyPaymentMode__c</picklist>
+        <values>
+            <fullName>Currency</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Loyalty</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__LockedFor__c</picklist>
+        <values>
+            <fullName>Async Operation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Manual Edit</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__OriginatingChannel__c</picklist>
+        <values>
+            <fullName>Call Center</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Dealer</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Retail</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Web</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>vlocity_cmt__ValidationStatus__c</picklist>
+        <values>
+            <fullName>Failed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Not yet run</fullName>
+            <default>true</default>
+        </values>
+        <values>
+            <fullName>Passed</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

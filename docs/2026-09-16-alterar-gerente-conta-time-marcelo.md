@@ -35,3 +35,12 @@ E o mesmo campo dos chamados de 15 e 16/09: Account.AccountManager__c e Opportun
    o item reatribuido ao Marcelo na hora; o campo ManagerAccount__c dessas fica para depois da aprovacao (regra de
    validacao de 15/09 barra ate com unlock).
 4. Contas em 4 janelas de 500; conferir o DEPOIS e registrar aqui.
+
+## Passada online (16/09, sessao conectada, leitura na prod)
+
+Consultas rodadas na prod (contas em lotes de 250 por causa do HTTP 431; ver `exportar_contas_lotes.js`). Marcelo confirmado:
+005V200000N5I0fIAF, ativo, cluster SEMPRE. Resultado: A) 22 contas (10 precisam de cluster no executor) e 4 oportunidades
+(todas em "Aprovacao comercial"); B) 90 retidas (84 nome divergente = acento corrompido na planilha, 83 ja com o Marcelo;
+5 CNPJs duplicados; 1 opp "MILPLAN_SDC" que na org se chama "MILPLAN_SDC_Business"); C) 1.402 ja com o Marcelo.
+Na org o Marcelo ja e gerente de 1.602 contas B2B: a troca foi aplicada por alguem depois de 16/07 (data das planilhas).
+Detalhes e pendencias em docs/2026-09-16-primeira-sessao-conectada.md. Script 37 fase 1 aguarda o "vai" (escrita na prod).

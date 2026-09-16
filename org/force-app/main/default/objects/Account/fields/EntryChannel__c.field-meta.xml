@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EntryChannel__c</fullName>
+    <label>Origem do Cliente</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Email</fullName>
+                <default>false</default>
+                <label>Email</label>
+            </value>
+            <value>
+                <fullName>Website</fullName>
+                <default>false</default>
+                <label>Website</label>
+            </value>
+            <value>
+                <fullName>Whatsapp</fullName>
+                <default>false</default>
+                <label>Whatsapp</label>
+            </value>
+            <value>
+                <fullName>Indicação</fullName>
+                <default>false</default>
+                <label>Indicação</label>
+            </value>
+            <value>
+                <fullName>Inside Sales</fullName>
+                <default>false</default>
+                <label>Inside Sales</label>
+            </value>
+            <value>
+                <fullName>Unidades</fullName>
+                <default>false</default>
+                <label>Unidades</label>
+            </value>
+            <value>
+                <fullName>Vendas Porta à Porta Terceiros</fullName>
+                <default>false</default>
+                <label>Vendas Porta à Porta Terceiros</label>
+            </value>
+            <value>
+                <fullName>Fidelização</fullName>
+                <default>false</default>
+                <label>Fidelização</label>
+            </value>
+            <value>
+                <fullName>Vendas Digitais Terceiros</fullName>
+                <default>false</default>
+                <label>Vendas Digitais Terceiros</label>
+            </value>
+            <value>
+                <fullName>Amigo Perto (Agente Autorizado)</fullName>
+                <default>false</default>
+                <label>Amigo Perto (Agente Autorizado)</label>
+            </value>
+            <value>
+                <fullName>PaP Terceiros</fullName>
+                <default>false</default>
+                <label>PaP Terceiros</label>
+            </value>
+            <value>
+                <fullName>RD02</fullName>
+                <default>false</default>
+                <label>RD02</label>
+            </value>
+            <value>
+                <fullName>Terceiro Digital</fullName>
+                <default>false</default>
+                <label>Terceiro Digital</label>
+            </value>
+            <value>
+                <fullName>Callcenter</fullName>
+                <default>false</default>
+                <label>Callcenter</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

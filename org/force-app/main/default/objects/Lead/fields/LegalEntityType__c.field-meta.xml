@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LegalEntityType__c</fullName>
+    <label>Natureza jurídica</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Sociedade Limitada</fullName>
+                <default>false</default>
+                <label>Sociedade Limitada</label>
+            </value>
+            <value>
+                <fullName>LTDA</fullName>
+                <default>false</default>
+                <label>LTDA</label>
+            </value>
+            <value>
+                <fullName>Simples</fullName>
+                <default>false</default>
+                <label>Simples</label>
+            </value>
+            <value>
+                <fullName>MEI</fullName>
+                <default>false</default>
+                <label>MEI</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

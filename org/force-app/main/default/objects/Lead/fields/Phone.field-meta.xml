@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Phone</fullName>
+    <inlineHelpText>O número de telefone deve estar no formato DDD + Número, com 10 ou 11 dígitos.
+Ex: 11987654321 (celular) ou 1134567890 (fixo).</inlineHelpText>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+</CustomField>

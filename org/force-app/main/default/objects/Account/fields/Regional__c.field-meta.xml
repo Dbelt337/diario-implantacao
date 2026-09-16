@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Regional__c</fullName>
+    <label>Regional</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>144_146</fullName>
+                <default>false</default>
+                <label>AMIGO PERTO RS</label>
+            </value>
+            <value>
+                <fullName>142</fullName>
+                <default>false</default>
+                <label>CENTRO CO</label>
+            </value>
+            <value>
+                <fullName>146</fullName>
+                <default>false</default>
+                <label>FRONTEIRA</label>
+            </value>
+            <value>
+                <fullName>144</fullName>
+                <default>false</default>
+                <label>METROPOLITANA</label>
+            </value>
+            <value>
+                <fullName>141</fullName>
+                <default>false</default>
+                <label>NORTE CO</label>
+            </value>
+            <value>
+                <fullName>Regional Fronteira IS RS</fullName>
+                <default>false</default>
+                <label>Regional Fronteira IS RS</label>
+            </value>
+            <value>
+                <fullName>147</fullName>
+                <default>false</default>
+                <label>RIO DE JANEIRO</label>
+            </value>
+            <value>
+                <fullName>148</fullName>
+                <default>false</default>
+                <label>SAO PAULO</label>
+            </value>
+            <value>
+                <fullName>145</fullName>
+                <default>false</default>
+                <label>SERRA</label>
+            </value>
+            <value>
+                <fullName>143</fullName>
+                <default>false</default>
+                <label>SUL CO</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

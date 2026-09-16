@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <apiVersion>65.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <constants>
+        <description>Armazena o valor do status de uma etapa que foi aprovada. O valor da constante deve ser Aprovar.</description>
+        <name>Approved</name>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>Approve</stringValue>
+        </value>
+    </constants>
+    <decisions>
+        <description>Determina se o envio da aprovação foi aprovado ou rejeitado. Se você tiver ações finais para concluir quando um envio é aprovado, adicione uma ou mais etapas em segundo plano ao estágio Processar envio aprovado. Se você tiver ações finais para concluir quando um envio é rejeitado, adicione uma ou mais etapas em segundo plano ao estágio Processar envio rejeitado. Por fim, atualize essa descrição para refletir que essa decisão faz.</description>
+        <name>Is_Submission_Approved_or_Rejected</name>
+        <label>O envio é aprovado ou rejeitado?</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Process_Rejected_Submission</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Rejeitado (padrão)</defaultConnectorLabel>
+        <rules>
+            <name>Is_Approved</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Approval_Step_1_of_Approval_Stage_1.Outputs.approvalDecision</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <elementReference>Approved</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Process_Approved_Submission</targetReference>
+            </connector>
+            <label>Aprovado</label>
+        </rules>
+    </decisions>
+    <environments>Default</environments>
+    <interviewLabel>[Oportunidade] Aprovação Termo de Aceite {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>[Oportunidade] Aprovação Termo de Aceite</label>
+    <orchestratedStages>
+        <description>Se seu envio de aprovação tiver itens de trabalho de aprovação que podem ser revisados simultaneamente por diferentes aprovadores, adicione mais etapas de aprovação a este estágio. Se você tiver outros processamentos a fazer, adicione etapas em segundo plano. Por fim, atualize o rótulo, o nome da API e a descrição para refletir o que esse estágio faz.</description>
+        <name>Approval_Stage_1</name>
+        <label>Estágio de aprovação 1</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Is_Submission_Approved_or_Rejected</targetReference>
+        </connector>
+        <exitConditionLogic>and</exitConditionLogic>
+        <stageSteps>
+            <description>Selecione um aprovador para concluir a etapa. Se você tiver um fluxo de tela personalizado para chamar para esta etapa de aprovação, para Ação, remova o Fluxo de trabalho de aprovações: avaliar solicitações de aprovação, e selecione seu fluxo de tela personalizado. Por fim, atualize o rótulo, o nome da API e a descrição para refletir o que essa etapa faz.</description>
+            <name>Approval_Step_1_of_Approval_Stage_1</name>
+            <actionName>standard_approvals__EvaluateApproval</actionName>
+            <actionType>stepApproval</actionType>
+            <assignees>
+                <assigneeType>Queue</assigneeType>
+            </assignees>
+            <canAssigneeEdit>true</canAssigneeEdit>
+            <debugSimulateStep>false</debugSimulateStep>
+            <entryConditionLogic>and</entryConditionLogic>
+            <exitConditionLogic>and</exitConditionLogic>
+            <inputParameters>
+                <name>ActionInput__RecordId</name>
+                <value>
+                    <elementReference>recordId</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>ActionInput__CustomEmailSubject</name>
+            </inputParameters>
+            <inputParameters>
+                <name>ActionInput__CustomEmailBody</name>
+            </inputParameters>
+            <label>Etapa de aprovação 1 de Estágio de aprovação 1</label>
+            <outputConfigParams>
+                <name>approvalComments</name>
+                <value xsi:nil="true"/>
+            </outputConfigParams>
+            <outputConfigParams>
+                <name>approvalDecision</name>
+                <value xsi:nil="true"/>
+            </outputConfigParams>
+            <requiresAsyncProcessing>false</requiresAsyncProcessing>
+            <runAsUser>false</runAsUser>
+            <shouldLock>true</shouldLock>
+            <stepSubtype>ApprovalStep</stepSubtype>
+        </stageSteps>
+    </orchestratedStages>
+    <orchestratedStages>
+        <description>Contém as ações finais para executar quando um envio de aprovação é aprovado. Se a opção Enviar notificações de email do status de envio da aprovação a remetentes estiver habilitada, a pessoa que enviou a aprovação será automaticamente notificada de que o envio foi aprovado. Se você tiver ações para concluir quando esse envio for aprovado, adicione uma ou mais etapas em segundo plano a esse estágio. Por fim, atualize essa descrição para refletir o que esse estágio faz.</description>
+        <name>Process_Approved_Submission</name>
+        <label>Processar o envio aprovado</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <exitConditionLogic>and</exitConditionLogic>
+    </orchestratedStages>
+    <orchestratedStages>
+        <description>Contém as ações finais para executar quando um envio de aprovação é rejeitado. Se a opção Enviar notificações de email do status de envio da aprovação a remetentes estiver habilitada, a pessoa que enviou a aprovação será automaticamente notificada de que o envio foi rejeitado. Se você tiver ações para concluir quando esse envio for rejeitado, adicione uma ou mais etapas em segundo plano a esse estágio. Por fim, atualize essa descrição para refletir o que esse estágio faz.</description>
+        <name>Process_Rejected_Submission</name>
+        <label>Processar o envio rejeitado</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <exitConditionLogic>and</exitConditionLogic>
+    </orchestratedStages>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>ApprovalWorkflow</processType>
+    <runInMode>SystemModeWithoutSharing</runInMode>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Approval_Stage_1</targetReference>
+        </connector>
+    </start>
+    <status>InvalidDraft</status>
+    <variables>
+        <description>Armazena o ID do registro a ser aprovado e é passado para o processo de aprovação de fluxo. Essa é uma variável de entrada obrigatória.</description>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Armazena comentários sobre a aprovação e é passado para o processo de aprovação de fluxo. Essa é uma variável de entrada obrigatória.</description>
+        <name>submissionComments</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Armazena o ID do usuário que está enviando a aprovação e é passado para o processo de aprovação de fluxo. Essa é uma variável de entrada obrigatória.</description>
+        <name>submitter</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

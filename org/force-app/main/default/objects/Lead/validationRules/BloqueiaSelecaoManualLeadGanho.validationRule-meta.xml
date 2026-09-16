@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>BloqueiaSelecaoManualLeadGanho</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    ISCHANGED(Status),
+				OR(
+								AND(
+												ISPICKVAL(Status, &apos;Qualified&apos;),
+            NOT(IsConverted)
+								),
+								AND(
+								 			ISPICKVAL(PRIORVALUE(Status), &apos;Qualified&apos;),
+												IsConverted
+								) 
+				)     
+)</errorConditionFormula>
+    <errorMessage>Atenção: apenas é possível converter o lead através do botão &quot;Converter&quot;.</errorMessage>
+</ValidationRule>

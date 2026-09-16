@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ImpedirMudancaDeEndereco</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+				RecordTypeName__c = &quot;B2B - Pessoa jurídica&quot;,
+				NOT(ISNEW()),
+				NOT(Bypass__c),
+				OR(
+        ISCHANGED(BillingAddressComplement__c),
+								ISCHANGED(BillingAddressNumber__c),
+        ISCHANGED(BillingCity),
+        ISCHANGED(BillingCountryCode),
+        ISCHANGED(BillingNeighborhood__c),
+        ISCHANGED(BillingObservations__c),
+        ISCHANGED(BillingPostalCode),
+        ISCHANGED(BillingStateCode),
+        ISCHANGED(BillingStreet),
+        
+								ISCHANGED(ShippingAddressComplement__c),
+								ISCHANGED(ShippingAddressNumber__c),
+        ISCHANGED(ShippingCity),
+        ISCHANGED(ShippingCountryCode),
+        ISCHANGED(ShippingNeighborhood__c),
+        ISCHANGED(ShippingObservations__c),
+        ISCHANGED(ShippingPostalCode),
+        ISCHANGED(ShippingStateCode),
+        ISCHANGED(ShippingStreet)
+				)
+)
+
+&amp;&amp;
+!ISCHANGED(ByPassStamp__c)</errorConditionFormula>
+    <errorMessage>A atualização de endereço deve ser feita pelo objeto personalizado Endereço</errorMessage>
+</ValidationRule>
