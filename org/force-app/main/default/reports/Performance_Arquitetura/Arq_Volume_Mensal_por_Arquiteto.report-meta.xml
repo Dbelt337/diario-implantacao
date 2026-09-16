@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <aggregateTypes>Average</aggregateTypes>
+        <field>CDF1</field>
+    </columns>
+    <customDetailFormulas>
+        <calculatedFormula>(FlowOrchestrationWorkItem.LastModifiedDate - FlowOrchestrationWorkItem.CreatedDate) * 24</calculatedFormula>
+        <dataType>Double</dataType>
+        <developerName>CDF1</developerName>
+        <label>Horas na fila (entrada até conclusão)</label>
+        <scale>1</scale>
+    </customDetailFormulas>
+    <description>Matriz: arquiteto x mês de conclusão, com quantidade de itens "Aprovação - Arquitetura" concluídos e média de horas na fila. Últimos 90 dias.</description>
+    <filter>
+        <criteriaItems>
+            <column>FlowOrchestrationStepInstance$Label</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Aprovação - Arquitetura</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Status</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Completed</value>
+        </criteriaItems>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$LastModifiedDate</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$LastModifiedBy</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Arquitetura - Volume mensal</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>flow_orchestration_work_item_ootb_crt_two_four_eight__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$LastModifiedDate</dateColumn>
+        <interval>INTERVAL_LAST90</interval>
+    </timeFrameFilter>
+</Report>
