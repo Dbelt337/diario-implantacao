@@ -1,0 +1,7 @@
+saida/
+*.json
+*.csv
+Alterar_Gerente_*.xlsx
+Contas_*
+Oportunidade_*
+__pycache__/
