@@ -118,3 +118,10 @@ os links foram passados ao Diego para colar o conteudo integral no chat e fechar
   nem remove item; so o dono do projeto move itens ou muda o padrao; mover so pacotes inteiros a partir do
   produto raiz. Regra para o manual: Draft = analista cadastra; In-Review = governanca revisa; In-Test =
   comercial homologa no carrinho; Released = governanca publica pelo IDX. Deck ajustado (slides 10, 11 e 12).
+
+## Correcao 16/09 (tarde): PowerPoint pedia reparo ao abrir o deck
+Causa: tamanhos de fonte fracionados (10,5 e 11,5 pt) gerados como sz="1050.0" (o XSD exige inteiro); o reparo do
+Office descartava esses textos (slide 10 ficou so com titulos). Corrigido no gerador (int(round(sz*100)), idem
+spcPts; titulo vazio nao gera run). Validacao passou a ser feita com xmllint contra o XSD oficial pml.xsd
+(scripts/validar_pptx_xsd.sh): 13 slides + presentation.xml validam; teste negativo com sz="1050.0" falha como
+esperado; content types, rels e zip conferidos. Deck regerado e reenviado.

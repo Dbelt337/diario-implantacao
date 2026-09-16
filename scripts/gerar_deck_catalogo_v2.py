@@ -9,10 +9,10 @@ _id = [1]
 def nid(): _id[0] += 1; return _id[0]
 
 def run(t, sz=13, b=False, color=GRAY, i=False):
-    return (f'<a:r><a:rPr lang="pt-BR" sz="{sz*100}" b="{1 if b else 0}" i="{1 if i else 0}" dirty="0"><a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
+    return (f'<a:r><a:rPr lang="pt-BR" sz="{int(round(sz*100))}" b="{1 if b else 0}" i="{1 if i else 0}" dirty="0"><a:solidFill><a:srgbClr val="{color}"/></a:solidFill>'
             f'<a:latin typeface="Calibri"/><a:cs typeface="Calibri"/></a:rPr><a:t>{esc(t)}</a:t></a:r>')
 def para(runs, algn='l', bullet=False, space_after=6, lvl=0):
-    ppr = f'<a:pPr algn="{algn}"' + (f' marL="{228600 + lvl*228600}" indent="-228600"' if bullet else '') + f'><a:spcAft><a:spcPts val="{space_after*100}"/></a:spcAft>'
+    ppr = f'<a:pPr algn="{algn}"' + (f' marL="{228600 + lvl*228600}" indent="-228600"' if bullet else '') + f'><a:spcAft><a:spcPts val="{int(round(space_after*100))}"/></a:spcAft>'
     ppr += ('<a:buFont typeface="Arial"/><a:buChar char="&#8226;"/>' if bullet else '<a:buNone/>') + '</a:pPr>'
     return f'<a:p>{ppr}{runs}</a:p>'
 def P(t, sz=13, b=False, color=GRAY, algn='l', bullet=False, space_after=6, lvl=0):
@@ -48,7 +48,7 @@ def header(title, sub=None, h=1.0):
 def footer(n):
     return shape(0.5, 7.12, 9, 0.3, [P(f'Brasil TecPar | SysMap | Catálogo EPC (Vlocity)  ·  {n}', 9, False, '7F8C9A', 'r', space_after=0)], name='Footer', txbox=True, ins=0)
 def card(x, y, cx, cy, title, items, border=BLUE, tcolor=None, sz=12, bullet=True, fill=WHITE, title_sz=14):
-    ps = [P(title, title_sz, True, tcolor or border, space_after=6)]
+    ps = [P(title, title_sz, True, tcolor or border, space_after=6)] if title else []
     for it in items:
         if isinstance(it, tuple): ps.append(PL(it[0], it[1], sz, GRAY, None, bullet, 5))
         else: ps.append(P(it, sz, False, GRAY, 'l', bullet, 5))
