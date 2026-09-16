@@ -98,8 +98,8 @@ S.append(slide([
         'CRUD oficial só de Product2, versão, filho, picklist e promoção. Não cobrem preço nem atributo: um carregador teria de gravar isso por fora, sem validação.',
         'Se algum dia um carregador for justificado, é sobre estas APIs, não gravando registros direto.'], border=BLUE, sz=10.5),
     card(5.1, 3.75, 4.4, 2.35, 'Jobs pós-carga e Agentforce', [
-        'Após mudar estrutura: Product Hierarchy Maintenance, Clear Managed Platform Cache e Refresh Platform Cache, nesta ordem; executáveis por API.',
-        'Agentforce for Communications (26/02/2026): 5 agentes, faturamento, SLO, cotação, agrupamento de sites e venda guiada. Todos consomem o catálogo; nenhum o cria.'], border=BLUE, sz=10.5),
+        'Após mudar estrutura: Product Hierarchy Maintenance, Clear Managed Platform Cache e Refresh Platform Cache, nesta ordem, por API ou pela aba Vlocity CMT Administration, nunca em produção ao vivo.',
+        'Agentforce for Communications (26/02/2026): 5 agentes, faturamento, SLO, cotação, sites e venda guiada. No pacote CME, as ações padrão de Agentforce são para o carrinho. Nenhuma cria catálogo.'], border=BLUE, sz=10.5),
     pill(0.5, 6.25, 9.0, 0.55, 'Atenção: a importação por CSV com templates DPE é do Revenue Cloud (Product Catalog Management), não do EPC do Communications Cloud.', AMBER, 10.5),
     footer(3)]))
 # 4. Opcao 1: template + wizard
@@ -217,7 +217,7 @@ g = [('Ferramenta padrão, suportada', 'Product Designer e DataPacks são os cam
      ('Validação ao salvar', 'Tipo de objeto, atributos, cardinalidade e preço são conferidos pela interface antes de existir a oferta.'),
      ('Sandbox antes de produção', 'Toda oferta nasce em sandbox, é testada no carrinho e só então migra, por DataPack.'),
      ('Evidência e versionamento', 'O DataPack de cada onda fica guardado; o histórico do Salesforce registra quem alterou o quê.'),
-     ('Pós-carga controlado', 'Jobs de hierarquia e cache na ordem documentada, em checklist ou disparados por API.'),
+     ('Pós-carga em janela', 'Jobs de hierarquia e cache na ordem documentada, em janela fora do horário de venda: a Help manda não rodar jobs de administração em produção ao vivo.'),
      ('Reversibilidade e donos', 'Oferta errada é inativada, não excluída; cada etapa tem dono e substituto nomeados.')]
 sh = [header('Segurança para decidir', 'Seis garantias da rota padrão')]
 for i, (t, d) in enumerate(g):
@@ -238,7 +238,7 @@ sh.append(card(0.5, 2.45, 4.4, 3.6, 'Cada procedimento tem', [
     ('Pré-requisitos: ', 'oferta aprovada pelo comercial, códigos e preços definidos na planilha de levantamento.'),
     ('Quem cadastra e quem aprova: ', 'nomes, não áreas.'),
     ('Passo a passo com telas: ', 'sequência exata no Product Designer, campo a campo.'),
-    ('Pós-carga: ', 'jobs de hierarquia e cache na ordem; roteiro de teste no carrinho.'),
+    ('Pós-carga: ', 'jobs de hierarquia e cache na ordem, em janela de manutenção; roteiro de teste no carrinho.'),
     ('Evidência: ', 'DataPack exportado, resultado do teste e registro no diário.')], border=NAVY, sz=10.5))
 sh.append(card(5.1, 2.45, 4.4, 3.6, 'Anexos do manual', [
     'Dicionário de códigos: catálogos, categorias, picklists e atributos.',

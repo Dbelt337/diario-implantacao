@@ -85,3 +85,9 @@ os links foram passados ao Diego para colar o conteudo integral no chat e fechar
   Site Grouping, Guided Selling. Todos consomem o catalogo; nenhum cria ou mantem catalogo. O Quoting Agent
   monta cotacoes seguindo regras de negocio, o que depende de um catalogo bem cadastrado.
 - Deck ajustado nos slides 3, 4 e 6 com esses pontos.
+- Help "Administration Tasks Reference for CME" (indice): "In most cases, do not run administration jobs on live
+  production environments. Running the jobs may disrupt order processing and the customer experience." Os jobs
+  pos-carga estao na pagina "Running Maintenance Jobs for the CME Managed Package" (a colar). O indice tambem
+  lista "Agentforce for Cart Operations in CME Managed Package" e "Flows and Invocable Actions in CME": as acoes
+  padrao de Agentforce no pacote sao para o carrinho (venda), nao para autoria de catalogo. Deck ajustado
+  (slides 3, 10 e 11: jobs em janela de manutencao, nunca em producao ao vivo).
