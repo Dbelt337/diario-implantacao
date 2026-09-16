@@ -1,0 +1,151 @@
+
+===== pagina obj 2
+GOVERNANÇA SALESFORCE · BRASIL TECPAR · VALIDAÇÃO TÉCNICA
+Validação do Retorno do Especialista — Works e Critério da Sprint
+Validação do retorno de Diego Beltrão (especialista Salesforce) contra o Agile Accelerator ao vivo: exclusão intencional de 6 Works e o mapeamento dos 3
+tópicos como critério da Sprint 1. Conferido registro a registro em 16/09/2026.
+Origem:
+ Diego Beltrão (especialista SF)
+Validação:
+ Agile Accelerator (ao vivo)
+Responsável:
+ Gerson Pereira — Governança SF
+Data:
+ 16/09/2026
+Versão:
+ v1
+1
+Exclusão intencional de 6 Works (validado: na Lixeira até 30/09)
+Confirmado no Agile que as 6 Works foram 
+excluídas em 15/09 de forma intencional
+ (todas `IsDeleted = true`, recuperáveis na Lixeira até 30/09).
+Work
+Motivo (Diego)
+Situação (Agile)
+W-000138
+Estava vazia — consolidada nas W-000051/052/055 (nota 'Consolidação 15/09: filhas por família, Modelagem v3')
+✔
+ Excluída (Lixeira)
+W-000139
+Estava vazia — consolidada nas W-000051/052/055
+✔
+ Excluída (Lixeira)
+W-000041
+Versão de julho — conflitava com a v3 aprovada em 14/09
+✔
+ Excluída (Lixeira)
+W-000042
+Versão de julho — conteúdo no pacote de works enviado
+✔
+ Excluída (Lixeira)
+W-000043
+Versão de julho — conteúdo no pacote de works enviado
+✔
+ Excluída (Lixeira)
+W-000044
+Versão de julho — conteúdo no pacote de works enviado
+✔
+ Excluída (Lixeira)
+As W-000051/052/055 (que absorveram a consolidação) estão ativas e já na Sprint 1 – SysMap. O conteúdo das versões de julho está documentado no pacote de works enviado pelo
+Diego.
+2
+3 tópicos como critério da Sprint — mapeamento validado
+Critério acordado (Diego concorda): as histórias da sprint se enquadram em 3 tópicos. Mapeamento conferido registro a registro no Agile (todas ativas).
+①
+ Jornada que impacta o catálogo
+
+===== pagina obj 12
+Work
+História
+Priority
+Sprint
+W-000056
+US QUAL-01 — Qualificação de catálogo via contexto de elegibilidade (Tetra-pé)
+P2
+— (backlog)
+W-000142
+US B2B-13 — Refidelização B2B (aditivo de tempo)
+P1
+Sprint 1 – SysMap
+W-000143
+US B2B-14 — Aviso prévio de cancelamento B2B (30/60/90)
+P1
+Sprint 1 – SysMap
+W-000144
+US B2B-15 — Condições especiais de faturamento na cotação B2B
+P1
+Sprint 1 – SysMap
+W-000145
+US B2B-16 — Cadência de notificações de assinatura
+P1
+Sprint 1 – SysMap
+②
+ Fundação do catálogo (com pendências P1–P8 do Joel)
+Work
+História
+Priority
+Sprint
+W-000051
+US EPC-01 — Attribute Categories do catálogo
+P1
+Sprint 1 – SysMap
+W-000052
+US EPC-04 — Hierarquia de Object Types + layouts
+P1
+Sprint 1 – SysMap
+W-000055
+US EPC-03 (P) — Dicionário de atributos (governança)
+P1
+Sprint 1 – SysMap
+W-000053
+US EPC-05 — Product Specifications das famílias da Onda 1
+— (a setar)
+Sprint 1 – Brasil TecPar
+W-000070
+EPC-10 — Catálogos comerciais por família (B2B/B2C)
+P2
+— (backlog)
+W-000102
+US CAT-TPL-01 — Planilha mestre do catálogo (template de carga)
+— (a setar)
+— (backlog)
+③
+ Integração
+Work
+História
+Priority
+Sprint
+W-000140
+Habilitar integração B2B para testes (urgente)
+P0
+Sprint 1 – SysMap
+W-000136
+ARQUITETURA — Mapear fluxo e arquitetura das APIs do B2B
+— (a setar)
+Sprint 1 – Brasil TecPar
+W-000135
+INTEGRAÇÕES — MuleSoft: cobrar orçamento + demandas do barramento
+— (a setar)
+Sprint 1 – Brasil TecPar
+W-000137
+ARQUITETURA — Decomposição e camada técnica do catálogo (OM)
+— (a setar)
+Sprint 1 – Brasil TecPar
+3
+Observações de alinhamento (para o GP decidir)
+Works do time Brasil TecPar sem Priority:
+ W-000053, W-000102, W-000135, W-000136, W-000137 — o campo Priority foi preenchido só nas Works da SysMap.
+Recomendo setar Priority também nas do BTP para uniformizar.
+
+===== pagina obj 14
+Itens do critério fora da Sprint 1:
+ W-000056 (P2), W-000070 (P2) e W-000102 (template, sem sprint) — se são critério da sprint, avaliar puxá-los para a Sprint 1 ou
+deixar explícito como próxima onda.
+W-000102 (CAT-TPL-01, template de carga)
+ conecta-se à decisão em aberto do método de carga do catálogo (template × manual × híbrido) — priorizar conforme a
+decisão do Magno.
+As pendências P1–P8 do Joel (fundação do catálogo) são as dúvidas que travam a abertura das US filhas — ver EPC-Pendências v2. Fontes: retorno de Diego Beltrão (16/09) validado
+contra o Agile Accelerator ao vivo.
+Brasil TecPar
+ · Validação do Retorno do Especialista — Works e Critério da Sprint
+v1 · 16/09/2026 · Governança SF

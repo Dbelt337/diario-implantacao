@@ -163,3 +163,23 @@ Brasil TecPar. As 13 works de catalogo que estavam como time Salesforce (W-00005
 16/09)"). Pacote_Works_SysMap_1609.zip entregue ao Diego: 88 docs (todas menos as 5 do Gerson) e CSV filtrado.
 Resposta ao Michel: das works citadas, so W-000135/136/137 nao sao da SysMap. Pendente: rodar o script 38 na org e decidir
 quais das works de catalogo sem sprint (053, 054, 056, 070, 102 a 128) entram na Sprint 1 ou ficam para a Sprint 2.
+
+## Script 38 executado (log de 16/09 16:11) e validacao do Gerson
+
+**Script 38: 13 de 13 com time SysMap.** Achado do log: as 13 works de catalogo estavam com time **Brasil TecPar** (nao
+"Salesforce", como o CSV de 15/09 dizia; "Salesforce" era a tag). W-000053 e W-000054 estavam na "Sprint 1 - Brasil TecPar
+(15-26/09)", que agora e sprint de outro time. As demais 11 sem sprint. Assignee de todas = Davi.
+
+**"Validacao do Retorno do Especialista - Works e Criterio da Sprint" (Gerson, Governanca SF, v1, 16/09)**, feita contra o
+Agile ao vivo ANTES do script 38 (texto extraido em docs/2026-09-16-validacao-gerson-works-sprint-v1.txt):
+1. Exclusao das 6 works (041-044, 138, 139) confirmada, intencional, Lixeira ate 30/09.
+2. Mapeamento dos 3 topicos validado registro a registro, com Priority: jornada = 056 (P2, backlog), 142-145 (P1, S1);
+   fundacao = 051/052/055 (P1, S1), 053 (sem priority, Sprint 1 BTP), 070 (P2, backlog), 102 (sem priority, backlog);
+   integracao = 140 (P0, S1), 135/136/137 (sem priority, Sprint 1 BTP).
+3. Observacoes para o GP: Priority so foi preenchida nas works da SysMap (053, 102, 135, 136, 137 sem); itens do criterio
+   fora da Sprint 1 (056, 070, 102): puxar ou declarar proxima onda; 102 depende da decisao do metodo de carga (Magno).
+
+Diego (16/09): "precisamos ajustar, achei que estava tudo certo ontem". Script 39 (duas fases) fecha os pontos que sao
+nossos: Priority nas works de catalogo agora SysMap (053 P1, 054 P2, 102/056/070 P2, demais CAT P3, valores ajustaveis no
+mapa), 053 e 054 saem da sprint BTP para a Sprint 1 SysMap, e PUXAR_PARA_SPRINT1 decide se 056, 070 e 102 entram na Sprint 1.
+Nao toca nas works do Gerson (133 a 137): Priority delas e decisao dele. Pendente: decidir prioridades e rodar o 39.
