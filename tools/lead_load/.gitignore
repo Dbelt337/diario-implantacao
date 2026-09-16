@@ -1,0 +1,6 @@
+saida/
+*.json
+*.csv
+Leads_*.xlsx
+Massiva*
+!Template_Carga_Leads_B2B.xlsx
