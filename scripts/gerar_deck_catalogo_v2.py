@@ -89,17 +89,17 @@ S.append(slide([
 S.append(slide([
     header('O que a documentação oficial diz', 'Salesforce Help, Developer Docs e anúncio oficial, conferidos em 16/09'),
     card(0.5, 1.25, 4.4, 2.35, 'Product Designer (interface padrão do EPC)', [
-        'Help: é a aplicação de administração do catálogo, para usuários de negócio e de TI. Sequência oficial: tipos de objeto e atributos, especificação, oferta, pacote com cardinalidade, preço e promoção.',
-        'Projetos do EPC registram toda mudança no catálogo; versionamento de produto e ciclo de vida (atual, futuro, passado, aposentado) são nativos.'], border=BLUE, sz=10.5),
+        'Help: aplicação de administração do catálogo, para negócio e TI. Sequência oficial: tipos de objeto e atributos, especificação, oferta, pacote com cardinalidade, preço e promoção.',
+        'Projetos do EPC registram toda mudança (Add, Change, Delete) no projeto padrão; versionamento e ciclo de vida (atual, futuro, passado, aposentado) são nativos.'], border=BLUE, sz=10.5),
     card(5.1, 1.25, 4.4, 2.35, 'DataPacks, IDX Workbench e Vlocity Build', [
-        'Help do EPC: para mover de desenvolvimento para produção, usa-se Vlocity DataPacks; o EPC usa o IDX Workbench como ferramenta de build.',
-        'O DataPack de Product2 já carrega as entradas de preço; produtos não migram entre orgs por CSV.'], border=BLUE, sz=10.5),
+        'Help do EPC: para mover de desenvolvimento para produção, usa-se Vlocity DataPacks e o IDX Workbench.',
+        'O IDX Workbench migra exatamente as mudanças de um Projeto do EPC em status Released; produtos não migram entre orgs por CSV.'], border=BLUE, sz=10.5),
     card(0.5, 3.75, 4.4, 2.35, 'EPC REST APIs', [
         'CRUD oficial só de Product2, versão, filho, picklist e promoção. Não cobrem preço nem atributo: um carregador teria de gravar isso por fora, sem validação.',
         'Se algum dia um carregador for justificado, é sobre estas APIs, não gravando registros direto.'], border=BLUE, sz=10.5),
     card(5.1, 3.75, 4.4, 2.35, 'Jobs pós-carga e Agentforce', [
-        'Após mudar estrutura: Product Hierarchy Maintenance, Clear Managed Platform Cache e Refresh Platform Cache, nesta ordem, por API ou pela aba Vlocity CMT Administration, nunca em produção ao vivo.',
-        'Agentforce for Communications (26/02/2026): 5 agentes, faturamento, SLO, cotação, sites e venda guiada. No pacote CME, as ações padrão de Agentforce são para o carrinho. Nenhuma cria catálogo.'], border=BLUE, sz=10.5),
+        'Jobs de manutenção (Help): Product Hierarchy Maintenance antes do Refresh Platform Cache; Full na carga, Incremental na manutenção; Clear Managed Platform Cache limpa a partição do CPQ. Nunca em produção ao vivo.',
+        'Agentforce pronto no pacote CME: ações e flows para o carrinho (cotação, pedido, navegar produtos, atributos, promoções). Agentforce for Communications: 5 agentes de venda e serviço. Nenhum cria catálogo.'], border=BLUE, sz=10.5),
     pill(0.5, 6.25, 9.0, 0.55, 'Atenção: a importação por CSV com templates DPE é do Revenue Cloud (Product Catalog Management), não do EPC do Communications Cloud.', AMBER, 10.5),
     footer(3)]))
 # 4. Opcao 1: template + wizard
@@ -140,20 +140,20 @@ S.append(slide([
 S.append(slide([
     header('Opção 3: híbrido com Agentforce', 'É possível, mas hoje é desenvolvimento custom com licença; cabe como assistente, não como autor'),
     card(0.5, 1.2, 2.9, 2.55, 'O que existe pronto', [
-        'Agentforce for Communications: faturamento, SLO, cotação, sites e venda guiada. Nenhum cria ou mantém catálogo; o de cotação depende de um catálogo bem cadastrado.'], border=BLUE, sz=11, bullet=False),
+        'Ações e flows prontos no pacote CME para operações de carrinho: criar cotação e pedido, navegar produtos, configurar atributos, aplicar promoções, sem Apex custom. Tudo consome o catálogo; nada o cria.'], border=BLUE, sz=11, bullet=False),
     card(3.55, 1.2, 2.9, 2.55, 'O que teria de ser construído', [
         'Ações em Flow ou Apex sobre as EPC REST APIs (que não cobrem preço nem atributo), prompt templates, testes e guardrails. Volta a ser código custom.'], border=BLUE, sz=11, bullet=False),
     card(6.6, 1.2, 2.9, 2.55, 'Onde cabe bem', [
         'Explicar o manual, montar o checklist do evento, conferir a planilha de levantamento contra a org e validar o pós-carga. Sem publicar nada.'], border=BLUE, sz=11, bullet=False),
     card(0.5, 3.95, 4.4, 2.2, 'Prós', [
-        'Reduz a dependência de especialista na rotina e nas dúvidas do dia a dia.',
-        'Padroniza o cadastro ao seguir o manual, sempre.',
+        'O ganho real e pronto é na venda: vendedor monta cotação e pedido pelo agente, sem Apex custom.',
+        'Como assistente da manutenção, padroniza o cadastro ao seguir o manual.',
         'Publicação continua humana, em sandbox e com homologação.'], border=GREEN, sz=11),
     card(5.1, 3.95, 4.4, 2.2, 'Contras e condições', [
         'Licença e consumo do Agentforce a avaliar com a Salesforce.',
         'Ações custom para escrever no catálogo: mesmo risco do wizard, mais a variabilidade do agente.',
         'Só faz sentido depois do manual e de uma onda executada.'], border=RED, sz=11),
-    pill(0.5, 6.3, 9.0, 0.5, 'Sequência: carga pela rota padrão e manual primeiro; agente como piloto de apoio à manutenção, fase 2, se a licença compensar.', NAVY, 11),
+    pill(0.5, 6.3, 9.0, 0.5, 'Sequência: carga pela rota padrão e manual primeiro; fase 2 com Agentforce onde está pronto (carrinho) e como assistente do manual, se a licença compensar.', NAVY, 11),
     footer(6)]))
 # 7. Comparativo
 rows = [('Critério', 'Template + wizard', 'Interface padrão + DataPacks', 'Híbrido + Agentforce'),
@@ -202,9 +202,9 @@ sh.append(card(0.5, 5.6, 9.0, 1.3, 'Como fechar o número do catálogo completo'
 sh.append(footer(8)); S.append(slide(sh))
 # 9. Antecipacao da carga em ondas
 waves = [('Onda 0', 'Semana 1', ['Congelar a modelagem v3 e fechar as pendências P1 e P2 com o comercial.', 'Inventário das ofertas do Customer Core no template (levantamento).', 'Treinar duas pessoas no Product Designer.'], GREEN),
-         ('Onda 1', 'Semanas 1 e 2', ['11 ofertas de conectividade cadastradas em sandbox pelo Product Designer.', 'Teste no carrinho por família; DataPack exportado e guardado.', 'Checklist de jobs pós-carga validado.'], BLUE),
+         ('Onda 1', 'Semanas 1 e 2', ['Projeto do EPC da onda aberto como padrão; 11 ofertas de conectividade cadastradas em sandbox.', 'Teste no carrinho por família; projeto Released e exportado.', 'Checklist de jobs pós-carga validado.'], BLUE),
          ('Onda 2', 'Semanas 2 a 4', ['Demais famílias em sandbox, uma por vez, pelo mesmo procedimento.', 'Homologação do comercial no carrinho.', 'Manual de configuração revisado com quem operou.'], BLUE),
-         ('Onda 3', 'Semanas 4 e 5', ['Publicação em preprod e produção por DataPack, com os jobs na ordem.', 'Treinamento do time e entrega do manual.', 'Decisão sobre o piloto do Agentforce.'], NAVY)]
+         ('Onda 3', 'Semanas 4 e 5', ['Publicação em preprod e produção pelo IDX Workbench a partir dos projetos Released, jobs na ordem, em janela.', 'Treinamento do time e entrega do manual.', 'Decisão sobre a fase 2 do Agentforce.'], NAVY)]
 sh = [header('Antecipar a carga: execução em ondas', 'Começa na semana 1, sem esperar conversor; cada onda entrega algo utilizável')]
 for i, (t, w, items, col) in enumerate(waves):
     x = 0.5 + i * 2.3
@@ -215,9 +215,9 @@ sh.append(footer(9)); S.append(slide(sh))
 # 10. Garantias
 g = [('Ferramenta padrão, suportada', 'Product Designer e DataPacks são os caminhos documentados pela Salesforce; nada depende de código nosso.'),
      ('Validação ao salvar', 'Tipo de objeto, atributos, cardinalidade e preço são conferidos pela interface antes de existir a oferta.'),
-     ('Sandbox antes de produção', 'Toda oferta nasce em sandbox, é testada no carrinho e só então migra, por DataPack.'),
-     ('Evidência e versionamento', 'Projetos do EPC registram toda mudança do catálogo; o DataPack de cada onda fica guardado; versionamento de produto é nativo.'),
-     ('Pós-carga em janela', 'Jobs de hierarquia e cache na ordem documentada, em janela fora do horário de venda: a Help manda não rodar jobs de administração em produção ao vivo.'),
+     ('Sandbox antes de produção', 'Toda oferta nasce em sandbox, é testada no carrinho e só então migra, pelo IDX Workbench, a partir do projeto Released.'),
+     ('Evidência e versionamento', 'O projeto do EPC lista cada item alterado (Add, Change, Delete); o DataPack de cada onda fica guardado; versionamento é nativo.'),
+     ('Pós-carga em janela', 'Product Hierarchy Maintenance e Refresh Platform Cache na ordem documentada, em janela fora do horário de venda: a Help manda não rodar jobs em produção ao vivo.'),
      ('Reversibilidade e donos', 'Oferta errada é aposentada pelo ciclo de vida, não excluída; cada etapa tem dono e substituto nomeados.')]
 sh = [header('Segurança para decidir', 'Seis garantias da rota padrão')]
 for i, (t, d) in enumerate(g):
@@ -235,11 +235,11 @@ for i, (t, via) in enumerate(procs):
     x = 0.5 + i * 1.84
     sh.append(shape(x, 1.25, 1.74, 1.0, [P(t, 12, True, WHITE, 'ctr', space_after=2), P(via, 9.5, False, PALE, 'ctr', space_after=0)], fill=BLUE, round_=True, anchor='ctr', ins=0.06, name='Proc'))
 sh.append(card(0.5, 2.45, 4.4, 3.6, 'Cada procedimento tem', [
-    ('Pré-requisitos: ', 'oferta aprovada pelo comercial, códigos e preços definidos na planilha de levantamento.'),
+    ('Pré-requisitos: ', 'oferta aprovada pelo comercial, códigos e preços na planilha de levantamento; projeto do EPC do evento aberto e definido como padrão.'),
     ('Quem cadastra e quem aprova: ', 'nomes, não áreas.'),
     ('Passo a passo com telas: ', 'sequência exata no Product Designer, campo a campo.'),
-    ('Pós-carga: ', 'jobs de hierarquia e cache na ordem, em janela de manutenção; roteiro de teste no carrinho.'),
-    ('Evidência: ', 'projeto do EPC aberto para o evento, DataPack exportado, resultado do teste e registro no diário.')], border=NAVY, sz=10.5))
+    ('Pós-carga: ', 'Product Hierarchy Maintenance e Refresh Platform Cache (Incremental) em janela; roteiro de teste no carrinho.'),
+    ('Evidência: ', 'projeto do EPC Released e migrado pelo IDX, resultado do teste e registro no diário.')], border=NAVY, sz=10.5))
 sh.append(card(5.1, 2.45, 4.4, 3.6, 'Anexos do manual', [
     'Dicionário de códigos: catálogos, categorias, picklists e atributos.',
     'Planilha de levantamento (o template) preenchida por tipo de oferta.',
@@ -253,7 +253,7 @@ roles = [('Dono do catálogo (Comercial)', 'Define e aprova ofertas, preços e p
          ('Analistas de catálogo (2 pessoas)', 'Cadastram no Product Designer pelo manual; exportam o DataPack; rodam o checklist pós-carga.', BLUE),
          ('Governança Salesforce (BTP)', 'Valida o levantamento contra a org, aprova a publicação, mantém o manual e o diário de cargas.', NAVY),
          ('SysMap (projeto)', 'Modelagem nova (tipo, atributo, regra), migração das ondas e correções em produção sob demanda.', BLUE),
-         ('Agentforce (fase 2, assistente)', 'Explica o manual, monta o checklist, confere levantamento e pós-carga. Nunca publica sem aprovação humana.', AMBER)]
+         ('Agentforce (fase 2)', 'Vendedor: cotação e pedido pelo carrinho, pronto no pacote. Catálogo: explica o manual, monta checklist, confere pós-carga. Nunca publica.', AMBER)]
 sh = [header('Pessoas e rotina', 'Quem faz o quê, para o catálogo não depender de uma pessoa só')]
 for i, (t, d, col) in enumerate(roles):
     y = 1.25 + i * 0.93

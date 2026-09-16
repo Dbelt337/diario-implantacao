@@ -98,3 +98,18 @@ os links foram passados ao Diego para colar o conteudo integral no chat e fechar
   (current, future, past, retired) nativos. Restricao: sem virgulas em valores de picklist. Recomendacao: view
   All Products como padrao. Deck ajustado (slides 3, 10 e 11): sequencia oficial, projetos do EPC como evidencia,
   descontinuacao = aposentar pelo ciclo de vida.
+- Help "Running Maintenance Jobs for the CME Managed Package" (Vlocity CMT Administration > Admin Console >
+  Maintenance Jobs): Product Hierarchy Maintenance constroi a hierarquia no Data Store; Refresh Platform Cache
+  (Full) copia a hierarquia para o cache e reconstroi o cache de atributos; Refresh Platform Cache (Incremental)
+  atualiza sem apagar, e exige Product Hierarchy Maintenance antes; Clear Managed Platform Cache limpa a particao
+  CPQPartition; Product Category Data Maintenance regenera o Category Data JSON de todos os Product2.
+  Regra para o manual: carga = Hierarchy + Clear + Refresh Full; manutencao = Hierarchy + Refresh Incremental
+  (+ Category Data se mudar catalogo/categoria). Sempre em janela.
+- Help "Agentforce for Cart Operations in CME Managed Package": acoes invocaveis e flows prontos para criar
+  cotacao/pedido, navegar produtos, adicionar ao carrinho, configurar campos e atributos, aplicar ajustes e
+  promocoes, submeter pedido, trocar plano; "eliminates the need for custom Apex"; exige licenca Agentforce
+  Employee Agent. Escopo: venda (carrinho). Nada de autoria de catalogo.
+- Help "Track Product Catalog Changes with Projects": projeto = work set; um projeto padrao recebe toda
+  criacao/alteracao/exclusao; lista de itens com acao Add/Change/Delete e versao; IDX Workbench migra as
+  mudancas de um projeto em status Released para outra org. Regra: um projeto por onda/evento, Released ao
+  homologar, migrado pelo IDX. Deck ajustado (slides 3, 6, 9, 10, 11 e 12). Validacao concluida.
