@@ -151,3 +151,16 @@ Esperado no DEPOIS: Sprint 1 SysMap 11 (10 + 132), Sprint 1 BTP 5, Sprint 2 SysM
 Junho/2026-Time Salesforce 8 (so fechadas), Julho/2026-Time Salesforce 0; P0 fora de sprint 0; sem epico 0; internas abertas em
 sprint 0; internas sem -i 0. Avisar o Gerson: a Sprint 1 dele muda (sai 123, entra 132) e a Sprint 2 tambem (sai 124, entram
 056, 070, 102); o documento v1 precisa de uma v2.
+
+### Script 45 executado (17/09, 12h15, pelo Diego no terminal)
+
+24 works alteradas, sem travas. DEPOIS: Sprint 1 - SysMap 11 (051 a 055, 096, 097, 107, 132, 140, 141), Sprint 1 - Brasil
+TecPar 5, Sprint 2 - SysMap 10 (056, 070, 098, 101, 102, 119, 120, 122, 144, 145), Sprint 3 - SysMap 2, Sprint 4 - SysMap 5
+(099, 123, 124, 142, 143), Junho/2026-Time Salesforce 8 (so fechadas), Julho/2026-Time Salesforce 0. P0 fora de sprint: 0.
+Sem epico: 0. Internas abertas em sprint: 0. Internas sem "-i": 0. Igual ao esperado.
+
+Estado final do Agile em 17/09: 111 works; 33 em sprints 1 a 4 (5 + 11 + 10 + 2 + 5); 8 fechadas na sprint historica de junho;
+70 no backlog (catalogo Onda 2: 103, 104, 108, 111 a 114, 117, 121, 127, 128; B2C 44; TEC-INT 4; internas abertas 8; 126).
+Todas as works abertas com prioridade, epico, time e responsavel. Sprints vazias apagadas. Pendente: Gerson gerar a v2 do
+documento (Sprint 1 sai 123 e entra 132; Sprint 2 sai 124 e entram 056, 070, 102; Sprint 4 recebe 123 e 124; internas com "-i"
+e fora de sprint) e atualizar as colunas Sprint/Prioridade do CSV do pacote.
