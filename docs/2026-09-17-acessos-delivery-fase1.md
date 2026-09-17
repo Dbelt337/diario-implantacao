@@ -226,3 +226,12 @@ e 4 permission sets atribuidos. DEPOIS: 62 dos 62 com Read Only + B2B - Delivery
 ativos Read Only + B2B - Delivery na org. Os 7 da lista C nao foram criados. Estado final: planilha atendida com a decisao do
 Diego ("nao cria usuarios novos e todos com o perfil do Romulo"). Efeitos a avisar: a Fernanda perdeu edicao; Ciro, Telmo e
 Oscar continuam membros da fila Arquitetura (GroupMember nao foi tocado), mas sairam da role de arquitetura.
+
+## MFA da Priscila (17/09, 17h40)
+
+Priscila mandou print do login direto em prod-brasiltecpar.my.salesforce.com pedindo "chave de seguranca". LoginHistory: ela
+entra por SSO (SAML IdP initiated) sem problema, inclusive hoje 17h27; a tela so aparece no login direto por usuario/senha.
+Objetos de MFA (TwoFactorMethodsInfo, TwoFactorInfo) nao sao acessiveis pela sessao do Diego. Script 49
+(scripts/49_MFA_Priscila_1709.apex, UserManagement.deregisterVerificationMethod), rodado pelo Diego no terminal (o Claude e
+bloqueado para remover MFA): U2F nao existia ("This verification method was removed"); o autenticador embutido / passkey foi
+removido. No proximo login direto ela cadastra o Salesforce Authenticator. SSO nao afetado.
