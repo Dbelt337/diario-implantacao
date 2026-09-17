@@ -78,3 +78,36 @@ COMPONENTES com decisão de modelagem proposta e confiança, OPCOES com 56 colun
 13 filhos com quantidade, 7 filhos fixos, 5 grupos de escolha (SKU), 3 componentes sem opção (ICCID, Ponta A, Ponta B).
 Confiança BAIXA em 7 componentes (listas com mais de 100 valores: armazenamento cloud, modelos de appliance, estação de
 telefonia). 1.135 linhas com IGNORAR, 445 opções com viabilidade, 24 de ativação (cobrança única).
+
+## Valores por coluna e o motivo de cada um (17/09, para a pergunta do presidente)
+
+| Coluna | Valores | Motivo |
+|---|---|---|
+| TIPO_FISCAL | NFS-e, Fatura, NFCom | São os três documentos que o Core já emite (6.112 / 2.458 / 1.383 linhas). O template grava em Documento fiscal e o SAP precisa do tipo para o handoff. Sem valor novo porque não existe quarto documento. |
+| TIPO_SERVICO | SCI, SCM, STFC, SVA, TI, Locação, Imobilizado, Serviço, Engenharia | Domínio que já está no Core. É a base da classe de produto e do tratamento fiscal e regulatório (SCM e STFC são serviços de telecom regulados; SVA e TI não). |
+| COMPONENTE_TIPO | Comercial, Ativação | Vem do Core. Ativação é o único sinal de cobrança única que o Core dá; sem ele todo preço vira recorrente. |
+| 0/1 (obrigatório, ignorar, viabilidade, avulsa, mensurado) | 0, 1 | Booleanos do Core. Ficam como 0/1 para o sistema ler sem interpretar Sim/Não em português. |
+| OPCAO_PESO | inteiro | Ordem na tela do carrinho (Sequência no EPC). |
+| VALOR_TECNICO | número | É o OPCAO_VALOR original: valor da opção em unidade técnica (banda em Mbit/s). Alimenta o atributo técnico que o provisionamento lê; não é preço. |
+| TIPO_ELEMENTO | ATRIBUTO_PICKLIST, ATRIBUTO_BOOLEANO, FILHO_FIXO, FILHO_ESCOLHA, FILHO_COM_QUANTIDADE | Os cinco jeitos que o EPC tem de representar uma opção do Core: valor de atributo (picklist ou checkbox), produto filho fixo, produto filho em grupo de escolha, produto filho com quantidade. Não há sexto caso. |
+| CODIGO_CANONICO | OF_, CH_, AT_, PV_, GRP_ + nome | Vira ProductCode e código de atributo/picklist no EPC, que aceita só letras, números e sublinhado. O prefixo diz o tipo sem abrir o registro e evita colisão entre atributo e produto com o mesmo nome. Até 40 para caber nos campos Code do pacote. |
+| GRUPO_ESCOLHA | GRP_<componente> | Virtual item do EPC: agrupa opções onde o cliente escolhe uma. Sem nome de grupo o carrinho mostra tudo solto. |
+| CARD MIN, DEFAULT, MAX | inteiros | É como o Product Child Item do EPC guarda obrigatoriedade e quantidade. Obrigatório = min 1; "Nenhum" no Core = min 0; "3 Extensores" = quantidade, não três produtos. |
+| UNIDADE | UN, PECA, LICENCA, USUARIO, MES, HORA, GB, MBPS | Unidade da quantidade na linha do carrinho e na fatura. Sem unidade, "10" não diz se é usuário ou gigabyte. |
+| CLASSE DE PROD | classes do painel (CLASS_INTERNET_HOME...) | Object Type do EPC: define quais atributos o produto herda. Mapa por TIPO_SERVICO para não criar classe por oferta. Classe nova só com decisão. |
+| GERA_ATIVO | 0, 1 | Campo IsNotAssetizable do EPC, invertido. Sem ativo não há MACD (mudança, upgrade, cancelamento) depois da venda. |
+| OM | 0, 1 | Diz se a linha passa pelo Order Management (decomposição e orquestração). Licença do OM está pendente, então isso hoje é só marcação. |
+| SEGMENTO | B2B, B2C | Não é tipo de produto no EPC; é elegibilidade e lista de preço. Dois valores porque são as duas jornadas do projeto. |
+| CATALOGO | CAT_B2B_EVO, CAT_B2C_EVO | Vitrines que já existem no painel. Catálogo é onde o canal vê o produto; um por segmento. |
+| LISTA DE PRECO | PL_B2B_EVO, PL_B2C_EVO; zona vira lista filha | Price List do EPC. Zona de preço no EPC não existe como objeto: é lista filha que herda da lista pai e sobrescreve o que muda. |
+| MERCADO | MK_SUL, MK_SUDESTE, MK_CENTRO_OESTE, MK_NORDESTE, MK_NORTE; vazio = todos | Dimensão de contexto para elegibilidade regional. Códigos com prefixo MK_ como o painel já usa (exemplo Smart Authenticator: MK_SUDESTE; MK_SUL). |
+| CANAL VENDA | VENDA_ASSISTIDA, ECOMMERCE, PARCEIRO; vazio = todos | Dimensão de contexto canal. Os três canais do projeto (venda assistida no CPQ, e-commerce B2C, parceiros). |
+| ZONA_DISP | ZN_ do painel; vazio = nacional | Disponibilidade é regra de contexto, não lista de preço. Vazio = sem restrição, para não criar zona "todas as cidades". |
+| OPCAO_VALOR_MRC, OPCAO_VALOR_NRC | número, ponto decimal | Recorrente mensal e único: são as duas variáveis de preço do EPC (charge type recurring e one-time). Ponto decimal porque o JSON e o DataPack não aceitam vírgula. |
+| MOEDA | BRL | Código ISO que o EPC e o SAP usam. |
+| SITUACAO_VLR | ILUSTRATIVO, VALIDADO_CORE | Princípio do template: preço ilustrativo serve para testar estrutura e não sobe para QA; validado é o da tabela vigente. |
+| VIGENCIA_INICIO, VIGENCIA_FIM | AAAA-MM-DD | Formato ISO, que o EPC, o JSON e o Excel leem sem ambiguidade de dia e mês. Fim vazio = sem prazo. |
+| DECIDIDO_POR, DATA_DECISAO | nome, data | A aba Decisão de Modelagem exige quem decidiu. É o que transforma proposta em decisão. |
+
+Regra geral: código, nunca rótulo, porque o EPC casa por código e o rótulo pode mudar de idioma ou de marketing. Vazio só
+significa "todos" em MERCADO, CANAL VENDA e ZONA_DISP; em qualquer outra coluna vazio é pendência.
