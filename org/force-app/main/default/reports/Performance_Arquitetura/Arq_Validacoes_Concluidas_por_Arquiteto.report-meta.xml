@@ -25,6 +25,16 @@
         <titleColor>#000000</titleColor>
         <titleSize>18</titleSize>
     </chart>
+    <aggregates>
+        <calculatedFormula>CDF1:AVG / 24</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <downGroupingContext>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$LastModifiedBy</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Dias na fila (média)</masterLabel>
+        <scale>1</scale>
+    </aggregates>
     <columns>
         <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Name</field>
     </columns>
