@@ -1,0 +1,415 @@
+
+===== pagina obj 2
+GOVERNANÇA SALESFORCE · BRASIL TECPAR · PROGRAMA SALESFORCE
+Apresentação à Equipe — Sprints, Relatórios e KPIs no Agile Accelerator
+Documento único, 
+conforme construído em produção
+, do que já está organizado no Agile Accelerator: as sprints, os épicos (cadeia de valor B2B), os KPIs e
+os relatórios — com 
+links de acesso clicáveis
+ e evidências para a equipe validar direto na ferramenta.
+Plataforma:
+ Salesforce Agile Accelerator
+Org:
+ prod-brasiltecpar
+Escopo:
+ Programa Salesforce (B2B/EPC/Integração/Arquitetura)
+Responsável:
+ Gerson Pereira — Governança SF
+Data:
+ 17/09/2026
+Versão:
+ v1
+•
+Sumário executivo
+O backlog do programa foi 
+organizado no Agile Accelerator conforme construído
+: as demandas do fluxo comercial B2B viraram 
+7 épicos
+ (cadeia de valor), as histórias
+foram 
+priorizadas (P0–P4) e distribuídas em 4 sprints
+ (Sprint 1 já em curso, 15–26/09), e foi criada uma 
+bateria de relatórios e KPIs
+ para acompanhamento. Este
+documento reúne tudo em um só lugar, com os 
+links diretos
+ para cada tela.
+111
+WORKS NO PROGRAMA
+29
+EM SPRINTS 1–4
+7
+ÉPICOS (DEMANDAS B2B)
+6+7
+RELATÓRIOS + KPIS NO AGILE
+Higiene do Agile validada em 17/09: sprint corrente 100% saudável (toda work com responsável, prioridade e épico). Regra de governança criada para não recair (ver seção 7).
+1
+Como acessar (links diretos)
+Todos os itens abrem direto na org 
+prod-brasiltecpar
+ (é preciso estar logado no Salesforce). Se algum link pedir permissão de pasta/relatório, falar com a Governança SF.
+Aplicativo e pastas
+O quê
+Link
+App Agile Accelerator (Work, Sprints, Kanban, Épicos)
+Abrir Agile Accelerator
+Relatórios recentes (pasta "Works Agile - Projetos BTP")
+Abrir Relatórios
+
+===== pagina obj 13
+Relatórios do programa
+Relatório
+O que mostra
+Link
+01. Programa SF — Works por Projeto e Status
+Distribuição das works por frente/projeto e status
+Abrir
+02. Por Sprint x Status
+Matriz sprint × status (base dos números deste doc)
+Abrir
+03. Story Points por Projeto
+Pontuação por frente (em andamento)
+Abrir
+04. Por Work — Detalhe
+Lista detalhada work a work
+Abrir
+02. Works por Time e Status
+Distribuição por time (BTP × SysMap)
+Abrir
+KPIs (contadores do programa)
+KPI
+Link
+Novas (New)
+Abrir
+Em Andamento
+Abrir
+Em Teste/QA
+Abrir
+Concluídas (Closed)
+Abrir
+Épicos (cadeia de valor B2B)
+Épico
+Link
+1) Vender soluções
+Abrir
+2) Vender soluções como cortesia
+Abrir
+3) Vender soluções como swap
+Abrir
+4) Realizar upgrade
+Abrir
+5) Realizar downgrade
+Abrir
+6) Realizar refidelização
+Abrir
+7) Realizar cancelamento e retenção
+Abrir
+2
+Sprint Planning — visão geral
+
+===== pagina obj 31
+As 
+29 works ativas
+ estão distribuídas em 4 sprints por time. A imagem abaixo é a 
+reconstrução fiel a partir da API do Agile
+ (mesma fonte de dados da tela), para leitura
+limpa em um único quadro. O estado ao vivo é o mesmo do relatório 
+02. Por Sprint x Status
+ e do 
+Sprint Wall
+ de cada time (telas reais).
+
+===== pagina obj 33
+
+
+===== pagina obj 37
+Evidência de estado (relatório 02, ao vivo em 17/09): Sprint 1 · Brasil TecPar = 
+5
+ · Sprint 1 · SysMap = 
+11
+ · Sprint 2 = 
+8
+ · Sprint 3 = 
+2
+ · Sprint 4 = 
+3
+ (total 29 em sprint). Confira no
+relatório 02
+ e no Sprint Wall de cada time.
+3
+Sprints em detalhe (work a work)
+Sprint 1 · Brasil TecPar — 15–26/09 · Integração/CI-CD + Arquitetura
+Abrir esta sprint no Agile
+Work
+Prio
+Épico
+História / atividade
+W-000133
+P0
+Integração, Barramento (Mu
+INTEGRAÇÕES - CI/CD: subir repositório GitLab e implementar esteir
+W-000134
+P0
+Integração, Barramento (Mu
+INTEGRAÇÕES - Ambientes: formalizar licenciamento e ajustes das Sa
+W-000135
+P1
+Integração, Barramento (Mu
+INTEGRAÇÕES - MuleSoft: cobrar orçamento da avaliação do arquiteto
+W-000136
+P1
+Arquitetura da Solução e A
+ARQUITETURA - Mapear fluxo e arquitetura das APIs do B2B (sessão V
+W-000137
+P1
+Arquitetura da Solução e A
+ARQUITETURA - Finalizar decomposição e camada técnica do catálogo
+Sprint 1 · SysMap — 15–26/09 · Catálogo/EPC + B2B (Vender)
+Abrir esta sprint no Agile
+Work
+Prio
+Épico
+História / atividade
+W-000140
+P0
+1) Vender soluções
+B2B - Habilitar integração B2B para permitir execução de testes (u
+W-000054
+P1
+Catálogo Unificado
+EPC-09 — Compilação de atributos, batch jobs e validação de integr
+W-000051
+P1
+Catálogo Unificado
+EPC-01 — Criação das Attribute Categories do catálogo
+W-000052
+P1
+Catálogo Unificado
+EPC-04 — Hierarquia de Object Types, atribuição de atributos por n
+W-000053
+P1
+Catálogo Unificado
+EPC-05 — Criação das Product Specifications das famílias da Onda 1
+W-000055
+P1
+Catálogo Unificado
+EPC-03 (P) — Dicionário de atributos com metadados de governança —
+W-000096
+P1
+1) Vender soluções
+B2B-01 — Escalonamento de Inatividade de Leads B2B e Enriqueciment
+
+===== pagina obj 42
+Work
+Prio
+Épico
+História / atividade
+W-000097
+P1
+1) Vender soluções
+B2B-02 — Endereçamento Geocodificado, Viabilidade Expressa e Rotea
+W-000107
+P1
+1) Vender soluções
+CPQ-BRE-01 — Motor de regras de precificação de projetos especiais
+W-000123
+P1
+1) Vender soluções
+B2B-10 — Visão 360º de contratos e ativos do grupo econômico B2B (
+W-000141
+P1
+1) Vender soluções
+B2B - Escrever histórias funcionais/técnicas B2B (onboarding 3 nov
+Sprint 2 · SysMap — 29/09–10/10 · B2B (Cotação/Contrato)
+Abrir esta sprint no Agile
+Work
+Prio
+Épico
+História / atividade
+W-000098
+P2
+1) Vender soluções
+B2B-03 — Cotação Multi-Site, Alçadas de Desconto/Trading e Geração
+W-000101
+P2
+1) Vender soluções
+B2B-06 — Auditoria de Vendas B2B pelo BKO, Análise de Crédito/Débi
+W-000119
+P2
+1) Vender soluções
+B2B-07 — Importação de sites multi-ponto por planilha e endereço d
+W-000120
+P2
+1) Vender soluções
+B2B-08 — Rastreio comercial e identificação de parceiros (Finder,
+W-000122
+P2
+1) Vender soluções
+B2B-09 — Contrato B2B: signatário legal com procuração, contato de
+W-000124
+P2
+2) Vender soluções como co
+B2B-11 — Fim de degustação (Try & Buy): régua de alertas e convers
+W-000144
+P2
+1) Vender soluções
+B2B-15 — Condições especiais de faturamento e intervalos de cobran
+W-000145
+P2
+1) Vender soluções
+B2B-16 — Cadência automática de notificações de assinatura ao clie
+Sprint 3 · SysMap — 13–24/10 · Upgrade/Downgrade
+Abrir esta sprint no Agile
+Work
+Prio
+Épico
+História / atividade
+W-000100
+P3
+4) Realizar upgrade
+B2B-05 — Alteração Contratual B2B (Upgrade/Swap) com Espelhamento
+W-000125
+P3
+5) Realizar downgrade
+B2B-12 — Downgrade contratual B2B: change order ABO, penalidade pr
+Sprint 4 · SysMap — 27/10–07/11 · Refidelização/Cancelamento
+Abrir esta sprint no Agile
+
+===== pagina obj 47
+Work
+Prio
+Épico
+História / atividade
+W-000099
+P4
+7) Realizar cancelamento e
+B2B-04 — Solicitação de Cancelamento B2B, Esteiras de Retenção e C
+W-000142
+P4
+6) Realizar refidelização
+B2B-13 — Refidelização pura e simples B2B: renovação de prazo sem
+W-000143
+P4
+7) Realizar cancelamento e
+B2B-14 — Aviso prévio de cancelamento B2B: prazo de 30/60/90 dias,
+4
+Cadeia de valor B2B — as 7 demandas viraram 7 épicos
+Cada demanda do fluxo comercial B2B (do 
+1) Vender soluções
+ ao 
+7) Cancelamento e retenção
+) foi criada como um 
+épico
+ no Agile; as 
+19 works B2B
+ foram reparentadas
+nesses épicos e sequenciadas por onda (Sprint 1 → Sprint 4).
+
+===== pagina obj 50
+5
+Squad e responsáveis (conforme construído)
+SysMap — Squad de desenvolvimento (5 de 8 previstos, ativos desde 17/09)
+Profissional
+Papel
+João Pedro
+Arquiteto Salesforce
+Mike
+Líder Técnico (refinamento técnico das histórias)
+Emanuelle
+Analista Funcional
+Davi
+Desenvolvedor
+Welker
+Desenvolvedor
+Fonte: e-mail de Michel Feliciano (Gerente Operacional, SysMap), 17/09. Seleção dos 
+3 profissionais restantes
+ em andamento. Condição para plena atuação: histórias 
+priorizadas
+pela Brasil TecPar
+ e encaminhadas ao 
+refinamento técnico
+ com o Líder Técnico — já atendida com a priorização P0–P4 nas sprints.
+Brasil TecPar — frentes na Sprint 1
+Frente
+Responsabilidade
+Integração / CI-CD (MuleSoft)
+Repositório, ambientes/licenciamento, orçamento MuleSoft (W-133/134/135)
+Arquitetura da Solução
+Mapa de fluxo e arquitetura das APIs B2B, decomposição/camada técnica do catálogo (W-136/137)
+Governança do programa: Fabrício Lara (GP — Agile/cronograma/catálogo), Gerson Pereira (Governança SF — orquestração, licenças/usuários/ambientes, apoio às frentes), Diego
+Moraes (Coord. Técnica SF interina + Comms Cloud), Priscila (PO), Fernanda (Analista de Processos).
+6
+KPIs do programa
+Fotografia ao vivo (Agile Accelerator, 17/09). O programa tem 
+111 works
+; a distribuição por status está abaixo. Story points ainda em pontuação com os times (7 de 111
+pontuadas).
+Status
+Works
+Observação
+Concluídas (Closed)
+10
+Entregas já fechadas (base BTP anterior)
+Em andamento (In Progress)
+3
+
+===== pagina obj 52
+Status
+Works
+Observação
+Em QA (QA In Progress)
+2
+Novas (New)
+96
+Backlog priorizado + sprints planejadas
+Total
+111
+Das 111, 
+29
+ estão em sprints ativas (S1–S4) e 
+43
+ têm sprint atribuída (inclui 2 sprints históricas de jun/jul do Time Salesforce). O restante é backlog do programa (B2C, catálogo,
+internos) ainda não sequenciado.
+7
+Governança e higiene do Agile (para não recair)
+Para manter os relatórios e KPIs confiáveis, foi definida uma 
+régua de higiene
+ e um 
+guard automatizado
+ (somente leitura) que roda antes de fechar relatórios/sprints:
+Works internas terminam em "i"
+ (ex.: W-00028-i): não fazem parte do projeto e 
+não podem estar em nenhuma sprint
+ nem entrar em relatórios do programa.
+Toda work na 
+sprint corrente
+ deve ter 
+responsável, prioridade (P0–P4) e épico
+.
+Nada de P0 fora de sprint
+; nada de work presa em sprint antiga; nenhuma sprint vazia ou com data invertida.
+Status 17/09: sprint corrente 
+100% saudável
+ (0 sem responsável/prioridade/épico; 0 interna em sprint; 0 sprint inválida).
+Itens históricos a confirmar (não afetam a sprint corrente): 14 works em sprints antigas Jun/Jul "Time Salesforce"; W-000024/026/028 sem épico; W-000132 (CI/CD) marcada P0 fora
+de sprint. Decisão: manter como histórico ou reclassificar — a alinhar com a Governança SF.
+8
+Próximos passos
+1. 
+Time SysMap inicia Sprint 1 pelas histórias P0/P1 (B2B integração + Catálogo/EPC); Líder Técnico conduz o refinamento técnico.
+2. 
+Brasil TecPar destrava Sprint 1 de Integração/Arquitetura (repositório, ambientes/licenças, orçamento MuleSoft).
+3. 
+Concluir pontuação (story points) das histórias com os times para habilitar o burndown.
+4. 
+Completar a squad SysMap (3 profissionais restantes).
+5. 
+Manter o guard de higiene a cada fechamento e este documento como ponto único da visão Agile.
+Observação de método: a imagem do quadro é uma reconstrução fiel a partir da API (mesma fonte da tela) por estabilidade de leitura; os números foram validados contra o relatório
+
+===== pagina obj 54
+02 ao vivo e o Sprint Wall real de cada time. Qualquer pessoa da equipe confirma em 1 clique pelos links da seção 1.
+Brasil TecPar
+ · Apresentação à Equipe — Programa Salesforce (Agile)
+v1 · 17/09/2026 · Governança SF
