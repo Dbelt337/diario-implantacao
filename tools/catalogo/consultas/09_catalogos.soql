@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__CatalogCode__c, vlocity_cmt__IsActive__c, vlocity_cmt__IsRoot__c, vlocity_cmt__DefaultPriceListId__r.Name, vlocity_cmt__ParentCatalogId__r.Name, vlocity_cmt__GlobalKey__c FROM vlocity_cmt__Catalog__c ORDER BY Name

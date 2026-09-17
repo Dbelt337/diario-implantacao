@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__Code__c, vlocity_cmt__IsActive__c, (SELECT Name, vlocity_cmt__Value__c, vlocity_cmt__Sequence__c, vlocity_cmt__IsActive__c FROM vlocity_cmt__PicklistValues__r ORDER BY vlocity_cmt__Sequence__c) FROM vlocity_cmt__Picklist__c ORDER BY Name

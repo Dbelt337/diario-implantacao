@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__IsActive__c, (SELECT Name, vlocity_cmt__IsEnabled__c, vlocity_cmt__StartDateTime__c, vlocity_cmt__EndDateTime__c FROM vlocity_cmt__CalculationMatrixVersions__r) FROM vlocity_cmt__CalculationMatrix__c ORDER BY Name

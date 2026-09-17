@@ -1,0 +1,1 @@
+SELECT Pricebook2.Name, Pricebook2.IsActive, COUNT(Id) n FROM PricebookEntry GROUP BY Pricebook2.Name, Pricebook2.IsActive

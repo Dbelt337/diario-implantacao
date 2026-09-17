@@ -1,0 +1,1 @@
+SELECT vlocity_cmt__SpecificationType__c, vlocity_cmt__SpecificationSubType__c, IsActive, COUNT(Id) n FROM Product2 GROUP BY vlocity_cmt__SpecificationType__c, vlocity_cmt__SpecificationSubType__c, IsActive ORDER BY vlocity_cmt__SpecificationType__c

@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__TotalDuration__c, vlocity_cmt__TotalDurationUnit__c, vlocity_cmt__IsActive__c FROM vlocity_cmt__TimePlan__c ORDER BY Name

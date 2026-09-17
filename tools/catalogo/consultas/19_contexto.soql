@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__Code__c, vlocity_cmt__IsActive__c FROM vlocity_cmt__ContextDimension__c ORDER BY Name

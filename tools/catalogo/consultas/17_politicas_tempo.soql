@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__Type__c, vlocity_cmt__IsActive__c FROM vlocity_cmt__TimePolicy__c ORDER BY Name

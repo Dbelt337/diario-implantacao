@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__IsActive__c, vlocity_cmt__ProductSpecId__r.ProductCode FROM vlocity_cmt__OrchestrationPlanDefinition__c ORDER BY Name

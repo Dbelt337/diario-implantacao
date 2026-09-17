@@ -1,0 +1,1 @@
+SELECT Name, ProductCode, LastModifiedBy.Name, LastModifiedDate FROM Product2 WHERE LastModifiedDate = LAST_N_DAYS:90 ORDER BY LastModifiedDate DESC LIMIT 200

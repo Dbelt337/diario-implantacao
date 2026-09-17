@@ -1,0 +1,1 @@
+SELECT QualifiedApiName, Label, DataType FROM FieldDefinition WHERE EntityDefinition.QualifiedApiName = 'Product2' AND QualifiedApiName LIKE '%__c' AND (NOT QualifiedApiName LIKE 'vlocity_cmt__%') ORDER BY QualifiedApiName

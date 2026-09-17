@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__Code__c, vlocity_cmt__AttributeCategoryId__r.Name, vlocity_cmt__ValueType__c, vlocity_cmt__PicklistId__r.Name, vlocity_cmt__IsActive__c, vlocity_cmt__GlobalKey__c FROM vlocity_cmt__Attribute__c ORDER BY vlocity_cmt__AttributeCategoryId__r.Name, vlocity_cmt__Code__c

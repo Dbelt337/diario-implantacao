@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__Code__c, vlocity_cmt__Amount__c, vlocity_cmt__CurrencyCode__c, vlocity_cmt__PricingVariableId__r.Name, vlocity_cmt__PriceListId__r.Name, vlocity_cmt__IsActive__c, vlocity_cmt__ChargeType__c FROM vlocity_cmt__PricingElement__c ORDER BY vlocity_cmt__PriceListId__r.Name, Name

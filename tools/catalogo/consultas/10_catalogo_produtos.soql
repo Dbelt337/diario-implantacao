@@ -1,0 +1,1 @@
+SELECT vlocity_cmt__CatalogId__r.Name, vlocity_cmt__Product2Id__r.ProductCode, vlocity_cmt__Product2Id__r.Name, vlocity_cmt__SequenceNumber__c, vlocity_cmt__IsActive__c FROM vlocity_cmt__CatalogProductRelationship__c ORDER BY vlocity_cmt__CatalogId__r.Name, vlocity_cmt__SequenceNumber__c

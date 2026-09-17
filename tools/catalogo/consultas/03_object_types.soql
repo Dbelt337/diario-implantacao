@@ -1,0 +1,1 @@
+SELECT Id, Name, vlocity_cmt__ParentObjectClassId__r.Name, vlocity_cmt__IsActive__c, vlocity_cmt__ObjectTypeGlobalKey__c FROM vlocity_cmt__ObjectClass__c ORDER BY vlocity_cmt__ParentObjectClassId__r.Name, Name
