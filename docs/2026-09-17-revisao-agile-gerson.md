@@ -139,3 +139,10 @@ Diego decidiu: responsavel Davi Israel de Abreu nas 7 works em sprint corrente; 
 W-000051 e na W-000096 (padrao: Assignee = Davi, Product Owner = Priscila; PO ja estava nas 7 e nas 88 do pacote).
 Script 43 (scripts/43_ResponsavelSprint1_1709.apex), fase 1 listou 7, fase 2 gravou: 133, 134, 135, 136, 137, 140 e 141
 com responsavel Davi e PO Priscila. So preenche campo vazio; nao sobrescreve. Pendentes agora: itens 1, 2, 3, 5 e 6.
+
+## Executado em 17/09: item 5, parte 1 (script 44)
+
+Gerson perguntou pelas "works internas". Diego decidiu: prioridade baixa nas 8 works antigas do BTP sem Priority. Script 44
+(scripts/44_PrioridadeWorksInternas_1709.apex), P4 (menor valor ativo da picklist), so onde estava vazio: 010, 011, 018, 019,
+021, 023, 025 e 028. Depois: zero works abertas sem prioridade na org. Sprint das 6 presas em junho/julho, epico da 028 e PO
+da 021 continuam como estavam (aguardam decisao). Pendentes: itens 1, 2, 3, 5 (sprint) e 6.
