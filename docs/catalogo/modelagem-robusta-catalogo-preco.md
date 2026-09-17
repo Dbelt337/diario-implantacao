@@ -137,3 +137,41 @@ Sobre o "~500 mil linhas por Calculation Matrix" que o ChatGPT citou: a document
 50.000 linhas" desde Summer '23 e num caso real de deploy de 77 mil que precisou de lotes. Não encontrei o número 500 mil
 em fonte oficial. A régua segura continua sendo: manter cada matriz abaixo de 50 mil linhas por desenho (família, faixa e
 fator), e não porque o limite técnico seja esse.
+
+## Validação com o texto integral das fontes (colado pelo Diego, 17/09, noite)
+
+Confirmações e correções em relação ao que está acima:
+
+1. **Sem coringa na matriz.** Help "Pricing Matrices for ABP": "Vlocity Communications supports only standard calculation
+   matrices. It doesn't currently support grouped, row-versioned, or **wildcards** in calculation matrices." Logo a tabela de
+   fatores com "*" não pode ser uma linha coringa. Solução: matriz de fator por prazo com **5 linhas chaveadas só por
+   prazo** (MTX_FATOR_PRAZO); exceções por produto numa segunda matriz chaveada por produto + prazo, com **fallback pricing**
+   (Help: "Configure Fallback Pricing for Attribute-Based Pricing") para o genérico quando não houver linha.
+2. **Colunas fixas da matriz padrão** (não renomear, o PricingPlanHelper espera esses nomes): Source Product Name, Source
+   Product Code (chave), Characteristic Name (lista separada por ponto e vírgula), Characteristic Value (mesma ordem), MRC,
+   NRC, Target Product Name. Ou seja, banda + zona + mercado entram como "Characteristic Name = BANDA;ZONA;MERCADO" e
+   "Characteristic Value = 100;PZ_MENOR;MK_B2B" na mesma linha. Zona e mercado precisam ser atributos (ou dimensões
+   mapeadas para atributo) da linha para a matriz enxergar.
+3. **Truque oficial de validação**: preço base do produto = 100.000.000 para qualquer permutação que escapar da matriz
+   aparecer na hora. Vai para o teste de carrinho do Pós-carga.
+4. **Cache de matriz**: Help "Set Up Cache for Calculation Matrices for Performance" (platform cache) para matrizes grandes
+   ou planos com muitos passos. Standard Cart APIs: só o DefaultPricingPlan é suportado desde Spring '23; preços em double;
+   Business Rules Engine (decision matrix) suportado, com mais de 50.000 linhas; tipos Standard, SourceTarget, RangeBased,
+   VolumeBased.
+5. **Máximo 10 filhos por bundle** e 4 níveis incluindo a raiz (Revolent, webinar com Salesforce). Ofertas do Core com 20 ou
+   30 componentes precisam de virtual items (grupos) ou de atributos, não de 30 filhos.
+6. **Regras**: entity filter com no máximo 2 condições; evitar auto-add/auto-remove (validados a cada chamada de API);
+   preferir cardinalidade e override; modo cacheable com valores padrão nas dimensões de contexto; nada de lógica por
+   usuário ou por contato (Apex Hours EPC Best Practices).
+7. **Atributos por categoria** (Apex Hours): precificação (entra na matriz), provisionamento voltado ao cliente (captura no
+   pedido, não no produto, se não gera ativo), provisionamento técnico (catálogo técnico), retorno do downstream. Só a
+   primeira categoria fica no produto comercial.
+8. **Configurações de CPQ** (Stratus Carta): ContextRulesCache = cachemode; CachedQueryMode = true; CacheEnabled = true;
+   DeltaPrice = true; DeltaValidate = true; PricingElementServiceLogging e PricingPlanServiceLogging = false; UOWMode =
+   true; **JSONAttribute V2** (Enable Features > V2 Attribute Model, com remediação de dados); **índices custom** por case
+   de suporte (Help "Required Indexes for Vlocity CPQ Implementations"); revisar automações em Opportunity, Quote, Order e
+   itens de linha (um trigger por objeto). Medir baseline antes e depois.
+9. **Padrões de modelagem** (Apex Hours): hierárquico (filhos com preço próprio e cardinalidade), meiose de oferta (mesmo
+   serviço com preço e cardinalidade diferentes por oferta), linear/relies-on (ofertas independentes com dependência de
+   provisionamento) e **baseado em atributo** (item sem preço próprio, sem regra, é característica). O Core cai em
+   hierárquico + atributo; meiose para Internet Home x Rural x Corporativa.
