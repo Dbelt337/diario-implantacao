@@ -124,3 +124,11 @@ Script 42 (a escrever): duas fases, so os campos acima, sem tocar na prioridade 
 > Time Salesforce sem prioridade, 6 delas presas em sprints de junho/julho (010, 011, 018, 019, 023, 025), voce decide se
 > fecha ou repriorizamos; (3) a W-000132 (CI/CD) esta P0 mas fora de sprint. Tem tambem 5 sprints antigas vazias que
 > posso apagar. Me passa os responsaveis e o destino das antigas que eu ajusto tudo de uma vez.
+
+## Executado em 17/09: item 7 (script 42)
+
+Diego autorizou apagar as 5 sprints antigas "se estiverem vazias". Script 42 (scripts/42_ApagarSprintsVazias_1709.apex),
+fase 1 confirmou works = 0 nas cinco; fase 2 apagou: Junho/2026-Time SysMap-3a e 4a Sem, Julho/2026-Time SysMap-1a e 2a Sem
+(data invertida), Julho/2026-Time SysMap-3a e 4a Sem, Sprint Catalogo - 1a e 2a Semana, Sprint Catalogo - 3 e 4 Semana.
+Ficam 15 dias na lixeira. Restam 7 sprints: Junho e Julho/2026-Time Salesforce (com works do BTP), Sprint 1 SysMap,
+Sprint 1 Brasil TecPar, Sprints 2, 3 e 4 SysMap. Itens 1 a 6 continuam aguardando o Gerson.
