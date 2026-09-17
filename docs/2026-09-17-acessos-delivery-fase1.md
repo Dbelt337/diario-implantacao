@@ -197,3 +197,15 @@ cargo da planilha nos 69. Tudo em lote pequeno, com DEPOIS no log.
 > quer todo mundo editando, como a Fernanda, ou so lendo, como o Romulo? Hoje o time inteiro esta como o Romulo, sem o
 > permission set. (2) Ciro Librino, Telmo Baggio e Oscar Oesterreich estao na arquitetura (perfil Especialistas); mudo
 > eles tambem ou saem da lista? Os 4 sem cargo e os e-mails .t ja existem em parte; me confirma que todos continuam.
+
+## Fase 2 executada (17/09, 14h): decisao do Diego, "nao cria usuarios novos e todos com o perfil do Romulo"
+
+Script 46 (scripts/46_AcessosDelivery_ComoRomulo_1709.apex), por Id dos 62 existentes, alvo = Romulo (Read Only,
+B2B - Delivery, PS App BTP B2B - Visibilidade). Fase 1: perfil a trocar 0, role a trocar 0, PS a atribuir 57, 1 ja ok
+(Romulo), 4 excecoes fora. Fase 2: 57 permission sets atribuidos, nenhum User alterado. DEPOIS: 58 dos 62 com Read Only +
+B2B - Delivery + PS; 59 usuarios ativos Read Only + B2B - Delivery na org.
+
+Ficaram de fora, aguardando a Priscila (INCLUIR_EXCECOES = true no script 46 aplica): Fernanda Ientzn da Rosa (gerente,
+B2B - Backoffice; virar Read Only tira a edicao dela) e Ciro Librino, Telmo Baggio, Oscar Oesterreich (B2B - Especialistas
+na role e fila de Arquitetura; trocar tira os tres da arquitetura). Os 7 da lista C nao foram criados (decisao do Diego).
+Title nao foi preenchido (nao pedido). 42 dos 58 nunca fizeram login: a Priscila avisa o time.
