@@ -104,3 +104,36 @@ fator ou faixa que virou linha.
 - Trailhead: Context Rules https://trailhead.salesforce.com/content/learn/modules/industries-cpq-context-rules/meet-context-rules
 - vlocity_build issue #169 (matriz de 77 mil linhas) https://github.com/vlocityinc/vlocity_build/issues/169
 - Revolent: 5 best practices for Communications Cloud https://www.revolentgroup.com/blog/salesforce-communications-cloud-implementation/
+
+## Objeto custom PricingMatrix__c: onde cabe e onde não cabe (pergunta do presidente, 17/09)
+
+Cabe como **camada de gestão** (design-time): versão, vigência, aprovação, auditoria, política de ajuste. Não cabe como
+**motor de preço** (runtime): o carrinho deve continuar lendo Calculation Matrix + Pricing Plan, que são nativos, cacheados
+(Scale Cache das Standard Cart APIs) e suportados. Um hook Apex que substitua a matriz nativa quebra o cache, sai do
+suporte e vira gargalo.
+
+Desenho recomendado, com a camada de gestão no **Control Plane** (que já tem Pricing Studio) e o Salesforce recebendo só o
+compilado:
+
+```
+Control Plane (design-time)                      Salesforce (runtime)
+PricingMatrix            (cabeçalho: código,     -- publicar -->   CalculationMatrix MTX_PRECO_<FAMILIA>
+  família, versão, status, vigência,                                 CalculationMatrixVersion vN (ativa)
+  aprovado por, data)                                                CalculationMatrixRow (linhas compiladas)
+PricingMatrixRow         (formato longo: produto/                 CalculationMatrix MTX_FATOR
+  atributo/valor/zona -> base, piso)                                 (fatores compilados)
+PricingAdjustmentPolicy  (fator por prazo, por   -- publicar -->   Pricing Plan de 3 passos (fixo)
+  mercado, regras de piso, "*" e sobrescritas)
+```
+
+Regras do publicar: gera a versão nova da matriz nativa, valida (linhas, decimais, chaves), ativa a versão nova e mantém
+a anterior para rollback; registra no Controle de Mudanças; DataPack versionado no git; produção só por pipeline.
+
+Se o presidente preferir os objetos custom **dentro do Salesforce** (para aprovar no próprio Salesforce), o desenho é o
+mesmo com os três objetos na org e um job Apex em lote que compila para a matriz nativa. Só não pode: (a) o carrinho ler
+o objeto custom; (b) dois lugares editáveis para o mesmo preço. Um edita, o outro é compilado.
+
+Sobre o "~500 mil linhas por Calculation Matrix" que o ChatGPT citou: a documentação que achei fala em suporte a "mais de
+50.000 linhas" desde Summer '23 e num caso real de deploy de 77 mil que precisou de lotes. Não encontrei o número 500 mil
+em fonte oficial. A régua segura continua sendo: manter cada matriz abaixo de 50 mil linhas por desenho (família, faixa e
+fator), e não porque o limite técnico seja esse.
