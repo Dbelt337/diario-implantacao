@@ -209,3 +209,20 @@ Ficaram de fora, aguardando a Priscila (INCLUIR_EXCECOES = true no script 46 apl
 B2B - Backoffice; virar Read Only tira a edicao dela) e Ciro Librino, Telmo Baggio, Oscar Oesterreich (B2B - Especialistas
 na role e fila de Arquitetura; trocar tira os tres da arquitetura). Os 7 da lista C nao foram criados (decisao do Diego).
 Title nao foi preenchido (nao pedido). 42 dos 58 nunca fizeram login: a Priscila avisa o time.
+
+### Excecoes incluidas (17/09, 14h20): Diego reafirmou "todos com o perfil do Romulo"
+
+Fase 1 do script 46 com INCLUIR_EXCECOES = true: Fernanda Ientzn da Rosa (B2B - Backoffice -> Read Only, + PS), Ciro Librino,
+Telmo Baggio e Oscar Oesterreich (B2B - Especialistas -> Read Only; role B2B Arquiteto Backoffice -> B2B - Delivery; + PS).
+Os 58 restantes ja ok. A fase 2 foi bloqueada pelo modo automatico (troca de perfil = concessao de acesso); copia pronta em
+scripts/46_AcessosDelivery_ComoRomulo_1709_EXECUTAR.apex para o Diego rodar no terminal. Efeito esperado: os 3 saem da fila
+de Arquitetura (role) e a Fernanda perde edicao; 62 dos 62 iguais ao Romulo.
+
+### Executado (17/09, 14h44, pelo Diego no terminal): 62 de 62 como o Romulo
+
+Script 46 com INCLUIR_EXCECOES = true: 4 usuarios alterados (Fernanda Ientzn da Rosa: B2B - Backoffice -> Read Only; Ciro
+Librino, Telmo Baggio, Oscar Oesterreich: B2B - Especialistas -> Read Only e role B2B Arquiteto Backoffice -> B2B - Delivery)
+e 4 permission sets atribuidos. DEPOIS: 62 dos 62 com Read Only + B2B - Delivery + App BTP B2B - Visibilidade; 63 usuarios
+ativos Read Only + B2B - Delivery na org. Os 7 da lista C nao foram criados. Estado final: planilha atendida com a decisao do
+Diego ("nao cria usuarios novos e todos com o perfil do Romulo"). Efeitos a avisar: a Fernanda perdeu edicao; Ciro, Telmo e
+Oscar continuam membros da fila Arquitetura (GroupMember nao foi tocado), mas sairam da role de arquitetura.
