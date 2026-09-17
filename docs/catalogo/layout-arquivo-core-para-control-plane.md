@@ -64,3 +64,17 @@ oferta e gera as abas do template v1.1. Colunas vistas no CSV de 17/09 (Smart Au
 
 MRC 100, 200, 300 e 0 nas quatro opções; COD SAP 1005 em todas; segmento B2B; catálogo CAT_B2B_EVO; canal e zona
 vazios. Falta: NRC, tipo de cobrança, unidade (peça, licença, usuário), cardinalidade, descrição fiscal, vigência.
+
+## Correção (17/09, tarde): OPCAO_VALOR não é preço
+
+Na planilha completa (Ofertas_Atuais_migracao.xlsx, 9.953 linhas, 115 ofertas, 111 serviços, 183 componentes, 2.353 opções)
+a coluna OPCAO_VALOR é o **valor técnico** da opção (Banda "1 Gbit/s" = 1000; Tipo de Prazo "Normal" = 1), preenchida em
+2.252 linhas. **O Core não traz preço nenhum.** A coluna "OPCAO_VALOR_MRC" do exemplo Smart Authenticator (100/200/300/0)
+era essa mesma coluna renomeada. Preço, SAP, catálogo, lista, segmento, canal, zona e vigência vêm de outra fonte.
+
+Pacote gerado por `tools/catalogo/core_para_control_plane.py`: `saida/core_control_plane.xlsx` (LEIA-ME, OFERTAS,
+COMPONENTES com decisão de modelagem proposta e confiança, OPCOES com 56 colunas, DICIONARIO), `core_control_plane.json`
+(oferta > serviço > componente > opção) e `core_control_plane_opcoes.csv`. Decisões propostas: 125 picklists, 30 booleanos,
+13 filhos com quantidade, 7 filhos fixos, 5 grupos de escolha (SKU), 3 componentes sem opção (ICCID, Ponta A, Ponta B).
+Confiança BAIXA em 7 componentes (listas com mais de 100 valores: armazenamento cloud, modelos de appliance, estação de
+telefonia). 1.135 linhas com IGNORAR, 445 opções com viabilidade, 24 de ativação (cobrança única).
