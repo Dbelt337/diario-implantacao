@@ -1,0 +1,1 @@
+SELECT Parent.Name, Field, OldValue, NewValue, CreatedBy.Name, CreatedDate FROM agf__ADM_Work__History WHERE CreatedDate = LAST_N_DAYS:4 ORDER BY CreatedDate

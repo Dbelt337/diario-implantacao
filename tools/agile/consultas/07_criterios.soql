@@ -1,0 +1,1 @@
+SELECT agf__Work__c w, COUNT(Id) n FROM agf__ADM_Acceptance_Criterion__c GROUP BY agf__Work__c

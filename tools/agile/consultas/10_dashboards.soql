@@ -1,0 +1,1 @@
+SELECT Id, Title, FolderName, CreatedBy.Name, CreatedDate FROM Dashboard WHERE FolderName LIKE '%Agile%' OR Title LIKE '%Agile%' OR Title LIKE '%Programa%' ORDER BY Title

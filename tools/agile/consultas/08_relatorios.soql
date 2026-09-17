@@ -1,0 +1,1 @@
+SELECT Id, Name, DeveloperName, FolderName, Format, CreatedBy.Name, CreatedDate, LastModifiedDate, LastRunDate FROM Report WHERE FolderName LIKE '%Agile%' OR Name LIKE '%Programa SF%' OR Name LIKE '%Works%' ORDER BY FolderName, Name

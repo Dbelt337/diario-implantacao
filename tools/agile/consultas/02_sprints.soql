@@ -1,0 +1,1 @@
+SELECT Id, Name, agf__Scrum_Team__r.Name, agf__Start_Date__c, agf__End_Date__c, CreatedBy.Name, CreatedDate, LastModifiedBy.Name, LastModifiedDate, (SELECT Name FROM agf__Work__r) FROM agf__ADM_Sprint__c ORDER BY agf__Start_Date__c DESC

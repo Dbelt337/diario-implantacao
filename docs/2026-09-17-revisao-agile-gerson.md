@@ -1,148 +1,125 @@
-# 17/09/2026 - Revisao das sprints e works do Agile Accelerator (pedido do Gerson)
+# 17/09/2026 - Revisao Agile: apresentacao do Gerson x org x decisoes de 16/09
 
-Pedido do Gerson de manha: "revisar as sprints e works que estao la para ver se esta tudo certinho". Auditoria SOMENTE
-LEITURA na btp-prod (consultas por arquivo, Apex sem DML para a lixeira), cruzando com docs/2026-09-15-works-validadas-pacote-marcelo.csv
-e as decisoes de 16/09 (briefing docs/2026-09-17-briefing-revisao-agile-gerson.md). Nada foi gravado. Horarios em Brasilia.
+Gerson reestruturou o Agile Accelerator em producao e perguntou: "Consegue validar se agora bate com o que fez?", com o PDF
+"Apresentacao a Equipe - Sprints, Relatorios e KPIs no Agile Accelerator" (v1, 17/09; texto em
+docs/2026-09-17-gerson-apresentacao-agile-v1.txt). Esta revisao e SOMENTE LEITURA na btp-prod, feita as 11h30 de 17/09:
+consultas por arquivo em tools/agile/consultas/ (saidas JSON em tools/agile/saida/, fora do git), lixeira por Apex so com
+SELECT, comparacao por tools/agile/comparar.js. Fontes do esperado: docs/2026-09-15-works-validadas-pacote-marcelo.csv,
+scripts/40_Prioridade_Todas_Works_1609.apex e o briefing docs/2026-09-17-briefing-revisao-agile-gerson.md. Horarios em Brasilia.
 
 ## Resumo
 
-A org esta consistente, mas nao com o CSV: **o Gerson replanejou as sprints na noite de 16/09** (17:42 a 19:43), depois do
-script 40 v2 (17:23). Ele criou as Sprints 2, 3 e 4 da SysMap, distribuiu as 16 US B2B (096 a 101, 119, 120, 122 a 125,
-142 a 145) por elas e ajustou a prioridade para casar com a sprint (Sprint 1 = P0/P1, Sprint 2 = P2, Sprint 3 = P3,
-Sprint 4 = P4). O campo Sprint nao tem rastreamento de historico, mas LastModifiedBy das 8 works da divergencia conhecida e o
-Gerson, e os scripts do diario que rodaram depois (38, 39, 40 v2, como Diego) nao tocam em Sprint dessas works. E replanejamento
-consciente, nao erro: **a proposta e aceitar o plano do Gerson e atualizar o CSV**, e nao reverter.
+- **O documento do Gerson bate com a org** em numeros, sprints (work a work), epicos, prioridades, relatorios e story points.
+  Duas afirmacoes divergem: as works internas NAO tem o sufixo "-i" em lugar nenhum, e "sprint corrente 100% saudavel" so
+  ficou verdade as 10h30 de hoje, com o script 43 (Diego), que deu responsavel a 133 a 137, 140 e 141.
+- **A org bate com as decisoes do Diego** em time (88/5), P0 (132, 133, 134, 140), catalogo em P1, 056/070/102 fora de
+  sprint e prioridade das 5 works do Gerson. **11 works tiveram a prioridade alterada pelo Gerson** em 16/09 as 19h43, junto com
+  a montagem das Sprints 2 a 4 (prioridade = ordem da sprint). Duas contradizem a regra do Diego (pos-venda por ultimo):
+  **123 (visao 360) em P1 na Sprint 1** e **124 (fim de degustacao) em P2 na Sprint 2**.
+- Fora de sequencia (esperado por enquanto): 14 works de catalogo, 44 de B2C, 4 TEC-INT e a 132 (P0) sem sprint.
+- Pendencias que o proprio Gerson listou, confirmadas: 024, 026, 028 sem epico; 132 P0 fora de sprint; 14 works em sprints
+  de junho/julho. Proposta na secao D, nada executado.
 
-O que de fato falta na org: 7 works em sprint corrente sem responsavel, 8 works antigas do BTP sem prioridade (6 presas em
-sprints de junho/julho), 1 sem epico, 1 P0 fora de sprint e 5 sprints antigas vazias ou com data invertida.
+## A. Documento do Gerson x org
 
-## A. Divergencias em relacao ao CSV do pacote (93 works)
+| # | Afirmacao do documento | Org (17/09, 11h30) | Veredito |
+|---|---|---|---|
+| 1 | 111 works; 96 New, 10 Closed, 3 In Progress, 2 QA In Progress | 111 ativas: New 96, Closed 10, In Progress 3, QA In Progress 2. Conta as 18 internas (010 a 028) e nao conta as 24 da lixeira | CONFERE |
+| 2 | 7 epicos novos da cadeia de valor B2B | 7 epicos criados pelo Gerson em 16/09 as 17h42: 1) Vender solucoes (13 works), 2) cortesia (1: 124), 3) swap (0), 4) upgrade (1: 100), 5) downgrade (1: 125), 6) refidelizacao (1: 142), 7) cancelamento e retencao (2: 099, 143) | CONFERE |
+| 3 | 19 works B2B reparentadas nesses epicos | 19: 096, 097, 098, 099, 100, 101, 107, 119, 120, 122, 123, 124, 125, 140, 141, 142, 143, 144, 145. O epico antigo "B2B - Jornadas de Venda e Gestao do Ciclo de Vida do Cliente" ficou com 0 works (nao foi apagado). Epico 3) swap esta vazio | CONFERE |
+| 4 | 29 em sprints 1 a 4: S1 BTP 5, S1 SysMap 11, S2 8, S3 2, S4 3; 43 com sprint (14 em Jun/Jul "Time Salesforce") | 5 + 11 + 8 + 2 + 3 = 29; 43 com sprint; 14 em Junho (12) e Julho (2) /2026-Time Salesforce; 68 sem sprint | CONFERE |
+| 5 | Sprint 1 BTP = 133 (P0), 134 (P0), 135, 136, 137 (P1) | identico; epicos Integracao/CI-CD (133 a 135) e Arquitetura (136, 137) | CONFERE |
+| 6 | Sprint 1 SysMap = 140 (P0), 051, 052, 053, 054, 055, 096, 097, 107, 123, 141 (P1) | identico, work a work | CONFERE |
+| 7 | S2 = 098, 101, 119, 120, 122, 124, 144, 145 (P2); S3 = 100, 125 (P3); S4 = 099, 142, 143 (P4) | identico, work a work, com os epicos que o documento mostra | CONFERE |
+| 8 | Prioridades mudaram em relacao ao script 40 v2: 096, 097, 123 -> P1; 098, 101, 122, 144, 145 -> P2; 124 -> P2; 100, 125 -> P3 | 11 works, todas alteradas pelo Gerson em 16/09 as 19h43 (historico do campo Priority). Detalhe na secao B | CONFERE (e decisao dele) |
+| 9 | Sprint corrente 100% saudavel: toda work com responsavel, prioridade e epico | Hoje sim: 16 works das Sprints 1 com responsavel, prioridade e epico. Mas 133 a 137, 140 e 141 estavam SEM responsavel ate as 10h30 de hoje; o responsavel (Davi) foi gravado pelo script 43, a pedido do Diego, nao pelo Gerson | CONFERE desde 10h30 (script 43) |
+| 10 | Works internas renomeadas com sufixo "i" (ex.: W-00028-i) e fora de sprint | Nenhuma work tem "-i" no assunto nem no nome (Name e autonumber, nao renomeavel). As internas so sao identificaveis pelo epico "Projetos Internos" (15) ou pelo time Brasil TecPar/GOVERNANCA. E 14 delas ESTAO em sprint (Jun/Jul Time Salesforce), o que a propria regra dele proibe | DIVERGE |
+| 11 | Pendencias: 024/026/028 sem epico; 132 P0 fora de sprint; 14 works em sprints antigas | confirmadas as tres (secao D) | CONFERE |
+| 12 | 6 relatorios + 4 KPIs na pasta "Works Agile - Projetos BTP" | Pasta criada em 11/09 pelo Gerson com 18 relatorios: 8 de programa (01. Geral - Epico x Status; 01. Programa SF - Works por Projeto e Status; 02. Por Sprint x Status; 02. Programa SF - Works por Time e Status; 03. Por Frente (Epico) + Pontos; 03. Story Points por Projeto; 04. Internos - Works por Status; 04. Por Work - Detalhe) e 10 KPIs (Programa: Novas, Em Andamento, Em Teste/QA, Em Aprovacao/Revisao, Concluidas, Com Pontos, Sem Pontos; Internos: Novas, Concluidas; Total Geral). Mais o painel "KPI Gestao de Works - Projetos BTP". O relatorio 02 foi executado hoje as 11h12 | CONFERE (ha mais do que o documento cita) |
+| 13 | Story points: 7 de 111 pontuadas | 7 works com pontos: 010 (8), 011 (5), 012 (3), 013 (8), 018 (2), 020 (3), 025 (8). Todas internas do BTP; nenhuma das 93 do pacote tem pontos | CONFERE (mas 0 de 93 no programa) |
+| 14 | Lixeira | 24 works apagadas (029 a 050 e 138, 139), as 6 do pacote (041 a 044, 138, 139) apagadas em 15/09 pelo Diego. Ver nota em D.5 sobre 045 a 050 | CONFERE |
 
-Conferido work a work: time, sprint, prioridade, responsavel, status. Time: 88 SysMap + 5 Brasil TecPar, igual ao CSV.
-Status: New nas 93. Responsavel: igual ao CSV (Davi nas US da SysMap; 140, 141 e 133 a 137 sem responsavel, decisao de 15/09).
-Tag: Salesforce nas 88 da SysMap. Nenhuma work em sprint de outro time. As divergencias estao todas em Sprint e Prioridade:
+Criterios de aceite (consulta 7): 73 works com criterios; 142 a 145 com 9/8/7/8, 133 a 137 com 5/4/3/4/4, 140 e 141 com 4 e 3,
+070 com 3, 096 a 101 com 2, 087 com 3. Igual ao esperado. Details, Tag (Salesforce) e epico preenchidos nas 93 do pacote.
 
-| Work | Campo | CSV (15-16/09) | Org hoje | Quem | Quando |
-|---|---|---|---|---|---|
-| W-000096 | Sprint / Priority | backlog / P2 | Sprint 1 SysMap / P1 | Gerson | 16/09 19:43 |
-| W-000097 | Sprint / Priority | backlog / P2 | Sprint 1 SysMap / P1 | Gerson | 16/09 19:43 |
-| W-000107 | Sprint | backlog | Sprint 1 SysMap (P1, igual) | Gerson | 16/09 17:44 |
-| W-000123 | Sprint / Priority | backlog / P4 | Sprint 1 SysMap / P1 | Gerson | 16/09 19:43 |
-| W-000142 | Sprint | Sprint 1 SysMap (P4) | Sprint 4 SysMap (P4, igual) | Gerson | 16/09 17:44 |
-| W-000143 | Sprint | Sprint 1 SysMap (P4) | Sprint 4 SysMap (P4, igual) | Gerson | 16/09 17:44 |
-| W-000144 | Sprint / Priority | Sprint 1 SysMap / P3 | Sprint 2 SysMap / P2 | Gerson | 16/09 19:43 |
-| W-000145 | Sprint / Priority | Sprint 1 SysMap / P3 | Sprint 2 SysMap / P2 | Gerson | 16/09 19:43 |
-| W-000098 | Sprint / Priority | backlog / P3 | Sprint 2 SysMap / P2 | Gerson | 16/09 19:43 |
-| W-000101 | Sprint / Priority | backlog / P3 | Sprint 2 SysMap / P2 | Gerson | 16/09 19:43 |
-| W-000119 | Sprint | backlog (P2) | Sprint 2 SysMap (P2, igual) | Gerson | 16/09 17:44 |
-| W-000120 | Sprint | backlog (P2) | Sprint 2 SysMap (P2, igual) | Gerson | 16/09 17:44 |
-| W-000122 | Sprint / Priority | backlog / P3 | Sprint 2 SysMap / P2 | Gerson | 16/09 19:43 |
-| W-000124 | Sprint / Priority | backlog / P4 | Sprint 2 SysMap / P2 | Gerson | 16/09 19:43 |
-| W-000100 | Sprint / Priority | backlog / P4 | Sprint 3 SysMap / P3 | Gerson | 16/09 19:43 |
-| W-000125 | Sprint / Priority | backlog / P4 | Sprint 3 SysMap / P3 | Gerson | 16/09 19:43 |
-| W-000099 | Sprint | backlog (P4) | Sprint 4 SysMap (P4, igual) | Gerson | 16/09 17:44 |
+## B. Org x decisoes do Diego (16/09)
 
-Cadeia de prioridade no historico (campo rastreado), exemplo W-000123: 16/09 10:09 Gerson vazio -> P2 (passada em massa dele
-em 91 works); 17:23 Diego P2 -> P4 (script 40 v2); 19:43 Gerson P4 -> P1 (junto com a entrada na Sprint 1). O mesmo padrao vale
-para 096, 097, 098, 100, 101, 122, 124, 125, 144 e 145: o Gerson corrigiu a prioridade para a da sprint escolhida.
-
-Linha do tempo de 16/09: 10:09 Gerson define Priority em 91 works; 15:35 consulta da sessao conectada ja mostra a Sprint 1 com
-096, 097, 107, 123 e sem 142 a 145 (a troca aconteceu entre a noite de 15/09 e 15:35, provavelmente na passada das 10:09); 16:35
-Gerson toca 135, 136, 137; 17:23 script 40 v2 (Diego); 17:42 Gerson cria Sprints 2, 3 e 4; 17:44 e 19:43 Gerson distribui as
-US B2B e acerta prioridades.
-
-## B. Composicao atual das sprints (17/09 de manha)
-
-Sprint 1 - SysMap (15-26/09), 11 works:
-
-| Work | Prio | Responsavel | Status | Assunto |
-|---|---|---|---|---|
-| W-000051 | P1 | Davi Israel de Abreu | New | US EPC-01 Attribute Categories do catalogo |
-| W-000052 | P1 | Davi Israel de Abreu | New | US EPC-04 Hierarquia de Object Types |
-| W-000053 | P1 | Davi Israel de Abreu | New | US EPC-05 Product Specifications da Onda 1 |
-| W-000054 | P1 | Davi Israel de Abreu | New | US EPC-09 Compilacao de atributos e batch jobs |
-| W-000055 | P1 | Davi Israel de Abreu | New | US EPC-03 (P) Dicionario de atributos |
-| W-000096 | P1 | Davi Israel de Abreu | New | US B2B-01 Escalonamento de inatividade de leads |
-| W-000097 | P1 | Davi Israel de Abreu | New | US B2B-02 Enderecamento geocodificado e viabilidade |
-| W-000107 | P1 | Davi Israel de Abreu | New | US CPQ-BRE-01 Motor de regras de precificacao |
-| W-000123 | P1 | Davi Israel de Abreu | New | US B2B-10 Visao 360 de contratos e ativos |
-| W-000140 | P0 | (sem responsavel) | New | B2B - Habilitar integracao B2B para testes |
-| W-000141 | P1 | (sem responsavel) | New | B2B - Escrever historias B2B (onboarding SysMap) |
-
-- Sprint 1 - Brasil TecPar (15-26/09), 5 works: 133 (P0), 134 (P0), 135, 136, 137 (P1), todas New e sem responsavel.
-- Sprint 2 - SysMap (29/09-10/10), 8 works P2: 098, 101, 119, 120, 122, 124, 144, 145 (Davi).
-- Sprint 3 - SysMap (13-24/10), 2 works P3: 100, 125 (Davi).
-- Sprint 4 - SysMap (27/10-07/11), 3 works P4: 099, 142, 143 (Davi).
-- Backlog SysMap sem sprint: 64 works (1 P0, 23 P1, 14 P2, 19 P3, 7 P4). Entre as P1: 056, 070, 102 (decisao pendente,
-  script 41 fase 1 mostrou que entrariam na Sprint 1) e 11 do catalogo (103, 104, 108, 111 a 114, 121, 127, 128).
-
-Lixeira: 041, 042, 043, 044, 138, 139 com IsDeleted = true (apagadas em 15/09 pelo Diego), como esperado; 24 works na lixeira
-no total. Criterios de aceite: 142 a 145 com 9/8/7/8; 133 a 137 com 5/4/3/4/4; 140 e 141 com 4 e 3; 070 com 3; igual ao esperado.
-
-## C. Works fora do pacote (18) e campos vazios
-
-Internas do BTP (010 a 028, criadas em junho/julho por Thiago e Diego) mais W-000021 (Governanca, Gerson). 10 fechadas, 8 abertas:
-
-| Work | Sprint | Status | Faltando | Assunto |
-|---|---|---|---|---|
-| W-000010 | Junho/2026-Time Salesforce (encerrada) | QA In Progress | Priority | Avaliacao de payload do Ary (Consul) |
-| W-000011 | Junho/2026-Time Salesforce (encerrada) | QA In Progress | Priority | Data Map para TMF Forum |
-| W-000018 | Junho/2026-Time Salesforce (encerrada) | In Progress | Priority | Dashboard para Lorena Israel |
-| W-000019 | Julho/2026-Time Salesforce (encerrada) | New | Priority | Integracao Salesforce com Slack |
-| W-000021 | (backlog) | New | Priority | HUB Governanca Salesforce (time GOVERNANCA) |
-| W-000023 | Julho/2026-Time Salesforce (encerrada) | New | Priority | DEMO da planilha financeira |
-| W-000025 | Junho/2026-Time Salesforce (encerrada) | In Progress | Priority | Esteira CI/CD |
-| W-000028 | (backlog) | In Progress | Priority, Epic | Carga de contas no Salesforce |
-
-Nenhuma work nova acima de W-000145. Details, Epic e Tag preenchidos em todas as 93 do pacote.
-
-Sprints antigas: "Julho/2026-Time SysMap-1a e 2a Sem" com data invertida (inicio 01/07, fim 15/06) e quatro vazias
-("Junho/2026-Time SysMap-3a e 4a Sem", "Julho/2026-Time SysMap-3a e 4a Sem", "Sprint Catalogo - 1a e 2a Semana", "Sprint
-Catalogo - 3 e 4 Semana"), todas de junho a agosto, criadas por Thiago e Marcelo Matias.
-
-## D. Proposta de correcao (nada executado; espera o "vai")
-
-| # | Divergencia | Proposta |
+| Decisao | Org | Veredito |
 |---|---|---|
-| 1 | 17 works com Sprint/Priority diferentes do CSV (secao A) | Aceitar o replanejamento do Gerson (e coerente: prioridade = ordem da sprint). Atualizar as colunas "Sprint" e "Prioridade" do CSV e registrar no diario; nao reverter. Confirmar com o Gerson que 142 a 145 sairem da Sprint 1 foi intencional (tinham 9/8/7/8 criterios de aceite e eram a entrega B2B da sprint). |
-| 2 | W-000056, 070, 102 no backlog | Mantem a decisao de 16/09 (proxima onda). Se o Gerson quiser na Sprint 1, script 41 com EXECUTAR = true. |
-| 3 | W-000132 (TEC-DEV-01, CI/CD) P0 sem sprint | Ou entra na Sprint 1 ou 2 da SysMap, ou volta a P1. E par da 133 (BTP) e da 025 (Esteira CI/CD, BTP, em andamento). |
-| 4 | 7 works em sprint corrente sem responsavel (133 a 137, 140, 141) | Gerson define os 5 do BTP (provavelmente ele, Victor e Diego); 140 e 141 com a SysMap (Davi ou o novo responsavel). Script 42. |
-| 5 | 8 works antigas do BTP sem Priority, 6 presas em sprint de junho/julho | Gerson decide: fechar (010, 011, 018 estao em QA/andamento ha 2 meses) ou repriorizar e mover para a Sprint 1 - Brasil TecPar. Script 42. |
-| 6 | W-000028 sem epico | Epico "Projetos Internos". Script 42. |
-| 7 | 5 sprints antigas vazias ou com data invertida | Apagar (sem work dentro). Script 42, com "vai" separado por ser delete. |
+| Time: 88 SysMap, 5 Brasil TecPar (133 a 137) | 88 SysMap, 22 Brasil TecPar (5 do pacote + 17 internas), 1 GOVERNANCA (021) | CONFERE |
+| P0 = 132, 133, 134, 140 | exatamente essas 4 | CONFERE |
+| Catalogo em P1 (EPC, CAT, QUAL) | 19 works de catalogo em P1: 051 a 055 (Sprint 1) e 056, 070, 102, 103, 104, 108, 111 a 114, 117, 121, 127, 128 (backlog) | CONFERE |
+| 056, 070, 102 fora de sprint (proxima onda; script 41 nao rodou) | as 3 no backlog, P1 | CONFERE |
+| 5 works do Gerson (133 a 137) intocadas | prioridade igual ao script 40 (P0, P0, P1, P1, P1); responsavel Davi gravado hoje pelo script 43 por decisao do Diego; nada mais mudou | CONFERE |
+| Responsavel Davi nas US da SysMap; 140, 141 e 133 a 137 sem responsavel | Davi em todas as 93 desde hoje 10h30 (script 43) | CONFERE (decisao de hoje substitui a de 15/09) |
+| Status New nas 93 | New nas 93 | CONFERE |
 
-Script 42 (a escrever): duas fases, so os campos acima, sem tocar na prioridade das 5 works do Gerson nem nas 93 do pacote.
+Works cuja Priority difere do script 40 v2 (todas alteradas pelo Gerson; historico do campo: 10h09 primeira passada dele,
+17h23 script 40 v2 do Diego, 19h43 Gerson de novo, junto com a distribuicao nas Sprints 2 a 4 criadas as 17h42):
 
-## Rascunho de resposta ao Gerson
+| Work | Historia | Script 40 v2 | Org | Sprint | Quem / quando | Leitura |
+|---|---|---|---|---|---|---|
+| W-000096 | B2B-01 escalonamento de leads | P2 | P1 | S1 SysMap | Gerson, 16/09 19h43 | decisao do Gerson (repriorizou pela sprint); lead, coerente com P1/P2 |
+| W-000097 | B2B-02 enderecamento e viabilidade | P2 | P1 | S1 SysMap | Gerson, 16/09 19h43 | decisao do Gerson; lead/opp |
+| W-000123 | B2B-10 visao 360 de contratos e ativos | P4 | P1 | S1 SysMap | Gerson, 16/09 19h43 | **CONTRADIZ a regra: pos-venda em P1 na Sprint 1** |
+| W-000098 | B2B-03 cotacao multi-site | P3 | P2 | S2 SysMap | Gerson, 16/09 19h43 | decisao do Gerson; cotacao subiu um nivel |
+| W-000101 | B2B-06 auditoria de vendas / credito | P3 | P2 | S2 SysMap | Gerson, 16/09 19h43 | decisao do Gerson |
+| W-000122 | B2B-09 contrato: signatario, NPS | P3 | P2 | S2 SysMap | Gerson, 16/09 19h43 | decisao do Gerson |
+| W-000144 | B2B-15 condicoes de faturamento | P3 | P2 | S2 SysMap | Gerson, 16/09 19h43 | decisao do Gerson |
+| W-000145 | B2B-16 cadencia de assinatura | P3 | P2 | S2 SysMap | Gerson, 16/09 19h43 | decisao do Gerson |
+| W-000124 | B2B-11 fim de degustacao (Try & Buy) | P4 | P2 | S2 SysMap | Gerson, 16/09 19h43 | **CONTRADIZ a regra: pos-venda em P2 na Sprint 2** |
+| W-000100 | B2B-05 upgrade/swap | P4 | P3 | S3 SysMap | Gerson, 16/09 19h43 | decisao do Gerson; MACD subiu um nivel, mas segue depois de cotacao/contrato |
+| W-000125 | B2B-12 downgrade | P4 | P3 | S3 SysMap | Gerson, 16/09 19h43 | idem |
 
-> Bom dia, Gerson! Revisei agora na org. As duas Sprints 1 estao consistentes: 11 na SysMap e 5 no BTP, todas com epico,
-> time e prioridade, e as Sprints 2, 3 e 4 que voce montou ontem a noite estao coerentes (prioridade acompanhando a sprint).
-> So preciso confirmar uma coisa: as US 142 a 145 (B2B-13 a 16) sairam da Sprint 1 para as Sprints 2 e 4 e entraram
-> 096, 097, 107 e 123 no lugar; foi essa a intencao? Se sim, atualizo o pacote enviado ao Michel.
-> O que falta ajustar: (1) responsavel nas 5 works do BTP da Sprint 1 (133 a 137) e nas 140/141; (2) 8 works antigas do
-> Time Salesforce sem prioridade, 6 delas presas em sprints de junho/julho (010, 011, 018, 019, 023, 025), voce decide se
-> fecha ou repriorizamos; (3) a W-000132 (CI/CD) esta P0 mas fora de sprint. Tem tambem 5 sprints antigas vazias que
-> posso apagar. Me passa os responsaveis e o destino das antigas que eu ajusto tudo de uma vez.
+Sprint: 142, 143 (P4) sairam da Sprint 1 para a Sprint 4 e 144, 145 (P3 -> P2) para a Sprint 2; 096, 097, 107, 123 entraram
+na Sprint 1 (Gerson, 16/09 17h44 e 19h43). O campo Sprint nao tem historico; a atribuicao vem de LastModifiedBy e dos horarios
+das Sprints 2 a 4. A decisao de 16/09 ("142 a 145 na Sprint 1 com P3/P4") foi substituida por essa; nenhum script do diario
+tocou em Sprint dessas works.
 
-## Executado em 17/09: item 7 (script 42)
+## C. Fora de sequencia (sem sprint, esperado por enquanto)
 
-Diego autorizou apagar as 5 sprints antigas "se estiverem vazias". Script 42 (scripts/42_ApagarSprintsVazias_1709.apex),
-fase 1 confirmou works = 0 nas cinco; fase 2 apagou: Junho/2026-Time SysMap-3a e 4a Sem, Julho/2026-Time SysMap-1a e 2a Sem
-(data invertida), Julho/2026-Time SysMap-3a e 4a Sem, Sprint Catalogo - 1a e 2a Semana, Sprint Catalogo - 3 e 4 Semana.
-Ficam 15 dias na lixeira. Restam 7 sprints: Junho e Julho/2026-Time Salesforce (com works do BTP), Sprint 1 SysMap,
-Sprint 1 Brasil TecPar, Sprints 2, 3 e 4 SysMap. Itens 1 a 6 continuam aguardando o Gerson.
+- **Catalogo alem da Sprint 1 (14, todas P1)**: 056 QUAL-01, 070 EPC-10, 102 CAT-TPL-01, 103 CAT-MIG-01, 104 CAT-TAG-01,
+  108 CAT-PRC-01, 111 CAT-FAM-01, 112 CAT-CHD-01, 113 CAT-API-01, 114 CAT-ZON-01, 117 CAT-ACC-01, 121 CAT-CPX-01, 127 CAT-EQP-01,
+  128 CAT-RET-01. P1 sem sprint e a Onda 2 do catalogo; o Gerson montou as Sprints 2 a 4 so com B2B.
+- **Todo o B2C (44 sem sprint, de 51 no epico)**: P1 = 085, 086, 087, 090, 092; P2 = 057, 058, 059, 060, 062, 064, 066, 067,
+  071, 072, 073, 074, 083, 091; P3 = 063, 065, 068, 069, 075, 076, 077, 078, 080, 081, 082, 084, 088, 089, 093, 094, 106, 115,
+  118; P4 = 061, 079, 095, 109, 116, 129 e 126.
+- **TEC-INT sem sprint (4, P1)**: 105, 110, 130, 131 (canal de eventos, SVA, SAP, TMF641).
+- **W-000132 TEC-DEV-01 (esteira CI/CD, P0) sem sprint**: e par da 133 (BTP, Sprint 1) e da 025 (BTP, em andamento).
 
-## Executado em 17/09: item 4 (script 43)
+## D. Pendencias listadas pelo Gerson, confirmadas na org, com proposta (nada executado)
 
-Diego decidiu: responsavel Davi Israel de Abreu nas 7 works em sprint corrente; PO e a Priscila De Lima. Conferido na
-W-000051 e na W-000096 (padrao: Assignee = Davi, Product Owner = Priscila; PO ja estava nas 7 e nas 88 do pacote).
-Script 43 (scripts/43_ResponsavelSprint1_1709.apex), fase 1 listou 7, fase 2 gravou: 133, 134, 135, 136, 137, 140 e 141
-com responsavel Davi e PO Priscila. So preenche campo vazio; nao sobrescreve. Pendentes agora: itens 1, 2, 3, 5 e 6.
+| # | Pendencia | Org | Proposta |
+|---|---|---|---|
+| 1 | 024, 026, 028 sem epico | 024 e 026 fechadas; 028 (carga de contas, In Progress, P4) | Epico "Projetos Internos" nas 3 (as fechadas tambem, para o relatorio 04 Internos fechar). |
+| 2 | 132 (CI/CD) P0 fora de sprint | P0, backlog, time SysMap, responsavel Davi | Diego decide: entra na Sprint 1 SysMap (junto com a 133 do BTP) ou na Sprint 2. Manter P0 fora de sprint contradiz a regra do proprio Gerson. |
+| 3 | 14 works em sprints Jun/Jul "Time Salesforce" | 12 em Junho (8 Closed, 2 QA, 2 In Progress) e 2 em Julho (New). As 8 fechadas sao historico legitimo. As 6 abertas (010, 011, 018, 025 em andamento; 019, 023 New) violam a regra "nada de work presa em sprint antiga" | Fechadas: deixar como historico. Abertas: 010, 011, 018, 025 para a Sprint 1 - Brasil TecPar (ja tem P4 e responsavel); 019 e 023 para o backlog ou fechar. Script 45, duas fases, so com o "vai". |
+| 4 | Internas "-i" | nao existe o sufixo; 14 internas em sprint (ver 3) | Se o Gerson quiser o marcador, e no assunto (Subject), nao no Name. Alternativa sem renomear: filtrar os relatorios do programa por epico <> "Projetos Internos" ou por time. |
+| 5 | Lixeira | 24 works. Nota: 045 a 050 ("Comercial - ...", apagadas em 15/09) aparecem com modificacao de hoje 10h26 pelo usuario do Diego: e o efeito colateral do script 42 (ao apagar as sprints antigas vazias, a org limpou o lookup de sprint dessas works ja apagadas, que estavam na "Sprint Catalogo"). Nenhuma work ativa foi tocada; a lixeira continua com 24. Ha tambem uma sprint "TESTE-SPRINT-DEL" na lixeira, teste de alguem em 17/09 | Nada a fazer; registrado por transparencia. |
+| 6 | Epico "B2B - Jornadas de Venda..." vazio e epico 3) swap vazio | ambos com 0 works | O antigo pode ser apagado quando o Gerson confirmar; o 3) fica aguardando historia de swap (hoje o swap esta dentro da 100, upgrade/swap). |
+| 7 | 10 works fechadas sem prioridade (012 a 016, 020, 022, 024, 026, 027) | fechadas, internas | Sem efeito nos KPIs de sprint; se o relatorio do Gerson exigir, P4 nelas tambem. |
 
-## Executado em 17/09: item 5, parte 1 (script 44)
+## E. Rascunho de resposta ao Gerson
 
-Gerson perguntou pelas "works internas". Diego decidiu: prioridade baixa nas 8 works antigas do BTP sem Priority. Script 44
-(scripts/44_PrioridadeWorksInternas_1709.apex), P4 (menor valor ativo da picklist), so onde estava vazio: 010, 011, 018, 019,
-021, 023, 025 e 028. Depois: zero works abertas sem prioridade na org. Sprint das 6 presas em junho/julho, epico da 028 e PO
-da 021 continuam como estavam (aguardam decisao). Pendentes: itens 1, 2, 3, 5 (sprint) e 6.
+> Validei na org agora de manha. Bate: 111 works e os status, os 7 epicos com as 19 US B2B reparentadas, as 5 sprints
+> work a work (5 + 11 + 8 + 2 + 3), as prioridades como estao no documento, os relatorios e o painel da pasta "Works Agile",
+> e os 7 story points. Duas ressalvas: (1) o sufixo "-i" das internas nao esta na org, nenhuma work tem isso no assunto, e
+> 14 internas seguem nas sprints de junho/julho; (2) o "100% saudavel" da sprint corrente vale a partir de hoje 10h30, quando
+> gravamos o Davi como responsavel nas 7 works que estavam sem (133 a 137, 140, 141), e P4 nas 8 internas abertas.
+> Sobre as prioridades que voce ajustou pela sprint: ok, so duas fogem da regra que o Diego definiu em 16/09 (pos-venda por
+> ultimo): a 123 (visao 360) em P1 na Sprint 1 e a 124 (fim de degustacao) em P2 na Sprint 2. O Diego decide se ficam.
+> Pendencias suas, confirmadas: 024/026/028 sem epico (sugiro "Projetos Internos"), 132 P0 fora de sprint (Sprint 1 ou 2?)
+> e as 6 internas abertas em sprint antiga (010, 011, 018, 025 para a Sprint 1 BTP; 019 e 023 backlog ou fechar). As 5
+> sprints vazias ja apagamos. Me diz o que confirma que eu ajusto de uma vez.
+
+## Executado hoje antes desta validacao (com "vai" do Diego; ja constam no historico da org)
+
+- **Script 42** (10h26): apagou as 5 sprints antigas vazias (Junho/2026-Time SysMap-3a e 4a Sem; Julho/2026-Time SysMap-1a e 2a
+  Sem, com data invertida; Julho/2026-Time SysMap-3a e 4a Sem; Sprint Catalogo - 1a e 2a Semana; Sprint Catalogo - 3 e 4
+  Semana). Restam 7 sprints. Efeito colateral em D.5.
+- **Script 43** (10h30): responsavel Davi Israel de Abreu em 133, 134, 135, 136, 137, 140, 141 (PO Priscila De Lima ja estava).
+- **Script 44** (11h27): P4 em 010, 011, 018, 019, 021, 023, 025, 028 (internas abertas sem prioridade). Zero works abertas
+  sem prioridade na org.
+
+Pendentes de decisao: 123 e 124 (prioridade), 132 (sprint), 056/070/102 (Sprint 1 ou proxima onda), epico de 024/026/028,
+6 internas abertas em sprint antiga, sufixo "-i".

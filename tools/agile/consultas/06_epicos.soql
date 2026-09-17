@@ -1,0 +1,1 @@
+SELECT Id, Name, agf__Health__c, agf__Priority__c, CreatedBy.Name, CreatedDate, LastModifiedBy.Name, LastModifiedDate, (SELECT Name FROM agf__Work__r ORDER BY Name) FROM agf__ADM_Epic__c ORDER BY CreatedDate DESC
