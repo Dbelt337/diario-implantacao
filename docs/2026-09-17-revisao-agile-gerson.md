@@ -123,3 +123,31 @@ tocou em Sprint dessas works.
 
 Pendentes de decisao: 123 e 124 (prioridade), 132 (sprint), 056/070/102 (Sprint 1 ou proxima onda), epico de 024/026/028,
 6 internas abertas em sprint antiga, sufixo "-i".
+
+## Decisoes tomadas em 17/09 (delegadas pelo Diego: "pode tomar a decisao, ajusta") e script 45
+
+Criterio: a regra do Diego de 16/09 manda na sequencia (pos-venda por ultimo); a regua de higiene do Gerson manda no resto
+(prioridade = sprint, P0 em sprint, interna fora de sprint e com sufixo -i).
+
+| Pendencia | Decisao |
+|---|---|
+| 123 (visao 360) P1 na Sprint 1; 124 (fim de degustacao) P2 na Sprint 2 | Pos-venda: as duas vao para a Sprint 4 - SysMap com P4. Sprint 1 fica com 10 + 132; Sprint 2 com 7 + 3 do catalogo; Sprint 4 com 5. |
+| 132 (CI/CD) P0 fora de sprint | Entra na Sprint 1 - SysMap, par da 133 (BTP). |
+| 056, 070, 102 (catalogo P1) | Proxima onda = Sprint 2 - SysMap; prioridade fica P1. |
+| 024, 026, 028 sem epico | Epico "Projetos Internos". |
+| 6 internas abertas em sprint de junho/julho | Saem para o backlog (regra do Gerson: interna nao fica em sprint). As 8 fechadas ficam como historico. |
+| Sufixo "-i" | Assunto das 18 internas (010 a 028) recebe " -i", como a regua do Gerson prevê. |
+
+Script 45 (scripts/45_AjustesRevisaoAgile_1709.apex), fase 1 na prod: 24 works a alterar, exatamente as acima, nenhuma trava.
+**Fase 2 nao rodou: o modo automatico do Claude Code bloqueou o `sf apex run` com update.** Para gravar, no terminal:
+
+```powershell
+cd C:\Users\DIego\Documents\diario-implantacao
+(Get-Content scripts\45_AjustesRevisaoAgile_1709.apex) -replace '^Boolean EXECUTAR = false;','Boolean EXECUTAR = true;' | Set-Content -Encoding utf8 $env:TEMP\45_exec.apex
+sf apex run -o btp-prod --file $env:TEMP\45_exec.apex | Select-String "AJ45"
+```
+
+Esperado no DEPOIS: Sprint 1 SysMap 11 (10 + 132), Sprint 1 BTP 5, Sprint 2 SysMap 10, Sprint 3 SysMap 2, Sprint 4 SysMap 5,
+Junho/2026-Time Salesforce 8 (so fechadas), Julho/2026-Time Salesforce 0; P0 fora de sprint 0; sem epico 0; internas abertas em
+sprint 0; internas sem -i 0. Avisar o Gerson: a Sprint 1 dele muda (sai 123, entra 132) e a Sprint 2 tambem (sai 124, entram
+056, 070, 102); o documento v1 precisa de uma v2.
