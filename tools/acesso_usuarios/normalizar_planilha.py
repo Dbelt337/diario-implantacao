@@ -80,7 +80,7 @@ def main():
     modelos = [a.modelo_perfil, a.modelo_role]
     q = []
     q.append("-- 1. usuarios-modelo (perfil = %s; role/permissoes = %s)" % (a.modelo_perfil, a.modelo_role))
-    q.append("SELECT Id, Name, Username, Email, IsActive, Profile.Name, Profile.UserLicense.Name, UserRole.Name, UserRole.DeveloperName, UserType, Title, Department, CompanyName, TimeZoneSidKey, LocaleSidKey, LanguageLocaleKey, EmailEncodingKey, UserPermissionsSupportUser, UserPermissionsKnowledgeUser, UserPermissionsMarketingUser, UserPermissionsSFContentUser, FederationIdentifier, LastLoginDate FROM User WHERE Name IN (%s)" % soql_in(modelos))
+    q.append("SELECT Id, Name, Username, Email, IsActive, Profile.Name, Profile.UserLicense.Name, UserRole.Name, UserRole.DeveloperName, UserType, Title, Department, CompanyName, TimeZoneSidKey, LocaleSidKey, LanguageLocaleKey, EmailEncodingKey, UserPermissionsSupportUser, UserPermissionsMarketingUser, UserPermissionsSFContentUser, FederationIdentifier, LastLoginDate FROM User WHERE Name IN (%s)" % soql_in(modelos))
     q.append("-- 2. permission sets e grupos dos modelos (PermissionSet.IsOwnedByProfile = false sao os atribuidos de fato)")
     q.append("SELECT Assignee.Name, PermissionSet.Name, PermissionSet.Label, PermissionSet.IsOwnedByProfile, PermissionSet.License.Name, PermissionSetGroupId, PermissionSetGroup.DeveloperName FROM PermissionSetAssignment WHERE Assignee.Name IN (%s) ORDER BY Assignee.Name, PermissionSet.Label" % soql_in(modelos))
     q.append("SELECT Assignee.Name, PermissionSetLicense.MasterLabel, PermissionSetLicense.DeveloperName FROM PermissionSetLicenseAssign WHERE Assignee.Name IN (%s)" % soql_in(modelos))
@@ -93,14 +93,14 @@ def main():
     q.append("-- 4. roles e perfis candidatos")
     q.append("SELECT Id, Name, DeveloperName, ParentRole.Name, PortalType FROM UserRole WHERE PortalType = 'None' ORDER BY Name")
     q.append("SELECT Id, Name, UserLicense.Name, UserType FROM Profile ORDER BY Name")
-    q.append("SELECT Profile.Name, UserRole.Name, COUNT(Id) n FROM User WHERE IsActive = true GROUP BY Profile.Name, UserRole.Name ORDER BY Profile.Name")
+    q.append("SELECT Profile.Name p, UserRole.Name r, COUNT(Id) n FROM User WHERE IsActive = true GROUP BY Profile.Name, UserRole.Name ORDER BY Profile.Name")
     q.append("-- 5. quem da planilha ja existe na org (por e-mail, lotes de %d; conferir tambem por Username e por nome)" % LOTE)
     for k in range(0, len(emails), LOTE):
         q.append("SELECT Id, Name, Username, Email, IsActive, Profile.Name, UserRole.Name, UserType, Title, LastLoginDate, CreatedDate, CreatedBy.Name FROM User WHERE Email IN (%s) OR Username IN (%s)" % (soql_in(emails[k:k + LOTE]), soql_in(emails[k:k + LOTE])))
     for k in range(0, len(nomes), LOTE):
         q.append("SELECT Id, Name, Username, Email, IsActive, Profile.Name, UserRole.Name FROM User WHERE Name IN (%s)" % soql_in(nomes[k:k + LOTE]))
     q.append("-- 6. historico: quem foi criado com o perfil da modelo nos ultimos 90 dias (responde 'essa planilha e nova?')")
-    q.append("SELECT Name, Email, IsActive, UserRole.Name, CreatedDate, CreatedBy.Name FROM User WHERE Profile.Id IN (SELECT ProfileId FROM User WHERE Name = '%s') AND CreatedDate = LAST_N_DAYS:90 ORDER BY CreatedDate DESC" % a.modelo_perfil.replace("'", "\\'"))
+    q.append("SELECT Name, Email, IsActive, Profile.Name, UserRole.Name, CreatedDate, CreatedBy.Name, LastLoginDate FROM User WHERE CreatedDate = LAST_N_DAYS:90 ORDER BY CreatedDate DESC")  # filtrar pelo perfil do modelo na analise: SOQL nao aceita semi-join no mesmo objeto
     with open(os.path.join(a.saida, 'consultas.soql'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(q) + '\n')
     # um arquivo por consulta, porque sf data query --file aceita uma consulta por arquivo
