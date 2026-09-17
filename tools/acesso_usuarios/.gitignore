@@ -1,0 +1,4 @@
+# planilhas recebidas e saidas com nome/e-mail de colaborador ficam fora do git
+*.xlsx
+saida/
+__pycache__/
