@@ -59,3 +59,20 @@ Limpeza da fila (depois do "vai"; primeiro com LIMITE = 1 no script, conferir, d
 ```
 sf apex run -o btp-prod --file scripts\47_FecharAprovacoesArquiteturaOppFechada_1709.apex
 ```
+
+## Limpeza executada (17/09, 15h08 e 15h14, pelo Diego no terminal)
+
+- **Script 47 (teste)**: recolher a ApprovalSubmission pela API e proibido ("User cannot edit Approval Submission Standard
+  Fields"), 0 de 45. Mas cancelar a orquestracao (FlowOrchestrationInstance.Status = 'Canceled') funcionou nas 4 orfas: os itens
+  da fila ficaram Completed.
+- **Script 48** (scripts/48_CancelarOrquestracaoOppFechada_1709.apex), com o mecanismo que funciona: 43 orquestracoes de
+  oportunidades Fechado/Perdido canceladas, 43 de 43. DEPOIS: 0 itens pendentes em opp fechada; fila de Arquitetura com 244
+  itens, igual ao numero de oportunidades abertas aguardando. Efeito colateral: nota de 17/09 no historico da opp? Nao; so a
+  orquestracao muda de status. A opp fechada continua com Send4Approval__c = true e ArchitectureApproved__c = false (campos
+  nao foram tocados).
+- Exemplo conferido pelo Diego: BLUCOMPTEC (006V200000Z7T2jIAF), perdida em 08/01 com item de 04/12: cancelada, item Completed.
+
+**Processo permanente (proposta atualizada).** Flow record-triggered em Opportunity, after save, quando IsClosed passa a true e
+existe FlowOrchestrationInstance InProgress da OpportunityApprovalSteps_B2B para o registro: Update Records com Status =
+Canceled (o flow roda em contexto de sistema; a API aceita esse update, como o script 48 provou). Montar e testar na sandbox
+antes de subir; enquanto nao existe, rodar o script 48 (fase 1 lista, fase 2 cancela) uma vez por semana.
