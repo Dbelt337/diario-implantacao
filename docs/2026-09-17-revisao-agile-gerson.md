@@ -132,3 +132,10 @@ fase 1 confirmou works = 0 nas cinco; fase 2 apagou: Junho/2026-Time SysMap-3a e
 (data invertida), Julho/2026-Time SysMap-3a e 4a Sem, Sprint Catalogo - 1a e 2a Semana, Sprint Catalogo - 3 e 4 Semana.
 Ficam 15 dias na lixeira. Restam 7 sprints: Junho e Julho/2026-Time Salesforce (com works do BTP), Sprint 1 SysMap,
 Sprint 1 Brasil TecPar, Sprints 2, 3 e 4 SysMap. Itens 1 a 6 continuam aguardando o Gerson.
+
+## Executado em 17/09: item 4 (script 43)
+
+Diego decidiu: responsavel Davi Israel de Abreu nas 7 works em sprint corrente; PO e a Priscila De Lima. Conferido na
+W-000051 e na W-000096 (padrao: Assignee = Davi, Product Owner = Priscila; PO ja estava nas 7 e nas 88 do pacote).
+Script 43 (scripts/43_ResponsavelSprint1_1709.apex), fase 1 listou 7, fase 2 gravou: 133, 134, 135, 136, 137, 140 e 141
+com responsavel Davi e PO Priscila. So preenche campo vazio; nao sobrescreve. Pendentes agora: itens 1, 2, 3, 5 e 6.
