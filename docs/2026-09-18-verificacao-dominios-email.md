@@ -138,3 +138,55 @@ Autorizado nao e automatica; depois de publicar o TXT e esperar a propagacao, "e
 trigger the verification callout". Ou seja: Setup > Dominios de email autorizados > Editar em brasiltecpar.com.br > Salvar,
 sem mudar nada. A coluna "Propriedade verificada" deve virar Sim. O mesmo vale para os outros 3 assim que o CSTI/contatos
 locais publicarem os TXT. Depois, Setup > Verificar dominios de envio de e-mail confirma o resultado por dominio.
+
+## Resultado 18/09, 9h54: brasiltecpar.com.br VERIFICADO
+
+Diego editou o dominio em Setup marcando "Verificar a propriedade do dominio" e salvou. Tooling API: brasiltecpar.com.br
+IsDomainOwnershipVerified = **true** (9h54). avato.com.br e taak.com.br: "Nao foi possivel verificar este dominio" (sem TXT no
+DNS, esperado); sejaamigo.com.br nao tentado. Evidencias: print da tela com "Propriedade verificada: Sim" e esta consulta.
+
+Status final para o relatorio do Gerson:
+
+| Dominio | Verificado (AED) | DKIM ativo | Pendencia | Responsavel DNS |
+|---|---|---|---|---|
+| brasiltecpar.com.br | **SIM (18/09)** | nao (8 CNAMEs nao publicados) | opcional: CNAMEs btp1/btp2 para ativar DKIM | Pedro (Seguranca) |
+| sejaamigo.com.br | nao | nao | TXT `00DHu00000FcxIg=1TBV200000001lj` na raiz ou em _sfdv.sejaamigo.com.br | CSTI |
+| avato.com.br | nao | nao | TXT `00DHu00000FcxIg=1TBV200000001lh` | CSTI |
+| taak.com.br | nao | nao | TXT `00DHu00000FcxIg=1TBV2000000037Z` | contato local |
+| blinktelecom.com.br (org Blink) | sem evidencia | sem evidencia | admin da org Blink repetir o processo | Gerson define |
+
+Nota da tela: o registro TXT pode ficar na raiz, em `_sfdv.<dominio>` ou em `00dhu00000fcxigmaj._sfdv.<dominio>`; ate 48 h de
+propagacao; depois, Editar > marcar "Verificar a propriedade do dominio" > Salvar.
+
+## E-mail final para Gerson e Bismarck (versao com o status real)
+
+Assunto: Verificacao de dominios de e-mail no Salesforce - status em 18/09
+
+> Gerson, Bismarck,
+>
+> Status da verificacao de dominios de e-mail na org de producao (prazo Salesforce: 26/10):
+>
+> - **brasiltecpar.com.br: VERIFICADO hoje (18/09)** pelo metodo Dominio de E-mail Autorizado. O TXT publicado pelo Pedro em
+>   28/08 estava correto; faltava disparar a checagem em Setup, feita hoje. Print em anexo (Propriedade verificada: Sim).
+>   E o dominio de 1.477 dos nossos usuarios.
+> - **sejaamigo.com.br e avato.com.br: pendentes.** Conforme o Pedro (27/08), o DNS desses dominios e do time CSTI. Os codigos
+>   TXT seguem abaixo; assim que publicados, eu verifico em Setup no mesmo dia.
+> - **taak.com.br: pendente**, DNS com contato local (1 usuario, baixo impacto).
+> - **DKIM**: chaves criadas na org para os 4 dominios em 21/08; para ativar, faltam 8 registros CNAME (lista abaixo). E o
+>   metodo que a Salesforce recomenda, alem do dominio autorizado. Enviado ao Pedro hoje.
+> - **Org Blink Telecom**: nao esta no meu acesso e o DNS de blinktelecom.com.br nao tem nenhum registro de verificacao.
+>   Precisa de um admin daquela org fazendo o mesmo passo a passo; quem?
+>
+> Codigos TXT (raiz do dominio ou host _sfdv.<dominio>):
+> sejaamigo.com.br = 00DHu00000FcxIg=1TBV200000001lj
+> avato.com.br = 00DHu00000FcxIg=1TBV200000001lh
+> taak.com.br = 00DHu00000FcxIg=1TBV2000000037Z
+>
+> CNAMEs DKIM: btp1._domainkey.<dominio> e btp2._domainkey.<dominio> apontando para os alvos da tabela anexa
+> (brasiltecpar: btp1.q7s0qc / btp2.6pt0db .custdkim.salesforce.com; sejaamigo: btp1.roru7e / btp2.j69lux; avato:
+> btp1.0uj1gv / btp2.g69ixe; taak: btp1.xtm63z / btp2.egulcr).
+>
+> Se nada mais mudar ate 26/10, os e-mails de @brasiltecpar continuam saindo normalmente; os de @sejaamigo, @avato, @taak e
+> da Blink passam a sair por endereco substituto da Salesforce.
+>
+> Diego
