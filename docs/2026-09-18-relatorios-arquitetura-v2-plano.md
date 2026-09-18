@@ -78,3 +78,14 @@ testes internos (Priscila, Thais, Diego).
 - 19/09: lista de arquitetos do Vilson; Priscila define fases "de outros" (item 5) e meta de SLA (item 7).
 - 21/09: testes internos Priscila, Thais, Diego.
 - 22/09 ou 23/09: apresentacao ao Vilson.
+
+## Publicado em 18/09, 11h05 (deploy 0AfV2000000tzXVKAY, 8/8): links
+
+- Arq - Fila pendente por arquiteto: https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009dQn6MAE/view
+- Arq - Validação técnica: dias por arq.: https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009dQn3MAE/view
+- Arq - Viabilidade: dias por arquiteto: https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009dQn5MAE/view
+- Arq - Viabilidade: saídas por destino: https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009dQn4MAE/view
+- Arquitetura - Fila pendente por idade: https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009cR6rMAE/view
+- Arquitetura - Opps aguardando (abertas): https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009cqy5MAA/view
+- Arquitetura - Validações por arquiteto: https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009cR6sMAE/view
+- Arquitetura - Volume mensal: https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009cR6tMAE/view
