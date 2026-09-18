@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>RowCount</column>
+        </chartSummaries>
+        <chartType>VerticalColumn</chartType>
+        <enableHoverLabels>true</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Assignee.User</groupingColumn>
+        <location>CHART_TOP</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>true</showValues>
+        <size>Large</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <title>Pendentes por arquiteto que assumiu</title>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Name</field>
+    </columns>
+    <columns>
+        <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$CreatedDate</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Average</aggregateTypes>
+        <aggregateTypes>Maximum</aggregateTypes>
+        <field>CDF1</field>
+    </columns>
+    <columns>
+        <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Assignee.Group</field>
+    </columns>
+    <customDetailFormulas>
+        <calculatedFormula>NOW() - FlowOrchestrationWorkItem.CreatedDate</calculatedFormula>
+        <dataType>Double</dataType>
+        <developerName>CDF1</developerName>
+        <label>Dias na fila</label>
+        <scale>1</scale>
+    </customDetailFormulas>
+    <description>Itens "Aprovação - Arquitetura" pendentes agrupados pelo arquiteto que assumiu o item (Assigned User). Itens ainda na fila "Arquitetura" aparecem sem usuário: ninguém assumiu. Dias na fila desde a entrada.</description>
+    <filter>
+        <criteriaItems>
+            <column>FlowOrchestrationStepInstance$Label</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Aprovação - Arquitetura</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Status</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Assigned</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Assignee.User</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Arq - Fila pendente por arquiteto</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>flow_orchestration_work_item_ootb_crt_two_four_eight__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>
