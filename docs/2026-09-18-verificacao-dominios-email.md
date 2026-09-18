@@ -113,3 +113,22 @@ Assunto: Verificacao de dominios de e-mail no Salesforce - status em 18/09
 > @avato, @taak e da Blink saem por endereco substituto da Salesforce.
 >
 > Diego
+
+## Atualizacao 18/09, 10h30: tela de Setup e Tooling API
+
+Print do Diego (Setup > Dominios de email autorizados): os 4 dominios com **"Propriedade verificada: Nao"**, "Exigir verificacao
+de email: Sim". Codigos: avato `00DHu00000FcxIg=1TBV200000001lh`, brasiltecpar `...=1TBV200000001li`, sejaamigo `...=1TBV200000001lj`,
+taak `...=1TBV2000000037Z`. O codigo de brasiltecpar e `li` minusculo, igual ao que esta no DNS: **o registro do Pedro esta
+correto**; a duvida do caractere caiu.
+
+Tooling API (objeto AuthorizedEmailDomain), leitura: IsDomainOwnershipVerified = false nos 4; LastModifiedDate 05/06/2026 nos 4.
+Nada mudou nos registros desde junho: **a checagem de verificacao nunca foi disparada depois da publicacao do TXT (28/08)**.
+A verificacao nao e automatica: e feita em Setup > "Verificar dominios de envio de e-mail" (Check Your Email-Sending Domains),
+informando o dominio e clicando em verificar; e o passo 2 do proprio e-mail do Gerson de 20/08 ("Validar os dominios").
+
+DNS (Pedro, 27/08): avato.com.br e sejaamigo.com.br sao tratados pelo time CSTI, nao pela Seguranca; taak e demais clusters
+com os pontos de contato locais. O Diego reenviou ao Pedro em 18/09 os 3 TXT que faltam e os 8 CNAMEs DKIM.
+
+Proximo passo imediato (Diego, 5 minutos): Setup > Verificar dominios de envio de e-mail > brasiltecpar.com.br > verificar. Se
+voltar "Dominio verificado", print para o relatorio e a coluna da tela de Dominios autorizados passa a "Sim". Se falhar, o
+DNS esta certo (conferido hoje), entao abrir caso na Salesforce com o print e o nslookup.
