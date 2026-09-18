@@ -78,6 +78,13 @@
             <operator>equals</operator>
             <value>Completed</value>
         </criteriaItems>
+        <criteriaItems>
+            <column>FlowOrchestrationStepInstance$Status</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Completed</value>
+        </criteriaItems>
     </filter>
     <format>Summary</format>
     <groupingsDown>
