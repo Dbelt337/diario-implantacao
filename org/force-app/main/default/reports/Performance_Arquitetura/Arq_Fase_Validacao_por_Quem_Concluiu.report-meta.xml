@@ -72,10 +72,15 @@
     </groupingsDown>
     <name>Arq - Validação técnica: dias por arq.</name>
     <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
         <name>probability</name>
         <value>>0</value>
     </params>
     <reportType>OpportunityHistory</reportType>
+    <scope>all</scope>
     <showDetails>false</showDetails>
     <showGrandTotal>true</showGrandTotal>
     <showSubTotals>true</showSubTotals>
