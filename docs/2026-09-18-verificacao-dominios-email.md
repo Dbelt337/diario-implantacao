@@ -190,3 +190,13 @@ Assunto: Verificacao de dominios de e-mail no Salesforce - status em 18/09
 > da Blink passam a sair por endereco substituto da Salesforce.
 >
 > Diego
+
+## Org Blink Telecom (18/09, 10h10): Diego tem acesso
+
+Setup > Dominios de email autorizados na org Blink (00D8c000007UaHU): tres cadastros, nenhum verificado:
+blinktelecom.com.br (codigo `00D8c000007UaHU=1TBbJ00000003HF`), dreamm.com.br (`...=1TBbJ00000003HG`) e salesforce.com
+(`...=1TBbJ00000003HH`, cadastro invalido: dominio de terceiro, excluir). DNS: blinktelecom.com.br e dreamm.com.br sem TXT
+de verificacao (raiz e _sfdv); dreamm.com.br tem MX no Outlook (confirmar se ha usuarios enviando por ele). Sem chaves DKIM.
+Passos: excluir salesforce.com; enviar o TXT de blinktelecom (e o de dreamm, se usado) ao contato de DNS da Blink; criar chave
+DKIM na org Blink e publicar os CNAMEs; depois da propagacao, Editar > marcar "Verificar a propriedade" > Salvar.
+Relatorio Word regerado com a secao 3.4 (Blink) e o e-mail reescrito.
