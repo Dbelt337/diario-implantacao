@@ -1,37 +1,37 @@
-# 18/09/2026 - Exemplos de preenchimento da Planilha1 (Core -> Control Plane) com o catalogo B2C atual
+# 18/09/2026 - Planilha1 (Core -> Control Plane) preenchida a partir do catalogo B2C atual
 
-Pedido do Diego: exemplos de como preencher a aba "Planilha1" (48 colunas) de Ofertas_Atuais_migracao (1).xlsx usando a aba
-"B2C catalogo atual" (67 produtos: Amigo Residencial, Amigo Negocios, Retencao, Movel, Fone Fixo, Streaming, Cameras).
+Pedido do Diego: a aba "Planilha1" de Ofertas_Atuais_migracao (1).xlsx preenchida no formato das duas linhas do Sky TV (uma
+linha por produto vendavel, 48 colunas), com os dados vindos da aba "B2C catalogo atual". Uma primeira versao com decomposicao
+por componente (Ebook, Audiobook etc. como filhos) foi descartada: nao era o que ele queria.
 
-Entregue: docs/Ofertas_Atuais_migracao_exemplos_Planilha1.xlsx, copia do arquivo com duas abas novas: **Planilha1_exemplos**
-(35 linhas, 4 ofertas, uma linha por opcao de componente) e **Regras_B2C_para_Planilha1** (de-para coluna a coluna). Gerador:
-tools/catalogo/exemplos_planilha1_b2c.py. As abas originais nao mudaram.
+Entregue: docs/Ofertas_Atuais_migracao_Planilha1_preenchida.xlsx, copia do arquivo com a Planilha1 preenchida: as 2 linhas do
+Sky TV mantidas e 67 linhas novas, uma por produto do catalogo B2C (67 produtos: 3 Amigo Residencial, 4 planos + 12 add-ons Amigo
+Negocios, 2 Retencao, 5 Movel, 6 Fone Fixo, 19 Streaming, 16 Camera). Gerador: tools/catalogo/planilha1_de_b2c.py (reexecutavel).
 
-## Os 4 exemplos e o que cada um ensina
+## Como cada coluna foi preenchida
 
-1. **Amigo Residencial 600 Mb** (B2C, nao existe no Core: ids vazios, IDENTIFICADOR_UNICO = NOVO-B2C-RES600-...). 12 linhas:
-   6 atributos picklist (Banda 600 com VALOR_TECNICO 600 MBPS, Meio GPON, Upload, IPv4 CGNAT, IPv6 /64, Prazo 12 meses),
-   roteador Wi-Fi 6 como filho fixo incluso (MRC 0 com REGRA PORTFOLIO "incluso"), Wi-Fi adicional como filho com quantidade
-   0..8 a 20.00, e os 4 servicos digitais como filhos fixos com preco e nota propria. **O preco 99.90 do catalogo se decompoe:
-   42.90 (conectividade, na Banda, SCM/NFCom) + 18.90 Ebook + 13.50 Audiobook + 14.60 Banca + 10.00 Livro (SVA/NFS-e)**.
-   E a decomposicao por documento fiscal que o EPC precisa.
-2. **Amigo Negocios Basico 350 Mb** (B2S, oferta 383 do Core, componentes com os ids do Core: Banda 3, Meio 1, Porta 2, Tipo
-   Wifi 11, Extensores 742, Tipo NOC 22, Aya 9/582/583, Camera interna 502). Mostra: conectividade MPE como SCI/NFS-e (igual
-   ao Core), add-ons opcionais (IP fixo 49.90, CARD 0/0/1), cobranca unica (Chamado Extraordinario 65.00 em NRC), cameras por
-   faixa como grupo de escolha (2 cameras 39.90, 3 cameras 49.90: preco nao linear), Wi-Fi mesh 49.90 com quantidade.
-3. **Amigo Movel 10 GB** (oferta 521): pacotes como filhos em grupo de escolha (10 GB 35.00, 15 GB 40.00, VALOR_TECNICO em GB),
-   Tipo de Chip picklist, ICCID como atributo de texto (componente sem opcao no Core).
-4. **Streaming Playhub** (oferta 1001): "Top 1/2/3 Produtos" a 10/20/30 e linear, entao vira filho com quantidade 1..3 a 10.00
-   por unidade; Sky Light vira filho em grupo de escolha com preco igual nos 4 prazos.
+| Coluna | Regra |
+|---|---|
+| OFERTA_ID | id do Core quando a oferta existe la: Amigo Negocios 383, Amigo Movel 521, Amigo Camera 541, Playhub Top/Prime/Avancado 1001, Sky+ 1002. Residencial, Retencao, Fone, Globoplay e CeletiHub: vazio (nao estao no Core). SERVICO_ID, COMPONENTE_ID e COMPONENTE_OPCAO_ID vazios (opcoes novas). |
+| IDENTIFICADOR_UNICO | ProductCode do catalogo (B2S_NEG_0, MOVEL_13, STREAM_31, CAM_0_7D...); onde nao ha codigo, B2C_<oferta>_<n>. |
+| OFERTA / SERVICO | familia do produto: Amigo Residencial, Amigo Negocios, Amigo Retencao, Amigo Movel, Fone Fixo, Streaming Top / Prime / Avancado / Sky+ / Globoplay / CeletiHub, Amigo Camera. |
+| COMPONENTE / COMPONENTE_OPCAO | Velocidade (600 Mb, 700 Mb, 1 GB), Plano (Basico 350 Mb, Controle, Prime I), Franquia de dados (10 GB), Pacote (1 Produto, Light Urbano), Armazenamento nuvem 7 ou 30 dias (N Cameras, como os componentes 504/505 do Core), e nos add-ons do Amigo Negocios: Wi-Fi adicional, IP fixo, Servico avulso, Cameras. |
+| TIPO_FISCAL / TIPO_SERVICO | Internet residencial NFCom/SCM; Internet MPE NFS-e/SCI (como a oferta 383 do Core); Movel NFS-e/SVA (como a 521); Fone NFCom/STFC; Streaming NFS-e/SVA; Camera e Wi-Fi Fatura/Locacao ou TI; Chamado NFS-e/Servico; IP fixo NFCom/SCM. |
+| OPCAO_VALOR_MRC = VALOR MENSAL | Price 01 (preco do produto). Price 02, 03 e 04 registrados em REGRA PORTFOLIO como "24m / 36m / 48m" (premissa: sao prazos; confirmar). |
+| SEGMENTO / CATALOGO / LISTA DE PRECO / CANAL VENDA | B2C: B2C / CAT_B2C_EVO / PL_B2C_EVO / VENDA_ASSISTIDA, ECOMMERCE. B2S_NEG: B2S / CAT_B2B_EVO / PL_B2B_EVO / VENDA_ASSISTIDA. MERCADO e ZONA_DISP vazios = todos. |
+| CLASSE DE PROD | CLASS_INTERNET_HOME, CLASS_INTERNET_BUSINESS, CLASS_MOBILE, CLASS_VOICE, CLASS_SVA, CLASS_CPE (propostas, no padrao CLASS_TV do exemplo). |
+| SITUACAO_VLR | VALIDADO_CORE (preco da tabela vigente); PENDENTE na unica linha sem preco (Amigo Negocios 1 Camera). |
+| DESC_FISCAL_SAP | nome do produto em caixa alta sem acento. COD. SAP vazio (Fiscal). |
+| VIGENCIA | 2026-09-18 a 2031-09-18, como o exemplo. MOEDA BRL. |
+| GERA_ATIVO / OM | 1/1 em movel, fone, camera e equipamentos; 0/1 em internet (provisiona, nao gera ativo); 0/0 em streaming. |
+| CARD MIN/DEFAULT/MAX | 1/1/1 nos planos; 0/0/1 nos add-ons opcionais; 0/0/8 em Wi-Fi adicional e cameras do Negocios. CARDINALIDADE = MAX. |
+| VALOR_TECNICO / UNIDADE | velocidade em MBPS (1 GB = 1000), franquia em GB, cameras = quantidade; demais UN. |
+| TIPO_ELEMENTO / CODIGO_CANONICO | ATRIBUTO_PICKLIST com PV_<oferta>_<opcao> nos planos (como PV_LITE do exemplo); FILHO_FIXO com CH_ nos add-ons. COMPONENTE_TIPO Comercial. |
+| DECIDIDO_POR / DATA_DECISAO | Diego Beltrao, 2026-09-18. |
 
-## Premissas que precisam de confirmacao
+## Pendencias que ficaram na planilha
 
-- **Price 01 a 04** foram lidos como prazos de 12, 24, 36 e 48 meses (caem 3.00 por degrau, como a Estrutura_preco). Ate a
-  lista filha por prazo existir, os outros tres precos ficam em REGRA PORTFOLIO ("ABP por Prazo"). Se forem zonas a/b/c/d, muda
-  a coluna: ZONA_DISP e lista filha por zona.
-- **CLASSE DE PROD** (CLASS_INTERNET_HOME, CLASS_INTERNET_BUSINESS, CLASS_SVA, CLASS_MOBILE, CLASS_CPE) e proposta; confirmar
-  no painel do presidente.
-- **COD. SAP** ficou vazio em todas: depende do Fiscal.
-- Segmento B2S usa catalogo e lista B2B (CAT_B2B_EVO, PL_B2B_EVO), como a Estrutura_preco agrupa B2B;B2S.
-- Duas linhas do catalogo nao viram produto ate resolver: "Amigo Negocios 1 Camera" sem preco e "Fone Fixo Controle" duplicado
-  (FONE_0 e FONE_5).
+- Fone Fixo Controle aparece duas vezes no catalogo (FONE_0 e FONE_5): as duas linhas entraram; apagar uma.
+- Amigo Negocios 1 Camera sem preco (SITUACAO_VLR = PENDENTE).
+- Price 02 a 04 como prazos 24/36/48 e premissa; se forem zonas, muda para ZONA_DISP e lista filha.
+- COD. SAP em branco em todas.
