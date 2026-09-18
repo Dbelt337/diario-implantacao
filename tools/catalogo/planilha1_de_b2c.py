@@ -62,6 +62,9 @@ def val(r, h):
     v = r[ix[h]] if h in ix and ix[h] < len(r) else None
     return '' if v in (None, '') else v
 
+# a Planilha1 original tem 998 linhas com formatacao vazia: escrever logo abaixo da ultima linha com dados
+ultima = max((i for i, r in enumerate(p1.iter_rows(values_only=True), start=1) if any(v not in (None, '') for v in r)), default=1)
+if p1.max_row > ultima: p1.delete_rows(ultima + 1, p1.max_row - ultima)
 n_out = 0; seq = 0
 for r in rows[1:]:
     if not any(v not in (None, '') for v in r): continue
