@@ -132,3 +132,9 @@ com os pontos de contato locais. O Diego reenviou ao Pedro em 18/09 os 3 TXT que
 Proximo passo imediato (Diego, 5 minutos): Setup > Verificar dominios de envio de e-mail > brasiltecpar.com.br > verificar. Se
 voltar "Dominio verificado", print para o relatorio e a coluna da tela de Dominios autorizados passa a "Sim". Se falhar, o
 DNS esta certo (conferido hoje), entao abrir caso na Salesforce com o print e o nslookup.
+
+Fonte oficial (Email-Sending Domain Verification FAQ, help.salesforce.com, artigo 005316911): a verificacao do Dominio de E-mail
+Autorizado nao e automatica; depois de publicar o TXT e esperar a propagacao, "edit and save the Authorized Domain again to
+trigger the verification callout". Ou seja: Setup > Dominios de email autorizados > Editar em brasiltecpar.com.br > Salvar,
+sem mudar nada. A coluna "Propriedade verificada" deve virar Sim. O mesmo vale para os outros 3 assim que o CSTI/contatos
+locais publicarem os TXT. Depois, Setup > Verificar dominios de envio de e-mail confirma o resultado por dominio.
