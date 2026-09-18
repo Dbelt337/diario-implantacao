@@ -12,7 +12,7 @@
         <chartType>HorizontalBar</chartType>
         <enableHoverLabels>true</enableHoverLabels>
         <expandOthers>true</expandOthers>
-        <groupingColumn>LAST_UPDATE_NAME</groupingColumn>
+        <groupingColumn>LAST_UPDATE</groupingColumn>
         <location>CHART_TOP</location>
         <showAxisLabels>true</showAxisLabels>
         <showPercentage>false</showPercentage>
@@ -22,7 +22,7 @@
         <summaryAxisRange>Auto</summaryAxisRange>
         <textColor>#000000</textColor>
         <textSize>12</textSize>
-        <title>Validação técnica: dias por pessoa</title>
+        <title>Validação técnica: dias médios por mês</title>
         <titleColor>#000000</titleColor>
         <titleSize>18</titleSize>
     </chart>
@@ -39,15 +39,12 @@
         <field>STAGE_NAME</field>
     </columns>
     <columns>
-        <field>LAST_UPDATE</field>
-    </columns>
-    <columns>
         <aggregateTypes>Average</aggregateTypes>
         <aggregateTypes>Maximum</aggregateTypes>
         <aggregateTypes>Sum</aggregateTypes>
         <field>STAGE_DURATION</field>
     </columns>
-    <description>Fase de origem Validação técnica, 90 dias. Duração da fase (dias) por oportunidade, por quem tirou da fase. Aprovação comercial, crédito e Análise cliente ficam fora (fases próprias).</description>
+    <description>Tempo em Validação técnica por oportunidade (dias), por mês de saída, 90 dias. A fase é encerrada pela automação após a aprovação, por isso a visão por arquiteto é o relatório Validações por arquiteto.</description>
     <filter>
         <criteriaItems>
             <column>FROM_OPPORTUNITY_STAGE_NAME</column>
@@ -66,11 +63,11 @@
     </filter>
     <format>Summary</format>
     <groupingsDown>
-        <dateGranularity>Day</dateGranularity>
-        <field>LAST_UPDATE_NAME</field>
+        <dateGranularity>Month</dateGranularity>
+        <field>LAST_UPDATE</field>
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
-    <name>Arq - Validação técnica: dias por arq.</name>
+    <name>Arq - Validação técnica: dias por mês</name>
     <params>
         <name>open</name>
         <value>all</value>

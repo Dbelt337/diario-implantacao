@@ -5,9 +5,8 @@
         <backgroundColor2>#FFFFFF</backgroundColor2>
         <backgroundFadeDir>Diagonal</backgroundFadeDir>
         <chartSummaries>
-            <aggregate>Average</aggregate>
             <axisBinding>y</axisBinding>
-            <column>STAGE_DURATION</column>
+            <column>RowCount</column>
         </chartSummaries>
         <chartType>HorizontalBar</chartType>
         <enableHoverLabels>true</enableHoverLabels>
@@ -22,7 +21,7 @@
         <summaryAxisRange>Auto</summaryAxisRange>
         <textColor>#000000</textColor>
         <textSize>12</textSize>
-        <title>Saídas da viabilidade por destino</title>
+        <title>Saídas da viabilidade: quantidade</title>
         <titleColor>#000000</titleColor>
         <titleSize>18</titleSize>
     </chart>
@@ -44,7 +43,7 @@
         <aggregateTypes>Sum</aggregateTypes>
         <field>STAGE_DURATION</field>
     </columns>
-    <description>Para onde as oportunidades foram ao sair de Viabilidade (90 dias). Validação técnica = aprovada pela arquitetura; Fechado/Perdido ou Análise cliente = não avançou. Taxa = Validação técnica / total.</description>
+    <description>Destino ao sair de Viabilidade (90 dias): Análise cliente = viabilidade aprovada, segue para proposta; Em negociação = devolvida ao vendedor. Taxa de aprovação = Análise cliente / total. Dias = tempo na fase.</description>
     <filter>
         <criteriaItems>
             <column>FROM_OPPORTUNITY_STAGE_NAME</column>

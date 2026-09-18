@@ -89,3 +89,14 @@ testes internos (Priscila, Thais, Diego).
 - Arquitetura - Opps aguardando (abertas): https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009cqy5MAA/view
 - Arquitetura - Validações por arquiteto: https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009cR6sMAE/view
 - Arquitetura - Volume mensal: https://prod-brasiltecpar.lightning.force.com/lightning/r/Report/00OV2000009cR6tMAE/view
+
+## Leitura dos primeiros numeros (18/09, 11h30, via API depois do deploy 0AfV2000000tzdxKAA)
+
+- Viabilidade (90 dias): 1.930 saidas, media 7,1 dias, maximo 213, soma 13.713 dias. Destinos: **Analise cliente** (aprovada,
+  vai para proposta) e **Em negociacao** (devolvida). Nenhuma sai direto para Validacao tecnica: a taxa de aprovacao da
+  viabilidade e Analise cliente / total. Por pessoa (soma de dias): Andre 2.729, Gilmar 1.591, Alex 1.141, Jeferson 595,
+  Joao Pedro 310, Clayton 136, Franklin 119; "Automated Process" 2.663 (saidas automaticas, ex.: viabilidade expressa).
+- Validacao tecnica (90 dias): 1.640 saidas, media 1,3 dia, maximo 32. Quem tira da fase e sempre o Automated Process (a
+  orquestracao muda a fase apos a aprovacao): por pessoa nao existe no historico. O relatorio virou "dias por mes" (visao de
+  time); a visao por arquiteto da validacao continua sendo "Validacoes por arquiteto" (itens da fila).
+- Ajustes aplicados no metadado: validacao agrupada por mes; saidas por destino com grafico por quantidade; descricoes.

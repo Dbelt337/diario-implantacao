@@ -47,7 +47,7 @@
         <aggregateTypes>Sum</aggregateTypes>
         <field>STAGE_DURATION</field>
     </columns>
-    <description>Fase de origem Viabilidade e desenho da solução, 90 dias. Duração da fase (dias) por oportunidade, por quem tirou da fase. Aprovações e Análise cliente ficam fora (fases próprias).</description>
+    <description>Fase de origem Viabilidade e desenho da solução, 90 dias. Dias na fase por oportunidade, por quem tirou da fase. Automated Process = saídas automáticas (ex.: viabilidade expressa).</description>
     <filter>
         <criteriaItems>
             <column>FROM_OPPORTUNITY_STAGE_NAME</column>
