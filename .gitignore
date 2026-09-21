@@ -2,3 +2,4 @@
 # planilhas com dados de clientes (CNPJ, e-mail, nomes) ficam fora do git
 docs/Template_Carga_Leads*.xlsx
 docs/~$*
+org/tmp/
