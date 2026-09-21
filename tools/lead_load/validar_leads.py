@@ -24,10 +24,29 @@ import argparse, csv, html, json, os, re, sys, unicodedata, zipfile
 TEMPLATE = ['SDR', 'Proprietario', 'Origem', 'CNPJ', 'RazaoSocial', 'NomeFantasia', 'Nome', 'Sobrenome', 'Cargo',
             'Telefone1', 'Telefone2', 'Email', 'Cidade', 'UF', 'Observacoes']
 SF_FIELDS = ['SDR__c', 'OwnerId', 'LeadSource', 'DocumentNumber__c', 'Company', 'FantasyName__c', 'FirstName', 'LastName', 'Title',
-             'Phone', 'MobilePhone', 'Email', 'City', 'State', 'Description', 'Status', 'RecordTypeId', 'LegalEntityType__c']
-STATUS_NOVO = 'Novo'            # regra 3 da B2B-01: Lead nasce em "Novo" (confirmar API name do valor na org)
-RECORDTYPE_LEAD_B2B = ''        # preencher com o Id do RecordType de Lead B2B da org alvo (sandbox e prod diferem)
-LEGAL_ENTITY_PJ = 'PJ'          # confirmar valor da picklist LegalEntityType__c
+             'Phone', 'MobilePhone', 'Email', 'City', 'StateCode', 'CountryCode', 'Description', 'Status', 'Stage__c', 'Segment__c',
+             'ClusterManual__c', 'RecordTypeId']
+# Confirmado na btp-prod em 21/09/2026 (carga de 104 leads da SDR, ver docs/2026-09-21-carga-leads-sdr-vitoria.md)
+STATUS_NOVO = 'New'                            # API name do valor "Novo" (ManuallyLeadCreationStatus esta inativa)
+RECORDTYPE_LEAD_B2B = '012V2000002CjpsIAC'     # "Prospecto - B2B" na PROD; em sandbox o Id e outro
+STAGE_PADRAO = '10'                            # Stage__c (Temperatura do lead) e OBRIGATORIO e sem padrao; 10 = frio
+SEGMENTO_PADRAO = 'B2W - Wholesale'            # padrao dos leads da SDR; ajuste por carga
+CLUSTER_PADRAO = 'ALT/GGNET'                   # ClusterManual__c; ajuste por carga
+# LegalEntityType__c NAO tem valor "PJ" (valores: Sociedade Limitada, LTDA, Simples, MEI): fica vazio
+# MainEmail__c nao e gravavel via API pelo perfil de administrador: nao enviar
+ORIGENS = {'Listas GRs ALT': 'Outbound - Listas GRs ALT'}   # rotulo da planilha -> valor real da picklist LeadSource
+
+# Validacoes ativas VRPhoneMask / VRCellphoneMask (so digitos): fixo DD+8 ou 0800+7; celular DD+9+8
+def roteia_telefones(t1, t2):
+    """Devolve (Phone, MobilePhone, sobra) a partir de dois telefones sem distincao de tipo."""
+    fixos, celulares, ruins = [], [], []
+    for t in (t1, t2):
+        n = digitos(t)
+        if not n: continue
+        if re.fullmatch(r'[1-9]{2}9[0-9]{8}', n): celulares.append(n)
+        elif re.fullmatch(r'[1-9]{2}[0-9]{8}', n) or re.fullmatch(r'0800[0-9]{7}', n): fixos.append(n)
+        else: ruins.append(t)
+    return (fixos[0] if fixos else ''), (celulares[0] if celulares else ''), fixos[1:] + celulares[1:] + ruins
 
 # ---- documento (copiado de tools/mg_load/mg_load.py)
 def so_alnum(s): return ''.join(ch for ch in str(s or '') if ch.isalnum()).upper()
@@ -170,11 +189,14 @@ def processa(rows, leads, accounts, users, online):
         if motivos:
             B.append({**r, 'Linha': i, 'Motivo': ' | '.join(motivos)})
         else:
-            A.append({'SDR__c': r['SDR'], 'OwnerId': owner_id, 'LeadSource': r['Origem'], 'DocumentNumber__c': mascara_cnpj(n),
+            fone, cel, sobra = roteia_telefones(r['Telefone1'], r['Telefone2'])
+            desc = '; '.join(x for x in (r['Observacoes'], ('Outros telefones: ' + ', '.join(sobra)) if sobra else '') if x)
+            A.append({'SDR__c': owner_id, 'OwnerId': owner_id, 'LeadSource': ORIGENS.get(r['Origem'], r['Origem']), 'DocumentNumber__c': mascara_cnpj(n),
                       'Company': r['RazaoSocial'], 'FantasyName__c': r['NomeFantasia'], 'FirstName': r['Nome'], 'LastName': r['Sobrenome'],
-                      'Title': r['Cargo'], 'Phone': r['Telefone1'], 'MobilePhone': r['Telefone2'], 'Email': r['Email'].lower(),
-                      'City': r['Cidade'], 'State': r['UF'], 'Description': r['Observacoes'], 'Status': STATUS_NOVO,
-                      'RecordTypeId': RECORDTYPE_LEAD_B2B, 'LegalEntityType__c': LEGAL_ENTITY_PJ})
+                      'Title': r['Cargo'], 'Phone': fone, 'MobilePhone': cel, 'Email': r['Email'].lower(),
+                      'City': r['Cidade'], 'StateCode': r['UF'], 'CountryCode': 'BR', 'Description': desc, 'Status': STATUS_NOVO,
+                      'Stage__c': STAGE_PADRAO, 'Segment__c': SEGMENTO_PADRAO, 'ClusterManual__c': CLUSTER_PADRAO,
+                      'RecordTypeId': RECORDTYPE_LEAD_B2B})
     return A, B, C
 
 def escreve(out, A, B, C, rows, online):

@@ -43,11 +43,25 @@ validar antes, reter dúvidas, gravar em lotes pequenos, conferir depois.
 - Telefone com DDD (10 ou 11 dígitos); um e-mail por linha.
 - Duplicidade: no arquivo, contra Lead aberto e contra Conta (por `DocumentNumber__c`, nos dois formatos, com e sem máscara).
 - Proprietário: e-mail bate ou nome único e ativo. Nunca chuta.
-- Gravados pela governança: `Status = Novo`, tipo de registro Lead B2B, `LegalEntityType__c = PJ`.
+- Gravados pela governança: `Status = New` (rótulo Novo), tipo de registro Prospecto - B2B, `Stage__c = 10`, `Segment__c` e
+  `ClusterManual__c` padrão da carga (constantes no topo do validador).
+- Telefones: as validações ativas `VRPhoneMask` e `VRCellphoneMask` só aceitam dígitos (fixo DD+8 ou 0800+7; celular DD+9+8).
+  O validador roteia os dois telefones da planilha pelo formato (fixo -> Phone, celular -> MobilePhone) e manda o excedente
+  para Description.
+
+## Confirmado na btp-prod (21/09/2026, primeira carga real: 104 leads da SDR)
+
+- `LeadSource`: o rótulo "Listas GRs ALT" da aba Listas corresponde ao valor **"Outbound - Listas GRs ALT"** (mapa `ORIGENS`).
+- `SDR__c` é lookup de User: recebe o mesmo Id do proprietário.
+- RecordType "Prospecto - B2B" na prod: `012V2000002CjpsIAC` (sandbox tem outro Id).
+- `Stage__c` (Temperatura do lead) é obrigatório e sem padrão: sem ele o insert falha.
+- `LegalEntityType__c` não tem valor "PJ" (Sociedade Limitada, LTDA, Simples, MEI): fica vazio.
+- `MainEmail__c` não é gravável via API (INVALID_FIELD_FOR_INSERT_UPDATE); só `Email`.
+- Estado/país com picklist: enviar `StateCode` (UF) e `CountryCode = BR`.
+- Trigger do Lead não faz nada no insert; único flow acionado por registro é de lead perdido. Carga via `sf data import bulk`
+  em dois jobs (piloto de 2 e o restante) passou sem falhas.
 
 ## O que ainda precisa ser confirmado na org
 
-- Valores da picklist `LeadSource` (a aba Listas traz "Listas GRs ALT" e sugestões).
-- Tipo do campo `SDR__c` no Lead (texto ou lookup de usuário) e o Id do RecordType de Lead B2B em sandbox e produção.
 - Regras de validação inativas do Lead (`ValidaCPFeCNPJ`, `DocumentValidation`, `PhoneValidationFormat`): se forem reativadas, a carga passa a respeitá-las.
 - Permissão de importar: a W-000071 prevê o permission set `PS_B2C_Lead_Importer` só para Coordenação e Marketing.
