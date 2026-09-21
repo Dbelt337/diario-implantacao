@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Edit</contactAccessLevel>
+    <description>B2B Vendedor Alt e GGNet SUDESTE</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>B2B Vendedor Alt e GGNet SUDESTE</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>B2B_Gerente_Alt_e_GGNet_SUDESTE</parentRole>
+</Role>

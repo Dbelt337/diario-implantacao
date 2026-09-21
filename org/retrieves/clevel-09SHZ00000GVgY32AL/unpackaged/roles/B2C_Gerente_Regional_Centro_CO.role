@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Edit</contactAccessLevel>
+    <description>B2C Gerente Regional Centro CO</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>B2C Gerente Regional Centro CO</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>B2C_Gerente_Estadual_MT</parentRole>
+</Role>

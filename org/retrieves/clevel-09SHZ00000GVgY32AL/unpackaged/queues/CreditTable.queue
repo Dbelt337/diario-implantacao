@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>true</doesIncludeBosses>
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>Mesa de Crédito</name>
+    <queueMembers>
+        <users>
+            <user>andrei.spanier@taak.com.br.tecpar</user>
+            <user>mesacredito@tecpar.com.br</user>
+            <user>caio.konichi@taak.com.br.tecpar</user>
+            <user>caiomoraes.t@brasiltecpar.com.br</user>
+            <user>iago.gomes@taak.com.brstaging</user>
+            <user>lazarojunior.t@brasiltecpar.com.br</user>
+            <user>matheusrancan.t@brasiltecpar.com.br</user>
+            <user>matheus.rancan@taak.com.br.tecpar</user>
+            <user>matheus.rancan@taak.com.br.staging.backofficeb2c</user>
+            <user>matheus.rancan@taak.com.br.staging.mesacredito</user>
+            <user>priscilalima.t@brasiltecpar.com.br.stagingmesacredito</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>Order</sobjectType>
+    </queueSobject>
+</Queue>

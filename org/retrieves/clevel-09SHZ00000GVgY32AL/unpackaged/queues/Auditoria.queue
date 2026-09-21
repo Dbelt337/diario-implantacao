@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>true</doesIncludeBosses>
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>Auditoria</name>
+    <queueMembers>
+        <users>
+            <user>alinepertuzatti@brasiltecpar.com.br.preprod</user>
+            <user>daianesouza@avato.com.br.preprod</user>
+            <user>fernandoalvarenga@brasiltecpar.com.br.preprod</user>
+            <user>iagotognolli.t@brasiltecpar.com.br</user>
+            <user>karinelima@avato.com.br.preprod</user>
+            <user>nevio@sejaamigo.com.br.preprod</user>
+            <user>paulraad@brasiltecpar.com.br.preprod</user>
+            <user>priscilalima.t@brasiltecpar.com.br</user>
+            <user>tayzaapollo@sejaamigo.com.br.preprod</user>
+            <user>thainacavalheiro@avato.com.br.preprod</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>ApprovalSubmission</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>FlowOrchestrationWorkItem</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Task</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>WorkPlanTemplate</sobjectType>
+    </queueSobject>
+</Queue>

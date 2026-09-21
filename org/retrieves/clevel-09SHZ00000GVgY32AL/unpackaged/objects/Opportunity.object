@@ -1,0 +1,5213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>AddInfluence</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>AddInfluence</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>AddInfluence</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Large</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <comment>Action override updated by Lightning App Builder during activation.</comment>
+        <content>Opportunity_Record_Page_Three_Column</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <formFactor>Small</formFactor>
+        <type>Default</type>
+    </actionOverrides>
+    <businessProcesses>
+        <fullName>B2B</fullName>
+        <isActive>true</isActive>
+        <values>
+            <fullName>Aguardando contrato</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Aguardando instalação</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Análise cliente</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Análise financeira</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Aprovação comercial</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Aprovação crédito</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Contrato assinado</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Em negociação</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Fechado%2FPerdido</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Instalado</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Validação técnica</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Viabilidade e desenho da solução</fullName>
+            <default>false</default>
+        </values>
+    </businessProcesses>
+    <businessProcesses>
+        <fullName>B2C</fullName>
+        <isActive>true</isActive>
+        <values>
+            <fullName>Fechado%2FGanho</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Fechado%2FPerdido</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Negociação</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Nova</fullName>
+            <default>false</default>
+        </values>
+    </businessProcesses>
+    <businessProcesses>
+        <fullName>vlocity_cmt__AdSales</fullName>
+        <description>AdSales Sales process</description>
+        <isActive>true</isActive>
+        <values>
+            <fullName>Closed Lost</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Closed Won</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Needs Analysis</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Qualification</fullName>
+            <default>false</default>
+        </values>
+    </businessProcesses>
+    <businessProcesses>
+        <fullName>vlocity_cmt__Vlocity Sales Process</fullName>
+        <description>Vlocity Sales Process</description>
+        <isActive>true</isActive>
+        <values>
+            <fullName>Closed Lost</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Closed Won</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Needs Analysis</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Qualification</fullName>
+            <default>false</default>
+        </values>
+    </businessProcesses>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <compactLayouts>
+        <fullName>New_Awesome_Companct_Layout</fullName>
+        <fields>Name</fields>
+        <fields>AccountId</fields>
+        <fields>CloseDate</fields>
+        <fields>Amount</fields>
+        <fields>OwnerId</fields>
+        <label>New Awesome Compact Layout</label>
+    </compactLayouts>
+    <compactLayouts>
+        <fullName>OpportunityCompactLayout</fullName>
+        <fields>Name</fields>
+        <fields>OpportunityNumber__c</fields>
+        <fields>CloseDate</fields>
+        <fields>Cluster__c</fields>
+        <fields>NeedFinancialApproval__c</fields>
+        <fields>ResponsibleTeam__c</fields>
+        <label>Opportunity compact layout</label>
+    </compactLayouts>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <externalSharingModel>Private</externalSharingModel>
+    <fieldSets>
+        <fullName>vlocity_cmt__StoryFieldSet</fullName>
+        <description>Story board</description>
+        <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>CloseDate</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>StageName</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>NextStep</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>StoryFieldSet</label>
+    </fieldSets>
+    <fields>
+        <fullName>AccountId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Amount</fullName>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>true</trackTrending>
+    </fields>
+    <fields>
+        <fullName>ApprovedTerm__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Termo Aprovado?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ApprovedViability__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Viabildiade Aprovada?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ArchitectureApproved__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Aprovado Arquitetura</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AttachedTerm__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Termo Anexado?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AttachedViability__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Viabilidade Anexada?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AutoRenewal__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Renovação automática</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>BackofficeForm__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Formulário backoffice</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>BaseContractFilled__c</fullName>
+        <formula>AND(
+				NOT(ISBLANK(TEXT(ContractStartType__c))),
+				NOT(ISBLANK(TEXT(ContractStartDate__c))),
+				NOT(ISBLANK(TEXT(ContractEndManual__c))),
+				ContractEndManual__c &gt; 0
+)</formula>
+        <label>Base Preenchida</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Budget_Confirmed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Budget Confirmed</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Bypass__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Bypass</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CampaignId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CancellationDetails__c</fullName>
+        <label>Descrição do cancelamento</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>CancellationType__c</fullName>
+        <label>Motivo do cancelamento</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Desistencia cliente</fullName>
+                    <default>false</default>
+                    <label>Desistencia cliente</label>
+                </value>
+                <value>
+                    <fullName>Falta de interesse</fullName>
+                    <default>false</default>
+                    <label>Falta de interesse</label>
+                </value>
+                <value>
+                    <fullName>Concorrência</fullName>
+                    <default>false</default>
+                    <label>Concorrência</label>
+                </value>
+                <value>
+                    <fullName>Fora de cobertura</fullName>
+                    <default>false</default>
+                    <label>Fora de cobertura</label>
+                </value>
+                <value>
+                    <fullName>Falta de interação das partes</fullName>
+                    <default>false</default>
+                    <label>Falta de interação das partes</label>
+                </value>
+                <value>
+                    <fullName>Preço do concorrente mais atrativo</fullName>
+                    <default>false</default>
+                    <label>Preço do concorrente mais atrativo</label>
+                </value>
+                <value>
+                    <fullName>Viabilidade aprovada com custo inviável (fora do target)</fullName>
+                    <default>false</default>
+                    <label>Viabilidade aprovada com custo inviável (fora do target)</label>
+                </value>
+                <value>
+                    <fullName>Tempo de análise de pré-vendas acima do esperado</fullName>
+                    <default>false</default>
+                    <label>Tempo de análise de pré-vendas acima do esperado</label>
+                </value>
+                <value>
+                    <fullName>Atraso na entrega</fullName>
+                    <default>false</default>
+                    <label>Atraso na entrega</label>
+                </value>
+                <value>
+                    <fullName>Contrato vigente com outro fornecedor/ renegociação futura</fullName>
+                    <default>false</default>
+                    <label>Contrato vigente com outro fornecedor/ renegociação futura</label>
+                </value>
+                <value>
+                    <fullName>Conflito de interesse</fullName>
+                    <default>false</default>
+                    <label>Conflito de interesse</label>
+                </value>
+                <value>
+                    <fullName>Erro / teste Salesforce</fullName>
+                    <default>false</default>
+                    <label>Erro / teste Salesforce</label>
+                </value>
+                <value>
+                    <fullName>Falta de retorno do cliente</fullName>
+                    <default>false</default>
+                    <label>Falta de retorno do cliente</label>
+                </value>
+                <value>
+                    <fullName>Desistência</fullName>
+                    <default>false</default>
+                    <label>Desistência</label>
+                </value>
+                <value>
+                    <fullName>Pendência de infraestrutura do cliente</fullName>
+                    <default>false</default>
+                    <label>Pendência de infraestrutura do cliente</label>
+                </value>
+                <value>
+                    <fullName>Informações incorretas na oportunidade</fullName>
+                    <default>false</default>
+                    <label>Informações incorretas na oportunidade</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>CloseDate</fullName>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>true</trackTrending>
+    </fields>
+    <fields>
+        <fullName>Cluster__c</fullName>
+        <label>Time/Cluster</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>Time_Cluster</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>CompanyDocs__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Doc Contrato Social</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ContractEndDate__c</fullName>
+        <formula>ADDMONTHS(ContractStartDate__c, ROUND(VALUE(TEXT(ContractEndManual__c)),0))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Data de término do contrato</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ContractEndManual__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Preencher com um valor maior que zero</inlineHelpText>
+        <label>Prazo do contrato (meses)</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ContractId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ContractPendencies__c</fullName>
+        <label>Pendências contratuais</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Aguardando informações GR</fullName>
+                    <default>false</default>
+                    <label>Aguardando informações GR</label>
+                </value>
+                <value>
+                    <fullName>Aguardando contrato assinado</fullName>
+                    <default>false</default>
+                    <label>Aguardando contrato assinado</label>
+                </value>
+                <value>
+                    <fullName>Aguardando cliente</fullName>
+                    <default>false</default>
+                    <label>Aguardando cliente</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ContractStartDate__c</fullName>
+        <label>Data prevista de fechamento</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ContractStartType__c</fullName>
+        <label>Início do contrato</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Após a ativação</fullName>
+                    <default>true</default>
+                    <label>Após a ativação</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Description</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Discovery_Completed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Discovery Completed</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>DueDate__c</fullName>
+        <label>Validade da proposta</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>15</fullName>
+                    <default>false</default>
+                    <label>15</label>
+                </value>
+                <value>
+                    <fullName>30</fullName>
+                    <default>false</default>
+                    <label>30</label>
+                </value>
+                <value>
+                    <fullName>45</fullName>
+                    <default>false</default>
+                    <label>45</label>
+                </value>
+                <value>
+                    <fullName>90</fullName>
+                    <default>false</default>
+                    <label>90</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>EconomicGroup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <label>Grupo econômico</label>
+        <referenceTo>EconomicGroup__c</referenceTo>
+        <relationshipLabel>Oportunidades</relationshipLabel>
+        <relationshipName>OportunidadesGrupoEconomico</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ExpectedRevenue</fullName>
+    </fields>
+    <fields>
+        <fullName>ExpressViability__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Viabilidade Expressa?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ExternalId__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>ExternalId</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>FinancialApproval__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Aprovação financeira</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>HasContractStartDate__c</fullName>
+        <formula>NOT(ISNULL(ContractStartDate__c))</formula>
+        <label>Has Contract Start Date</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>HasContractStartType__c</fullName>
+        <formula>NOT(ISPICKVAL(ContractStartType__c, &quot;&quot;))</formula>
+        <label>HasContractStartType</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>HasDeliveryTerm__c</fullName>
+        <formula>AND(
+    NOT(ISBLANK(ContractEndManual__c)),
+				ContractEndManual__c &gt; 0
+)</formula>
+        <label>Has Delivery Term</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>InApproval__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Em Aprovação</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>InstallmentPlan__c</fullName>
+        <externalId>false</externalId>
+        <label>Número de parcelas</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IqScore</fullName>
+    </fields>
+    <fields>
+        <fullName>IsLastMile__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Last mile?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsPrivate</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>LeadConverted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Lead Convertido?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LeadSource</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>LegalPersonDocs__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Doc Responsável legal</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LinkEconomicGroup__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Vincular ao grupo econômico</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LossReason__c</fullName>
+        <label>Motivos de perda</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Não quis pagar ativação da análise</fullName>
+                    <default>false</default>
+                    <label>Não quis pagar ativação da análise</label>
+                </value>
+                <value>
+                    <fullName>Cliente da Base</fullName>
+                    <default>false</default>
+                    <label>Cliente da Base</label>
+                </value>
+                <value>
+                    <fullName>Pesquisando Preço</fullName>
+                    <default>false</default>
+                    <label>Pesquisando Preço</label>
+                </value>
+                <value>
+                    <fullName>Inviabilidade cidade não atendida</fullName>
+                    <default>false</default>
+                    <label>Inviabilidade cidade não atendida</label>
+                </value>
+                <value>
+                    <fullName>Sem rede AMIGO, inviabilidade VTAL</fullName>
+                    <default>false</default>
+                    <label>Sem rede AMIGO, inviabilidade VTAL</label>
+                </value>
+                <value>
+                    <fullName>Não interagiu</fullName>
+                    <default>false</default>
+                    <label>Não interagiu</label>
+                </value>
+                <value>
+                    <fullName>Pendência Interna</fullName>
+                    <default>false</default>
+                    <label>Pendência Interna</label>
+                </value>
+                <value>
+                    <fullName>Inviabilidade rua/bairro não atendidos</fullName>
+                    <default>false</default>
+                    <label>Inviabilidade rua/bairro não atendidos</label>
+                </value>
+                <value>
+                    <fullName>Oportunidade Duplicada</fullName>
+                    <default>false</default>
+                    <label>Oportunidade Duplicada</label>
+                </value>
+                <value>
+                    <fullName>Preço da mensalidade</fullName>
+                    <default>false</default>
+                    <label>Preço da mensalidade</label>
+                </value>
+                <value>
+                    <fullName>Cadastro errôneo</fullName>
+                    <default>false</default>
+                    <label>Cadastro errôneo</label>
+                </value>
+                <value>
+                    <fullName>Permaneceu com o antigo provedor</fullName>
+                    <default>false</default>
+                    <label>Permaneceu com o antigo provedor</label>
+                </value>
+                <value>
+                    <fullName>Prazo adequação prédio (sem CTO interna)</fullName>
+                    <default>false</default>
+                    <label>Prazo adequação prédio (sem CTO interna)</label>
+                </value>
+                <value>
+                    <fullName>Endereço inadimplente</fullName>
+                    <default>false</default>
+                    <label>Endereço inadimplente</label>
+                </value>
+                <value>
+                    <fullName>Local sem oferta de produto</fullName>
+                    <default>false</default>
+                    <label>Local sem oferta de produto</label>
+                </value>
+                <value>
+                    <fullName>Não interagiu tecfriend parceiro</fullName>
+                    <default>false</default>
+                    <label>Não interagiu tecfriend parceiro</label>
+                </value>
+                <value>
+                    <fullName>Fidelidade do contrato</fullName>
+                    <default>false</default>
+                    <label>Fidelidade do contrato</label>
+                </value>
+                <value>
+                    <fullName>Informações de lead incompletas/inexistente</fullName>
+                    <default>false</default>
+                    <label>Informações de lead incompletas/inexistente</label>
+                </value>
+                <value>
+                    <fullName>Tempo de agendamento/ prazo ativação</fullName>
+                    <default>false</default>
+                    <label>Tempo de agendamento/ prazo ativação</label>
+                </value>
+                <value>
+                    <fullName>VTAL - Área em construção</fullName>
+                    <default>false</default>
+                    <label>VTAL - Área em construção</label>
+                </value>
+                <value>
+                    <fullName>Desistiu atend. automat: envio dados/doc</fullName>
+                    <default>false</default>
+                    <label>Desistiu atend. automat: envio dados/doc</label>
+                </value>
+                <value>
+                    <fullName>Área impedida</fullName>
+                    <default>false</default>
+                    <label>Área impedida</label>
+                </value>
+                <value>
+                    <fullName>Inviabilidade  CTOs  lotadas</fullName>
+                    <default>false</default>
+                    <label>Inviabilidade  CTOs  lotadas</label>
+                </value>
+                <value>
+                    <fullName>Local afetado enchentes RS</fullName>
+                    <default>false</default>
+                    <label>Local afetado enchentes RS</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Loss_Reason__c</fullName>
+        <label>Loss Reason</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Lost to Competitor</fullName>
+                    <default>false</default>
+                    <label>Lost to Competitor</label>
+                </value>
+                <value>
+                    <fullName>No Budget / Lost Funding</fullName>
+                    <default>false</default>
+                    <label>No Budget / Lost Funding</label>
+                </value>
+                <value>
+                    <fullName>No Decision / Non-Responsive</fullName>
+                    <default>false</default>
+                    <label>No Decision / Non-Responsive</label>
+                </value>
+                <value>
+                    <fullName>Price</fullName>
+                    <default>false</default>
+                    <label>Price</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ManagerAccount__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <label>Gerente da Conta</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Oportunidades</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Name</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>NeedFinancialApproval__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Necessita aprovação financeira?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NegotiationType__c</fullName>
+        <label>Tipo negociação</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Venda</fullName>
+                    <default>true</default>
+                    <label>Venda</label>
+                </value>
+                <value>
+                    <fullName>Upgrade</fullName>
+                    <default>false</default>
+                    <label>Upgrade</label>
+                </value>
+                <value>
+                    <fullName>Swap</fullName>
+                    <default>false</default>
+                    <label>Swap</label>
+                </value>
+                <value>
+                    <fullName>Troca de endereço</fullName>
+                    <default>false</default>
+                    <label>Troca de endereço</label>
+                </value>
+                <value>
+                    <fullName>Transferência de titularidade</fullName>
+                    <default>false</default>
+                    <label>Transferência de titularidade</label>
+                </value>
+                <value>
+                    <fullName>Cortesia</fullName>
+                    <default>false</default>
+                    <label>Cortesia</label>
+                </value>
+                <value>
+                    <fullName>Refidelização/Renovação</fullName>
+                    <default>false</default>
+                    <label>Refidelização/Renovação</label>
+                </value>
+                <value>
+                    <fullName>Downgrade</fullName>
+                    <default>false</default>
+                    <label>Downgrade</label>
+                </value>
+                <value>
+                    <fullName>Cancelamento/Churn</fullName>
+                    <default>false</default>
+                    <label>Cancelamento/Churn</label>
+                </value>
+                <value>
+                    <fullName>Alterações técnicas</fullName>
+                    <default>false</default>
+                    <label>Alterações técnicas</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>NextStep</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>true</trackTrending>
+    </fields>
+    <fields>
+        <fullName>OperationUnit__c</fullName>
+        <label>Unidade Operacional</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AVATO PSI GO GNA</fullName>
+                    <default>false</default>
+                    <label>AVATO PSI GO GNA</label>
+                </value>
+                <value>
+                    <fullName>B2W ALT</fullName>
+                    <default>false</default>
+                    <label>B2W ALT</label>
+                </value>
+                <value>
+                    <fullName>B2B ALT</fullName>
+                    <default>false</default>
+                    <label>B2B ALT</label>
+                </value>
+                <value>
+                    <fullName>B2G ALT</fullName>
+                    <default>false</default>
+                    <label>B2G ALT</label>
+                </value>
+                <value>
+                    <fullName>B2B AVATO</fullName>
+                    <default>false</default>
+                    <label>B2B AVATO</label>
+                </value>
+                <value>
+                    <fullName>B2G AVATO</fullName>
+                    <default>false</default>
+                    <label>B2G AVATO</label>
+                </value>
+                <value>
+                    <fullName>B2W AVATO</fullName>
+                    <default>false</default>
+                    <label>B2W AVATO</label>
+                </value>
+                <value>
+                    <fullName>B2B SEMPRE</fullName>
+                    <default>false</default>
+                    <label>B2B SEMPRE</label>
+                </value>
+                <value>
+                    <fullName>B2G SEMPRE</fullName>
+                    <default>false</default>
+                    <label>B2G SEMPRE</label>
+                </value>
+                <value>
+                    <fullName>B2W SEMPRE</fullName>
+                    <default>false</default>
+                    <label>B2W SEMPRE</label>
+                </value>
+                <value>
+                    <fullName>B2B ALLREDE</fullName>
+                    <default>false</default>
+                    <label>B2B ALLREDE</label>
+                </value>
+                <value>
+                    <fullName>B2G ALLREDE</fullName>
+                    <default>false</default>
+                    <label>B2G ALLREDE</label>
+                </value>
+                <value>
+                    <fullName>B2W ALLREDE</fullName>
+                    <default>false</default>
+                    <label>B2W ALLREDE</label>
+                </value>
+                <value>
+                    <fullName>B2B BLINK</fullName>
+                    <default>false</default>
+                    <label>B2B BLINK</label>
+                </value>
+                <value>
+                    <fullName>B2G BLINK</fullName>
+                    <default>false</default>
+                    <label>B2G BLINK</label>
+                </value>
+                <value>
+                    <fullName>B2W BLINK</fullName>
+                    <default>false</default>
+                    <label>B2W BLINK</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>OpportunityNumber__c</fullName>
+        <displayFormat>B2B-{0000000}</displayFormat>
+        <externalId>true</externalId>
+        <label>Número da oportunidade</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
+        <fullName>OverallApproval__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Aprovação auditoria</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>OwnerId</fullName>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>PartnerAccountId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>PaymentType__c</fullName>
+        <label>Modo de cobrança</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Boleto</fullName>
+                    <default>true</default>
+                    <label>Boleto</label>
+                </value>
+                <value>
+                    <fullName>Cartão</fullName>
+                    <default>false</default>
+                    <label>Cartão</label>
+                </value>
+                <value>
+                    <fullName>Depósito</fullName>
+                    <default>false</default>
+                    <label>Depósito</label>
+                </value>
+                <value>
+                    <fullName>PIX</fullName>
+                    <default>false</default>
+                    <label>PIX</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Pricebook2Id</fullName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Probability</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>true</trackTrending>
+    </fields>
+    <fields>
+        <fullName>ProposalDescription__c</fullName>
+        <label>Observações da Proposta</label>
+        <length>32000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ProposalSubmitted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Prop. encaminhada</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ROI_Analysis_Completed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>ROI Analysis Completed</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>RecordTypeName__c</fullName>
+        <externalId>false</externalId>
+        <formula>$RecordType.DeveloperName</formula>
+        <label>Tipo da Oportunidade</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Region__c</fullName>
+        <label>Regional</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>OperationUnit__c</controllingField>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>BH</fullName>
+                    <default>false</default>
+                    <label>BH</label>
+                </value>
+                <value>
+                    <fullName>Centro-Oeste</fullName>
+                    <default>false</default>
+                    <label>Centro-Oeste</label>
+                </value>
+                <value>
+                    <fullName>CO</fullName>
+                    <default>false</default>
+                    <label>CO</label>
+                </value>
+                <value>
+                    <fullName>DF</fullName>
+                    <default>false</default>
+                    <label>DF</label>
+                </value>
+                <value>
+                    <fullName>GO</fullName>
+                    <default>false</default>
+                    <label>GO</label>
+                </value>
+                <value>
+                    <fullName>MG</fullName>
+                    <default>false</default>
+                    <label>MG</label>
+                </value>
+                <value>
+                    <fullName>MT</fullName>
+                    <default>false</default>
+                    <label>MT</label>
+                </value>
+                <value>
+                    <fullName>Nacional</fullName>
+                    <default>false</default>
+                    <label>Nacional</label>
+                </value>
+                <value>
+                    <fullName>Operadoras/Data Center/OTTS</fullName>
+                    <default>false</default>
+                    <label>Operadoras/Data Center/OTTS</label>
+                </value>
+                <value>
+                    <fullName>PR</fullName>
+                    <default>false</default>
+                    <label>PR</label>
+                </value>
+                <value>
+                    <fullName>RS</fullName>
+                    <default>false</default>
+                    <label>RS</label>
+                </value>
+                <value>
+                    <fullName>SC</fullName>
+                    <default>false</default>
+                    <label>SC</label>
+                </value>
+                <value>
+                    <fullName>SP</fullName>
+                    <default>false</default>
+                    <label>SP</label>
+                </value>
+                <value>
+                    <fullName>Sudeste</fullName>
+                    <default>false</default>
+                    <label>Sudeste</label>
+                </value>
+                <value>
+                    <fullName>Sul</fullName>
+                    <default>false</default>
+                    <label>Sul</label>
+                </value>
+                <value>
+                    <fullName>Utilities</fullName>
+                    <default>false</default>
+                    <label>Utilities</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>B2B SEMPRE</controllingFieldValue>
+                <controllingFieldValue>B2G SEMPRE</controllingFieldValue>
+                <controllingFieldValue>B2W SEMPRE</controllingFieldValue>
+                <controllingFieldValue>B2B ALLREDE</controllingFieldValue>
+                <controllingFieldValue>B2G ALLREDE</controllingFieldValue>
+                <controllingFieldValue>B2W ALLREDE</controllingFieldValue>
+                <controllingFieldValue>B2B AVATO</controllingFieldValue>
+                <valueName>MG</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2B ALLREDE</controllingFieldValue>
+                <controllingFieldValue>B2G ALLREDE</controllingFieldValue>
+                <controllingFieldValue>B2W ALLREDE</controllingFieldValue>
+                <valueName>DF</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2B ALLREDE</controllingFieldValue>
+                <controllingFieldValue>B2G ALLREDE</controllingFieldValue>
+                <controllingFieldValue>B2W ALLREDE</controllingFieldValue>
+                <valueName>GO</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2B ALLREDE</controllingFieldValue>
+                <controllingFieldValue>B2G ALLREDE</controllingFieldValue>
+                <controllingFieldValue>B2W ALLREDE</controllingFieldValue>
+                <valueName>MT</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2B BLINK</controllingFieldValue>
+                <controllingFieldValue>B2G BLINK</controllingFieldValue>
+                <controllingFieldValue>B2W BLINK</controllingFieldValue>
+                <valueName>BH</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2W ALT</controllingFieldValue>
+                <controllingFieldValue>B2W AVATO</controllingFieldValue>
+                <valueName>Centro-Oeste</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2W ALT</controllingFieldValue>
+                <controllingFieldValue>B2W AVATO</controllingFieldValue>
+                <valueName>Operadoras/Data Center/OTTS</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2W ALT</controllingFieldValue>
+                <controllingFieldValue>B2W AVATO</controllingFieldValue>
+                <valueName>Sudeste</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2W ALT</controllingFieldValue>
+                <controllingFieldValue>B2W AVATO</controllingFieldValue>
+                <valueName>Sul</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2W ALT</controllingFieldValue>
+                <controllingFieldValue>B2W AVATO</controllingFieldValue>
+                <valueName>Utilities</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2B ALT</controllingFieldValue>
+                <controllingFieldValue>B2B AVATO</controllingFieldValue>
+                <valueName>PR</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2B ALT</controllingFieldValue>
+                <controllingFieldValue>B2B AVATO</controllingFieldValue>
+                <valueName>SC</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2G ALT</controllingFieldValue>
+                <controllingFieldValue>B2G AVATO</controllingFieldValue>
+                <valueName>Nacional</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2B AVATO</controllingFieldValue>
+                <valueName>CO</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2B AVATO</controllingFieldValue>
+                <valueName>RS</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>B2B AVATO</controllingFieldValue>
+                <valueName>SP</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>RelatedContract__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <label>Contrato relacionado</label>
+        <referenceTo>Contract</referenceTo>
+        <relationshipLabel>Oportunidades</relationshipLabel>
+        <relationshipName>OportunidadesContratos</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ResponsibleTeam__c</fullName>
+        <label>Equipe responsável</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Vendedor/GR</fullName>
+                    <default>true</default>
+                    <label>Vendedor/GR</label>
+                </value>
+                <value>
+                    <fullName>Arquitetura</fullName>
+                    <default>false</default>
+                    <label>Arquitetura</label>
+                </value>
+                <value>
+                    <fullName>Backoffice</fullName>
+                    <default>false</default>
+                    <label>Backoffice</label>
+                </value>
+                <value>
+                    <fullName>Gerência</fullName>
+                    <default>false</default>
+                    <label>Gerência</label>
+                </value>
+                <value>
+                    <fullName>Head</fullName>
+                    <default>false</default>
+                    <label>Head</label>
+                </value>
+                <value>
+                    <fullName>C-Level</fullName>
+                    <default>false</default>
+                    <label>C-Level</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>RestartSale__c</fullName>
+        <label>Retomar Venda</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>SLAArchitect__c</fullName>
+        <label>Início Arquitetura</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>SLAViabilityArch__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+  ISBLANK(SLAViability__c),
+  &quot;&quot;,
+  TEXT( FLOOR( MAX(0, (NOW() - SLAViability__c) * 86400) / 3600 ) ) &amp;
+  &quot;:&quot; &amp;
+  RIGHT(
+    &quot;00&quot; &amp;
+    TEXT( MOD( FLOOR( MAX(0, (NOW() - SLAViability__c) * 86400) / 60 ), 60 ) ),
+    2
+  ) &amp;
+  &quot;:&quot; &amp;
+  RIGHT(
+    &quot;00&quot; &amp;
+    TEXT( MOD( FLOOR( MAX(0, (NOW() - SLAViability__c) * 86400) ), 60 ) ),
+    2
+  )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SLA Viabilidade arquitetura</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SLAViability__c</fullName>
+        <label>Início Viabilidade</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Send4Approval__c</fullName>
+        <defaultValue>false</defaultValue>
+        <label>Enviar para aprovação</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>SourceOrigin__c</fullName>
+        <label>Canal de entrada</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Website</fullName>
+                    <default>false</default>
+                    <label>Website</label>
+                </value>
+                <value>
+                    <fullName>Callcenter</fullName>
+                    <default>false</default>
+                    <label>Callcenter</label>
+                </value>
+                <value>
+                    <fullName>Email</fullName>
+                    <default>false</default>
+                    <label>Email</label>
+                </value>
+                <value>
+                    <fullName>Telefone</fullName>
+                    <default>false</default>
+                    <label>Telefone</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>StageName</fullName>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>true</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Stage__c</fullName>
+        <label>Temperatura da Oportunidade</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>10</fullName>
+                    <default>true</default>
+                    <label>10% - Orçamento inicial</label>
+                </value>
+                <value>
+                    <fullName>20</fullName>
+                    <default>false</default>
+                    <label>20% - Necessidade confirmada</label>
+                </value>
+                <value>
+                    <fullName>50</fullName>
+                    <default>false</default>
+                    <label>50% - Proposta apresentada + data prevista</label>
+                </value>
+                <value>
+                    <fullName>70</fullName>
+                    <default>false</default>
+                    <label>70% - Negociação avançada / Bem posicionado</label>
+                </value>
+                <value>
+                    <fullName>90</fullName>
+                    <default>false</default>
+                    <label>90% - Aceite verbal</label>
+                </value>
+                <value>
+                    <fullName>100</fullName>
+                    <default>false</default>
+                    <label>100% - Ganho (Contrato assinado)</label>
+                </value>
+                <value>
+                    <fullName>0</fullName>
+                    <default>false</default>
+                    <label>0% - Perdido</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>SyncedQuoteId</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TagNumberFilled__c</fullName>
+        <label>Etiquetas Preenchidas?</label>
+        <summaryFilterItems>
+            <field>OpportunityLineItem.TagNumberFilled__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </summaryFilterItems>
+        <summaryForeignKey>OpportunityLineItem.OpportunityId</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalOpportunityQuantity</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>Type</fullName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>ViabilityType__c</fullName>
+        <label>Tipo da viabilidade</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Rede própria</fullName>
+                    <default>false</default>
+                    <label>Rede própria</label>
+                </value>
+                <value>
+                    <fullName>Rede terceira</fullName>
+                    <default>false</default>
+                    <label>Rede terceira</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__AccountRecordType__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Account.RecordType.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Record Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__AccountSLA__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>TEXT(Account.vlocity_cmt__vSLA__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account SLA</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__AsyncJobId__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This stores asynchronous job Id if any jobs running on this opportunity.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This stores asynchronous job Id if any jobs running on this opportunity.</inlineHelpText>
+        <label>Async Job</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__AsyncOperation__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This stores the asynchronous operation name for which this opportunity is locked.</description>
+        <inlineHelpText>This stores the asynchronous operation name for which this opportunity is locked.</inlineHelpText>
+        <label>Async Operation</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Price</fullName>
+                    <default>false</default>
+                    <label>Price</label>
+                </value>
+                <value>
+                    <fullName>Validate</fullName>
+                    <default>false</default>
+                    <label>Validate</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__BudgetAmount__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The budget amount which the customer says they cannot spend above.</description>
+        <label>Budget Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__DefaultCurrencyPaymentMode__c</fullName>
+        <deprecated>false</deprecated>
+        <label>Default Currency Payment Mode</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Currency</fullName>
+                    <default>true</default>
+                    <label>Currency</label>
+                </value>
+                <value>
+                    <fullName>Loyalty</fullName>
+                    <default>false</default>
+                    <label>Loyalty</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveBaseOneTimeCharge__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Roll up of the one-time charges of the opportunity products before applying adjustments.</description>
+        <label>Effective Total: Base One Time Charges</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveBaseRecurringCharge__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Roll up of the recurring charges of the opportunity products before applying adjustments.</description>
+        <label>Effective Total: Base Recurring Charges</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveOneTimeCostTotal__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <label>Effective Total: One Time Costs</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveOneTimeLoyaltyTotal__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Effective Total: One Time Loyalty</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveOneTimeTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <label>Effective One Time Total</label>
+        <summarizedField>OpportunityLineItem.vlocity_cmt__EffectiveOneTimeTotal__c</summarizedField>
+        <summaryForeignKey>OpportunityLineItem.OpportunityId</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveOpportunityTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <formula>vlocity_cmt__EffectiveOneTimeTotal__c + ( vlocity_cmt__EffectiveRecurringTotal__c * vlocity_cmt__NumberOfContractedMonths__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Effective Opportunity Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveRecurringCostTotal__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <label>Effective Total: Recurring Costs</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveRecurringTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <label>Effective Recurring Total</label>
+        <summarizedField>OpportunityLineItem.vlocity_cmt__EffectiveRecurringTotal__c</summarizedField>
+        <summaryForeignKey>OpportunityLineItem.OpportunityId</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveUsageCostTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Effective Usage Cost Total</description>
+        <label>Usage Cost Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__EffectiveUsagePriceTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Effective Usage Price Total</description>
+        <label>Usage Price Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__Email__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Email</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__Fax__c</fullName>
+        <deprecated>false</deprecated>
+        <label>Fax</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__FollowUpTo__c</fullName>
+        <deprecated>false</deprecated>
+        <description>If this activity is a follow up to a previous activity.</description>
+        <externalId>false</externalId>
+        <label>Follow Up To</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__FrameContractId__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Frame contract linked to this opportunity</description>
+        <label>Frame Contract</label>
+        <referenceTo>Contract</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__IsContractRequired__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Denotes if opportunity requires a contract</description>
+        <label>Require Contract</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__LockedBy__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>This indicates if an opportunity is locked by a user.</description>
+        <inlineHelpText>This indicates if an opportunity is locked by a user.</inlineHelpText>
+        <label>Locked By User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__LockedFor__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This stores the reason for doing lock on the opportunity.</description>
+        <inlineHelpText>This stores the reason for doing lock on the opportunity.</inlineHelpText>
+        <label>Locked For</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Async Operation</fullName>
+                    <default>false</default>
+                    <label>Async Operation</label>
+                </value>
+                <value>
+                    <fullName>Manual Edit</fullName>
+                    <default>false</default>
+                    <label>Manual Edit</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__NumberOfContractedMonths__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Number Of Contracted Months</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__OneTimeLoyaltyTotal__c</fullName>
+        <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>One Time Loyalty Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__OneTimeMarginTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <label>One Time Margin Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__OneTimeTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <label>One Time Total</label>
+        <summarizedField>OpportunityLineItem.vlocity_cmt__OneTimeTotal__c</summarizedField>
+        <summaryForeignKey>OpportunityLineItem.OpportunityId</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__OpportunityMarginTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <label>Opportunity Margin Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__OpportunityTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <formula>vlocity_cmt__OneTimeTotal__c + ( vlocity_cmt__RecurringTotal__c * vlocity_cmt__NumberOfContractedMonths__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__OrderNumber__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Salesforce sample extension field. Use as desired (unused by Vlocity).</description>
+        <externalId>false</externalId>
+        <label>Order Number</label>
+        <length>8</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__OriginatingChannel__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Channel can be used to drive Eligibility/Compatibility/Recommendations/Pricing/Other implementations, e.g. Certain Product Bundles are only available on the Web or Call Center channel but not via the Retail and Dealer channels OR A product may have a different price when sold via the Web than sold via the Retail channel, etc.</description>
+        <label>Originating Channel</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Web</fullName>
+                    <default>false</default>
+                    <label>Web</label>
+                </value>
+                <value>
+                    <fullName>Call Center</fullName>
+                    <default>false</default>
+                    <label>Call Center</label>
+                </value>
+                <value>
+                    <fullName>Retail</fullName>
+                    <default>false</default>
+                    <label>Retail</label>
+                </value>
+                <value>
+                    <fullName>Dealer</fullName>
+                    <default>false</default>
+                    <label>Dealer</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__OriginatingContractId__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Points to the contract from which this opportunity was created</description>
+        <label>Originating Contract</label>
+        <referenceTo>Contract</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__PartyId__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>The referral source of an opportunity</description>
+        <label>Referral Source</label>
+        <referenceTo>vlocity_cmt__Party__c</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__Phone__c</fullName>
+        <deprecated>false</deprecated>
+        <label>Phone</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__PriceListId__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <label>Price List</label>
+        <referenceTo>vlocity_cmt__PriceList__c</referenceTo>
+        <relationshipLabel>Opportunities Using This Price List</relationshipLabel>
+        <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__RecurringMarginTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <label>Recurring Margin Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__RecurringTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <label>Recurring Total</label>
+        <summarizedField>OpportunityLineItem.vlocity_cmt__RecurringTotal__c</summarizedField>
+        <summaryForeignKey>OpportunityLineItem.OpportunityId</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__ShippingPostalCode__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Account.ShippingPostalCode</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Shipping Postal Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__ShippingState__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>Account.ShippingState</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Shipping State</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__TrackingNumber__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Tracking Number</label>
+        <length>12</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__UsageMarginTotal__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Usage Margin Total</description>
+        <label>Usage Margin Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__ValidationDate__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Date when the validation was last run</description>
+        <inlineHelpText>Last validation date</inlineHelpText>
+        <label>Validation Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__ValidationMessage__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Message from last validation run</description>
+        <inlineHelpText>Message from last validation run</inlineHelpText>
+        <label>Validation Message</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>vlocity_cmt__ValidationStatus__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Validation Status</description>
+        <inlineHelpText>If an opportunity has been validated, it will show the status Passed or Failed. If no validation has been run yet, it will show Not yet run.</inlineHelpText>
+        <label>Validation Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Not yet run</fullName>
+                    <default>true</default>
+                    <label>Not yet run</label>
+                </value>
+                <value>
+                    <fullName>Passed</fullName>
+                    <default>false</default>
+                    <label>Passed</label>
+                </value>
+                <value>
+                    <fullName>Failed</fullName>
+                    <default>false</default>
+                    <label>Failed</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <listViews>
+        <fullName>Aguardando_Instala_o</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>OPPORTUNITY.TYPE</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Aguardando instalação</value>
+        </filters>
+        <label>Aguardando Instalação</label>
+        <sharedTo>
+            <group>admin</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>AllOpportunities</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.PROBABILITY</columns>
+        <columns>OPPORTUNITY.TYPE</columns>
+        <columns>OPPORTUNITY.LEAD_SOURCE</columns>
+        <columns>CORE.USERS.FULL_NAME</columns>
+        <columns>OPPORTUNITY.LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>Todas as oportunidades</label>
+    </listViews>
+    <listViews>
+        <fullName>ClosingNextMonth</fullName>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.CLOSED</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>equals</operation>
+            <value>NEXT_MONTH</value>
+        </filters>
+        <label>Closing Next Month</label>
+    </listViews>
+    <listViews>
+        <fullName>ClosingThisMonth</fullName>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.CLOSED</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>equals</operation>
+            <value>THIS_MONTH</value>
+        </filters>
+        <label>Closing This Month</label>
+    </listViews>
+    <listViews>
+        <fullName>Default_Opportunity_Pipeline</fullName>
+        <booleanFilter>(1 OR 2)</booleanFilter>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>OPPORTUNITY.CLOSED</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSE_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>LAST_N_DAYS:30</value>
+        </filters>
+        <label>Opportunity Pipeline</label>
+    </listViews>
+    <listViews>
+        <fullName>MyOpportunities</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <filterScope>Mine</filterScope>
+        <label>My Opportunities</label>
+    </listViews>
+    <listViews>
+        <fullName>NewThisWeek</fullName>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>THIS_WEEK</value>
+        </filters>
+        <label>New This Week</label>
+    </listViews>
+    <listViews>
+        <fullName>OportunidadesBackoffice_B2B</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>OpportunityNumber__c</columns>
+        <columns>NegotiationType__c</columns>
+        <columns>ProposalSubmitted__c</columns>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Cluster__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RecordTypeName__c</field>
+            <operation>equals</operation>
+            <value>B2B</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Aguardando contrato,Contrato assinado,Aguardando instalação</value>
+        </filters>
+        <label>Oport. B2B - Aguardando Contrato</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>CLevel</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Oportunidades_B2B</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>OpportunityNumber__c</columns>
+        <columns>NegotiationType__c</columns>
+        <columns>ProposalSubmitted__c</columns>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Cluster__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RecordTypeName__c</field>
+            <operation>equals</operation>
+            <value>B2B</value>
+        </filters>
+        <label>Oport. B2B - Todos os registros</label>
+        <sharedTo>
+            <roleAndSubordinatesInternal>CLevel</roleAndSubordinatesInternal>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>OpportunityApproval_ArquiteturaQueue</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>OpportunityNumber__c</columns>
+        <columns>NegotiationType__c</columns>
+        <columns>ProposalSubmitted__c</columns>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Cluster__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Send4Approval__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Viabilidade e desenho da solução,Validação técnica</value>
+        </filters>
+        <label>Oport. B2B - Aprovação Arquitetura</label>
+        <sharedTo/>
+    </listViews>
+    <listViews>
+        <fullName>OpportunityApproval_AuditoriaC2Queue</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>OpportunityNumber__c</columns>
+        <columns>NegotiationType__c</columns>
+        <columns>ProposalSubmitted__c</columns>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Cluster__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Send4Approval__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Aprovação crédito</value>
+        </filters>
+        <label>Oport. B2B - Aprovação Crédito</label>
+        <sharedTo>
+            <role>B2B_GeneralDirector</role>
+            <role>CLevel</role>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>OpportunityApproval_AuditoriaCQueue</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>OpportunityNumber__c</columns>
+        <columns>NegotiationType__c</columns>
+        <columns>ProposalSubmitted__c</columns>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Cluster__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Send4Approval__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>equals</operation>
+            <value>Aprovação comercial</value>
+        </filters>
+        <label>Oport. B2B - Aprovação Comercial</label>
+        <sharedTo/>
+    </listViews>
+    <listViews>
+        <fullName>Won</fullName>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.WON</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSED</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Won</label>
+    </listViews>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>B2B</fullName>
+        <active>true</active>
+        <businessProcess>B2B</businessProcess>
+        <label>B2B</label>
+        <picklistValues>
+            <picklist>CancellationType__c</picklist>
+            <values>
+                <fullName>Atraso na entrega</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Concorrência</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conflito de interesse</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contrato vigente com outro fornecedor%2F renegociação futura</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Desistencia cliente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Desistência</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Erro %2F teste Salesforce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Falta de interação das partes</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Falta de interesse</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Falta de retorno do cliente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fora de cobertura</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Informações incorretas na oportunidade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pendência de infraestrutura do cliente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Preço do concorrente mais atrativo</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tempo de análise de pré-vendas acima do esperado</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Viabilidade aprovada com custo inviável %28fora do target%29</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cluster__c</picklist>
+            <values>
+                <fullName>ALT%2FGGNET</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AVATO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BLINK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SEMPRE</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContractPendencies__c</picklist>
+            <values>
+                <fullName>Aguardando cliente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Aguardando contrato assinado</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Aguardando informações GR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContractStartType__c</picklist>
+            <values>
+                <fullName>Após a ativação</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DueDate__c</picklist>
+            <values>
+                <fullName>15</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>45</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ForecastCategoryName</picklist>
+            <values>
+                <fullName>Best Case</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Omitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pipeline</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadSource</picklist>
+            <values>
+                <fullName>Website</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LossReason__c</picklist>
+            <values>
+                <fullName>Cadastro errôneo</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cliente da Base</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Desistiu atend%2E automat%3A envio dados%2Fdoc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Endereço inadimplente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fidelidade do contrato</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Informações de lead incompletas%2Finexistente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade  CTOs  lotadas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade cidade não atendida</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade rua%2Fbairro não atendidos</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Local afetado enchentes RS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Local sem oferta de produto</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não interagiu</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não interagiu tecfriend parceiro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não quis pagar ativação da análise</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oportunidade Duplicada</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pendência Interna</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Permaneceu com o antigo provedor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pesquisando Preço</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prazo adequação prédio %28sem CTO interna%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Preço da mensalidade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sem rede AMIGO%2C inviabilidade VTAL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tempo de agendamento%2F prazo ativação</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>VTAL - Área em construção</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Área impedida</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Loss_Reason__c</picklist>
+            <values>
+                <fullName>Lost to Competitor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Budget %2F Lost Funding</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Decision %2F Non-Responsive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>NegotiationType__c</picklist>
+            <values>
+                <fullName>Alterações técnicas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancelamento%2FChurn</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cortesia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Downgrade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Refidelização%2FRenovação</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Swap</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transferência de titularidade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Troca de endereço</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Upgrade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Venda</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OperationUnit__c</picklist>
+            <values>
+                <fullName>B2B ALLREDE</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2B ALT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2B AVATO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2B BLINK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2B SEMPRE</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2G ALLREDE</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2G ALT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2G AVATO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2G BLINK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2G SEMPRE</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2W ALLREDE</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2W ALT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2W AVATO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2W BLINK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2W SEMPRE</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>PaymentType__c</picklist>
+            <values>
+                <fullName>Boleto</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Cartão</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Depósito</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PIX</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Region__c</picklist>
+            <values>
+                <fullName>BH</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Centro-Oeste</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DF</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>GO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MG</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Nacional</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Operadoras%2FData Center%2FOTTS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>RS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sudeste</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sul</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Utilities</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ResponsibleTeam__c</picklist>
+            <values>
+                <fullName>Arquitetura</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Backoffice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>C-Level</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Gerência</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Head</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Vendedor%2FGR</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>SourceOrigin__c</picklist>
+            <values>
+                <fullName>Callcenter</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Telefone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Website</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Stage__c</picklist>
+            <values>
+                <fullName>0</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>100</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>50</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>70</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>B2B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2G</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>B2W</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ViabilityType__c</picklist>
+            <values>
+                <fullName>Rede própria</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rede terceira</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__AsyncOperation__c</picklist>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Validate</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__DefaultCurrencyPaymentMode__c</picklist>
+            <values>
+                <fullName>Currency</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Loyalty</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__LockedFor__c</picklist>
+            <values>
+                <fullName>Async Operation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Manual Edit</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__OriginatingChannel__c</picklist>
+            <values>
+                <fullName>Call Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dealer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Retail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__ValidationStatus__c</picklist>
+            <values>
+                <fullName>Failed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not yet run</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Passed</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>B2C</fullName>
+        <active>true</active>
+        <businessProcess>B2C</businessProcess>
+        <label>B2C</label>
+        <picklistValues>
+            <picklist>CancellationType__c</picklist>
+            <values>
+                <fullName>Concorrência</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Desistencia cliente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Falta de interação das partes</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Falta de interesse</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fora de cobertura</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cluster__c</picklist>
+            <values>
+                <fullName>ALT%2FGGNET</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AVATO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BLINK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SEMPRE</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContractPendencies__c</picklist>
+            <values>
+                <fullName>Aguardando contrato assinado</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Aguardando informações GR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContractStartType__c</picklist>
+            <values>
+                <fullName>Após a ativação</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DueDate__c</picklist>
+            <values>
+                <fullName>15</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>45</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ForecastCategoryName</picklist>
+            <values>
+                <fullName>Best Case</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Omitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pipeline</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadSource</picklist>
+            <values>
+                <fullName>1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>21</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>22</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>23</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>24</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>25</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>26</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>27</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>41</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>42</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>43</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Website</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LossReason__c</picklist>
+            <values>
+                <fullName>Cadastro errôneo</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cliente da Base</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Desistiu atend%2E automat%3A envio dados%2Fdoc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Endereço inadimplente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fidelidade do contrato</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Informações de lead incompletas%2Finexistente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade  CTOs  lotadas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade cidade não atendida</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade rua%2Fbairro não atendidos</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Local afetado enchentes RS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Local sem oferta de produto</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não interagiu</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não interagiu tecfriend parceiro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não quis pagar ativação da análise</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oportunidade Duplicada</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pendência Interna</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Permaneceu com o antigo provedor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pesquisando Preço</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prazo adequação prédio %28sem CTO interna%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Preço da mensalidade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sem rede AMIGO%2C inviabilidade VTAL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tempo de agendamento%2F prazo ativação</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>VTAL - Área em construção</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Área impedida</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Loss_Reason__c</picklist>
+            <values>
+                <fullName>Lost to Competitor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Budget %2F Lost Funding</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Decision %2F Non-Responsive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>NegotiationType__c</picklist>
+            <values>
+                <fullName>Swap</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Troca de endereço</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Upgrade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Venda</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OperationUnit__c</picklist>
+            <values>
+                <fullName>AVATO PSI GO GNA</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>PaymentType__c</picklist>
+            <values>
+                <fullName>Boleto</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Cartão</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Depósito</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PIX</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Region__c</picklist>
+            <values>
+                <fullName>Centro-Oeste</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sudeste</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sul</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ResponsibleTeam__c</picklist>
+            <values>
+                <fullName>Arquitetura</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Backoffice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Gerência</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Vendedor%2FGR</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>SourceOrigin__c</picklist>
+            <values>
+                <fullName>Callcenter</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Telefone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Website</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Stage__c</picklist>
+            <values>
+                <fullName>0</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>100</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>50</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>70</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Existing Business</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Business</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ViabilityType__c</picklist>
+            <values>
+                <fullName>Rede própria</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rede terceira</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__AsyncOperation__c</picklist>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Validate</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__DefaultCurrencyPaymentMode__c</picklist>
+            <values>
+                <fullName>Currency</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Loyalty</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__LockedFor__c</picklist>
+            <values>
+                <fullName>Async Operation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Manual Edit</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__OriginatingChannel__c</picklist>
+            <values>
+                <fullName>Call Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dealer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Retail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__ValidationStatus__c</picklist>
+            <values>
+                <fullName>Failed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not yet run</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Passed</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>vlocity_cmt__MediaCampaign</fullName>
+        <active>true</active>
+        <businessProcess>vlocity_cmt__AdSales</businessProcess>
+        <description>Use the Media Campagin to create Media Campaign and associated Media Plans and Ad Placements.</description>
+        <label>Media Campaign</label>
+        <picklistValues>
+            <picklist>CancellationType__c</picklist>
+            <values>
+                <fullName>Concorrência</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Desistencia cliente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Falta de interação das partes</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Falta de interesse</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fora de cobertura</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cluster__c</picklist>
+            <values>
+                <fullName>ALT%2FGGNET</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AVATO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BLINK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SEMPRE</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContractPendencies__c</picklist>
+            <values>
+                <fullName>Aguardando contrato assinado</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Aguardando informações GR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContractStartType__c</picklist>
+            <values>
+                <fullName>Após a ativação</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DueDate__c</picklist>
+            <values>
+                <fullName>15</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>45</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ForecastCategoryName</picklist>
+            <values>
+                <fullName>Best Case</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Omitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pipeline</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadSource</picklist>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LossReason__c</picklist>
+            <values>
+                <fullName>Cadastro errôneo</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cliente da Base</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Desistiu atend%2E automat%3A envio dados%2Fdoc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Endereço inadimplente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fidelidade do contrato</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Informações de lead incompletas%2Finexistente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade  CTOs  lotadas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade cidade não atendida</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade rua%2Fbairro não atendidos</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Local afetado enchentes RS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Local sem oferta de produto</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não interagiu</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não interagiu tecfriend parceiro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não quis pagar ativação da análise</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oportunidade Duplicada</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pendência Interna</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Permaneceu com o antigo provedor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pesquisando Preço</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prazo adequação prédio %28sem CTO interna%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Preço da mensalidade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sem rede AMIGO%2C inviabilidade VTAL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tempo de agendamento%2F prazo ativação</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>VTAL - Área em construção</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Área impedida</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Loss_Reason__c</picklist>
+            <values>
+                <fullName>Lost to Competitor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Budget %2F Lost Funding</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Decision %2F Non-Responsive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>NegotiationType__c</picklist>
+            <values>
+                <fullName>Swap</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Troca de endereço</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Upgrade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Venda</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OperationUnit__c</picklist>
+            <values>
+                <fullName>AVATO PSI GO GNA</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>PaymentType__c</picklist>
+            <values>
+                <fullName>Boleto</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Cartão</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Depósito</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PIX</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Region__c</picklist>
+            <values>
+                <fullName>Centro-Oeste</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sudeste</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sul</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ResponsibleTeam__c</picklist>
+            <values>
+                <fullName>Arquitetura</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Backoffice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Gerência</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Vendedor%2FGR</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>SourceOrigin__c</picklist>
+            <values>
+                <fullName>Callcenter</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Telefone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Website</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Stage__c</picklist>
+            <values>
+                <fullName>0</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>100</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>50</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>70</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Existing Business</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Business</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ViabilityType__c</picklist>
+            <values>
+                <fullName>Rede própria</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rede terceira</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__AsyncOperation__c</picklist>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Validate</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__DefaultCurrencyPaymentMode__c</picklist>
+            <values>
+                <fullName>Currency</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Loyalty</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__LockedFor__c</picklist>
+            <values>
+                <fullName>Async Operation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Manual Edit</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__OriginatingChannel__c</picklist>
+            <values>
+                <fullName>Call Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dealer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Retail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__ValidationStatus__c</picklist>
+            <values>
+                <fullName>Failed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not yet run</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Passed</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>vlocity_cmt__MobilePhoneOpportunity</fullName>
+        <active>true</active>
+        <businessProcess>vlocity_cmt__Vlocity Sales Process</businessProcess>
+        <description>Mobile Phone Opportunity</description>
+        <label>MobilePhoneOpportunity</label>
+        <picklistValues>
+            <picklist>CancellationType__c</picklist>
+            <values>
+                <fullName>Concorrência</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Desistencia cliente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Falta de interação das partes</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Falta de interesse</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fora de cobertura</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Cluster__c</picklist>
+            <values>
+                <fullName>ALT%2FGGNET</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AVATO</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BLINK</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SEMPRE</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContractPendencies__c</picklist>
+            <values>
+                <fullName>Aguardando contrato assinado</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Aguardando informações GR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContractStartType__c</picklist>
+            <values>
+                <fullName>Após a ativação</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DueDate__c</picklist>
+            <values>
+                <fullName>15</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>30</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>45</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>90</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ForecastCategoryName</picklist>
+            <values>
+                <fullName>Best Case</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Omitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pipeline</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadSource</picklist>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LossReason__c</picklist>
+            <values>
+                <fullName>Cadastro errôneo</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cliente da Base</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Desistiu atend%2E automat%3A envio dados%2Fdoc</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Endereço inadimplente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fidelidade do contrato</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Informações de lead incompletas%2Finexistente</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade  CTOs  lotadas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade cidade não atendida</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inviabilidade rua%2Fbairro não atendidos</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Local afetado enchentes RS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Local sem oferta de produto</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não interagiu</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não interagiu tecfriend parceiro</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Não quis pagar ativação da análise</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oportunidade Duplicada</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pendência Interna</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Permaneceu com o antigo provedor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pesquisando Preço</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prazo adequação prédio %28sem CTO interna%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Preço da mensalidade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sem rede AMIGO%2C inviabilidade VTAL</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tempo de agendamento%2F prazo ativação</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>VTAL - Área em construção</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Área impedida</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Loss_Reason__c</picklist>
+            <values>
+                <fullName>Lost to Competitor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Budget %2F Lost Funding</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No Decision %2F Non-Responsive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>NegotiationType__c</picklist>
+            <values>
+                <fullName>Swap</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Troca de endereço</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Upgrade</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Venda</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OperationUnit__c</picklist>
+            <values>
+                <fullName>AVATO PSI GO GNA</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>PaymentType__c</picklist>
+            <values>
+                <fullName>Boleto</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Cartão</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Depósito</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PIX</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Region__c</picklist>
+            <values>
+                <fullName>Centro-Oeste</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sudeste</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sul</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ResponsibleTeam__c</picklist>
+            <values>
+                <fullName>Arquitetura</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Backoffice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Gerência</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Vendedor%2FGR</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>SourceOrigin__c</picklist>
+            <values>
+                <fullName>Callcenter</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Telefone</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Website</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Stage__c</picklist>
+            <values>
+                <fullName>0</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>10</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>100</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>20</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>50</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>70</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Existing Business</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Business</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ViabilityType__c</picklist>
+            <values>
+                <fullName>Rede própria</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rede terceira</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__AsyncOperation__c</picklist>
+            <values>
+                <fullName>Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Validate</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__DefaultCurrencyPaymentMode__c</picklist>
+            <values>
+                <fullName>Currency</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Loyalty</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__LockedFor__c</picklist>
+            <values>
+                <fullName>Async Operation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Manual Edit</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__OriginatingChannel__c</picklist>
+            <values>
+                <fullName>Call Center</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dealer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Retail</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>vlocity_cmt__ValidationStatus__c</picklist>
+            <values>
+                <fullName>Failed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not yet run</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Passed</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>OPPORTUNITY.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OPPORTUNITY.CLOSE_DATE</customTabListAdditionalFields>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>OPPORTUNITY.NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>OPPORTUNITY.NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>OPPORTUNITY.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OPPORTUNITY.STAGE_NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OPPORTUNITY.CLOSE_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <validationRules>
+        <fullName>BloqueaEdicaoRelacionados</fullName>
+        <active>false</active>
+        <errorConditionFormula>AND(
+				NOT(ISNEW()),
+				OR(
+								ISPICKVAL(StageName, &apos;Viabilidade técnica&apos;),
+								ISPICKVAL(StageName, &apos;Fechado/Ganho&apos;),
+								ISPICKVAL(StageName, &apos;Fechado/Perdido&apos;)
+				),
+				OR(
+								ISCHANGED(ProposalDescription__c),
+								ISCHANGED(EconomicGroup__c),
+								ISCHANGED(ContractId)  
+				)
+)</errorConditionFormula>
+        <errorMessage>Atenção: não é possível editar os campos &apos;Observações da proposta&apos;, &apos;Grupo econômico&apos; e &apos;Contrato relacionado&apos; nesta fase da Oportunidade.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoAguardandoContrato</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+    RecordTypeName__c = &apos;B2B&apos;,
+				TEXT(StageName) = &apos;Aguardando contrato&apos;,
+				NOT(ISCHANGED(StageName)),
+				NOT(ISCHANGED(AttachedTerm__c)),
+				NOT(Bypass__c),
+    NOT(ISCHANGED(Bypass__c)),
+				OR(
+								ISBLANK(TEXT(ContractStartType__c)),
+				    ISBLANK(ContractStartDate__c),
+				    ISBLANK(TEXT(ContractEndManual__c)),
+								ISBLANK(TEXT(Stage__c)),
+								NOT(
+				        OR(
+								        ISCHANGED(ContractStartType__c),
+								        ISCHANGED(ContractStartDate__c),
+								        ISCHANGED(ContractEndManual__c),
+																ISCHANGED(ContractPendencies__c),
+																ISCHANGED(Stage__c)
+				        )
+				    )
+				)
+)</errorConditionFormula>
+        <errorMessage>Atenção: Durante a fase de &apos;Aguardando contrato&apos;, apenas é permitido editar as informações da seção &apos;Informações do Contrato&apos;.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoAnaliseCliente</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+  RecordTypeName__c = &apos;B2B&apos;,
+  NOT(ISNEW()),
+  TEXT(StageName) = &apos;Análise cliente&apos;,
+  Bypass__c = false,
+  NOT(ISCHANGED(Bypass__c)),
+  NOT(
+    AND(
+      NOT(ISCHANGED(StageName)),
+      NOT(ISCHANGED(OverallApproval__c)),
+      NOT(ISCHANGED(Bypass__c)),
+      OR(
+        ISCHANGED(CloseDate),
+        ISCHANGED(Stage__c),
+								ISCHANGED(ProposalSubmitted__c),
+        ISCHANGED(Amount),
+								ISCHANGED(ContractEndManual__c)
+      )
+    )
+  )
+)</errorConditionFormula>
+        <errorMessage>Atenção: usuário não possui autorização para manipular o registro nesta fase.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoAprovacaoComercial</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+    RecordTypeName__c = &apos;B2B&apos;,
+				TEXT(StageName) = &apos;Aprovação comercial&apos;,
+				NOT(ISCHANGED(StageName)),
+				NOT($Permission.SalesManager),
+			 NOT(Bypass__c),
+    NOT(ISCHANGED(Bypass__c))
+)</errorConditionFormula>
+        <errorMessage>Atenção: não é possível ao usuário &apos;Vendedor/GR&apos; editar uma Oportunidade/Cotação enquanto o registro está em aprovação.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoAprovacaoTecnica</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+				RecordTypeName__c = &apos;B2B&apos;, 
+				NOT(ISNEW()),
+		  TEXT(StageName) = &apos;Viabilidade e desenho da solução&apos;,
+				NOT(ISCHANGED(StageName)),
+				NOT(ISCHANGED(SyncedQuoteId)),
+				$Permission.Seller,
+				NOT(Bypass__c),
+				NOT(ISCHANGED(Bypass__c))
+)</errorConditionFormula>
+        <errorMessage>Atenção: usuário não possui autorização para editar este registro nesta fase</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoCluster</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+$Profile.Name &lt;&gt; &apos;System Administrator&apos;,
+TEXT($User.Cluster__c) != TEXT(Cluster__c),
+TEXT(PRIORVALUE(Cluster__c)) != TEXT(Cluster__c),
+NOT(ISBLANK(TEXT(PRIORVALUE(Cluster__c))))
+)</errorConditionFormula>
+        <errorMessage>Atenção: não é possível criar ou editar registros que não sejam do seu cluster. Contate o administrador para suporte</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoContaVendedor</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+    RecordTypeName__c = &apos;B2B&apos;,
+				NOT(ISNEW()),
+    ISCHANGED(AccountId),
+				$Permission.SalesmanGR 
+)</errorConditionFormula>
+        <errorMessage>Atenção: não é possível realizar a alteração da Conta de uma Oportunidade.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoManualFase</fullName>
+        <active>false</active>
+        <errorConditionFormula>AND(
+				RecordTypeName__c = &apos;B2B&apos;,
+				ISCHANGED(StageName),
+				NOT(Bypass__c)
+)</errorConditionFormula>
+        <errorMessage>Atenção: não é possível editar manualmente a fase do registro.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoRevisaoDiretoria</fullName>
+        <active>true</active>
+        <description>W0382 - impede edicao da Oportunidade enquanto a aprovacao esta com C-Level ou Head.</description>
+        <errorConditionFormula>AND(
+    RecordTypeName__c = &apos;B2B&apos;,
+    NOT(ISNEW()),
+    OR(
+        ISPICKVAL(ResponsibleTeam__c, &apos;C-Level&apos;),
+        ISPICKVAL(ResponsibleTeam__c, &apos;Head&apos;)
+    ),
+    NOT(ISCHANGED(ResponsibleTeam__c)),
+    NOT(Bypass__c),
+    NOT(ISCHANGED(Bypass__c))
+)</errorConditionFormula>
+        <errorMessage>Atencao: a Oportunidade esta em revisao pela diretoria. Enquanto isso, atue apenas no item de aprovacao.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoTermoAprovado</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+				RecordTypeName__c = &apos;B2B&apos;,
+				TEXT(StageName) = &apos;Contrato assinado&apos;,
+				TEXT(PRIORVALUE(StageName)) = &apos;Contrato assinado&apos;,
+				NOT(Bypass__c),
+    NOT(ISCHANGED(Bypass__c))
+)</errorConditionFormula>
+        <errorMessage>Atenção: não é possível realizar edições do registro após a Oportunidade ter um termo anexado.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAlteracaoTipoNegociacao</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+				RecordTypeName__c = &apos;B2B&apos;,
+				NOT(ISPICKVAL(StageName, &apos;Em negociação&apos;)),
+				ISCHANGED(NegotiationType__c)
+)</errorConditionFormula>
+        <errorDisplayField>NegotiationType__c</errorDisplayField>
+        <errorMessage>Atenção: não é possível editar o &apos;Tipo de negociação&apos; de uma oportunidade em andamento.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaAvancarAnaliseClienteCamposObrig</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+				RecordTypeName__c = &apos;B2B&apos;,
+    NOT(ISNEW()),
+    PRIORVALUE(StageName) = &apos;Análise cliente&apos;,
+    NOT(BaseContractFilled__c),
+				ISCHANGED(StageName),
+				OR(
+				    TEXT(StageName) = &apos;Análise financeira&apos;,
+								Text(StageName) = &apos;Validação técnica&apos;
+				)
+)</errorConditionFormula>
+        <errorMessage>Atenção: Necessário preencher os campos obrigatórios da fase &apos;Análise cliente&apos; para avançar a fase.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaCamposViabilidadeFechado</fullName>
+        <active>false</active>
+        <errorConditionFormula>AND(
+				OR(
+								ISPICKVAL(StageName, &apos;Viabilidade técnica&apos;),
+        ISPICKVAL(StageName, &apos;Fechado/Ganho&apos;),
+				    ISPICKVAL(StageName, &apos;Fechado/Perdido&apos;)
+				),
+				OR(
+				    ISCHANGED(ProposalDescription__c),
+								ISCHANGED(LinkEconomicGroup__c),
+								ISCHANGED(RelatedContract__c)
+    )
+)</errorConditionFormula>
+        <errorMessage>Atenção: Não é permitido alterar os campos &apos;Observações da Proposta&apos;, &apos;Vincular ao grupo econômico&apos; ou &apos;Contrato relacionado&apos; nesta fase da Oportunidade</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaEdicaoFechadoPerdido</fullName>
+        <active>true</active>
+        <errorConditionFormula>OR(
+    AND(
+        NOT(ISNEW()),
+				    NOT(ISCHANGED(StageName)),
+				    TEXT(StageName) = &apos;Fechado/Perdido&apos;,
+				    NOT(Bypass__c),
+        NOT(ISCHANGED(Bypass__c))
+    ),
+    AND(
+        NOT(ISNEW()),
+        TEXT(PRIORVALUE(StageName)) = &quot;Fechado/Perdido&quot;,
+        ISCHANGED(StageName)
+    )
+)</errorConditionFormula>
+        <errorMessage>Atenção: não é possível editar a Oportunidade após ter sido perdida.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaEdicaoLeadSource</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+    NOT(ISNEW()),
+				LeadConverted__c,
+				ISCHANGED(LeadSource)
+)</errorConditionFormula>
+        <errorDisplayField>LeadSource</errorDisplayField>
+        <errorMessage>Atenção: o campo &apos;Origem do Lead&apos; não pode ser modificado na Oportunidade.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>BloqueiaEdicaoOportunidadeGanha</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+				NOT(ISNEW()),
+				NOT(Bypass__c),
+				NOT(
+        AND(
+            ISCHANGED(Bypass__c),
+            PRIORVALUE(Bypass__c) = true
+        )
+    ),
+				OR(
+								AND(
+												TEXT(StageName) = &apos;Instalado&apos;,
+												NOT(ISCHANGED(StageName))
+								),
+								AND(
+												TEXT(PRIORVALUE(StageName)) = &quot;Instalado&quot;,
+            ISCHANGED(StageName)
+								)
+				)
+)</errorConditionFormula>
+        <errorMessage>Atenção: não é possível manipular dados de uma Oportunidade que já está fechada</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ImpedeTrocaProprietario</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+    NOT(ISNEW()),
+    ISCHANGED(OwnerId),
+    RecordTypeName__c = &apos;B2B&apos;,
+    NOT(
+        OR(
+            $Profile.Name = &quot;Admin Acesso&quot;,
+            $Profile.Name = &quot;Administrador do sistema&quot;,
+            $Profile.Name = &quot;B2B - Backoffice&quot;
+        )
+    )
+)</errorConditionFormula>
+        <errorMessage>Atenção: Você não tem permissão para alterar o proprietário desta Oportunidade.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>LossReasonRequired</fullName>
+        <active>true</active>
+        <description>Regra de validação para preenchimento do motivo de perda quando alterar a fase da oportunidade para fechada/perdida</description>
+        <errorConditionFormula>AND(
+    ISPICKVAL(StageName, &quot;Fechado/Perdido&quot;),
+    ISBLANK(TEXT( LossReason__c )),
+    $RecordType.Name = &quot;B2C&quot;
+)</errorConditionFormula>
+        <errorMessage>É obrigatório preencher o campo &quot;Motivo de Perda&quot; quando a Fase for &quot;Fechado/Perdido&quot;</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ObrigaCamposAprovacaoTermo</fullName>
+        <active>false</active>
+        <errorConditionFormula>AND(
+				ISPICKVAL(StageName, &apos;Termo aprovado&apos;),
+				OR(
+				    ISBLANK(TEXT(ContractStartType__c)),
+								ISBLANK(ContractStartDate__c),
+								ISBLANK(TEXT(DeliveryTerm__c))
+    )
+)</errorConditionFormula>
+        <errorMessage>Atenção: Necessário preencher os campos  &apos;Início do contrato&apos;, &apos;Data de início do contrato&apos;, &apos;Renovação automática&apos;, &apos;Prazo do contrato&apos; para seguir com a Oportunidade.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ObrigaCamposFechadoPerdido</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+				ISPICKVAL(StageName, &apos;Fechado/Perdido&apos;),
+				NOT(Bypass__c),
+				OR(
+								ISBLANK(TEXT(CancellationType__c)),
+								ISBLANK(CancellationDetails__c )
+				)
+)</errorConditionFormula>
+        <errorMessage>Atenção: Necessário preencher o &apos;Motivo de cancelamento&apos; e &apos;Descrição do cancelamento&apos; para finalizar a Oportunidade.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ObrigaCamposViabilidadeTecnica</fullName>
+        <active>false</active>
+        <errorConditionFormula>AND(
+    ISPICKVAL(StageName, &apos;Viabilidade técnica&apos;),
+				ISBLANK(TEXT(ViabilityType__c))
+)</errorConditionFormula>
+        <errorDisplayField>ViabilityType__c</errorDisplayField>
+        <errorMessage>Atenção: Necessário preencher o &apos;Tipo de Viabilidade&apos; para seguir com a Oportunidade.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ObrigaTipoEmNegociacao</fullName>
+        <active>false</active>
+        <description>W0382 - exige o campo Tipo na fase Em negociacao. Ativar apos backfill.</description>
+        <errorConditionFormula>AND(
+    RecordTypeName__c = &apos;B2B&apos;,
+    TEXT(StageName) = &apos;Em negociação&apos;,
+    ISBLANK(TEXT(Type)),
+    NOT(Bypass__c)
+)</errorConditionFormula>
+        <errorMessage>Atencao: informe o campo Tipo antes de prosseguir.</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Add_Products</fullName>
+        <availability>online</availability>
+        <description>Add Products</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Add Products</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/lightning/app/c__Industries_CPQ/r/{!Opportunity.Id}/view</url>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__CPQ</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>CPQ</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/30.0/connection.js&quot;)}
+            {!REQUIRESCRIPT(&quot;/xdomain/xdomain.js&quot;)}
+            {!REQUIRESCRIPT(&quot;/soap/ajax/30.0/apex.js&quot;)}
+            {!REQUIRESCRIPT(&quot;/support/console/31.0/integration.js&quot;)}
+            var namespace_prefix = &apos;&apos;;
+            var result = sforce.connection.describeGlobal();
+            var TOKEN_OBJ = &quot;Party__c&quot;;
+            var sobjects = result.getArray(&quot;sobjects&quot;);
+            for(var i=0; i&lt;sobjects.length; i++) {
+                var sobjName = sobjects[i].name;
+                var str = sobjName.split(&quot;__&quot;);
+                //if there are 3 values there is a namespace
+                if (str.length == 3){
+                    var sobj = str[1].valueOf() +&apos;__c&apos;;
+                    if(sobj == TOKEN_OBJ) {
+                        namespace_prefix = str[0].valueOf();
+                    }
+                }
+            }
+            var target_url = &apos;/apex/&apos;+namespace_prefix+&apos;__hybridcpq?id=&apos;+&apos;{!Opportunity.Id}&apos;;
+            window.location.href = target_url;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__Configure</fullName>
+        <availability>online</availability>
+        <description>This is a Custom Button on Oppurtunity page to invoke Hybrid CPQ.</description>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Configure</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__OpportunityLaunchHybridCPQ</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__ConfigureForNamespace</fullName>
+        <availability>online</availability>
+        <description>This is a Custom Button on Oppurtunity page to invoke CPQ in Lightning Experience for Managed Package</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>ConfigureForNamespace</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/vlocity_cmt__hybridcpq?id={!Opportunity.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__ConfigureMSOrder</fullName>
+        <availability>online</availability>
+        <description>This is a Custom Button on Opportunity page to configure multi service orders</description>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Multi-Site Order</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__MSOrderConfiguration</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__ConfigureMultiServicePoints</fullName>
+        <availability>online</availability>
+        <description>This is a Custom Button on Opportunity page to configure multi service points</description>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Multi-Site Quote</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__MultiServiceConfiguration</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__ConfigureWithNamespace</fullName>
+        <availability>online</availability>
+        <description>This is a Custom Button on Oppurtunity page to invoke CPQ in Lightning Experience for Managed Package</description>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>ConfigureWithNamespace</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/vlocity_cmt__hybridcpq?id={!Opportunity.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__CreateContract</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Create Contract</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/30.0/connection.js&quot;)}
+
+{!REQUIRESCRIPT(&quot;/soap/ajax/30.0/apex.js&quot;)}
+
+var namespace_prefix = &apos;&apos;; 
+
+
+
+var result = sforce.connection.describeGlobal();
+
+var TOKEN_OBJ = &quot;Party__c&quot;;
+
+var sobjects = result.getArray(&quot;sobjects&quot;);
+
+
+
+for(var i=0; i&lt;sobjects.length; i++) {
+
+var sobjName = sobjects[i].name;
+
+var str = sobjName.split(&quot;__&quot;);
+
+//if there are 3 values there is a namespace
+
+if (str.length == 3){
+
+//Is it one of ours?
+
+var sobj = str[1].valueOf() +&apos;__c&apos;;
+
+if(sobj == TOKEN_OBJ) {
+
+namespace_prefix = str[0].valueOf();
+
+}
+
+} 
+
+}
+
+if(namespace_prefix != &quot;&quot;){
+
+namespace_prefix+= &apos;.&apos;;
+
+} 
+
+
+
+var result = sforce.apex.execute(namespace_prefix+&quot;ContractServiceResource&quot;,&quot;createContractWithTemplate&quot;, {contextId: &apos;{!Opportunity.Id}&apos;});
+window.location.href = &apos;/&apos; + result + &apos;/e?retURL=%2F&apos; + result;</url>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__CreateEnterpriseQuote</fullName>
+        <availability>online</availability>
+        <description>Creates a new B2B Enterprise Sales Quote and launches the B2B Enterprise Sales App</description>
+        <displayType>button</displayType>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>page</linkType>
+        <masterLabel>Create Enterprise Quote</masterLabel>
+        <openType>newWindow</openType>
+        <page>vlocity_cmt__B2BCmexCreateEntQuoteFromOpportunity</page>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__CreateSchedules</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Create Schedules</masterLabel>
+        <openType>sidebar</openType>
+        <page>vlocity_cmt__CreateOpportunityProductSchedule</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__CreatingContractAloha</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Create Contract</masterLabel>
+        <openType>sidebar</openType>
+        <page>vlocity_cmt__CreateContractFromOpty</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__DeliveryStatus</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>true</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>true</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Delivery Status</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>true</showsLocation>
+        <showsStatus>true</showsStatus>
+        <url>http://www.fedex.com/cgi-bin/tracking?tracknumbers={!Opportunity.vlocity_cmt__TrackingNumber__c}&amp;action=track&amp;language=english&amp;cntry_code=us</url>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__GenerateDocumentPDF</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>page</linkType>
+        <masterLabel>Generate Document PDF</masterLabel>
+        <openType>newWindow</openType>
+        <page>vlocity_cmt__OpportunityDocumentPdf</page>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+    </webLinks>
+    <webLinks>
+        <fullName>vlocity_cmt__ManageOpportunityGroups</fullName>
+        <availability>online</availability>
+        <description>This is a Custom Button on Opportunity page to manage the flow of Opportunity Groups</description>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Manage Opportunity Groups</masterLabel>
+        <openType>replace</openType>
+        <page>vlocity_cmt__MSOpportunityGroupConfiguration</page>
+        <protected>false</protected>
+    </webLinks>
+</CustomObject>

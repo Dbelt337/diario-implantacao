@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>true</doesIncludeBosses>
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>Arquitetura</name>
+    <queueMembers>
+        <users>
+            <user>iagotognolli.t@brasiltecpar.com.br</user>
+            <user>marceloribeiro.t@brasiltecpar.com.br.preprod</user>
+            <user>pedrojacques@brasiltecpar.com.br.preprod</user>
+            <user>priscilalima.t@brasiltecpar.com.br.preprod</user>
+            <user>priscilalima.t@brasiltecpar.com.br</user>
+            <user>tatianelasch@brasiltecpar.com.br.preprod</user>
+            <user>vilsonhopf@brasiltecpar.com.br.preprod</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>ApprovalSubmission</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>FlowOrchestrationWorkItem</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>Task</sobjectType>
+    </queueSobject>
+    <queueSobject>
+        <sobjectType>WorkPlanTemplate</sobjectType>
+    </queueSobject>
+</Queue>

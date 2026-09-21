@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Role xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseAccessLevel>Edit</caseAccessLevel>
+    <contactAccessLevel>Edit</contactAccessLevel>
+    <description>B2C Agente de Inside Sales RS</description>
+    <mayForecastManagerShare>false</mayForecastManagerShare>
+    <name>B2C Agente de Inside Sales RS</name>
+    <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    <parentRole>B2C_Coordenador_Inside_Sales_RS</parentRole>
+</Role>
