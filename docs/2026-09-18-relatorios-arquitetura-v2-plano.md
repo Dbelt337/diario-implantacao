@@ -125,3 +125,11 @@ modificado por); nao ha data de conclusao propria nem o registro relacionado, en
 modificacao e a oportunidade so aparece no relatorio "Opps aguardando"; (2) faixas de tempo (ate 24h, 24-72h, 3-7 dias, mais
 de 7) exigiriam uma segunda formula de linha, e o tipo permite uma so; alternativa e um relatorio por faixa ou o campo de SLA na
 Oportunidade. Os cinco relatorios de fase (v2 de 18/09) ficaram publicados sem alteracao; remover so com decisao do Diego.
+
+## 21/09: "Opps aguardando (abertas)" so nas fases tecnicas (deploy 0AfV2000000uBlZKAU)
+
+Pedido do Diego: o relatorio nao pode mostrar "Em negociacao"; so Viabilidade e desenho da solucao e Validacao tecnica.
+Antes do filtro havia 250 oportunidades abertas com Send4Approval e sem ArchitectureApproved: 205 em Viabilidade, 19 em
+Validacao tecnica, 14 em Analise cliente, 9 em Aprovacao comercial, 2 em Em negociacao, 1 em Analise financeira. Filtro de
+fase acrescentado (destravado); as 26 fora das fases tecnicas sao os casos do item "orquestracao disparada e a oportunidade
+voltou de fase" e ficam para a limpeza permanente (flow de cancelamento).

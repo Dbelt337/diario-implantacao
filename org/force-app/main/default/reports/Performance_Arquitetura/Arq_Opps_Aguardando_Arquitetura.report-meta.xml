@@ -24,7 +24,7 @@
         <label>Dias na fase atual</label>
         <scale>1</scale>
     </customDetailFormulas>
-    <description>Oportunidades B2B abertas enviadas para aprovação e ainda sem aprovação de arquitetura. Fechadas (ganhas ou perdidas) não entram. Dias contados desde a última mudança de fase.</description>
+    <description>Oportunidades B2B abertas, enviadas para aprovação e sem aprovação de arquitetura, só nas fases Viabilidade e desenho da solução e Validação técnica (as outras fases estão com o vendedor, BKO ou cliente). Dias desde a última mudança de fase.</description>
     <filter>
         <criteriaItems>
             <column>CLOSED</column>
@@ -46,6 +46,13 @@
             <isUnlocked>true</isUnlocked>
             <operator>equals</operator>
             <value>0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Viabilidade e desenho da solução,Validação técnica</value>
         </criteriaItems>
     </filter>
     <format>Summary</format>
