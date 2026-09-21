@@ -133,3 +133,30 @@ Antes do filtro havia 250 oportunidades abertas com Send4Approval e sem Architec
 Validacao tecnica, 14 em Analise cliente, 9 em Aprovacao comercial, 2 em Em negociacao, 1 em Analise financeira. Filtro de
 fase acrescentado (destravado); as 26 fora das fases tecnicas sao os casos do item "orquestracao disparada e a oportunidade
 voltou de fase" e ficam para a limpeza permanente (flow de cancelamento).
+
+## 21/09: requisitos consolidados (lista da Priscila/Vilson) x situacao
+
+Fato que limita o desenho: a orquestracao "[Oportunidade] Controle de filas aprovacao" (OpportunityApprovalSteps_B2B) usa o
+MESMO passo "Aprovacao - Arquitetura" para as duas fases: dispara em Viabilidade e desenho da solucao, ou em Validacao
+tecnica quando BackofficeForm = true. O item da fila nao guarda a fase, e o tipo de relatorio de itens expoe 13 colunas
+(sem oportunidade, sem fase, sem data de conclusao propria). Por isso: nos relatorios de ITENS a fase so entra por limpeza
+de dados (a fila so deve ter itens de opps nas fases tecnicas); nos relatorios de HISTORICO DE OPORTUNIDADE a fase e nativa.
+
+| # | Requisito | Situacao em 21/09 | Onde |
+|---|---|---|---|
+| 1a | Fila geral: usuario responsavel por item | feito: agrupamento por Assigned User (vazio = fila) | Fila pendente por idade |
+| 1b | Fila geral: o que esta na fila e ha quanto tempo | feito: dias na fila por item, ordenado do mais antigo | Fila pendente por idade |
+| 1c | Limpeza de automacoes indevidas / fora do fluxo | 47 opps fechadas limpas em 18/09 (scripts 47/48); hoje 224 pendentes: 204 Viabilidade, 19 Validacao tecnica, 1 Em negociacao -> script 50 cancela essa; permanente: flow que cancela a orquestracao quando a opp sai das fases tecnicas ou fecha (sandbox) | script 50 |
+| 2a | Detalhe por arquiteto: quem esta com o que e ha quanto tempo | feito: pendentes por Assigned User | Fila pendente por arquiteto |
+| 2b | Revisao das formulas de tempo (criacao ate ultima modificacao) e coerencia media/maximo/quantidade | feito: horas soma/media/maximo + dias media/maximo/soma + quantidade, por arquiteto; so passos Completed (exclui cancelados) | Validacoes por arquiteto |
+| 2c | Tempo medio de atendimento por profissional | feito (mesmo relatorio, media em horas e em dias) | Validacoes por arquiteto |
+| 3a | Tempo total na fila de arquitetura, independente de quem atendeu | existe: total geral de Validacoes por arquiteto (itens) e, por fase, Viabilidade: dias por arquiteto (total) e Validacao tecnica: dias por mes | relatorios de fase |
+| 3b | Tempo medio de elaboracao de projetos/desenho no setor | existe: Viabilidade: dias por arquiteto, total geral (media 7,1 dias em 18/09) | Viabilidade: dias por arquiteto |
+| 4a | Volume atendido no mes | feito | Volume mensal |
+| 4b | Visao 90 dias | feito | Volume mensal |
+| 4c | Filtro pela lista de arquitetos, incluindo Jeferson Manfio | feito: 17 nomes, filtro destravado | Validacoes por arquiteto, Volume mensal |
+| 4d | Taxa de conversao (desenhados que avancam) | feito hoje: formula "Taxa (% das saidas)" por destino (Analise cliente = avancou; Em negociacao = devolvida); deploy 0AfV2000000uBonKAE | Viabilidade: saidas por destino |
+| T1 | Duas versoes por fase (Viabilidade x Validacao tecnica) | historico de oportunidade: ja separado (2 relatorios de viabilidade, 1 de validacao); itens de orquestracao: impossivel separar (mesmo passo nas duas fases, item sem fase). Alternativa: campo na oportunidade preenchido pelo flow ao criar o item (fase no momento) e relatorio de oportunidade | decisao |
+| T2 | Expurgo de terceiros na validacao tecnica (vendedor, C-level, Red, BKO) | historico de oportunidade: automatico para o que e fase propria (Aprovacao comercial, Aprovacao credito, Analise cliente ficam fora da duracao de Validacao tecnica). O que NAO separa: espera de formulario BKO dentro da mesma fase (BackofficeForm__c tem historico de campo, mas nao entra no tipo de relatorio). Precisa de fase propria "Pendente BKO" ou de campo de data/hora preenchido por flow | decisao Priscila |
+
+Relatorios de fase (18/09) continuam publicados: sao eles que atendem 3a, 3b, 4d e T1 no historico de oportunidade.
