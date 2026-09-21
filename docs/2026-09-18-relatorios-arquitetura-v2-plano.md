@@ -160,3 +160,10 @@ de dados (a fila so deve ter itens de opps nas fases tecnicas); nos relatorios d
 | T2 | Expurgo de terceiros na validacao tecnica (vendedor, C-level, Red, BKO) | historico de oportunidade: automatico para o que e fase propria (Aprovacao comercial, Aprovacao credito, Analise cliente ficam fora da duracao de Validacao tecnica). O que NAO separa: espera de formulario BKO dentro da mesma fase (BackofficeForm__c tem historico de campo, mas nao entra no tipo de relatorio). Precisa de fase propria "Pendente BKO" ou de campo de data/hora preenchido por flow | decisao Priscila |
 
 Relatorios de fase (18/09) continuam publicados: sao eles que atendem 3a, 3b, 4d e T1 no historico de oportunidade.
+
+### 21/09, 14h26: script 50 executado pelo Diego
+
+1 orquestracao cancelada (Luiz- Conectividade de Campo grande, Em negociacao desde 11/03), 0 falhas. Fila de Arquitetura
+depois: 223 itens no momento do script (224 na leitura dos relatorios minutos depois, um item novo entrou), todos de
+oportunidades em Viabilidade e desenho da solucao ou Validacao tecnica. Idade maxima na fila caiu de 200,8 para 76 dias.
+Itens assumidos: Paul Nabih Raad 18, Gilmar Balbinot 2; 204 ainda na fila sem dono.
