@@ -36,9 +36,6 @@
     <columns>
         <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Assignee.Group</field>
     </columns>
-    <columns>
-        <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Assignee.User</field>
-    </columns>
     <customDetailFormulas>
         <calculatedFormula>NOW() - FlowOrchestrationWorkItem.CreatedDate</calculatedFormula>
         <dataType>Double</dataType>
@@ -46,7 +43,7 @@
         <label>Dias na fila</label>
         <scale>1</scale>
     </customDetailFormulas>
-    <description>Itens "Aprovação - Arquitetura" ainda pendentes (Assigned), com a idade em dias e a semana em que entraram na fila.</description>
+    <description>Itens "Aprovação - Arquitetura" pendentes: semana de entrada, quem assumiu (Assigned User vazio = ainda na fila Arquitetura) e idade em dias, do mais antigo ao mais novo. Combinado em 18/09: o arquiteto reatribui o item para si ao começar.</description>
     <filter>
         <criteriaItems>
             <column>FlowOrchestrationStepInstance$Label</column>
@@ -69,6 +66,11 @@
         <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$CreatedDate</field>
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Assignee.User</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
     <name>Arquitetura - Fila pendente por idade</name>
     <params>
         <name>co</name>
@@ -79,6 +81,8 @@
     <showDetails>true</showDetails>
     <showGrandTotal>true</showGrandTotal>
     <showSubTotals>true</showSubTotals>
+    <sortColumn>CDF1</sortColumn>
+    <sortOrder>Desc</sortOrder>
     <timeFrameFilter>
         <dateColumn>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$CreatedDate</dateColumn>
         <interval>INTERVAL_CUSTOM</interval>

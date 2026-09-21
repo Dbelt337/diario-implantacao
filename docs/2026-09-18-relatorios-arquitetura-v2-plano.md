@@ -100,3 +100,28 @@ testes internos (Priscila, Thais, Diego).
   orquestracao muda a fase apos a aprovacao): por pessoa nao existe no historico. O relatorio virou "dias por mes" (visao de
   time); a visao por arquiteto da validacao continua sendo "Validacoes por arquiteto" (itens da fila).
 - Ajustes aplicados no metadado: validacao agrupada por mes; saidas por destino com grafico por quantidade; descricoes.
+
+## 21/09: evolucao dos tres relatorios originais (deploy 0AfV2000000uBgjKAE, 3/3)
+
+Decisao do Diego (21/09): manter os tres primeiros relatorios e evoluir a partir deles. Lista oficial de arquitetos recebida
+(17 nomes, todos ativos, perfil B2B - Especialistas; Matheus De Jesus Barbosa De Oliveira e Priscila Schafhauzer sem papel):
+Alex Bruno Bueno Maass, Andre Vicente Teixeira da Silva, Clayton Mogami, Franklin Santos Lima, Gilmar Benjamim Batista,
+Jeferson Manfio, Joao Pedro Oliveira Martins, Luis Henrique Correa De Oliveira, Marcelo Costa Ribeiro, Matheus Resende Silva,
+Matheus De Jesus Barbosa De Oliveira, Paulo Cesar Davet Junior, Paulo Cesar Smith, Pedro Teixeira Jacques, Priscila
+Schafhauzer, Vinicius Cattaneo Camboim, Willians Pereira dos Santos.
+
+| Relatorio | O que mudou |
+|---|---|
+| Arquitetura - Validacoes por arquiteto | filtro "Modificado por" = lista dos 17 (item 8 do plano; destravado, da para editar na tela); por arquiteto agora mostra quantidade, horas soma/media/maximo e dias media/maximo/soma (item 2b) |
+| Arquitetura - Fila pendente por idade | segundo nivel de agrupamento por Assigned User (quem assumiu; vazio = ainda na fila), detalhe ordenado da idade maior para a menor (item 3a) |
+| Arquitetura - Volume mensal | filtro dos 17 arquitetos e soma de horas ao lado da media (item 8 e 2b) |
+
+Leitura depois do deploy (21/09): 1.206 validacoes concluidas nos ultimos 30 dias pelos 17, 15 arquitetos com itens (os dois
+sem papel nao tem nenhum); 224 pendentes, media 12,2 dias, maximo 200,8; itens assumidos por Paul Nabih Raad e Gilmar Balbinot, que nao estao na
+lista de arquitetos (conferir com o Vilson se entram ou se sao BKO).
+
+Limites que ficaram: (1) o tipo de relatorio de itens de orquestracao expoe so 13 colunas (nome, datas, status, atribuido,
+modificado por); nao ha data de conclusao propria nem o registro relacionado, entao "conclusao" continua sendo a ultima
+modificacao e a oportunidade so aparece no relatorio "Opps aguardando"; (2) faixas de tempo (ate 24h, 24-72h, 3-7 dias, mais
+de 7) exigiriam uma segunda formula de linha, e o tipo permite uma so; alternativa e um relatorio por faixa ou o campo de SLA na
+Oportunidade. Os cinco relatorios de fase (v2 de 18/09) ficaram publicados sem alteracao; remover so com decisao do Diego.

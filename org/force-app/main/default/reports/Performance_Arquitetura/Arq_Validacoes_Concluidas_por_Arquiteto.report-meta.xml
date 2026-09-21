@@ -35,6 +35,26 @@
         <masterLabel>Dias na fila (média)</masterLabel>
         <scale>1</scale>
     </aggregates>
+    <aggregates>
+        <calculatedFormula>CDF1:MAX / 24</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA2</developerName>
+        <downGroupingContext>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$LastModifiedBy</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Dias na fila (máximo)</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>CDF1:SUM / 24</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA3</developerName>
+        <downGroupingContext>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$LastModifiedBy</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Dias na fila (soma)</masterLabel>
+        <scale>1</scale>
+    </aggregates>
     <columns>
         <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$Name</field>
     </columns>
@@ -48,6 +68,7 @@
         <field>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$LastModifiedDate</field>
     </columns>
     <columns>
+        <aggregateTypes>Sum</aggregateTypes>
         <aggregateTypes>Average</aggregateTypes>
         <aggregateTypes>Maximum</aggregateTypes>
         <field>CDF1</field>
@@ -62,7 +83,7 @@
         <label>Horas na fila (entrada até conclusão)</label>
         <scale>1</scale>
     </customDetailFormulas>
-    <description>Itens "Aprovação - Arquitetura" concluídos nos últimos 30 dias, agrupados por quem concluiu. Horas corridas da entrada na fila até a conclusão. Ajuste o período no filtro de data.</description>
+    <description>Itens "Aprovação - Arquitetura" concluídos (últimos 30 dias) por arquiteto: só os 17 arquitetos da lista do Vilson (21/09), só passos concluídos de verdade (exclui cancelados). Por arquiteto: quantidade, horas soma/média/máximo e dias média/máximo/soma.</description>
     <filter>
         <criteriaItems>
             <column>FlowOrchestrationStepInstance$Label</column>
@@ -84,6 +105,13 @@
             <isUnlocked>true</isUnlocked>
             <operator>equals</operator>
             <value>Completed</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FlowOrchestrationStepInstance.FlowOrchestrationWorkItems$LastModifiedBy</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>equals</operator>
+            <value>Alex Bruno Bueno Maass,Andre Vicente Teixeira da Silva,Clayton Mogami,Franklin Santos Lima,Gilmar Benjamim Batista,Jeferson Manfio,Joao Pedro Oliveira Martins,Luis Henrique Correa De Oliveira,Marcelo Costa Ribeiro,Matheus Resende Silva,Matheus De Jesus Barbosa De Oliveira,Paulo Cesar Davet Junior,Paulo Cesar Smith,Pedro Teixeira Jacques,Priscila Schafhauzer,Vinicius Cattaneo Camboim,Willians Pereira dos Santos</value>
         </criteriaItems>
     </filter>
     <format>Summary</format>
