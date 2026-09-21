@@ -11,7 +11,34 @@ validar antes, reter dúvidas, gravar em lotes pequenos, conferir depois.
 |---|---|
 | `gerar_template_leads.py` | Gera `Template_Carga_Leads_B2B.xlsx` (aba Leads com conferência por fórmula, aba Listas, aba Instrucoes). Com `--dados Massiva.xlsx` despeja a planilha da SDR no template. |
 | `validar_leads.py` | Lê o template preenchido, cruza com a org e separa em A (inserir), B (retidos) e C (já cliente). Não faz DML. |
-| `Template_Carga_Leads_B2B.xlsx` | Template vazio, com uma linha de exemplo. |
+| `Template_Carga_Leads_B2B.xlsx` | Template **v2** (21/09/2026) vazio, com uma linha de exemplo. É o arquivo para entregar à SDR/cliente. |
+
+## Template v2: colunas da aba Leads
+
+| Coluna | Obrigatória | Campo do Lead | Como preencher |
+|---|---|---|---|
+| SDR | sim | `SDR__c` (lookup User) | lista (aba Listas, nome exato da org) |
+| Proprietário do Lead | sim | `OwnerId` | lista; em geral o mesmo SDR, ou o GR quando o lead já nasce com vendedor |
+| Origem do Lead | sim | `LeadSource` | lista com os valores reais da picklist |
+| Temperatura | sim | `Stage__c` | lista 0/10/30/60/90; carga nova = 10 |
+| Segmento | sim | `Segment__c` | lista: Corporativo, Governo, Varejo, B2W - Wholesale |
+| Time/Cluster | sim | `ClusterManual__c` | lista: ALT/GGNET, AVATO, BLINK, SEMPRE |
+| CNPJ | sim | `DocumentNumber__c` | com ou sem máscara; DV conferido na planilha |
+| Razão Social, Nome Fantasia | sim / não | `Company`, `FantasyName__c` | |
+| Nome, Sobrenome, Cargo | não / sim / não | `FirstName`, `LastName`, `Title` | |
+| Telefone fixo | não | `Phone` | DDD + 8 dígitos ou 0800 + 7 (máscara é tirada) |
+| Celular | não | `MobilePhone` | DDD + 9 + 8 dígitos |
+| E-mail | não | `Email` | um por linha; fixo, celular ou e-mail é obrigatório |
+| Cidade, UF | não | `City`, `StateCode` (+ `CountryCode = BR`) | UF em lista |
+| Produto de interesse | não | `ProductInterestNew__c` | lista |
+| Observações | não | `Description` | e-mails e telefones extras vêm aqui |
+
+Colunas cinza (T a AA) são conferência por fórmula: CNPJ só dígitos, CNPJ válido, duplicado na planilha, telefone fixo,
+celular, e-mail, obrigatórios e LINHA (OK ou REVISAR). As 8 primeiras colunas ficam congeladas.
+
+O que mudou da v1: Temperatura, Segmento e Time/Cluster viraram colunas (a org exige Temperatura e o validador não deve
+esconder padrão); telefone fixo e celular separados (máscaras diferentes na org); Origem, SDR e Proprietário em lista com os
+valores exatos da org (a v1 aceitava texto livre e veio errado); Produto de interesse.
 
 ## Fluxo
 
@@ -39,15 +66,15 @@ validar antes, reter dúvidas, gravar em lotes pequenos, conferir depois.
 ## Regras aplicadas
 
 - CNPJ: 14 dígitos, dígito verificador, sem repetição; CPF é retido (carga só de PJ).
-- Obrigatórios: proprietário, origem, CNPJ, razão social, sobrenome do contato, e telefone ou e-mail.
-- Telefone com DDD (10 ou 11 dígitos); um e-mail por linha.
+- Obrigatórios: SDR, proprietário, origem, temperatura, segmento, cluster, CNPJ, razão social, sobrenome do contato, e
+  telefone fixo, celular ou e-mail. Temperatura, segmento, cluster, produto de interesse e UF precisam estar na lista.
+- Um e-mail por linha.
 - Duplicidade: no arquivo, contra Lead aberto e contra Conta (por `DocumentNumber__c`, nos dois formatos, com e sem máscara).
-- Proprietário: e-mail bate ou nome único e ativo. Nunca chuta.
-- Gravados pela governança: `Status = New` (rótulo Novo), tipo de registro Prospecto - B2B, `Stage__c = 10`, `Segment__c` e
-  `ClusterManual__c` padrão da carga (constantes no topo do validador).
+- Proprietário e SDR: e-mail bate ou nome único e ativo. Nunca chuta.
+- Gravados pela governança: `Status = New` (rótulo Novo), tipo de registro Prospecto - B2B, `CountryCode = BR`.
 - Telefones: as validações ativas `VRPhoneMask` e `VRCellphoneMask` só aceitam dígitos (fixo DD+8 ou 0800+7; celular DD+9+8).
-  O validador roteia os dois telefones da planilha pelo formato (fixo -> Phone, celular -> MobilePhone) e manda o excedente
-  para Description.
+  O validador tira a máscara e corrige coluna trocada pelo formato (fixo -> Phone, celular -> MobilePhone). Segundo número do
+  mesmo tipo ou número fora do padrão retém a linha: a SDR move para Observações.
 
 ## Confirmado na btp-prod (21/09/2026, primeira carga real: 104 leads da SDR)
 

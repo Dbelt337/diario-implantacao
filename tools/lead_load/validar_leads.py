@@ -20,21 +20,24 @@ nenhuma linha para insercao (todas ficam em B com motivo "sem cruzamento com a o
 """
 import argparse, csv, html, json, os, re, sys, unicodedata, zipfile
 
-# ---- colunas do template (aba Leads, A..O) -> campo Salesforce
-TEMPLATE = ['SDR', 'Proprietario', 'Origem', 'CNPJ', 'RazaoSocial', 'NomeFantasia', 'Nome', 'Sobrenome', 'Cargo',
-            'Telefone1', 'Telefone2', 'Email', 'Cidade', 'UF', 'Observacoes']
+# ---- colunas do template v2 (aba Leads, A..S) -> campo Salesforce
+TEMPLATE = ['SDR', 'Proprietario', 'Origem', 'Temperatura', 'Segmento', 'Cluster', 'CNPJ', 'RazaoSocial', 'NomeFantasia', 'Nome', 'Sobrenome',
+            'Cargo', 'TelefoneFixo', 'Celular', 'Email', 'Cidade', 'UF', 'ProdutoInteresse', 'Observacoes']
 SF_FIELDS = ['SDR__c', 'OwnerId', 'LeadSource', 'DocumentNumber__c', 'Company', 'FantasyName__c', 'FirstName', 'LastName', 'Title',
              'Phone', 'MobilePhone', 'Email', 'City', 'StateCode', 'CountryCode', 'Description', 'Status', 'Stage__c', 'Segment__c',
-             'ClusterManual__c', 'RecordTypeId']
+             'ClusterManual__c', 'ProductInterestNew__c', 'RecordTypeId']
+# valores validos das picklists (btp-prod, 21/09/2026); a aba Listas do template traz os mesmos
+TEMPERATURAS = ['0', '10', '30', '60', '90']
+SEGMENTOS = ['Corporativo', 'Governo', 'Varejo', 'B2W - Wholesale']
+CLUSTERS = ['ALT/GGNET', 'AVATO', 'BLINK', 'SEMPRE']
+PRODUTOS = ['Fibra', 'TV', 'TelefoniaMovel', 'CamerasSegurança', 'Outros']
+UFS = ['AC','AL','AM','AP','BA','CE','DF','ES','GO','MA','MG','MS','MT','PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO']
 # Confirmado na btp-prod em 21/09/2026 (carga de 104 leads da SDR, ver docs/2026-09-21-carga-leads-sdr-vitoria.md)
 STATUS_NOVO = 'New'                            # API name do valor "Novo" (ManuallyLeadCreationStatus esta inativa)
 RECORDTYPE_LEAD_B2B = '012V2000002CjpsIAC'     # "Prospecto - B2B" na PROD; em sandbox o Id e outro
-STAGE_PADRAO = '10'                            # Stage__c (Temperatura do lead) e OBRIGATORIO e sem padrao; 10 = frio
-SEGMENTO_PADRAO = 'B2W - Wholesale'            # padrao dos leads da SDR; ajuste por carga
-CLUSTER_PADRAO = 'ALT/GGNET'                   # ClusterManual__c; ajuste por carga
 # LegalEntityType__c NAO tem valor "PJ" (valores: Sociedade Limitada, LTDA, Simples, MEI): fica vazio
 # MainEmail__c nao e gravavel via API pelo perfil de administrador: nao enviar
-ORIGENS = {'Listas GRs ALT': 'Outbound - Listas GRs ALT'}   # rotulo da planilha -> valor real da picklist LeadSource
+ORIGENS = {'Listas GRs ALT': 'Outbound - Listas GRs ALT'}   # rotulo antigo (template v1) -> valor real da picklist LeadSource
 
 # Validacoes ativas VRPhoneMask / VRCellphoneMask (so digitos): fixo DD+8 ou 0800+7; celular DD+9+8
 def roteia_telefones(t1, t2):
@@ -161,18 +164,21 @@ def processa(rows, leads, accounts, users, online):
         tipo, m = classifica_documento(n)
         if not r['CNPJ']: motivos.append('CNPJ vazio')
         elif tipo != 'OK': motivos.append(f'{tipo}: {m}')
-        for campo, rotulo in (('Proprietario', 'Proprietario do Lead'), ('Origem', 'Origem do Lead'), ('RazaoSocial', 'Razao Social'), ('Sobrenome', 'Sobrenome do contato')):
+        for campo, rotulo in (('SDR', 'SDR'), ('Proprietario', 'Proprietario do Lead'), ('Origem', 'Origem do Lead'), ('Temperatura', 'Temperatura'),
+                              ('Segmento', 'Segmento'), ('Cluster', 'Time/Cluster'), ('RazaoSocial', 'Razao Social'), ('Sobrenome', 'Sobrenome do contato')):
             if not r[campo]: motivos.append(f'{rotulo} vazio')
-        if not r['Telefone1'] and not r['Telefone2'] and not r['Email']: motivos.append('sem telefone e sem e-mail')
-        for campo in ('Telefone1', 'Telefone2'):
-            if r[campo] and not telefone_ok(r[campo]): motivos.append(f'{campo} com {len(digitos(r[campo]))} digitos: {r[campo]}')
+        for campo, lista_ok in (('Temperatura', TEMPERATURAS), ('Segmento', SEGMENTOS), ('Cluster', CLUSTERS), ('ProdutoInteresse', PRODUTOS), ('UF', UFS)):
+            if r[campo] and r[campo] not in lista_ok: motivos.append(f'{campo} fora da lista: {r[campo]}')
+        if not r['TelefoneFixo'] and not r['Celular'] and not r['Email']: motivos.append('sem telefone e sem e-mail')
+        fone, cel, sobra = roteia_telefones(r['TelefoneFixo'], r['Celular'])
+        if sobra: motivos.append('telefone nao aproveitado (um fixo DD+8 ou 0800+7 e um celular DD+9+8 por linha; extras em Observacoes): ' + ', '.join(sobra))
         if r['Email'] and not email_ok(r['Email']): motivos.append(f'e-mail invalido: {r["Email"]}')
         if len(r['RazaoSocial']) > 255: motivos.append('Razao Social > 255')
         if '\n' in r['Origem'] or r['Origem'] != r['Origem'].strip(): motivos.append('Origem com espaco/quebra de linha')
         if n and tipo == 'OK':
             if n in vistos: motivos.append(f'CNPJ duplicado no arquivo (linha {vistos[n]})')
             else: vistos[n] = i
-        owner_id = ''
+        owner_id = sdr_id = ''
         if online:
             if n in idx_acc:
                 a = idx_acc[n][0]
@@ -184,19 +190,19 @@ def processa(rows, leads, accounts, users, online):
                 motivos.append(f'Lead ja existe na org: {g(l, "Id")} ({g(l, "Status")}, dono {g(l, "OwnerId")})')
             owner_id, mo = resolve_owner(r['Proprietario'], by_email, by_name)
             if mo: motivos.append(mo)
+            sdr_id, mo = resolve_owner(r['SDR'], by_email, by_name)
+            if mo: motivos.append(mo.replace('proprietario', 'SDR'))
         elif not motivos:
             motivos.append('FORMATO OK; aguarda cruzamento com a org (rode com --leads/--accounts/--users)')
         if motivos:
             B.append({**r, 'Linha': i, 'Motivo': ' | '.join(motivos)})
         else:
-            fone, cel, sobra = roteia_telefones(r['Telefone1'], r['Telefone2'])
-            desc = '; '.join(x for x in (r['Observacoes'], ('Outros telefones: ' + ', '.join(sobra)) if sobra else '') if x)
-            A.append({'SDR__c': owner_id, 'OwnerId': owner_id, 'LeadSource': ORIGENS.get(r['Origem'], r['Origem']), 'DocumentNumber__c': mascara_cnpj(n),
+            A.append({'SDR__c': sdr_id, 'OwnerId': owner_id, 'LeadSource': ORIGENS.get(r['Origem'], r['Origem']), 'DocumentNumber__c': mascara_cnpj(n),
                       'Company': r['RazaoSocial'], 'FantasyName__c': r['NomeFantasia'], 'FirstName': r['Nome'], 'LastName': r['Sobrenome'],
                       'Title': r['Cargo'], 'Phone': fone, 'MobilePhone': cel, 'Email': r['Email'].lower(),
-                      'City': r['Cidade'], 'StateCode': r['UF'], 'CountryCode': 'BR', 'Description': desc, 'Status': STATUS_NOVO,
-                      'Stage__c': STAGE_PADRAO, 'Segment__c': SEGMENTO_PADRAO, 'ClusterManual__c': CLUSTER_PADRAO,
-                      'RecordTypeId': RECORDTYPE_LEAD_B2B})
+                      'City': r['Cidade'], 'StateCode': r['UF'], 'CountryCode': 'BR', 'Description': r['Observacoes'], 'Status': STATUS_NOVO,
+                      'Stage__c': r['Temperatura'], 'Segment__c': r['Segmento'], 'ClusterManual__c': r['Cluster'],
+                      'ProductInterestNew__c': r['ProdutoInteresse'], 'RecordTypeId': RECORDTYPE_LEAD_B2B})
     return A, B, C
 
 def escreve(out, A, B, C, rows, online):
@@ -209,7 +215,7 @@ def escreve(out, A, B, C, rows, online):
     w('C_ja_cliente.csv', ['Linha', 'Motivo', 'AccountId', 'ContaNome', 'ContaOwnerId'] + TEMPLATE, C)
     cnpjs = sorted({normaliza_cnpj(r['CNPJ']) for r in rows if len(normaliza_cnpj(r['CNPJ'])) == 14})
     lista = ','.join(f"'{x}'" for x in cnpjs) + ',' + ','.join(f"'{mascara_cnpj(x)}'" for x in cnpjs)
-    donos = sorted({r['Proprietario'] for r in rows if r['Proprietario']})
+    donos = sorted({r[c] for r in rows for c in ('Proprietario', 'SDR') if r[c]})
     emails = ','.join(f"'{d.lower()}'" for d in donos if '@' in d) or "''"; nomes = ','.join(f"'{d}'" for d in donos if '@' not in d) or "''"
     with open(os.path.join(out, 'consultas.soql'), 'w', encoding='utf8') as f:
         f.write(f"-- 1) leads.json\nSELECT Id, Name, Company, DocumentNumber__c, Status, OwnerId FROM Lead WHERE IsConverted = false AND DocumentNumber__c IN ({lista})\n\n")
