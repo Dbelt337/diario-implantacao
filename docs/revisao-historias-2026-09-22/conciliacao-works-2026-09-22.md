@@ -252,3 +252,24 @@ CW22| DRY_RUN: rollback executado, nada persistiu.
 Validado: record type User Story, epicos, product tag, scrum team, assignee, product owner, status New, type User Story, 27 criterios de aceite no objeto proprio. Descricao completa validada localmente (maior: 5.987 caracteres, limite 32.000; Subject maior: 121 caracteres, limite 255, nenhum abreviado).
 
 **Aguardando APROVADO para a Fase 5.**
+
+## Fase 5 e 6: execucao (aprovada pelo Diego em 22/09/2026, 16h) e verificacao
+
+Criacao via Bulk API 2.0: works job 750V200000mdBrCIAU (14 processadas, 0 falhas), criterios de aceite job 750V200000mdEQrIAM (27 processados, 0 falhas). Verificacao: Subject, epico, record type User Story, status New, tamanho da descricao e quantidade de criterios conferidos um a um contra o plano, todos iguais. Story Points, Sprint e Backlog Rank vazios. Total de works na org: 111 -> 125.
+
+| id_local | Work | Id | Subject |
+|---|---|---|---|
+| B2B-10 | W-000160 | a9IV2000000zzxpMAA | [ENTERPRISE ORDER MANAGEMENT - EOM] - Restrição de Edição pelo BKO e Bypass de Arquitetura |
+| B2B-16 | W-000161 | a9IV2000000zzxqMAA | [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Leads e Oportunidades |
+| B2B-17 | W-000162 | a9IV2000000zzxrMAA | [ENTERPRISE CPQ] - Configuração e Precificação de Produtos na Modalidade Cortesia / Degust |
+| B2B-18 | W-000163 | a9IV2000000zzxsMAA | [SALES CORE / ADVANCED APPROVALS] - Aprovação Mandatória e Trava Comercial para Cortesias |
+| B2B-19 | W-000164 | a9IV2000000zzxtMAA | [ENTERPRISE ORDER MANAGEMENT - EOM] - Decomposição, Provisionamento e Handoff de Cortesia  |
+| B2B-21 | W-000165 | a9IV2000000zzxuMAA | [ENTERPRISE CPQ / SALES CORE] - Negociação de Permuta de Serviços (Swap/SUAP) e Justificat |
+| B2B-23 | W-000166 | a9IV2000000zzxvMAA | [MACD / ENTERPRISE CPQ] - Upgrade de Serviços B2B SEM Refidelização Contratual (Manutenção |
+| B2C-N04 | W-000167 | a9IV2000000zzxwMAA | [ATENDIMENTO & RETENÇÃO] - Tratamento de Desligamento e Reversão de Plano Colaborador |
+| B2C-N05 | W-000168 | a9IV2000000zzxxMAA | [DASHBOARDS & AUDITORIA] - Relatório de Auditoria de Vendas (Cortesia e SWAP) com Débito I |
+| B2C-N07 | W-000169 | a9IV2000000zzxyMAA | [MACD & CPQ] - Venda Cortesia com Aprovação Prévia e Faturamento Zerado |
+| B2C-N08 | W-000170 | a9IV2000000zzxzMAA | [MACD & CPQ] - Venda Swap (Permuta) com Preço Flexível e Comprovação |
+| B2C-N09 | W-000171 | a9IV2000000zzy0MAA | [MACD / CPQ] - Upgrade B2C com Trava de Inadimplência e Refidelização Guarda-Chuva |
+| B2C-N10 | W-000172 | a9IV2000000zzy1MAA | [MACD / CPQ] - Downgrade B2C com Isenção de Multa Condicionada à Refidelização |
+| B2C-N11 | W-000173 | a9IV2000000zzy2MAA | [MACD / CPQ] - Sincronização Automática de Refidelização e Data de Reajuste Anual |
