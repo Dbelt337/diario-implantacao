@@ -202,3 +202,74 @@ Work | Assunto | Nota | Capacidade nativa principal | Ajuste
 5. Licenca como pre-condicao invisivel: OM (W-000134), ESM (W-000119), BRE (W-000107), MuleSoft Direct (W-000135). Marcar "Bloqueado por licenca" no Agile ate confirmacao.
 6. Confusao de vocabulario Sales Cloud x CPQ: "estagio da Cotacao" (Quote tem Status; Stage e da Opportunity); "Assets convertidos pelo botao" (assetizacao e do OM).
 7. Ponto forte: as US tecnicas (W-000133 a W-000137, W-000140) e as B2B novas (W-000142 a W-000145) citam o Help e os limites da plataforma; sao o modelo a seguir.
+
+## Segunda rodada (22/09, noite): licencas, objetos nativos, sincrono x assincrono, OM e releases
+
+Motivo: a W-000145 saiu da primeira rodada assumindo DocuSign, e outras historias assumiam Advanced Approvals, Person
+Account, objetos custom onde existe objeto padrao ou do pacote, e nao diziam quais chamadas sao sincronas ou assincronas.
+As 107 works do programa (93 da primeira rodada + 14 criadas na conciliacao) foram reescritas de novo, agora cruzando cada
+uma com quatro insumos fixos: `docs/2026-09-22-licencas-org-prod.md`, `docs/2026-09-22-perfis-e-papeis-org-prod.md`,
+`docs/2026-09-22-pesquisa-order-management-e-releases.md` e a documentacao oficial (help, developer, trailhead).
+
+Regras aplicadas em todas:
+- Toda capacidade citada tem PSL ou licenca conferida no inventario; o que nao existe na org entra na linha "Nao utilizado
+  por falta de licenca" (DocuSign ou qualquer motor de assinatura, Advanced Approvals, ESM, MuleSoft Direct, Salesforce Maps).
+- Assinatura: aceite por evidencia (ContentVersion vinculado a Quote/Contract, AuthorizationFormConsent quando cabe) ate a
+  BTP decidir fornecedor; tokens do Document Generation preservados no template para o motor futuro.
+- Aprovacoes: Flow Approval Orchestration (ApprovalSubmission/ApprovalWorkItem), record-triggered e Request Approval,
+  aprovacao unanime quando a regra pede; nunca sbaa__ (Salesforce CPQ).
+- Person Account nao habilitado: Account record type Pessoa Fisica + Contact / B2B - Pessoa juridica.
+- Objeto custom so com justificativa; antes disso: objetos padrao, objetos do pacote CMT, Custom Metadata Type, Decision
+  Table/Decision Matrix do Business Rules Engine (PSL BREDesigner licenciada e sem uso), Task padrao.
+- Cada historia ganhou tres secoes novas: LICENCAS E CAPACIDADES UTILIZADAS, CHAMADAS SINCRONAS E ASSINCRONAS (tabela com
+  mecanismo, retentativa/idempotencia e o que o usuario ve) e OBJETOS (padrao / pacote / custom com justificativa), alem de
+  REFERENCIAS so com URLs oficiais.
+- Perfis e papeis com os nomes reais da org (B2B - Vendedor/SDR, B2B - Gerencia, B2B - Backoffice, B2C - Vendedor,
+  B2C - BackOffice, B2C - Gerente, papeis B2B_Head_*, B2B_Gerente_<cluster>, B2C_Agente_*, etc.).
+- OM e releases: mecanismos nativos do Order Management (supplemental order, amend/cancel ate o ponto de nao retorno,
+  rollback, item callout com retentativa, fallout, OrderSubmitMode em fila) e a decisao Plan A (OM do pacote) / B (Mule) /
+  C (DRO no Core) registrada nas historias de pedido; Spring/Summer '26: Apex user mode API 67.0, External Client App,
+  trim mode e deep clone do carrinho, Decision Tables versionadas com Decision Explainer, Generate Document localizado,
+  flows agendados em lote no lugar de Batch Apex.
+
+Trocas de licenca ou objeto por historia (o que mudou de solucao, nao so de texto):
+
+| Historias | Antes | Depois |
+|---|---|---|
+| W-000086, 087, 089, 101, 105, 106, 116, 118, 121, 122, 126, 128, 145, 169 | DocuSign / motor de assinatura | Aceite por evidencia (ContentVersion, AuthorizationFormConsent); motor externo so via MuleSoft |
+| W-000098, 108, 121, 128, 144, 160, 163, 165, 166, 169, 170 | Advanced Approvals (sbaa__) | Flow Approval Orchestration com Decision Table de alcadas |
+| W-000056, 102, 114 | Objeto custom GeographicCommercialPolicy (IBGE x zona) | Decision Table versionada do BRE com upload CSV; codigos de zona como campos em Premises/ServicePoint |
+| W-000110, 120 | Objetos custom de mapeamento e percentuais | Custom Metadata Type |
+| W-000107 | Objeto custom de log de calculo | Decision Explainer + campos na QuoteLineItem |
+| W-000119 | Relatorio custom de importacao | CSV como ContentVersion + Task |
+| W-000145 | Objeto custom Envio_para_Assinatura__c | Task padrao com WhoId no signatario (entry source do MC a validar) |
+| W-000168, 169 | ProcessInstance | ApprovalSubmission / ApprovalWorkItem |
+| W-000171, 172, 173 | vlocity_cmt__Contract__c / ContractTerm__c | Contract padrao + vlocity_cmt__ContractVersion__c |
+| W-000169, 170 | Record types Cortesia/Swap na Opportunity | Atributo Tipo de Negociacao no carrinho |
+| W-000162, 165 | Manual Override / override via OmniScript | Promocao 100% com Time Plan/Time Policy (162); Discount order-based (165) |
+| W-000128 | Campo de reuso no Asset | AccountAppliedPromotion__c / OrderAppliedPromotion__c (Asset so espelho) |
+| W-000127 | Matriz de compatibilidade custom | Decision Matrix ou Decision Table do BRE |
+| W-000130 | Platform Event / IP inbound | REST upsert padrao por External Id |
+| W-000097 | vlocity_cmt__ServiceAccount__c | Account com record type do modelo CME |
+| W-000093, 096, 101, 117, 144, 166, 167, 169, 170, 171, 172 | Person Account | Account record type Pessoa Fisica + Contact |
+| W-000092 | WhatsApp assumido | Add-on do MC Engagement a confirmar; fallback e-mail por Flow |
+| W-000090, 091, 095, 129 | Assentos de Service | Licenca Salesforce full ja atribuida + Service Console for Communications (PSL ociosa) |
+
+Pendencias que ficaram escritas nos textos (decisao do negocio, nao da historia): aprovador financeiro da W-000144 (nao
+existe perfil financeiro; proposta B2B_Head_<unidade>); Task como entry source do Marketing Cloud (W-000145); Decision
+Explainer x objeto de log (W-000107); Plan C do OM (DRO no Core) a levar ao presidente; WhatsApp no contrato do MC (W-000092).
+
+Validacao antes da carga: 107 textos entre 3.932 e 8.996 caracteres (limite 32.000); sem markdown, sem emoji, sem marca de
+ferramenta; URLs so de dominios oficiais; DocuSign/Advanced Approvals/Person Account aparecem apenas como "nao licenciado" ou
+"nao habilitado". Backup do texto anterior em `org/tmp/agile_backup/rollback_details_2026-09-22_v2.csv` (fora do git).
+
+Carga: o modo automatico bloqueou o `sf data update bulk` em producao. Arquivo pronto em
+`org/tmp/agile_carga/carga_details_2026-09-22_v2.csv` (Id, agf__Details__c). Comando para executar na raiz do repo:
+
+```
+sf data update bulk --sobject agf__ADM_Work__c --file org/tmp/agile_carga/carga_details_2026-09-22_v2.csv --target-org btp-prod --wait 10
+```
+
+Conferencia depois da carga: `python tools/agile/conferir_carga_details.py` compara o campo na org com o CSV e lista
+divergencias. Rollback: `python tools/agile/conferir_carga_details.py --gerar-rollback` recorta o backup para as colunas
+Id e agf__Details__c em `org/tmp/agile_carga/rollback_details_2026-09-22_v2.csv`, que se aplica com o mesmo comando de carga.
