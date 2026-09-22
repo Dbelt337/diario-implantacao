@@ -1,0 +1,56 @@
+SUBJECT: [MACD / CPQ] - Upgrade B2C com Trava de Inadimplência e Refidelização Guarda-Chuva
+EPICO: B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente
+CLASSE: PARCIAL (W-000116 (B2C-32 mudanca de plano MACD) e generica; upgrade com trava de inadimplencia ganha work propria (cobertura 0,35))
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+1. NARRATIVA DE NEGÓCIO
+Como Agente de Relacionamento (Lojas) / Atendente de Call Center (Zendesk)
+Quero ofertar e configurar um pacote superior (Upgrade) validando rigorosamente a situação financeira do cliente
+Para que eu consiga elevar a receita média por usuário (ARPU) através de upsell, retendo o cliente por meio de uma nova refidelização, mas impedindo que clientes com contas atrasadas adquiram novos serviços no CRM.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Mudança de Serviço para aumento de velocidade de banda (Upgrade). A plataforma B2C utiliza um contrato do tipo "guarda-chuva", o que implica que a modificação de atributo principal refideliza toda a composição do contrato.
+Mapeamento eTOM: 1.3.1.1 Customer Interaction Management, 1.3.4.1 Customer Information Management, 1.3.3.1 Customer Contract Management.
+Regras de Negócio:
+[Regra 1: Análise Financeira Sem Desbloqueio de Confiança] Ao carregar a tela de Upgrade, o sistema faz consulta síncrona aos débitos. Caso positivo, exibe alerta obstrutivo em tela (Hard Block). Diferente de outras plataformas, o Salesforce não fará desbloqueios operacionais (de confiança); tudo deverá ser resolvido via tratamento de Billing/Cobrança.
+[Regra 2: Nova Cotação por Recusa] Propostas de Upgrade não aceitas pelo cliente não podem ser editadas voltando a mesma tela repetitivamente; a recusa de proposta exige a criação forçada de uma nova Cotação na mesma Oportunidade para manter rastro de ofertas declinadas.
+[Regra 3: Refidelização] O upgrade do produto central (Fibra) renova integralmente a carência do contrato inteiro (12 meses). Adição apenas de produtos avulsos (ex: streaming) não afeta a data principal de fidelidade.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Asset (Customer 360), Opportunity, Quote (MACD Change), vlocity_cmt__Contract__c.
+Automação / Front-end: OmniScript iniciado a partir da View de Asset. Integration Procedure na inicialização executando chamada para o Billing. Ocultação visual de qualquer botão customizado de "Desbloqueio".
+Integração / APIs TM Forum: TMF666 (Account Receivables) validando boletos vencidos em tempo real. TMF622 para disparar a ação "Change" de produtos na rede.
+Segurança e Acessos: Perfis de relacionamento limitados a visualização ("Read-Only") dos saldos devedores retornados.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Bloqueio de Upgrade por Fatura Vencida
+Dado que um cliente com 2 faturas em aberto liga no Call Center e aceita a oferta de upgrade
+Quando o atendente clica em "Modificar Plano (Change)"
+Então o sistema faz a requisição no BSS, identifica a inadimplência e exibe uma tela obstrutiva com a mensagem "Regularização de Débito Pendente", impedindo o avanço para a adição de pacote.
+Cenário 2: Registro de Negociação e Nova Cotação
+Dado que o cliente recusa a primeira proposta ofertada pelo atendente
+Quando o atendente marca a Cotação atual (Quote) como Rejeitada
+Então o sistema congela a versão anterior e inicia um novo fluxo em branco para elaboração da segunda oferta (Quote v2) vinculada ao mesmo caso de venda.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Barramento (MuleSoft/Gateway) performático e SLA de tempo de resposta da API de faturamento < 2s.
+Governor Limits & Edge Cases: Tratamento amigável de Timeout na API do Customer Core. Se houver falha de rede da TMF666, não deve travar totalmente a tela, mas escalar para um status provisório de "Aguardando Confirmação Manual de Pagamento".
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Person Account com Asset ativo; Mock de API TMF666 retornando Payload Positivo (Débitos) e Negativo (Adimplente) para o CPF informado.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Bloqueio de Upgrade por Fatura Vencida
+Dado que um cliente com 2 faturas em aberto liga no Call Center e aceita a oferta de upgrade
+Quando o atendente clica em "Modificar Plano (Change)"
+Então o sistema faz a requisição no BSS, identifica a inadimplência e exibe uma tela obstrutiva com a mensagem "Regularização de Débito Pendente", impedindo o avanço para a adição de pacote.
+
+Critério 2 - Registro de Negociação e Nova Cotação
+Dado que o cliente recusa a primeira proposta ofertada pelo atendente
+Quando o atendente marca a Cotação atual (Quote) como Rejeitada
+Então o sistema congela a versão anterior e inicia um novo fluxo em branco para elaboração da segunda oferta (Quote v2) vinculada ao mesmo caso de venda.

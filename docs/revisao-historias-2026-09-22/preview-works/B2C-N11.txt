@@ -1,0 +1,47 @@
+SUBJECT: [MACD / CPQ] - Sincronização Automática de Refidelização e Data de Reajuste Anual
+EPICO: B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente
+CLASSE: NAO_EXISTE (sincronizacao de refidelizacao e data de reajuste anual; nenhuma work)
+CRITERIOS DE ACEITE (objeto proprio): 1
+
+================================================================================
+1. NARRATIVA DE NEGÓCIO
+Como Administrador do Catálogo B2C / Analista de Negócios B2C
+Quero que o cálculo da Data de Reajuste Anual do cliente seja vinculado automaticamente à sua data de refidelização, sendo sistematicamente forçado para 12 meses nos casos atípicos
+Para que o sistema elimine ajustes manuais de vendedores propensos a erro, evitando antecipação inflacionária nos contratos ou perdas financeiras na vigência da fidelidade.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Ao atuar na refidelização (seja pura ou acoplada a upgrade/downgrade), algumas promoções geram compromissos contratuais variados (ex: retenção com 6 meses de fidelidade). A diretriz comercial exige que os reajustes de tarifa obedeçam rigidamente ciclos anuais fechados, nivelando inconsistências.
+Mapeamento eTOM: 1.3.3.1 Customer Contract Management, 1.4.1.2 Billing Account Management.
+Regras de Negócio:
+[Regra 1: Vinculação de Datas] Toda alteração contratual efetuada recriará as referências de tempo de vigência e reajuste.
+[Regra 2: Puxada de SLA Anual] Se a vigência negociada ou imposta no catálogo for inferior a 12 meses, a Data de Reajuste Anual adotará obrigatoriamente a régua de 12 meses corridos (Today + 12 Months) a partir da efetivação do pedido.
+[Regra 3: Campo Inviolável] As equipes do Call Center e Força de Vendas visualizam o campo, mas ele permanecerá como "Read-Only" em todo o processo.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Order, vlocity_cmt__Contract__c.
+Automação / Front-end: Record-Triggered Flow ativado na fase "Activated" do Order (processo MACD fechado) atuando no Contrato ativo do cliente.
+Integração / APIs TM Forum: TMF651 (Agreement Management) recebendo as datas finais sincronizadas no endpoint de provisionamento do BSS.
+Segurança e Acessos: Field Level Security restringindo modificações manuais sobre o campo customizado Next_Readjustment_Date__c.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Ajuste Forçado para Promoções Curtas
+Dado que o cliente aceita uma proposta de retenção com carência definida de 6 meses
+Quando o pedido MACD é submetido com sucesso e muda para o status "Ativado"
+Então o Flow atua em background, atualiza o Termo de Fidelidade para +6 meses e seta compulsoriamente a Data de Reajuste Anual para 12 meses a partir do fechamento da cotação.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Sincronismo da base de contratos legados antes do tombamento (data cleansing da base para garantir que os reajustes não falhem retroativamente).
+Governor Limits & Edge Cases: N/A.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Fluxo MACD simulando aplicação de desconto de retenção com fidelidade estática de 6 meses; verificação do registro vlocity_cmt__Contract__c ao final do pedido.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Ajuste Forçado para Promoções Curtas
+Dado que o cliente aceita uma proposta de retenção com carência definida de 6 meses
+Quando o pedido MACD é submetido com sucesso e muda para o status "Ativado"
+Então o Flow atua em background, atualiza o Termo de Fidelidade para +6 meses e seta compulsoriamente a Data de Reajuste Anual para 12 meses a partir do fechamento da cotação.

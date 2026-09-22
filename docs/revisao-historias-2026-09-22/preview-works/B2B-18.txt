@@ -1,0 +1,39 @@
+SUBJECT: [SALES CORE / ADVANCED APPROVALS] - Aprovação Mandatória e Trava Comercial para Cortesias
+EPICO: 2) Vender soluções como cortesia
+CLASSE: NAO_EXISTE (aprovacao mandatoria e trava comercial para cortesias B2B)
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+NARRATIVA DE NEGÓCIO
+Como Gestor Comercial B2B / Diretor de Vendas Quero que qualquer cotação que contenha produtos na modalidade "Cortesia" ou "Degustação" seja bloqueada para envio ao cliente até que eu aprove a solicitação Para que eu tenha controle sobre os custos operacionais, evite abusos na concessão de gratuidades e proteja a margem de contribuição (ROI) da unidade de negócio.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Produtos oferecidos sem custo geram despesas de ativação (equipamentos, deslocamento técnico). Para evitar fraudes ou uso indevido da cortesia como muleta de vendas, o processo exige governança rigorosa e aval gerencial antes da geração da proposta comercial. Mapeamento eTOM: 1.2.1.2 Sales Management, 1.2.1.6 Quotation Management.
+Regras de Negócio:
+[Regra 1: Aprovação Obrigatória de Cortesia] Toda cotação que possuir o atributo "Cortesia" ou "Trading" aciona automaticamente a exigência de aprovação pelo Gestor Imediato.
+[Regra 2: Trava de Geração de Contrato/DocGen] O sistema deve bloquear a geração do PDF da proposta (DocGen) e o envio para assinatura do cliente corporativo até que o status de aprovação da cotação seja "Aprovado".
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Quote, QuoteLineItem, sbaa__Approval__c (Advanced Approvals), sbaa__ApprovalRule__c. Automação / Front-end: Salesforce Advanced Approvals, Vlocity Document Generation (DocGen), Validation Rules (Record Lock). Integração / APIs TM Forum: Não se aplica diretamente. Segurança e Acessos: Bloqueio de registro (Record Lock) da Cotação enquanto estiver em status "Pendente de Aprovação".
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Disparo de aprovação por Gestor para itens zerados:
+Dado que o GR finalizou a configuração de um carrinho B2B contendo produtos de "Cortesia" Quando ele tenta gerar o documento da proposta comercial Então o sistema bloqueia a ação, altera o status para "Requer Aprovação" e roteia a solicitação para a fila do Gestor Imediato.
+Cenário 2: Liberação do DocGen após aprovação:
+Dado que a cotação de Cortesia foi aprovada pelo Gestor Imediato Quando o GR retorna ao registro Então a cotação é destravada, permitindo a geração do PDF nativo (DocGen) e o registro do aceite formal do Signatário Legal do cliente corporativo.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Usuário GR criando cotação com Cortesia; Verificação de bloqueio do botão "Gerar Proposta"; Login com usuário Gestor para aprovar; Validação da liberação do DocGen.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): Oportunidade setada com o tipo de negociação "Cortesia"
+- Fernanda da Silveira Duarte (2026-09-15): envio da proposta técnica / comercial para o cliente.. para o aceite ou recusa da proposta.
+- Fernanda da Silveira Duarte (2026-09-15): Nem vai tentar, após já será direcionado automaticamente. 
+Só será aberta possibilidade de elaborar a proposta técnica / comercial após o retorno da aprovação do gestor
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Disparo de aprovação por Gestor para itens zerados
+Dado que o GR finalizou a configuração de um carrinho B2B contendo produtos de "Cortesia" Quando ele tenta gerar o documento da proposta comercial Então o sistema bloqueia a ação, altera o status para "Requer Aprovação" e roteia a solicitação para a fila do Gestor Imediato.
+
+Critério 2 - Liberação do DocGen após aprovação
+Dado que a cotação de Cortesia foi aprovada pelo Gestor Imediato Quando o GR retorna ao registro Então a cotação é destravada, permitindo a geração do PDF nativo (DocGen) e o registro do aceite formal do Signatário Legal do cliente corporativo.

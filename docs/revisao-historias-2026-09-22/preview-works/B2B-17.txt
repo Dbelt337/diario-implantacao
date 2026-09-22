@@ -1,0 +1,53 @@
+SUBJECT: [ENTERPRISE CPQ] - Configuração e Precificação de Produtos na Modalidade Cortesia / Degustação
+EPICO: 2) Vender soluções como cortesia
+CLASSE: NAO_EXISTE (cortesia B2B no CPQ; W-000115 e B2C (tipos de operacao sem faturamento))
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+NARRATIVA DE NEGÓCIO
+Como Gerente de Relacionamento (GR) / Consultor de Vendas B2B Quero configurar produtos do catálogo na modalidade de "Cortesia" ou "Degustação" (Trading) diretamente no fluxo padrão de cotação corporativa Para que eu possa utilizar essas ofertas como estratégia de negociação, garantindo que o valor faturado (MRR/NRC) seja zerado e as métricas de vendas sejam registradas adequadamente sem distorcer o faturamento.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: O fluxo de cortesia não deve ser um processo apartado. Ele deve nascer dentro da Oportunidade e da Cotação padrão, permitindo que a equipe comercial marque o produto como cortesia ou degustação, zerando os encargos financeiros para o cliente, mas mantendo a visibilidade dos custos operacionais. Mapeamento eTOM: 1.2.1.3 Offer Configuration, 1.2.1.6 Quotation Management.
+Regras de Negócio:
+[Regra 1: Flag de Tipo de Negócio] O carrinho (CPQ Cart) deve permitir a seleção do atributo ou flag "Tipo de Negociação" = "Cortesia" ou "Degustação/Trading".
+[Regra 2: Precificação Zerada] Ao classificar a linha de cotação como cortesia, o motor de precificação deve obrigatoriamente aplicar 100% de desconto ou zerar o MRR e NRC para o período configurado.
+[Regra 3: Sem Fidelidade Padrão] Produtos puramente de cortesia não geram carência ou fidelidade financeira, exceto quando amarrados a um contrato maior de outros serviços pagos.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Product2, vlocity_cmt__AttributeAssignment__c, Quote, QuoteLineItem, Opportunity. Automação / Front-end: Enterprise CPQ Cart, Vlocity Pricing Rules / Pricing Matrix, Override de Preço via OmniScript. Integração / APIs TM Forum: TMF620 (Product Catalog Management). Segurança e Acessos: Restrição via Field-Level Security (FLS) para que a alteração de "Tipo de Negócio" seja rastreada e acione gatilhos de aprovação.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Configuração de link corporativo como cortesia zerada:
+Dado que o GR adiciona um Link Dedicado B2B ao carrinho de cotação Quando o GR seleciona a flag "Cortesia" nos atributos comerciais do produto Então o Vlocity Pricing Engine recalcula a linha, definindo os valores de instalação (NRC) e mensalidade (MRR) como R$ 0,00 na proposta.
+Cenário 2: Conversão de oportunidade para cortesia no meio da negociação Dado que uma cotação B2B regular foi rejeitada por questões financeiras Quando o GR clona a cotação e altera o tipo de negócio para "Degustação/Trading" por 3 meses Então o sistema zera os valores dos 3 primeiros meses e exige a emissão de uma nova proposta para aceite do cliente.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Oportunidade B2B com cotação de 5 Premise(s); Produto de conectividade elegível a cortesia; Validação do carrinho exibindo Total = R$ 0,00.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-14): Contratos cortesias também são amarrados a uma fidelidade. E estas informações serão preenchidas na etapa "preencher o periodo do contrato e fidelidade".
+
+*Preenchimento obrigatório:
+- Tempo de contrato (meses): 12, 24, 36, 48, 60 ou outros (se "outros" habilitar o campo para inserção do período);
+- Tempo de término do contrato (preenchido automaticamente conforme o tempo de contrato estipulado);
+- Tempo de fidelização (meses): 12, 24, 36, 48, 60 ou outros (se "outros" habilitar o campo para inserção do período). Obs: se o tempo de contrato for diferente do tempo da fidelidade é necessário habilitar o campo para descrever o motivo da exceção;
+- Segmento de mercado: corporativo (preenchido automaticamente); 
+- Não ocorrerá a geração de faturamento em contratos classificados como cortesia.
+- Fernanda da Silveira Duarte (2026-09-15): Qualquer produto poderá estar constando no fluxo de cortesia. Não será o produto o "direcionador" e sim o tipo de negociação selecionado na oportunidade..
+- Fernanda da Silveira Duarte (2026-09-14): Ele também pode ser apartado. Já iniciar com a inserção do tipo de negociação: cortesia. O que tem que ser deixado claro aqui é que uma oportunidade até então considerada como 'venda" (com faturamento) pode ser ajustada para cortesia dependendo do andar da negociação. E o faturamento será zerado.
+- Fernanda da Silveira Duarte (2026-09-14): Não fica a cargo do produto, fica a cargo da negociação como um todo...
+- Fernanda da Silveira Duarte (2026-09-17): Ponto importante: Na negociação do tipo "Cortesia" o catálogo poderá exibir o valor padrão do produto para fins de relatório, porém o sistema deve compreender que não haverá faturamento.
+- Fernanda da Silveira Duarte (2026-09-14): Não será na composição do carrinho, o tipo de negociação será definido no momento do preenchimento dos dados básicos da oportunidade.
+- Fernanda da Silveira Duarte (2026-09-15): Essa informação será na venda que envolve faturamento e não no fluxo que contém o tipo de negociação "cortesia". São temas diferentes.
+- Fernanda da Silveira Duarte (2026-09-15): Não será selecionada a flag de cortesia no carrinho e sim no momento do preenchimento dos dados básicos da oportunidade..
+
+Um ponto importante para ajuste nas histórias é o entendimento da diferença entre o tipo de negociação setado como cortesia no momento do preenchimento dos dados básicos da oportunidade (q seria este o caso do fluxo venda cortesia) e a possibilidade de zerar o valor de algum produto no lançamento da venda "normal" com faturamento, mas que pela negociação terá um dos produtos / serviços com valor zerado.....
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Configuração de link corporativo como cortesia zerada
+Dado que o GR adiciona um Link Dedicado B2B ao carrinho de cotação Quando o GR seleciona a flag "Cortesia" nos atributos comerciais do produto Então o Vlocity Pricing Engine recalcula a linha, definindo os valores de instalação (NRC) e mensalidade (MRR) como R$ 0,00 na proposta.
+
+Critério 2 - Conversão de oportunidade para cortesia no meio da negociaçã
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Estimativa Sugerida: 8 Story Points - Requer ajuste no EPC (Product Catalog) para criar o atributo de Cortesia e configuração de Pricing Rules para aplicar o desconto de 100% dinamicamente. Dependências: Definição clara no catálogo de quais produtos corporativos são elegíveis para a modalidade de cortesia. Governor Limits & Edge Cases: Evitar lentidão no recálculo do carrinho (Cart Repricing) em cotações com múltiplos sites (Large Carts) ao aplicar a regra de cortesia em massa.

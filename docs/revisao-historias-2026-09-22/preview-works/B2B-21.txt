@@ -1,0 +1,42 @@
+SUBJECT: [ENTERPRISE CPQ / SALES CORE] - Negociação de Permuta de Serviços (Swap/SUAP) e Justificativa Comercial
+EPICO: 3) Vender soluções como swap
+CLASSE: PARCIAL (W-000100 (B2B-05) e guarda-chuva de upgrade/swap; swap/SUAP ganha work propria)
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+NARRATIVA DE NEGÓCIO
+Como Gerente de Relacionamento (GR) / Consultor de Vendas B2B Quero registrar uma negociação do tipo "Swap" (Permuta de Serviços) utilizando produtos do catálogo padrão, aplicando valores diferenciados e preenchendo obrigatoriamente um descritivo da troca Para que a empresa viabilize parcerias estratégicas (ex: fornecimento de internet em troca de espaço publicitário ou infraestrutura), sem poluir o catálogo de produtos e garantindo a aprovação gerencial, rastreabilidade operacional e auditoria financeira da operação.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Na dinâmica corporativa de Telecom, é comum a negociação de permutas (Swap/SUAP) entre empresas, onde serviços de conectividade são trocados por contrapartidas do cliente (ex: espaço para instalação de ERBs/Antenas, captação de leads em eventos, serviços terceirizados). Esses cenários não tratam de troca de hardware obsoleto, mas de um modelo de negócio onde o serviço faturado possui valor residual ou zerado em função de uma troca comercial. Mapeamento eTOM: 1.2.1.3 Offer Configuration, 1.2.1.6 Quotation Management.
+Regras de Negócio:
+[Regra 1: Classificação da Negociação e Justificativa Obrigatória] Ao selecionar a flag de "Tipo de Negociação" como "Swap/Permuta", o sistema deve obrigatoriamente habilitar e exigir o preenchimento de um campo de texto longo (Rich Text) denominado "Justificativa/Detalhe da Permuta", onde o GR registrará a contrapartida exata acordada entre as empresas.
+[Regra 2: Precificação Flexível via Override] Não devem ser criados produtos falsos/fictícios (dummy products) no catálogo para Swap. O GR deve adicionar o serviço real (ex: Link Dedicado) ao carrinho do CPQ e aplicar um Manual Override para reduzir o MRR (Monthly Recurring Charge) ao valor residual acordado ou a R$ 0,00.
+[Regra 3: Aprovação Gerencial e Alçada Mandatória] Qualquer cotação sinalizada como Swap que altere o valor padrão de prateleira entra obrigatoriamente em um fluxo de aprovação (Advanced Approvals), exigindo o aval do Gestor Imediato (e escalonamento para a Diretoria caso ultrapasse limites pré-estabelecidos) antes da liberação para geração do contrato/DocGen.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Opportunity, Quote, QuoteLineItem, sbaa__Approval__c, sbaa__ApprovalRule__c. Automação / Front-end: Enterprise CPQ Cart, Vlocity Rules (UI Behavior para exibir/exigir campo baseado na flag), OmniScript de Cotação, Validation Rules, Advanced Approvals. Integração / APIs TM Forum: TMF648 (Quote Management) - Payload deve conter a flag de Swap e a justificativa para consumo do BSS downstream. Segurança e Acessos: Field-Level Security (FLS) garantindo que o campo de justificativa seja bloqueado para edição (Read-Only) por perfis comerciais após o aceite ou envio para aprovação. Record Lock da Quote durante a pendência de aprovação gerencial.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Obrigatoriedade de preenchimento da justificativa da permuta:
+Dado que o GR está configurando uma oportunidade/cotação e seleciona o Tipo de Negócio como "Swap (Permuta)" Quando tenta avançar o estágio da cotação ou salvar o registro sem preencher o campo "Justificativa/Detalhe da Permuta" Então o sistema aciona uma Validation Rule, bloqueando o salvamento e exigindo o detalhamento claro da contrapartida (o que a empresa está recebendo em troca do serviço de Telecom).
+Cenário 2: Disparo de aprovação mandatória para permutas de serviço:
+Dado que o carrinho B2B possui um produto real com valor (MRR) editado via override e a flag de Swap ativada e justificada Quando o GR clica em "Submeter para Aprovação" ou tenta gerar a Proposta Comercial (DocGen) Então o sistema bloqueia a geração do documento e roteia a cotação para aprovação compulsória do Gestor Imediato (via Advanced Approvals), travando os valores contra novas edições.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Oportunidade com Conta B2B (Corporativa); Cotação com produto "Internet Dedicada 1Gbps"; Tipo Negociação = Swap; MRR alterado de R$ 2.000 para R$ 0,00; Verificação do bloqueio sem justificativa; Validação do disparo de aprovação para o Manager ID do usuário logado.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): nem vai ter a possibilidade de tentar
+- Fernanda da Silveira Duarte (2026-09-15): SWAP
+- Fernanda da Silveira Duarte (2026-09-15): SWAP
+- Fernanda da Silveira Duarte (2026-09-15): - Obs: a venda do tipo "Swap" pode ter valor a ser faturado, mesmo que seja bem menor do que o configurado no catálogo de produtos.
+- Fernanda da Silveira Duarte (2026-09-15): O campo para descrever o motivo do SWAP ficou mapeado na atividade "Preencher os dados para o faturamento, fidelidade e tempo de contrato" e não no mesmo local onde o tipo de negociação será setado como Swap.
+- Fernanda da Silveira Duarte (2026-09-15): O campo para descrever o motivo do SWAP ficou mapeado na atividade "Preencher os dados para o faturamento, fidelidade e tempo de contrato" e não no mesmo local onde o tipo de negociação será setado como Swap.
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Obrigatoriedade de preenchimento da justificativa da permuta
+Dado que o GR está configurando uma oportunidade/cotação e seleciona o Tipo de Negócio como "Swap (Permuta)" Quando tenta avançar o estágio da cotação ou salvar o registro sem preencher o campo "Justificativa/Detalhe da Permuta" Então o sistema aciona uma Validation Rule, bloqueando o salvamento e exigindo o detalhamento claro da contrapartida (o que a empresa está recebendo em troca do serviço de Telecom).
+
+Critério 2 - Disparo de aprovação mandatória para permutas de serviço
+Dado que o carrinho B2B possui um produto real com valor (MRR) editado via override e a flag de Swap ativada e justificada Quando o GR clica em "Submeter para Aprovação" ou tenta gerar a Proposta Comercial (DocGen) Então o sistema bloqueia a geração do documento e roteia a cotação para aprovação compulsória do Gestor Imediato (via Advanced Approvals), travando os valores contra novas edições.

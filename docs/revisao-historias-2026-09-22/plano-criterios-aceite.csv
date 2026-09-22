@@ -1,0 +1,57 @@
+﻿id_local,Name,agf__Description__c,agf__Status__c
+B2B-10,Critério 1 - Conversão de Venda Expressa e Auditoria Restrita,"Dado que um GR submete uma cotação de venda padrão (expressa) Quando a cotação avança, ela faz um ""bypass"" na fila de Arquitetura e cai direto para auditoria do BKO Então o BKO consegue visualizar todas as condições, mas os campos de valores financeiros estão bloqueados para edição",New
+B2B-10,Critério 2 - Tratamento de divergência financeira no BKO,Dado que o BKO identifica que os valores da cotação expressa não batem com a tabela de preços oficial Quando o BKO analisa a divergência Então ele só possui a opção de rejeitar e devolver a cotação para o GR ajustar e submeter novamente,New
+B2B-16,Critério 1 - Restrição do motivo preço na perda de Lead,"Dado que o SDR ou GR vai marcar um Lead como ""Perdido"" Quando ele clica no picklist de Motivos Então o sistema NÃO exibe a opção ""Preço"", garantindo que o descarte embrionário possua a categorização correta.",New
+B2B-16,Critério 2 - Encerramento de Oportunidade por Preço,"Dado que o GR avança para fechar uma Oportunidade B2B como ""Closed Lost""
+Quando ele visualiza o modal de justificativa
+Então a opção ""Preço"" é exibida e exige a seleção de um submotivo condizente.",New
+B2B-17,Critério 1 - Configuração de link corporativo como cortesia zerada,"Dado que o GR adiciona um Link Dedicado B2B ao carrinho de cotação Quando o GR seleciona a flag ""Cortesia"" nos atributos comerciais do produto Então o Vlocity Pricing Engine recalcula a linha, definindo os valores de instalação (NRC) e mensalidade (MRR) como R$ 0,00 na proposta.",New
+B2B-17,Critério 2 - Conversão de oportunidade para cortesia no meio da negociaçã,"ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Estimativa Sugerida: 8 Story Points - Requer ajuste no EPC (Product Catalog) para criar o atributo de Cortesia e configuração de Pricing Rules para aplicar o desconto de 100% dinamicamente. Dependências: Definição clara no catálogo de quais produtos corporativos são elegíveis para a modalidade de cortesia. Governor Limits & Edge Cases: Evitar lentidão no recálculo do carrinho (Cart Repricing) em cotações com múltiplos sites (Large Carts) ao aplicar a regra de cortesia em massa.",New
+B2B-18,Critério 1 - Disparo de aprovação por Gestor para itens zerados,"Dado que o GR finalizou a configuração de um carrinho B2B contendo produtos de ""Cortesia"" Quando ele tenta gerar o documento da proposta comercial Então o sistema bloqueia a ação, altera o status para ""Requer Aprovação"" e roteia a solicitação para a fila do Gestor Imediato.",New
+B2B-18,Critério 2 - Liberação do DocGen após aprovação,"Dado que a cotação de Cortesia foi aprovada pelo Gestor Imediato Quando o GR retorna ao registro Então a cotação é destravada, permitindo a geração do PDF nativo (DocGen) e o registro do aceite formal do Signatário Legal do cliente corporativo.",New
+B2B-19,Critério 1 - Envio de payload técnico sem faturamento (Cortesia),"Dado que a Ordem B2B de Cortesia foi aprovada, auditada pelo BKO e submetida Quando o EOM inicia a decomposição e orquestração do pedido Então o sistema gera as tarefas técnicas (Field Service) normalmente e envia uma chamada via TMF622 ao Customer Core/SAP com o valor do faturamento fixado em R$ 0,00, indicando o centro de custo interno.",New
+B2B-19,Critério 2 - Bypass de restrição financeira,"Dado que o cliente base (Grupo Econômico) possui um débito ativo no Customer Core Quando o BKO submete uma nova ordem estritamente de Cortesia para um novo Premise Então o sistema permite a imputação da venda e orquestração, ignorando o travamento de crédito, pois não há geração de nova dívida.",New
+B2B-21,Critério 1 - Obrigatoriedade de preenchimento da justificativa da permuta,"Dado que o GR está configurando uma oportunidade/cotação e seleciona o Tipo de Negócio como ""Swap (Permuta)"" Quando tenta avançar o estágio da cotação ou salvar o registro sem preencher o campo ""Justificativa/Detalhe da Permuta"" Então o sistema aciona uma Validation Rule, bloqueando o salvamento e exigindo o detalhamento claro da contrapartida (o que a empresa está recebendo em troca do serviço de Telecom).",New
+B2B-21,Critério 2 - Disparo de aprovação mandatória para permutas de serviço,"Dado que o carrinho B2B possui um produto real com valor (MRR) editado via override e a flag de Swap ativada e justificada Quando o GR clica em ""Submeter para Aprovação"" ou tenta gerar a Proposta Comercial (DocGen) Então o sistema bloqueia a geração do documento e roteia a cotação para aprovação compulsória do Gestor Imediato (via Advanced Approvals), travando os valores contra novas edições.",New
+B2B-23,Critério 1 - Upgrade de banda sem refidelização mantendo a data de términ,Google Docs+ 3,New
+B2B-23,Critério 2 - Bloqueio da opção sem refidelização por necessidade de novo ,Google Docs,New
+B2C-N04,Critério 1 - Geração de Caso de Retenção pós-desligamento.,"Dado que o sistema de RH processa o desligamento de um funcionário que possui um Asset ativo do ""Plano Colaborador""
+Quando o payload de desligamento for recebido pelo Salesforce
+Então o sistema altera o atributo do cliente (IsEmployee__c = FALSE) e cria um Case na fila de Retenção para abordagem de reversão.",New
+B2C-N04,Critério 2 - Conversão para contrato faturado (Reversão).,"Dado que o agente de retenção está em tratativa com o ex-colaborador
+Quando o cliente aceita migrar para um plano pago com desconto de retenção
+Então o OmniScript de MACD executa a troca do produto (Change), substituindo o ""Plano Colaborador"" por uma oferta residencial B2C padrão e aplica o desconto, gerando uma Ordem de modificação.",New
+B2C-N05,Critério 1 - Carimbo de auditoria na finalização da venda.,"Dado que uma Oportunidade/Ordem classificada como ""Cortesia"" ou ""SWAP"" possui o indicador de débito interno positivo
+Quando o Gestor Imediato aprovar a pendência e a ordem for ativada
+Então o sistema grava permanentemente os dados do débito e o usuário aprovador no registro da Ordem para fins de auditoria.",New
+B2C-N05,Critério 2 - Visualização do relatório pela equipe de crédito.,"Dado que o usuário logado possui o perfil da Equipe de Crédito
+Quando ele acessar a aba de Relatórios e abrir o ""Auditoria: Cortesias e SWAP com Débitos""
+Então o sistema exibe a lista detalhada das transações aprovadas, permitindo agrupamento por Gestor Aprovador e Regional.",New
+B2C-N07,Critério 1 - Submissão e Aprovação de Cortesia para CPF Adimplente,"Dado que o Vendedor inicia uma Oportunidade de Cortesia para um CPF sem débitos internos
+Quando o carrinho de produtos é submetido com valor R$ 0,00
+Então o sistema bloqueia a geração da Ordem e direciona uma notificação de Aprovação (Approval Process) ao Gestor Imediato.",New
+B2C-N07,Critério 2 - Excedente do SLA de Assinatura,"Dado que o Gestor aprovou a cortesia e a minuta do contrato foi enviada ao consumidor
+Quando o prazo de 5 dias expirar sem o status do contrato ser atualizado para ""Assinado""
+Então o sistema executa a ação temporizada, alterando a Oportunidade para ""Fechada Perdida"" com o motivo ""Expiração do Prazo de Assinatura"".",New
+B2C-N08,Critério 1 - Swap com desconto parcial aprovado via upload de evidência,"Dado que o vendedor está negociando uma permuta para um consumidor Pessoa Física (ex: criador de conteúdo)
+Quando ele altera o valor da banda larga no carrinho de R$ 100,00 para R$ 40,00
+Então o OmniScript bloqueia a transição direta para Contrato, exigindo o upload de um arquivo e enviando a cotação à aprovação gerencial.",New
+B2C-N08,Critério 2 - Viabilidade Técnica Inválida para Endereço de Swap,"Dado que o vendedor inicia o processo informando o CEP do local da permuta
+Quando o sistema executa a API de geolocalização e verifica que a distância da CTO excede 200m
+Então a venda de fibra fixa é bloqueada imediatamente, disparando a oferta compulsória para produto de contingência Móvel.",New
+B2C-N09,Critério 1 - Bloqueio de Upgrade por Fatura Vencida,"Dado que um cliente com 2 faturas em aberto liga no Call Center e aceita a oferta de upgrade
+Quando o atendente clica em ""Modificar Plano (Change)""
+Então o sistema faz a requisição no BSS, identifica a inadimplência e exibe uma tela obstrutiva com a mensagem ""Regularização de Débito Pendente"", impedindo o avanço para a adição de pacote.",New
+B2C-N09,Critério 2 - Registro de Negociação e Nova Cotação,"Dado que o cliente recusa a primeira proposta ofertada pelo atendente
+Quando o atendente marca a Cotação atual (Quote) como Rejeitada
+Então o sistema congela a versão anterior e inicia um novo fluxo em branco para elaboração da segunda oferta (Quote v2) vinculada ao mesmo caso de venda.",New
+B2C-N10,Critério 1 - Tentativa de Downgrade no Período Proibido,"Dado que o cliente adquiriu o produto há menos de 3 meses
+Quando o agente tenta iniciar a jornada de MACD para reduzir o pacote
+Então o sistema exibe notificação de validação bloqueando a ação, por descumprimento de carência mínima inicial.",New
+B2C-N10,Critério 2 - Downgrade com Refidelização Substituta (Isenção de Multa),"Dado que o cliente possui um contrato ativo há 6 meses e pede o rebaixamento de banda
+Quando o Agente configura o carrinho para a oferta menor e marca a opção ""Cliente Aceita Nova Refidelização de 12 Meses""
+Então as regras do CPQ suprimem automaticamente a linha de faturamento de Multa Rescisória e parametrizam o recálculo do tempo de contrato (+12 meses) a partir de hoje.",New
+B2C-N11,Critério 1 - Ajuste Forçado para Promoções Curtas,"Dado que o cliente aceita uma proposta de retenção com carência definida de 6 meses
+Quando o pedido MACD é submetido com sucesso e muda para o status ""Ativado""
+Então o Flow atua em background, atualiza o Termo de Fidelidade para +6 meses e seta compulsoriamente a Data de Reajuste Anual para 12 meses a partir do fechamento da cotação.",New

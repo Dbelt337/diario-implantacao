@@ -1,0 +1,55 @@
+SUBJECT: [DASHBOARDS & AUDITORIA] - Relatório de Auditoria de Vendas (Cortesia e SWAP) com Débito Interno
+EPICO: B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente
+CLASSE: NAO_EXISTE (relatorio de auditoria de vendas cortesia/swap com debito interno; nenhuma work)
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+1. NARRATIVA DE NEGÓCIO
+Como Analista da Equipe de Crédito e Liderança de Gestão
+Quero visualizar um relatório e dashboard automatizado contendo todas as vendas de categorias "Cortesia" e "SWAP" que foram aprovadas mesmo possuindo débito interno
+Para que eu possa auditar as exceções aprovadas pelos gestores imediatos, mitigando riscos de fraudes e garantindo o compliance das políticas de isenção de faturamento.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Vendas de cortesia e permuta (SWAP) não geram faturamento padrão, mas ainda exigem consulta de débito interno. Embora a presença de débito não bloqueie a venda sumariamente, ela exige aprovação do gestor. A área de crédito atua na auditoria a posteriori dessas liberações gerenciais.
+Mapeamento eTOM: 1.3.1.4 Customer Problem Management, 1.2.1.3 Customer Credit Management.
+Regras de Negócio:
+O sistema deve registrar de forma inalterável que a venda aprovada possuía uma "Flag" de débito interno no momento da submissão.
+O relatório deve cruzar as informações: Nome do Cliente (CPF), Tipo de Negociação (Cortesia ou SWAP), Valor do Débito Interno, Vendedor Responsável e Gestor Aprovador.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Order, Opportunity, ProcessInstance (Histórico de Aprovação).
+Automação / Front-end: Relatórios Nativos do Salesforce (Report Builder) e Dashboards. Criação de um campo de auditoria estático na Ordem (Internal_Debt_At_Sale__c = Currency/Boolean) preenchido por Flow no momento da criação do pedido.
+Integração / APIs TM Forum: N/A (Consumo de dados nativos gerados pela jornada de venda).
+Segurança e Acessos: Relatório salvo em pasta compartilhada exclusivamente com os Grupos Públicos (Public Groups) de Prevenção à Fraude, Crédito e Diretoria.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Carimbo de auditoria na finalização da venda.
+Dado que uma Oportunidade/Ordem classificada como "Cortesia" ou "SWAP" possui o indicador de débito interno positivo
+Quando o Gestor Imediato aprovar a pendência e a ordem for ativada
+Então o sistema grava permanentemente os dados do débito e o usuário aprovador no registro da Ordem para fins de auditoria.
+Cenário 2: Visualização do relatório pela equipe de crédito.
+Dado que o usuário logado possui o perfil da Equipe de Crédito
+Quando ele acessar a aba de Relatórios e abrir o "Auditoria: Cortesias e SWAP com Débitos"
+Então o sistema exibe a lista detalhada das transações aprovadas, permitindo agrupamento por Gestor Aprovador e Regional.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: A Integration Procedure de Débito Interno (da jornada de vendas) deve estar populando corretamente a flag de alerta no registro antes da submissão.
+Governor Limits & Edge Cases: Garantir que o Custom Report Type relacione adequadamente a Oportunidade, a Ordem e o Histórico de Aprovações (ProcessInstance) sem duplicar as linhas no relatório.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Fluxo de carimbo de auditoria no fechamento da venda criado.
+[ ] Relatório e Dashboard construídos e salvos na pasta correta com permissões aplicadas.
+[ ] Validação do relatório gerando resultados esperados em Sandbox.
+Massa de Teste Sugerida: 2 Vendas Cortesia com débito interno aprovadas por gestor; 1 Venda SWAP com débito interno aprovada; 1 Venda Cortesia sem débito interno (não deve aparecer no relatório).
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias (2ª leva)
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Carimbo de auditoria na finalização da venda.
+Dado que uma Oportunidade/Ordem classificada como "Cortesia" ou "SWAP" possui o indicador de débito interno positivo
+Quando o Gestor Imediato aprovar a pendência e a ordem for ativada
+Então o sistema grava permanentemente os dados do débito e o usuário aprovador no registro da Ordem para fins de auditoria.
+
+Critério 2 - Visualização do relatório pela equipe de crédito.
+Dado que o usuário logado possui o perfil da Equipe de Crédito
+Quando ele acessar a aba de Relatórios e abrir o "Auditoria: Cortesias e SWAP com Débitos"
+Então o sistema exibe a lista detalhada das transações aprovadas, permitindo agrupamento por Gestor Aprovador e Regional.

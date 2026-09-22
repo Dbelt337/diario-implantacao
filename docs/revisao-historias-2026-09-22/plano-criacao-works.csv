@@ -1,0 +1,483 @@
+﻿id_local,classe,work_relacionada,agf__Subject__c,subject_abreviado,RecordTypeId,agf__Epic__c,epico_nome,agf__Product_Tag__c,agf__Scrum_Team__c,agf__Assignee__c,agf__Product_Owner__c,agf__Status__c,agf__Type__c,agf__Story_Points__c,agf__Sprint__c,tamanho_details,qtd_criterios_aceite,bloqueio_negocio,agf__Details__c
+B2B-10,NAO_EXISTE,,[ENTERPRISE ORDER MANAGEMENT - EOM] - Restrição de Edição pelo BKO e Bypass de Arquitetura para Vendas Expressas,,012V2000009Qk5dIAC,a8JV200000001wzMAA,1) Vender soluções,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,4502,2,N,"NARRATIVA DE NEGÓCIO
+Como Analista de Backoffice (BKO) / Arquiteto de Soluções Quero que as vendas padrão não exijam aprovação de arquitetura, e que o BKO não consiga editar valores financeiros Para que o SLA (Quote-to-Order) de viabilidades expressas seja otimizado e se garanta a integridade das condições comerciais fechadas com o cliente
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Projetos especiais com estudo de infraestrutura requerem análise técnica, mas a maior parte das vendas corporativas segue formato expresso. Adicionalmente, o setor de BKO atua apenas como auditoria operacional, sem autonomia para conceder ou corrigir descontos ou preços. Mapeamento eTOM: 1.2.1.5 Service Qualification, 1.2.1.4 Order Handling Regras de Negócio:
+Regra 1: A validação técnica (Arquitetura) é dispensada sistemicamente para cotações classificadas como vendas padrão (expressas).
+Regra 2: A equipe de BKO não possui permissão para alterar valores de produtos, mensalidades ou condições comerciais. Caso existam divergências contratuais, a cotação deverá ser devolvida (rejeitada) para que o vendedor gere uma nova.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Quote, Order, Profile (BKO, Arquitetura), RecordType Automação / Front-end: OmniScript Approval/Auditing Flow, Advanced Approvals, Page Layout Assignment, Vlocity Orchestration Plan. Integração / APIs TM Forum: TMF645 (Service Qualification), TMF622 (Product Order). Segurança e Acessos: Field-Level Security (FLS) Read-Only em QuoteLineItem (preços e descontos) para o perfil BKO.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Conversão de Venda Expressa e Auditoria Restrita:
+Dado que um GR submete uma cotação de venda padrão (expressa) Quando a cotação avança, ela faz um ""bypass"" na fila de Arquitetura e cai direto para auditoria do BKO Então o BKO consegue visualizar todas as condições, mas os campos de valores financeiros estão bloqueados para edição
+Cenário 2: Tratamento de divergência financeira no BKO:
+Dado que o BKO identifica que os valores da cotação expressa não batem com a tabela de preços oficial Quando o BKO analisa a divergência Então ele só possui a opção de rejeitar e devolver a cotação para o GR ajustar e submeter novamente
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Integração com motor de viabilidade para determinar corretamente se o serviço é ""Padrão"" ou ""Projeto Especial"".
+Governor Limits & Edge Cases: Evitar loops infinitos de aprovação/rejeição; estabelecer obrigatoriedade de comentário de reprovação pelo BKO.
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Usuário com perfil BKO abrindo uma cotação expressa (sem passar por arquitetura) e constatando impossibilidade de editar campos de ""One Time Charge"" ou ""Recurring Charge"".
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): Será que aqui não caberia uma história específica para tratar essa diferenciação entre desenho de solução e venda padrão?
+- Fernanda da Silveira Duarte (2026-09-15): Essa etapa no motor de viabilidade acredito que não constará... acredito que o sistema somente vai trazer a viabilidade de rede relativo ao(s) endereço(s) inseridos. 
+
+A etapa de entender o que é venda ""expressa / padrão"" ou ""desenho de solução"" tem a ver com as regras do catálogo de produtos....
+- Fernanda da Silveira Duarte (2026-09-14): Lembrando que ainda assim precisa ter o botão de solicitação de análise se o GR verificar a necessidade....
+- Fernanda da Silveira Duarte (2026-09-15): Caixa de texto para detalhamento do motivo (preenchimento obrigatório).
+- Fernanda da Silveira Duarte (2026-09-14): - Limitar e padronizar a lista de motivos e submotivos para oportunidades não convertidas, utilizando listas dependentes para guiar o usuário na seleção correta; 
+- As alterações de valor ou produto exigirão o abandono da cotação e o recomeço do processo, responsabilizando diretamente a Equipe Comercial.
+- Fernanda da Silveira Duarte (2026-09-15): - O sistema deve apresentar uma visão 360 graus do CNPJ do cliente com todos os contratos e etiquetas ativas vinculadas;
+- Detalhamento sobre cada proposta (valor, serviços, vigência, débitos, entre outros).
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Histórias da reunião de 01/09/2026"
+B2B-16,NAO_EXISTE,,[SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Leads e Oportunidades,,012V2000009Qk5dIAC,a8JV200000001wzMAA,1) Vender soluções,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,2782,2,N,"NARRATIVA DE NEGÓCIO
+Como Analista de Negócios / Gerente Comercial
+Quero exigir listas hierárquicas e precisas de motivos de perda, separando o contexto embrionário (Leads) do contexto maduro (Oportunidades)
+Para que eu possua relatórios analíticos sem dados poluídos e garanta o correto direcionamento de campanhas de winback.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: A classificação correta de descartes exige diferenciação lógica entre a fase de prospecção e a fase de negociação financeira. Mapeamento eTOM: 1.2.1.2 Sales Management, 1.2.1.7 Retention & Loyalty.
+Regras de Negócio:
+[Regra 1: Obrigatoriedade Hierárquica] Ao marcar um Lead ou Oportunidade como ""Perdido"", o sistema solicita obrigatoriamente ""Motivo"" e ""Submotivo"".
+[Regra 2: Segmentação de Motivos por Estágio] A opção de perda pelo motivo ""Preço"" é terminantemente proibida/ocultada na etapa de Lead, visto que a precificação ocorre apenas na fase de Oportunidade/Cotação. ""Preço"" deve ser visível apenas em perdas de Oportunidades.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Lead, Opportunity.
+Automação / Front-end: Field Dependencies (Picklist), Record Types específicos (para segregar os picklists de Lead vs Opportunity), Validation Rules.
+Integração / APIs TM Forum: Não se aplica.
+Segurança e Acessos: Acesso de escrita restrito; apenas administradores e Sales Ops podem gerenciar a lista de valores (Value Sets).
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Restrição do motivo preço na perda de Lead:
+Dado que o SDR ou GR vai marcar um Lead como ""Perdido"" Quando ele clica no picklist de Motivos Então o sistema NÃO exibe a opção ""Preço"", garantindo que o descarte embrionário possua a categorização correta.
+Cenário 2: Encerramento de Oportunidade por Preço
+Dado que o GR avança para fechar uma Oportunidade B2B como ""Closed Lost""
+Quando ele visualiza o modal de justificativa
+Então a opção ""Preço"" é exibida e exige a seleção de um submotivo condizente.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Lista consolidada de motivos/submotivos entregue pela área de Negócios/Planejamento Comercial.
+Governor Limits & Edge Cases: N/A.
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Conversão de Lead B2B para Status Perdido (verificando a ausência do valor ""Preço""); Reprovação de Oportunidade (verificando a presença de ""Preço"" e obrigatoriedade de submotivo).
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26"
+B2B-17,NAO_EXISTE,,[ENTERPRISE CPQ] - Configuração e Precificação de Produtos na Modalidade Cortesia / Degustação,,012V2000009Qk5dIAC,a8JV200000001ybMAA,2) Vender soluções como cortesia,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,5873,2,N,"NARRATIVA DE NEGÓCIO
+Como Gerente de Relacionamento (GR) / Consultor de Vendas B2B Quero configurar produtos do catálogo na modalidade de ""Cortesia"" ou ""Degustação"" (Trading) diretamente no fluxo padrão de cotação corporativa Para que eu possa utilizar essas ofertas como estratégia de negociação, garantindo que o valor faturado (MRR/NRC) seja zerado e as métricas de vendas sejam registradas adequadamente sem distorcer o faturamento.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: O fluxo de cortesia não deve ser um processo apartado. Ele deve nascer dentro da Oportunidade e da Cotação padrão, permitindo que a equipe comercial marque o produto como cortesia ou degustação, zerando os encargos financeiros para o cliente, mas mantendo a visibilidade dos custos operacionais. Mapeamento eTOM: 1.2.1.3 Offer Configuration, 1.2.1.6 Quotation Management.
+Regras de Negócio:
+[Regra 1: Flag de Tipo de Negócio] O carrinho (CPQ Cart) deve permitir a seleção do atributo ou flag ""Tipo de Negociação"" = ""Cortesia"" ou ""Degustação/Trading"".
+[Regra 2: Precificação Zerada] Ao classificar a linha de cotação como cortesia, o motor de precificação deve obrigatoriamente aplicar 100% de desconto ou zerar o MRR e NRC para o período configurado.
+[Regra 3: Sem Fidelidade Padrão] Produtos puramente de cortesia não geram carência ou fidelidade financeira, exceto quando amarrados a um contrato maior de outros serviços pagos.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Product2, vlocity_cmt__AttributeAssignment__c, Quote, QuoteLineItem, Opportunity. Automação / Front-end: Enterprise CPQ Cart, Vlocity Pricing Rules / Pricing Matrix, Override de Preço via OmniScript. Integração / APIs TM Forum: TMF620 (Product Catalog Management). Segurança e Acessos: Restrição via Field-Level Security (FLS) para que a alteração de ""Tipo de Negócio"" seja rastreada e acione gatilhos de aprovação.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Configuração de link corporativo como cortesia zerada:
+Dado que o GR adiciona um Link Dedicado B2B ao carrinho de cotação Quando o GR seleciona a flag ""Cortesia"" nos atributos comerciais do produto Então o Vlocity Pricing Engine recalcula a linha, definindo os valores de instalação (NRC) e mensalidade (MRR) como R$ 0,00 na proposta.
+Cenário 2: Conversão de oportunidade para cortesia no meio da negociação Dado que uma cotação B2B regular foi rejeitada por questões financeiras Quando o GR clona a cotação e altera o tipo de negócio para ""Degustação/Trading"" por 3 meses Então o sistema zera os valores dos 3 primeiros meses e exige a emissão de uma nova proposta para aceite do cliente.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Oportunidade B2B com cotação de 5 Premise(s); Produto de conectividade elegível a cortesia; Validação do carrinho exibindo Total = R$ 0,00.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-14): Contratos cortesias também são amarrados a uma fidelidade. E estas informações serão preenchidas na etapa ""preencher o periodo do contrato e fidelidade"".
+
+*Preenchimento obrigatório:
+- Tempo de contrato (meses): 12, 24, 36, 48, 60 ou outros (se ""outros"" habilitar o campo para inserção do período);
+- Tempo de término do contrato (preenchido automaticamente conforme o tempo de contrato estipulado);
+- Tempo de fidelização (meses): 12, 24, 36, 48, 60 ou outros (se ""outros"" habilitar o campo para inserção do período). Obs: se o tempo de contrato for diferente do tempo da fidelidade é necessário habilitar o campo para descrever o motivo da exceção;
+- Segmento de mercado: corporativo (preenchido automaticamente); 
+- Não ocorrerá a geração de faturamento em contratos classificados como cortesia.
+- Fernanda da Silveira Duarte (2026-09-15): Qualquer produto poderá estar constando no fluxo de cortesia. Não será o produto o ""direcionador"" e sim o tipo de negociação selecionado na oportunidade..
+- Fernanda da Silveira Duarte (2026-09-14): Ele também pode ser apartado. Já iniciar com a inserção do tipo de negociação: cortesia. O que tem que ser deixado claro aqui é que uma oportunidade até então considerada como 'venda"" (com faturamento) pode ser ajustada para cortesia dependendo do andar da negociação. E o faturamento será zerado.
+- Fernanda da Silveira Duarte (2026-09-14): Não fica a cargo do produto, fica a cargo da negociação como um todo...
+- Fernanda da Silveira Duarte (2026-09-17): Ponto importante: Na negociação do tipo ""Cortesia"" o catálogo poderá exibir o valor padrão do produto para fins de relatório, porém o sistema deve compreender que não haverá faturamento.
+- Fernanda da Silveira Duarte (2026-09-14): Não será na composição do carrinho, o tipo de negociação será definido no momento do preenchimento dos dados básicos da oportunidade.
+- Fernanda da Silveira Duarte (2026-09-15): Essa informação será na venda que envolve faturamento e não no fluxo que contém o tipo de negociação ""cortesia"". São temas diferentes.
+- Fernanda da Silveira Duarte (2026-09-15): Não será selecionada a flag de cortesia no carrinho e sim no momento do preenchimento dos dados básicos da oportunidade..
+
+Um ponto importante para ajuste nas histórias é o entendimento da diferença entre o tipo de negociação setado como cortesia no momento do preenchimento dos dados básicos da oportunidade (q seria este o caso do fluxo venda cortesia) e a possibilidade de zerar o valor de algum produto no lançamento da venda ""normal"" com faturamento, mas que pela negociação terá um dos produtos / serviços com valor zerado.....
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26"
+B2B-18,NAO_EXISTE,,[SALES CORE / ADVANCED APPROVALS] - Aprovação Mandatória e Trava Comercial para Cortesias,,012V2000009Qk5dIAC,a8JV200000001ybMAA,2) Vender soluções como cortesia,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,3341,2,N,"NARRATIVA DE NEGÓCIO
+Como Gestor Comercial B2B / Diretor de Vendas Quero que qualquer cotação que contenha produtos na modalidade ""Cortesia"" ou ""Degustação"" seja bloqueada para envio ao cliente até que eu aprove a solicitação Para que eu tenha controle sobre os custos operacionais, evite abusos na concessão de gratuidades e proteja a margem de contribuição (ROI) da unidade de negócio.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Produtos oferecidos sem custo geram despesas de ativação (equipamentos, deslocamento técnico). Para evitar fraudes ou uso indevido da cortesia como muleta de vendas, o processo exige governança rigorosa e aval gerencial antes da geração da proposta comercial. Mapeamento eTOM: 1.2.1.2 Sales Management, 1.2.1.6 Quotation Management.
+Regras de Negócio:
+[Regra 1: Aprovação Obrigatória de Cortesia] Toda cotação que possuir o atributo ""Cortesia"" ou ""Trading"" aciona automaticamente a exigência de aprovação pelo Gestor Imediato.
+[Regra 2: Trava de Geração de Contrato/DocGen] O sistema deve bloquear a geração do PDF da proposta (DocGen) e o envio para assinatura do cliente corporativo até que o status de aprovação da cotação seja ""Aprovado"".
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Quote, QuoteLineItem, sbaa__Approval__c (Advanced Approvals), sbaa__ApprovalRule__c. Automação / Front-end: Salesforce Advanced Approvals, Vlocity Document Generation (DocGen), Validation Rules (Record Lock). Integração / APIs TM Forum: Não se aplica diretamente. Segurança e Acessos: Bloqueio de registro (Record Lock) da Cotação enquanto estiver em status ""Pendente de Aprovação"".
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Disparo de aprovação por Gestor para itens zerados:
+Dado que o GR finalizou a configuração de um carrinho B2B contendo produtos de ""Cortesia"" Quando ele tenta gerar o documento da proposta comercial Então o sistema bloqueia a ação, altera o status para ""Requer Aprovação"" e roteia a solicitação para a fila do Gestor Imediato.
+Cenário 2: Liberação do DocGen após aprovação:
+Dado que a cotação de Cortesia foi aprovada pelo Gestor Imediato Quando o GR retorna ao registro Então a cotação é destravada, permitindo a geração do PDF nativo (DocGen) e o registro do aceite formal do Signatário Legal do cliente corporativo.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Usuário GR criando cotação com Cortesia; Verificação de bloqueio do botão ""Gerar Proposta""; Login com usuário Gestor para aprovar; Validação da liberação do DocGen.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): Oportunidade setada com o tipo de negociação ""Cortesia""
+- Fernanda da Silveira Duarte (2026-09-15): envio da proposta técnica / comercial para o cliente.. para o aceite ou recusa da proposta.
+- Fernanda da Silveira Duarte (2026-09-15): Nem vai tentar, após já será direcionado automaticamente. 
+Só será aberta possibilidade de elaborar a proposta técnica / comercial após o retorno da aprovação do gestor
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26"
+B2B-19,NAO_EXISTE,,"[ENTERPRISE ORDER MANAGEMENT - EOM] - Decomposição, Provisionamento e Handoff de Cortesia (Payload Faturamento Nulo)",,012V2000009Qk5dIAC,a8JV200000001ybMAA,2) Vender soluções como cortesia,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,4193,2,N,"NARRATIVA DE NEGÓCIO
+Como Sistema Order Management (EOM) / Analista de Backoffice Quero orquestrar pedidos de cortesia para o delivery técnico enviando um payload com faturamento nulo para o BSS/ERP Para que a equipe de engenharia/campo (Field Service) realize a ativação do serviço normalmente, mas o motor financeiro (SAP/Customer Core) não gere faturas indevidas para o cliente B2B.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Uma cortesia B2B exige provisionamento técnico completo (designação de porta, envio de CPE, ativação de link), mas exige tratamento diferenciado no sistema de billing para garantir que nenhuma fatura seja gerada, alocando os custos em centros de custos internos. Mapeamento eTOM: 1.2.1.4 Order Handling, 1.2.1.3 Customer Credit Profile Management (Bypass).
+Regras de Negócio:
+[Regra 1: Plano de Orquestração Específico] Ordens B2B flagradas como Cortesia devem derivar para um plano de orquestração (Orchestration Plan) que execute o provisionamento técnico, mas envie parâmetros nulos (valor zerado e justificativa comercial) para o SAP/Billing.
+[Regra 2: Auditoria BKO Simplificada] O BKO visualiza a ordem de cortesia, mas a validação de crédito/débitos externos (Serasa) é dispensada (bypass) ou tratada como informativa, uma vez que não haverá risco de inadimplência financeira na cortesia pura.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Order, OrderItem, vlocity_cmt__OrchestrationPlan__c, vlocity_cmt__OrchestrationItem__c, Asset. Automação / Front-end: Vlocity Order Management (EOM), Integration Procedures para mapeamento de payload (DataRaptor Transform). Integração / APIs TM Forum: TMF622 (Product Order - envio de payload técnico completo e payload financeiro zerado), Integração SAP / Customer Core. Segurança e Acessos: Permissão exclusiva do orquestrador sistêmico para criar os Assets com status ativo e valor R$ 0,00 após callback de sucesso do provisionamento.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Envio de payload técnico sem faturamento (Cortesia):
+Dado que a Ordem B2B de Cortesia foi aprovada, auditada pelo BKO e submetida Quando o EOM inicia a decomposição e orquestração do pedido Então o sistema gera as tarefas técnicas (Field Service) normalmente e envia uma chamada via TMF622 ao Customer Core/SAP com o valor do faturamento fixado em R$ 0,00, indicando o centro de custo interno.
+Cenário 2: Bypass de restrição financeira:
+Dado que o cliente base (Grupo Econômico) possui um débito ativo no Customer Core Quando o BKO submete uma nova ordem estritamente de Cortesia para um novo Premise Então o sistema permite a imputação da venda e orquestração, ignorando o travamento de crédito, pois não há geração de nova dívida.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Ordem contendo 1 produto pago e 1 produto cortesia; Decomposição validando que o payload de faturamento envia valor apenas para o item pago.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): Faturamento nulo, mas há uma etapa após a seleção dos produtos que irão compor o contrato, onde o GR irá ""Preencher o período do contrato, fidelidade e motivo da negociação""
+*Preenchimento obrigatório:
+- Tempo de contrato (meses): 12, 24, 36, 48, 60 ou outros (se ""outros"" habilitar o campo para inserção do período);
+- Tempo de término do contrato (preenchido automaticamente conforme o tempo de contrato estipulado);
+- Tempo de fidelização (meses): 12, 24, 36, 48, 60 ou outros (se ""outros"" habilitar o campo para inserção do período). Obs: se o tempo de contrato for diferente do tempo da fidelidade é necessário habilitar o campo para descrever o motivo da exceção;
+- Segmento de mercado: corporativo (preenchido automaticamente); 
+- Motivo da negociação (campo texto);
+- Não ocorrerá a geração de faturamento em contratos classificados como cortesia.
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26"
+B2B-21,PARCIAL,W-000100,[ENTERPRISE CPQ / SALES CORE] - Negociação de Permuta de Serviços (Swap/SUAP) e Justificativa Comercial,,012V2000009Qk5dIAC,a8JV2000000020DMAQ,3) Vender soluções como swap,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,5436,2,N,"NARRATIVA DE NEGÓCIO
+Como Gerente de Relacionamento (GR) / Consultor de Vendas B2B Quero registrar uma negociação do tipo ""Swap"" (Permuta de Serviços) utilizando produtos do catálogo padrão, aplicando valores diferenciados e preenchendo obrigatoriamente um descritivo da troca Para que a empresa viabilize parcerias estratégicas (ex: fornecimento de internet em troca de espaço publicitário ou infraestrutura), sem poluir o catálogo de produtos e garantindo a aprovação gerencial, rastreabilidade operacional e auditoria financeira da operação.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Na dinâmica corporativa de Telecom, é comum a negociação de permutas (Swap/SUAP) entre empresas, onde serviços de conectividade são trocados por contrapartidas do cliente (ex: espaço para instalação de ERBs/Antenas, captação de leads em eventos, serviços terceirizados). Esses cenários não tratam de troca de hardware obsoleto, mas de um modelo de negócio onde o serviço faturado possui valor residual ou zerado em função de uma troca comercial. Mapeamento eTOM: 1.2.1.3 Offer Configuration, 1.2.1.6 Quotation Management.
+Regras de Negócio:
+[Regra 1: Classificação da Negociação e Justificativa Obrigatória] Ao selecionar a flag de ""Tipo de Negociação"" como ""Swap/Permuta"", o sistema deve obrigatoriamente habilitar e exigir o preenchimento de um campo de texto longo (Rich Text) denominado ""Justificativa/Detalhe da Permuta"", onde o GR registrará a contrapartida exata acordada entre as empresas.
+[Regra 2: Precificação Flexível via Override] Não devem ser criados produtos falsos/fictícios (dummy products) no catálogo para Swap. O GR deve adicionar o serviço real (ex: Link Dedicado) ao carrinho do CPQ e aplicar um Manual Override para reduzir o MRR (Monthly Recurring Charge) ao valor residual acordado ou a R$ 0,00.
+[Regra 3: Aprovação Gerencial e Alçada Mandatória] Qualquer cotação sinalizada como Swap que altere o valor padrão de prateleira entra obrigatoriamente em um fluxo de aprovação (Advanced Approvals), exigindo o aval do Gestor Imediato (e escalonamento para a Diretoria caso ultrapasse limites pré-estabelecidos) antes da liberação para geração do contrato/DocGen.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Opportunity, Quote, QuoteLineItem, sbaa__Approval__c, sbaa__ApprovalRule__c. Automação / Front-end: Enterprise CPQ Cart, Vlocity Rules (UI Behavior para exibir/exigir campo baseado na flag), OmniScript de Cotação, Validation Rules, Advanced Approvals. Integração / APIs TM Forum: TMF648 (Quote Management) - Payload deve conter a flag de Swap e a justificativa para consumo do BSS downstream. Segurança e Acessos: Field-Level Security (FLS) garantindo que o campo de justificativa seja bloqueado para edição (Read-Only) por perfis comerciais após o aceite ou envio para aprovação. Record Lock da Quote durante a pendência de aprovação gerencial.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Obrigatoriedade de preenchimento da justificativa da permuta:
+Dado que o GR está configurando uma oportunidade/cotação e seleciona o Tipo de Negócio como ""Swap (Permuta)"" Quando tenta avançar o estágio da cotação ou salvar o registro sem preencher o campo ""Justificativa/Detalhe da Permuta"" Então o sistema aciona uma Validation Rule, bloqueando o salvamento e exigindo o detalhamento claro da contrapartida (o que a empresa está recebendo em troca do serviço de Telecom).
+Cenário 2: Disparo de aprovação mandatória para permutas de serviço:
+Dado que o carrinho B2B possui um produto real com valor (MRR) editado via override e a flag de Swap ativada e justificada Quando o GR clica em ""Submeter para Aprovação"" ou tenta gerar a Proposta Comercial (DocGen) Então o sistema bloqueia a geração do documento e roteia a cotação para aprovação compulsória do Gestor Imediato (via Advanced Approvals), travando os valores contra novas edições.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Oportunidade com Conta B2B (Corporativa); Cotação com produto ""Internet Dedicada 1Gbps""; Tipo Negociação = Swap; MRR alterado de R$ 2.000 para R$ 0,00; Verificação do bloqueio sem justificativa; Validação do disparo de aprovação para o Manager ID do usuário logado.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): nem vai ter a possibilidade de tentar
+- Fernanda da Silveira Duarte (2026-09-15): SWAP
+- Fernanda da Silveira Duarte (2026-09-15): SWAP
+- Fernanda da Silveira Duarte (2026-09-15): - Obs: a venda do tipo ""Swap"" pode ter valor a ser faturado, mesmo que seja bem menor do que o configurado no catálogo de produtos.
+- Fernanda da Silveira Duarte (2026-09-15): O campo para descrever o motivo do SWAP ficou mapeado na atividade ""Preencher os dados para o faturamento, fidelidade e tempo de contrato"" e não no mesmo local onde o tipo de negociação será setado como Swap.
+- Fernanda da Silveira Duarte (2026-09-15): O campo para descrever o motivo do SWAP ficou mapeado na atividade ""Preencher os dados para o faturamento, fidelidade e tempo de contrato"" e não no mesmo local onde o tipo de negociação será setado como Swap.
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26"
+B2B-23,PARCIAL,W-000100,[MACD / ENTERPRISE CPQ] - Upgrade de Serviços B2B SEM Refidelização Contratual (Manutenção da Vigência Original),,012V2000009Qk5dIAC,a8JV2000000021pMAA,4) Realizar upgrade,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,5987,2,N,"NARRATIVA DE NEGÓCIO
+Como Gerente de Relacionamento (GR) / Gerente de Contas B2B Quero processar o upgrade de capacidade ou banda de um serviço ativo mantendo o prazo de fidelidade e o término do contrato original inalterados Para que atendamos à necessidade de expansão do cliente corporativo sem impor uma nova carência compulsória, garantindo agilidade no aditamento contratual e preservando o relacionamento comercial.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Operação MACD de alteração de serviço (Change Asset) onde o cliente corporativo solicita ampliação de banda/recursos no mesmo site, mas recusa a extensão do período de fidelização vigente. O sistema deve recalcular o valor delta da mensalidade, manter o término da carência original do contrato e verificar se a alteração exige investimento de CAPEX/troca de infraestrutura que inviabilize a manutenção do prazo antigo. Mapeamento eTOM: 1.2.1.4 Order Handling, 1.2.1.6 Quotation Management.
+Regras de Negócio:
+[Regra 1: Manutenção da Fidelidade Vigente e Pró-Rata] Ao optar por NÃO refidelizar o contrato no fluxo de Upgrade, o sistema preserva rigorosamente a data de término de carência e as penalidades do Contrato guarda-chuva original, aplicando o recálculo financeiro (Delta MRR) proporcional apenas para o período restante da vigência.
+[Regra 2: Trava de CAPEX / Troca de Equipamento sem Refidelização] Se o upgrade técnico exigir troca física de equipamentos (CPE/Roteador) ou nova obra de infraestrutura com custo relevante (CAPEX), o sistema bloqueia a opção ""Sem Refidelização"" e exige refidelização compulsória ou aprovação de alçada gerencial/diretoria para assumir o custo residual do equipamento.
+[Regra 3: Aditivo Simplificado e Sincronização BKO] O upgrade sem refidelização gera um Aditivo de Alteração de Serviço e Valor (sem alteração de prazo), passa pela validação técnica da Arquitetura para verificação de banda e segue para auditoria simplificada do BKO antes da emissão da ordem de alteração.
+Google Docs+ 4
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Business Account, Contract, Asset, Opportunity (RecordType: MACD), Quote, QuoteLineItem, Order, OrderItem. Automação / Front-end: OmniScript Guided MACD, Enterprise CPQ Cart (Asset-to-Quote / Delta Pricing Engine), Advanced Approvals (para exceção de CAPEX sem fidelidade), DocGen para Aditivo Contratual de Alteração de Serviço. Integração / APIs TM Forum: TMF637 (Product Inventory), TMF645 (Service Qualification), TMF622 (Product Order - Modify), TMF651 (Agreement Management). Segurança e Acessos: Imutabilidade do campo ""Data Fim de Fidelidade"" no Contrato/Asset quando a flag ""Sem Refidelização"" estiver marcada.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Upgrade de banda sem refidelização mantendo a data de término do contrato: Dado que o GR inicia um Upgrade em um contrato B2B ativo que possui 10 meses restantes de fidelidade Quando o GR altera o produto para uma banda superior no CPQ Cart e desmarca/deixa desmarcada a opção de ""Refidelizar"" Então o sistema aplica o Delta MRR, gera o Aditivo Contratual mantendo exatamente a mesma data de término de fidelidade original e encaminha o pedido para auditoria do BKO.
+Google Docs+ 3
+Cenário 2: Bloqueio da opção sem refidelização por necessidade de novo equipamento (CAPEX) Dado que o GR solicita um Upgrade sem refidelização para um cliente B2B Quando a validação técnica da Arquitetura (TMF645) indica a necessidade de substituição de CPE com custo de CAPEX Então o sistema bloqueia a finalização da cotação sem refidelização, informando que o investimento exige refidelização compulsória do contrato ou submissão para aprovação da Diretoria Comercial.
+Google Docs
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Business Account com Contrato B2B ativo e 12 meses restantes de carência; Asset de Banda Larga/Link Dedicado; Solicitação de upgrade de 200 Mbps para 300 Mbps sem refidelização; Confirmação de que a data final de carência do Asset/Contrato resultante permanece inalterada.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): neste exemplo (quando tem modificação de serviço) primeiro iria para Arquitetura >> aprovação gestão >> aceite formal do cliente >> validação técnica >> BKO >> Liberação da ordem para o field
+- Fernanda da Silveira Duarte (2026-09-15): ?
+- Fernanda da Silveira Duarte (2026-09-16): Aqui não deveria ter uma regra que mostre o caminho para acessar a tela de upgrade? Ex: Pesquisar o cliente >> sistema realizar a busca no customer core >> cliente acessar a opção ""Contratos"" >>> o sistema Retornar os dados do cliente e sua(s) proposta(s) >>> o cliente selecionar o contrato que vai passar pelo upgrade >>> o sistema retornar os dados referente ao contrato selecionado.. ??
+- Fernanda da Silveira Duarte (2026-09-15): Não mapeamos isso. 
+O que ficou acordado é que pode ser que o time de Arquitetura, nas suas avaliações perceba a situação, relate e quando for aberta a solicitação de aprovação comercial o gestor responsável já esteja munido destas informações para tomada de decisão.
+- Fernanda da Silveira Duarte (2026-09-15): neste exemplo (quando tem modificação de serviço) primeiro iria para Arquitetura >> aprovação gestão >> aceite formal do cliente >> validação técnica >> BKO >> Liberação da ordem para o field
+- Fernanda da Silveira Duarte (2026-09-15): Não mapeamos isso. 
+O que ficou acordado é que pode ser que o time de Arquitetura, nas suas avaliações perceba a situação, relate e quando for aberta a solicitação de aprovação comercial o gestor responsável já esteja munido destas informações para tomada de decisão.
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26"
+B2C-N04,NAO_EXISTE,,[ATENDIMENTO & RETENÇÃO] - Tratamento de Desligamento e Reversão de Plano Colaborador,,012V2000009Qk5dIAC,a8JV200000001IfMAI,B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,3780,2,N,"1. NARRATIVA DE NEGÓCIO
+Como Agente de Retenção B2C / Sistema de Atendimento
+Quero receber automaticamente uma notificação ou caso de atendimento quando um funcionário que possui o ""Plano Colaborador"" for desligado da empresa
+Para que eu possa atuar na retenção desse cliente, oferecendo a reversão para um contrato faturado padrão ou agendando a retirada do equipamento, evitando perda prolongada de receita.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: O desligamento de funcionários pelo departamento de Recursos Humanos frequentemente deixa planos ativos por dois a quatro meses sem a automação adequada para interrupção ou cobrança do serviço. Um fluxo direcionado para a equipe de retenção gera resultados positivos na conversão de ex-colaboradores para contratos faturados.
+Mapeamento eTOM: 1.3.1.1 Customer Interaction Management, 1.3.3.2 Customer Retention & Loyalty.
+Regras de Negócio:
+O sistema de RH (origem) deve notificar o CRM sobre o desligamento do colaborador.
+O Salesforce deve gerar automaticamente um chamado (Case) roteado para a fila de Retenção B2C.
+O agente de retenção deve realizar a oferta de troca de plano (MACD - Change), oferecendo um plano faturado do catálogo B2C, podendo aplicar uma tabela de descontos de retenção.
+Se o ex-colaborador não aceitar a retenção, o fluxo obriga o cancelamento (MACD - Disconnect) e o agendamento da ordem de retirada do equipamento (Field Service).
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: PersonAccount, Asset, Case, Order (MACD).
+Automação / Front-end: OmniScript de Retenção / Change of Service (MACD) nativo do Vlocity. Record-Triggered Flow para criação de Case a partir de alteração de status do colaborador via integração.
+Integração / APIs TM Forum: TMF622 (Product Ordering) para submeter a ordem de mudança (Change) ou desconexão (Disconnect). API de entrada (Webhook/REST) recebendo o aviso de desligamento do RH ou Zendesk.
+Segurança e Acessos: Fila de Omni-Channel exclusiva para ""Retenção - Ex-Colaboradores"".
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Geração de Caso de Retenção pós-desligamento.
+Dado que o sistema de RH processa o desligamento de um funcionário que possui um Asset ativo do ""Plano Colaborador""
+Quando o payload de desligamento for recebido pelo Salesforce
+Então o sistema altera o atributo do cliente (IsEmployee__c = FALSE) e cria um Case na fila de Retenção para abordagem de reversão.
+Cenário 2: Conversão para contrato faturado (Reversão).
+Dado que o agente de retenção está em tratativa com o ex-colaborador
+Quando o cliente aceita migrar para um plano pago com desconto de retenção
+Então o OmniScript de MACD executa a troca do produto (Change), substituindo o ""Plano Colaborador"" por uma oferta residencial B2C padrão e aplica o desconto, gerando uma Ordem de modificação.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Integração sistêmica com a plataforma de RH/Zendesk para disparar o gatilho de desligamento em tempo real ou via batch diário.
+Governor Limits & Edge Cases: Tratamento de bulkification caso haja demissões em massa, garantindo que a criação de Cases não exceda os limites de DML (10.000 records/transaction).
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Person Account com flag de colaborador verdadeira e 1 Asset de fibra ativo. Simulação de payload de demissão via Postman.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias (2ª leva)"
+B2C-N05,NAO_EXISTE,,[DASHBOARDS & AUDITORIA] - Relatório de Auditoria de Vendas (Cortesia e SWAP) com Débito Interno,,012V2000009Qk5dIAC,a8JV200000001IfMAI,B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,3585,2,N,"1. NARRATIVA DE NEGÓCIO
+Como Analista da Equipe de Crédito e Liderança de Gestão
+Quero visualizar um relatório e dashboard automatizado contendo todas as vendas de categorias ""Cortesia"" e ""SWAP"" que foram aprovadas mesmo possuindo débito interno
+Para que eu possa auditar as exceções aprovadas pelos gestores imediatos, mitigando riscos de fraudes e garantindo o compliance das políticas de isenção de faturamento.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Vendas de cortesia e permuta (SWAP) não geram faturamento padrão, mas ainda exigem consulta de débito interno. Embora a presença de débito não bloqueie a venda sumariamente, ela exige aprovação do gestor. A área de crédito atua na auditoria a posteriori dessas liberações gerenciais.
+Mapeamento eTOM: 1.3.1.4 Customer Problem Management, 1.2.1.3 Customer Credit Management.
+Regras de Negócio:
+O sistema deve registrar de forma inalterável que a venda aprovada possuía uma ""Flag"" de débito interno no momento da submissão.
+O relatório deve cruzar as informações: Nome do Cliente (CPF), Tipo de Negociação (Cortesia ou SWAP), Valor do Débito Interno, Vendedor Responsável e Gestor Aprovador.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Order, Opportunity, ProcessInstance (Histórico de Aprovação).
+Automação / Front-end: Relatórios Nativos do Salesforce (Report Builder) e Dashboards. Criação de um campo de auditoria estático na Ordem (Internal_Debt_At_Sale__c = Currency/Boolean) preenchido por Flow no momento da criação do pedido.
+Integração / APIs TM Forum: N/A (Consumo de dados nativos gerados pela jornada de venda).
+Segurança e Acessos: Relatório salvo em pasta compartilhada exclusivamente com os Grupos Públicos (Public Groups) de Prevenção à Fraude, Crédito e Diretoria.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Carimbo de auditoria na finalização da venda.
+Dado que uma Oportunidade/Ordem classificada como ""Cortesia"" ou ""SWAP"" possui o indicador de débito interno positivo
+Quando o Gestor Imediato aprovar a pendência e a ordem for ativada
+Então o sistema grava permanentemente os dados do débito e o usuário aprovador no registro da Ordem para fins de auditoria.
+Cenário 2: Visualização do relatório pela equipe de crédito.
+Dado que o usuário logado possui o perfil da Equipe de Crédito
+Quando ele acessar a aba de Relatórios e abrir o ""Auditoria: Cortesias e SWAP com Débitos""
+Então o sistema exibe a lista detalhada das transações aprovadas, permitindo agrupamento por Gestor Aprovador e Regional.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: A Integration Procedure de Débito Interno (da jornada de vendas) deve estar populando corretamente a flag de alerta no registro antes da submissão.
+Governor Limits & Edge Cases: Garantir que o Custom Report Type relacione adequadamente a Oportunidade, a Ordem e o Histórico de Aprovações (ProcessInstance) sem duplicar as linhas no relatório.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Fluxo de carimbo de auditoria no fechamento da venda criado.
+[ ] Relatório e Dashboard construídos e salvos na pasta correta com permissões aplicadas.
+[ ] Validação do relatório gerando resultados esperados em Sandbox.
+Massa de Teste Sugerida: 2 Vendas Cortesia com débito interno aprovadas por gestor; 1 Venda SWAP com débito interno aprovada; 1 Venda Cortesia sem débito interno (não deve aparecer no relatório).
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias (2ª leva)"
+B2C-N07,PARCIAL,W-000115,[MACD & CPQ] - Venda Cortesia com Aprovação Prévia e Faturamento Zerado,,012V2000009Qk5dIAC,a8JV200000001IfMAI,B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,3963,2,N,"1. NARRATIVA DE NEGÓCIO
+Como Vendedor B2C / Backoffice B2C
+Quero realizar a cotação e emissão de um contrato de cortesia para pessoa física (CPF)
+Para que o cliente receba o serviço com faturamento zerado, garantindo a proteção jurídica dos equipamentos cedidos em comodato e a correta contabilização do benefício.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: A jornada de cortesia exige a formalização de um contrato para garantir a responsabilidade sobre a instalação e a ONT/Roteador em comodato. O faturamento é zerado, o que requer travas de auditoria para evitar fraudes de concessão indevida a CPFs inadimplentes.
+Mapeamento eTOM: 1.2.1.2 Sales Pitch/Offer Configuration, 1.3.3.1 Customer Contract Management.
+Regras de Negócio:
+[Regra 1: Inadimplência e Crédito] Para a venda cortesia, a validação externa de Serasa não é fator de bloqueio, mas a verificação de débitos internos no BSS (Customer Core) é obrigatória. CPFs inadimplentes na própria base não podem receber cortesias.
+[Regra 2: Faturamento e Aprovação] A cotação terá o valor transacional zerado (R$ 0,00). Isso aciona um fluxo de aprovação obrigatória do gestor imediato antes do contrato ser liberado para assinatura do cliente ou para o agendamento do Field Service.
+[Regra 3: SLA de Assinatura] Após liberação, o cliente tem 5 dias corridos para assinar o contrato (digital ou via evidência física). Caso contrário, a Oportunidade é marcada automaticamente como ""Perdida"".
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Person Account, Opportunity (RecordType: Cortesia), Quote, QuoteLineItem, ProcessInstance (Approval Process), Order.
+Automação / Front-end: OmniScript (Guided Selling customizado para Cortesia pulando o step de Serasa); Advanced Approvals nativo roteando para o ManagerId do Vendedor; Record-Triggered Flow (Timeout de 5 dias).
+Integração / APIs TM Forum: TMF622 (Order Management) enviando payload de ativação com pricing zerado para o Billing (Customer Core); TMF666 (Account Receivables) validando débitos internos no CPF.
+Segurança e Acessos: Validation Rule impedindo a transição do StageName da Opportunity para ""Closed Won"" sem que o campo ApprovalStatus__c seja ""Approved"". FLS restrito no campo de preço para impedir edições.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Submissão e Aprovação de Cortesia para CPF Adimplente
+Dado que o Vendedor inicia uma Oportunidade de Cortesia para um CPF sem débitos internos
+Quando o carrinho de produtos é submetido com valor R$ 0,00
+Então o sistema bloqueia a geração da Ordem e direciona uma notificação de Aprovação (Approval Process) ao Gestor Imediato.
+Cenário 2: Excedente do SLA de Assinatura
+Dado que o Gestor aprovou a cortesia e a minuta do contrato foi enviada ao consumidor
+Quando o prazo de 5 dias expirar sem o status do contrato ser atualizado para ""Assinado""
+Então o sistema executa a ação temporizada, alterando a Oportunidade para ""Fechada Perdida"" com o motivo ""Expiração do Prazo de Assinatura"".
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Sistema legado de Faturamento apto a provisionar instâncias de serviço a custo zero e integração consolidada de hierarquia (Manager) via Okta/SSO.
+Governor Limits & Edge Cases: Ao utilizar Time-Based Workflows para o cancelamento de 5 dias, prever expurgos de fila caso a oportunidade seja alterada ou ganha antes do timeout.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Person Account nova; Record Type Cortesia; CPF sem histórico de débito interno; Gestor parametrizado na role hierarchy.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09"
+B2C-N08,PARCIAL,W-000115,[MACD & CPQ] - Venda Swap (Permuta) com Preço Flexível e Comprovação,,012V2000009Qk5dIAC,a8JV200000001IfMAI,B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,3894,2,N,"1. NARRATIVA DE NEGÓCIO
+Como Vendedor B2C / Equipe de Marketing
+Quero registrar uma venda do tipo Swap (Permuta) com a possibilidade de abatimento flexível do preço da mensalidade
+Para que a empresa firme parcerias para captação de leads em eventos, compensando o serviço com divulgação comercial ou publicidade da marca.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Swap refere-se a permutas de conectividade (Ex: Banda Larga para evento ou Influenciador em troca de divulgação). O fluxo difere da venda normal pois exige flexibilidade de desconto (parcial ou 100%) e upload de evidência formalizando a parceria comercial.
+Mapeamento eTOM: 1.2.1.3 Customer Proposal Management, 1.2.1.2 Sales Pitch/Offer Configuration.
+Regras de Negócio:
+[Regra 1: Definição de Segmento e Record Type] A negociação deve ser tipificada ativamente como ""Venda Swap"" no primeiro input do vendedor.
+[Regra 2: Precificação Dinâmica] Diferente do catálogo rígido, o fluxo de Swap permite a sobrescrita do valor base do produto, aplicando descontos arbitrários conforme o acordo da permuta.
+[Regra 3: Obrigatoriedade de Viabilidade e Evidência] Apesar do acordo comercial, a viabilidade técnica de rede fixa (200m da CTO) permanece obrigatória. Ao solicitar o desconto, o vendedor deve anexar um documento/foto comprovando a parceria e acionar o fluxo de aprovação gerencial.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Opportunity (Record Type = Swap), Quote, QuoteLineItem, ContentDocumentLink (Anexos).
+Automação / Front-end: Vlocity CPQ Cart com Price Override liberado condicionalmente por Record Type. FlexCard de File Upload (lightning-file-upload) obrigatório na tela de resumo da cotação.
+Integração / APIs TM Forum: TMF622 enviando o Net Price com o desconto aplicado (Overrides) em nível de linha do pedido; TMF645 para viabilidade técnica do endereço do evento/residência.
+Segurança e Acessos: Atribuição do Record Type ""Swap"" liberada no perfil B2C_Sales_User. O Price Override só é aplicado se submetido à fila de aprovação padrão de precificação agressiva.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Swap com desconto parcial aprovado via upload de evidência
+Dado que o vendedor está negociando uma permuta para um consumidor Pessoa Física (ex: criador de conteúdo)
+Quando ele altera o valor da banda larga no carrinho de R$ 100,00 para R$ 40,00
+Então o OmniScript bloqueia a transição direta para Contrato, exigindo o upload de um arquivo e enviando a cotação à aprovação gerencial.
+Cenário 2: Viabilidade Técnica Inválida para Endereço de Swap
+Dado que o vendedor inicia o processo informando o CEP do local da permuta
+Quando o sistema executa a API de geolocalização e verifica que a distância da CTO excede 200m
+Então a venda de fibra fixa é bloqueada imediatamente, disparando a oferta compulsória para produto de contingência Móvel.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Definição por parte da operação das alçadas financeiras de aprovação para os diferentes limiares de permuta.
+Governor Limits & Edge Cases: Monitorar o limite de armazenamento do Salesforce (File Storage Limits) com a captura constante de mídias (fotos de banner, contratos), sugerindo arquivamento no Customer Core a longo prazo.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Person Account existente, Produto Fibra Selecionado, Desconto Customizado inserido manualmente, Upload de PDF de 1MB anexado, Verificação do Status na fila de aprovações.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09"
+B2C-N09,PARCIAL,W-000116,[MACD / CPQ] - Upgrade B2C com Trava de Inadimplência e Refidelização Guarda-Chuva,,012V2000009Qk5dIAC,a8JV200000001IfMAI,B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,4102,2,N,"1. NARRATIVA DE NEGÓCIO
+Como Agente de Relacionamento (Lojas) / Atendente de Call Center (Zendesk)
+Quero ofertar e configurar um pacote superior (Upgrade) validando rigorosamente a situação financeira do cliente
+Para que eu consiga elevar a receita média por usuário (ARPU) através de upsell, retendo o cliente por meio de uma nova refidelização, mas impedindo que clientes com contas atrasadas adquiram novos serviços no CRM.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Mudança de Serviço para aumento de velocidade de banda (Upgrade). A plataforma B2C utiliza um contrato do tipo ""guarda-chuva"", o que implica que a modificação de atributo principal refideliza toda a composição do contrato.
+Mapeamento eTOM: 1.3.1.1 Customer Interaction Management, 1.3.4.1 Customer Information Management, 1.3.3.1 Customer Contract Management.
+Regras de Negócio:
+[Regra 1: Análise Financeira Sem Desbloqueio de Confiança] Ao carregar a tela de Upgrade, o sistema faz consulta síncrona aos débitos. Caso positivo, exibe alerta obstrutivo em tela (Hard Block). Diferente de outras plataformas, o Salesforce não fará desbloqueios operacionais (de confiança); tudo deverá ser resolvido via tratamento de Billing/Cobrança.
+[Regra 2: Nova Cotação por Recusa] Propostas de Upgrade não aceitas pelo cliente não podem ser editadas voltando a mesma tela repetitivamente; a recusa de proposta exige a criação forçada de uma nova Cotação na mesma Oportunidade para manter rastro de ofertas declinadas.
+[Regra 3: Refidelização] O upgrade do produto central (Fibra) renova integralmente a carência do contrato inteiro (12 meses). Adição apenas de produtos avulsos (ex: streaming) não afeta a data principal de fidelidade.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Asset (Customer 360), Opportunity, Quote (MACD Change), vlocity_cmt__Contract__c.
+Automação / Front-end: OmniScript iniciado a partir da View de Asset. Integration Procedure na inicialização executando chamada para o Billing. Ocultação visual de qualquer botão customizado de ""Desbloqueio"".
+Integração / APIs TM Forum: TMF666 (Account Receivables) validando boletos vencidos em tempo real. TMF622 para disparar a ação ""Change"" de produtos na rede.
+Segurança e Acessos: Perfis de relacionamento limitados a visualização (""Read-Only"") dos saldos devedores retornados.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Bloqueio de Upgrade por Fatura Vencida
+Dado que um cliente com 2 faturas em aberto liga no Call Center e aceita a oferta de upgrade
+Quando o atendente clica em ""Modificar Plano (Change)""
+Então o sistema faz a requisição no BSS, identifica a inadimplência e exibe uma tela obstrutiva com a mensagem ""Regularização de Débito Pendente"", impedindo o avanço para a adição de pacote.
+Cenário 2: Registro de Negociação e Nova Cotação
+Dado que o cliente recusa a primeira proposta ofertada pelo atendente
+Quando o atendente marca a Cotação atual (Quote) como Rejeitada
+Então o sistema congela a versão anterior e inicia um novo fluxo em branco para elaboração da segunda oferta (Quote v2) vinculada ao mesmo caso de venda.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Barramento (MuleSoft/Gateway) performático e SLA de tempo de resposta da API de faturamento < 2s.
+Governor Limits & Edge Cases: Tratamento amigável de Timeout na API do Customer Core. Se houver falha de rede da TMF666, não deve travar totalmente a tela, mas escalar para um status provisório de ""Aguardando Confirmação Manual de Pagamento"".
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Person Account com Asset ativo; Mock de API TMF666 retornando Payload Positivo (Débitos) e Negativo (Adimplente) para o CPF informado.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09"
+B2C-N10,PARCIAL,W-000116,[MACD / CPQ] - Downgrade B2C com Isenção de Multa Condicionada à Refidelização,,012V2000009Qk5dIAC,a8JV200000001IfMAI,B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,3947,2,N,"1. NARRATIVA DE NEGÓCIO
+Como Agente de Relacionamento (Loja) / Call Center B2C
+Quero realizar a redução de plano (Downgrade) de um cliente da base retendo-o através de condições contratuais flexíveis
+Para que eu cumpra o Regulamento Geral do Consumidor (RGC) da Anatel, exigindo o mínimo de vida útil do contrato, e automatize o cálculo de dispensa de multas caso ele renove a fidelidade conosco.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Historicamente a multa de downgrade no B2C não gerava cobrança efetiva no BSS. O processo agora validará o prazo de carência mínima e forçará a engine CPQ a calcular a quebra de fidelidade caso não ocorra uma nova negociação de aceite.
+Mapeamento eTOM: 1.3.3.1 Customer Contract Management, 1.2.1.4 Service Order Handling.
+Regras de Negócio:
+[Regra 1: Trava dos 3 Meses] O sistema deve impedir tecnicamente alterações de pacote para o mesmo serviço (downgrade tarifário) se a data de ativação (ProvisionDate) do Asset for inferior a 3 meses.
+[Regra 2: Downgrade e Multa Contratual] Passados os 3 meses, o cliente tem direito ao downgrade. Se ele optar pela quebra de contrato simples, a engine gerará o valor da multa com base no tempo faltante.
+[Regra 3: Isenção por Refidelização] O Agente pode realizar o downgrade de pacote sem cobrar multa SE E SOMENTE SE o cliente der o aceite para firmar um novo termo de permanência de 12 meses a partir do momento da troca.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Asset, Quote (MACD Change), vlocity_cmt__ContractTerm__c, vlocity_cmt__Contract__c.
+Automação / Front-end: Context Rules no Vlocity EPC consultando a data de criação do Asset. Vlocity Advanced Rules e Penalty Rules avaliando a flag (Boolean) de Refidelização do carrinho.
+Integração / APIs TM Forum: TMF622 via Payload de Change (Remoção do produto principal e adição do menor). TMF651 atualizando as datas do contrato no BSS.
+Segurança e Acessos: Atendentes restritos de remover as taxas de multa/penalidade manualmente no carrinho. Toda manipulação deve ocorrer baseada na decisão lógica do Flow (Cliente refidelizou? S/N).
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Tentativa de Downgrade no Período Proibido
+Dado que o cliente adquiriu o produto há menos de 3 meses
+Quando o agente tenta iniciar a jornada de MACD para reduzir o pacote
+Então o sistema exibe notificação de validação bloqueando a ação, por descumprimento de carência mínima inicial.
+Cenário 2: Downgrade com Refidelização Substituta (Isenção de Multa)
+Dado que o cliente possui um contrato ativo há 6 meses e pede o rebaixamento de banda
+Quando o Agente configura o carrinho para a oferta menor e marca a opção ""Cliente Aceita Nova Refidelização de 12 Meses""
+Então as regras do CPQ suprimem automaticamente a linha de faturamento de Multa Rescisória e parametrizam o recálculo do tempo de contrato (+12 meses) a partir de hoje.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Alinhamento com a diretoria de produtos sobre o comportamento definitivo de reajuste das faturas B2C para o catálogo em uso.
+Governor Limits & Edge Cases: Evitar uso excessivo de Reprice no carrinho durante o Flow. Parametrizar a verificação das Context Rules na entrada do Asset, e não em cada manipulação do QuoteLineItem.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Person Account com Asset Fibra ativo há 2 meses (Falha de Trava); Asset Fibra ativo há 5 meses (Sucesso de isenção via refidelização); Asset Fibra ativo há 7 meses (Sucesso de multa gerada sem refidelização).
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09"
+B2C-N11,NAO_EXISTE,,[MACD / CPQ] - Sincronização Automática de Refidelização e Data de Reajuste Anual,,012V2000009Qk5dIAC,a8JV200000001IfMAI,B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente,a8bV200000001NVIAY,a8qV2000000TZYfIAO,005V200000PAtBJIA1,005V200000JWO97IAH,New,User Story,,,3205,1,N,"1. NARRATIVA DE NEGÓCIO
+Como Administrador do Catálogo B2C / Analista de Negócios B2C
+Quero que o cálculo da Data de Reajuste Anual do cliente seja vinculado automaticamente à sua data de refidelização, sendo sistematicamente forçado para 12 meses nos casos atípicos
+Para que o sistema elimine ajustes manuais de vendedores propensos a erro, evitando antecipação inflacionária nos contratos ou perdas financeiras na vigência da fidelidade.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Ao atuar na refidelização (seja pura ou acoplada a upgrade/downgrade), algumas promoções geram compromissos contratuais variados (ex: retenção com 6 meses de fidelidade). A diretriz comercial exige que os reajustes de tarifa obedeçam rigidamente ciclos anuais fechados, nivelando inconsistências.
+Mapeamento eTOM: 1.3.3.1 Customer Contract Management, 1.4.1.2 Billing Account Management.
+Regras de Negócio:
+[Regra 1: Vinculação de Datas] Toda alteração contratual efetuada recriará as referências de tempo de vigência e reajuste.
+[Regra 2: Puxada de SLA Anual] Se a vigência negociada ou imposta no catálogo for inferior a 12 meses, a Data de Reajuste Anual adotará obrigatoriamente a régua de 12 meses corridos (Today + 12 Months) a partir da efetivação do pedido.
+[Regra 3: Campo Inviolável] As equipes do Call Center e Força de Vendas visualizam o campo, mas ele permanecerá como ""Read-Only"" em todo o processo.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Order, vlocity_cmt__Contract__c.
+Automação / Front-end: Record-Triggered Flow ativado na fase ""Activated"" do Order (processo MACD fechado) atuando no Contrato ativo do cliente.
+Integração / APIs TM Forum: TMF651 (Agreement Management) recebendo as datas finais sincronizadas no endpoint de provisionamento do BSS.
+Segurança e Acessos: Field Level Security restringindo modificações manuais sobre o campo customizado Next_Readjustment_Date__c.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Ajuste Forçado para Promoções Curtas
+Dado que o cliente aceita uma proposta de retenção com carência definida de 6 meses
+Quando o pedido MACD é submetido com sucesso e muda para o status ""Ativado""
+Então o Flow atua em background, atualiza o Termo de Fidelidade para +6 meses e seta compulsoriamente a Data de Reajuste Anual para 12 meses a partir do fechamento da cotação.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Sincronismo da base de contratos legados antes do tombamento (data cleansing da base para garantir que os reajustes não falhem retroativamente).
+Governor Limits & Edge Cases: N/A.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Fluxo MACD simulando aplicação de desconto de retenção com fidelidade estática de 6 meses; verificação do registro vlocity_cmt__Contract__c ao final do pedido.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09"

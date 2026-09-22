@@ -1,0 +1,56 @@
+SUBJECT: [MACD & CPQ] - Venda Swap (Permuta) com Preço Flexível e Comprovação
+EPICO: B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente
+CLASSE: PARCIAL (idem; venda swap com preco flexivel e comprovacao ganha work propria (cobertura 0,30))
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+1. NARRATIVA DE NEGÓCIO
+Como Vendedor B2C / Equipe de Marketing
+Quero registrar uma venda do tipo Swap (Permuta) com a possibilidade de abatimento flexível do preço da mensalidade
+Para que a empresa firme parcerias para captação de leads em eventos, compensando o serviço com divulgação comercial ou publicidade da marca.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Swap refere-se a permutas de conectividade (Ex: Banda Larga para evento ou Influenciador em troca de divulgação). O fluxo difere da venda normal pois exige flexibilidade de desconto (parcial ou 100%) e upload de evidência formalizando a parceria comercial.
+Mapeamento eTOM: 1.2.1.3 Customer Proposal Management, 1.2.1.2 Sales Pitch/Offer Configuration.
+Regras de Negócio:
+[Regra 1: Definição de Segmento e Record Type] A negociação deve ser tipificada ativamente como "Venda Swap" no primeiro input do vendedor.
+[Regra 2: Precificação Dinâmica] Diferente do catálogo rígido, o fluxo de Swap permite a sobrescrita do valor base do produto, aplicando descontos arbitrários conforme o acordo da permuta.
+[Regra 3: Obrigatoriedade de Viabilidade e Evidência] Apesar do acordo comercial, a viabilidade técnica de rede fixa (200m da CTO) permanece obrigatória. Ao solicitar o desconto, o vendedor deve anexar um documento/foto comprovando a parceria e acionar o fluxo de aprovação gerencial.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Opportunity (Record Type = Swap), Quote, QuoteLineItem, ContentDocumentLink (Anexos).
+Automação / Front-end: Vlocity CPQ Cart com Price Override liberado condicionalmente por Record Type. FlexCard de File Upload (lightning-file-upload) obrigatório na tela de resumo da cotação.
+Integração / APIs TM Forum: TMF622 enviando o Net Price com o desconto aplicado (Overrides) em nível de linha do pedido; TMF645 para viabilidade técnica do endereço do evento/residência.
+Segurança e Acessos: Atribuição do Record Type "Swap" liberada no perfil B2C_Sales_User. O Price Override só é aplicado se submetido à fila de aprovação padrão de precificação agressiva.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Swap com desconto parcial aprovado via upload de evidência
+Dado que o vendedor está negociando uma permuta para um consumidor Pessoa Física (ex: criador de conteúdo)
+Quando ele altera o valor da banda larga no carrinho de R$ 100,00 para R$ 40,00
+Então o OmniScript bloqueia a transição direta para Contrato, exigindo o upload de um arquivo e enviando a cotação à aprovação gerencial.
+Cenário 2: Viabilidade Técnica Inválida para Endereço de Swap
+Dado que o vendedor inicia o processo informando o CEP do local da permuta
+Quando o sistema executa a API de geolocalização e verifica que a distância da CTO excede 200m
+Então a venda de fibra fixa é bloqueada imediatamente, disparando a oferta compulsória para produto de contingência Móvel.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Definição por parte da operação das alçadas financeiras de aprovação para os diferentes limiares de permuta.
+Governor Limits & Edge Cases: Monitorar o limite de armazenamento do Salesforce (File Storage Limits) com a captura constante de mídias (fotos de banner, contratos), sugerindo arquivamento no Customer Core a longo prazo.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Person Account existente, Produto Fibra Selecionado, Desconto Customizado inserido manualmente, Upload de PDF de 1MB anexado, Verificação do Status na fila de aprovações.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Swap com desconto parcial aprovado via upload de evidência
+Dado que o vendedor está negociando uma permuta para um consumidor Pessoa Física (ex: criador de conteúdo)
+Quando ele altera o valor da banda larga no carrinho de R$ 100,00 para R$ 40,00
+Então o OmniScript bloqueia a transição direta para Contrato, exigindo o upload de um arquivo e enviando a cotação à aprovação gerencial.
+
+Critério 2 - Viabilidade Técnica Inválida para Endereço de Swap
+Dado que o vendedor inicia o processo informando o CEP do local da permuta
+Quando o sistema executa a API de geolocalização e verifica que a distância da CTO excede 200m
+Então a venda de fibra fixa é bloqueada imediatamente, disparando a oferta compulsória para produto de contingência Móvel.

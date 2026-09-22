@@ -1,0 +1,49 @@
+SUBJECT: [ENTERPRISE ORDER MANAGEMENT - EOM] - Restrição de Edição pelo BKO e Bypass de Arquitetura para Vendas Expressas
+EPICO: 1) Vender soluções
+CLASSE: NAO_EXISTE (bypass de arquitetura para vendas expressas e restricao de edicao pelo BKO; W-000101 cobre so a auditoria)
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+NARRATIVA DE NEGÓCIO
+Como Analista de Backoffice (BKO) / Arquiteto de Soluções Quero que as vendas padrão não exijam aprovação de arquitetura, e que o BKO não consiga editar valores financeiros Para que o SLA (Quote-to-Order) de viabilidades expressas seja otimizado e se garanta a integridade das condições comerciais fechadas com o cliente
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Projetos especiais com estudo de infraestrutura requerem análise técnica, mas a maior parte das vendas corporativas segue formato expresso. Adicionalmente, o setor de BKO atua apenas como auditoria operacional, sem autonomia para conceder ou corrigir descontos ou preços. Mapeamento eTOM: 1.2.1.5 Service Qualification, 1.2.1.4 Order Handling Regras de Negócio:
+Regra 1: A validação técnica (Arquitetura) é dispensada sistemicamente para cotações classificadas como vendas padrão (expressas).
+Regra 2: A equipe de BKO não possui permissão para alterar valores de produtos, mensalidades ou condições comerciais. Caso existam divergências contratuais, a cotação deverá ser devolvida (rejeitada) para que o vendedor gere uma nova.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Quote, Order, Profile (BKO, Arquitetura), RecordType Automação / Front-end: OmniScript Approval/Auditing Flow, Advanced Approvals, Page Layout Assignment, Vlocity Orchestration Plan. Integração / APIs TM Forum: TMF645 (Service Qualification), TMF622 (Product Order). Segurança e Acessos: Field-Level Security (FLS) Read-Only em QuoteLineItem (preços e descontos) para o perfil BKO.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Conversão de Venda Expressa e Auditoria Restrita:
+Dado que um GR submete uma cotação de venda padrão (expressa) Quando a cotação avança, ela faz um "bypass" na fila de Arquitetura e cai direto para auditoria do BKO Então o BKO consegue visualizar todas as condições, mas os campos de valores financeiros estão bloqueados para edição
+Cenário 2: Tratamento de divergência financeira no BKO:
+Dado que o BKO identifica que os valores da cotação expressa não batem com a tabela de preços oficial Quando o BKO analisa a divergência Então ele só possui a opção de rejeitar e devolver a cotação para o GR ajustar e submeter novamente
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Integração com motor de viabilidade para determinar corretamente se o serviço é "Padrão" ou "Projeto Especial".
+Governor Limits & Edge Cases: Evitar loops infinitos de aprovação/rejeição; estabelecer obrigatoriedade de comentário de reprovação pelo BKO.
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Usuário com perfil BKO abrindo uma cotação expressa (sem passar por arquitetura) e constatando impossibilidade de editar campos de "One Time Charge" ou "Recurring Charge".
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): Será que aqui não caberia uma história específica para tratar essa diferenciação entre desenho de solução e venda padrão?
+- Fernanda da Silveira Duarte (2026-09-15): Essa etapa no motor de viabilidade acredito que não constará... acredito que o sistema somente vai trazer a viabilidade de rede relativo ao(s) endereço(s) inseridos. 
+
+A etapa de entender o que é venda "expressa / padrão" ou "desenho de solução" tem a ver com as regras do catálogo de produtos....
+- Fernanda da Silveira Duarte (2026-09-14): Lembrando que ainda assim precisa ter o botão de solicitação de análise se o GR verificar a necessidade....
+- Fernanda da Silveira Duarte (2026-09-15): Caixa de texto para detalhamento do motivo (preenchimento obrigatório).
+- Fernanda da Silveira Duarte (2026-09-14): - Limitar e padronizar a lista de motivos e submotivos para oportunidades não convertidas, utilizando listas dependentes para guiar o usuário na seleção correta; 
+- As alterações de valor ou produto exigirão o abandono da cotação e o recomeço do processo, responsabilizando diretamente a Equipe Comercial.
+- Fernanda da Silveira Duarte (2026-09-15): - O sistema deve apresentar uma visão 360 graus do CNPJ do cliente com todos os contratos e etiquetas ativas vinculadas;
+- Detalhamento sobre cada proposta (valor, serviços, vigência, débitos, entre outros).
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Histórias da reunião de 01/09/2026
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Conversão de Venda Expressa e Auditoria Restrita
+Dado que um GR submete uma cotação de venda padrão (expressa) Quando a cotação avança, ela faz um "bypass" na fila de Arquitetura e cai direto para auditoria do BKO Então o BKO consegue visualizar todas as condições, mas os campos de valores financeiros estão bloqueados para edição
+
+Critério 2 - Tratamento de divergência financeira no BKO
+Dado que o BKO identifica que os valores da cotação expressa não batem com a tabela de preços oficial Quando o BKO analisa a divergência Então ele só possui a opção de rejeitar e devolver a cotação para o GR ajustar e submeter novamente

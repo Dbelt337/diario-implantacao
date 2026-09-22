@@ -1,0 +1,50 @@
+SUBJECT: [SALES CORE] - Estruturação de Motivos e Submotivos para Perda de Leads e Oportunidades
+EPICO: 1) Vender soluções
+CLASSE: NAO_EXISTE (motivos e submotivos de perda com listas dependentes; nenhuma work)
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+NARRATIVA DE NEGÓCIO
+Como Analista de Negócios / Gerente Comercial
+Quero exigir listas hierárquicas e precisas de motivos de perda, separando o contexto embrionário (Leads) do contexto maduro (Oportunidades)
+Para que eu possua relatórios analíticos sem dados poluídos e garanta o correto direcionamento de campanhas de winback.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: A classificação correta de descartes exige diferenciação lógica entre a fase de prospecção e a fase de negociação financeira. Mapeamento eTOM: 1.2.1.2 Sales Management, 1.2.1.7 Retention & Loyalty.
+Regras de Negócio:
+[Regra 1: Obrigatoriedade Hierárquica] Ao marcar um Lead ou Oportunidade como "Perdido", o sistema solicita obrigatoriamente "Motivo" e "Submotivo".
+[Regra 2: Segmentação de Motivos por Estágio] A opção de perda pelo motivo "Preço" é terminantemente proibida/ocultada na etapa de Lead, visto que a precificação ocorre apenas na fase de Oportunidade/Cotação. "Preço" deve ser visível apenas em perdas de Oportunidades.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Lead, Opportunity.
+Automação / Front-end: Field Dependencies (Picklist), Record Types específicos (para segregar os picklists de Lead vs Opportunity), Validation Rules.
+Integração / APIs TM Forum: Não se aplica.
+Segurança e Acessos: Acesso de escrita restrito; apenas administradores e Sales Ops podem gerenciar a lista de valores (Value Sets).
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Restrição do motivo preço na perda de Lead:
+Dado que o SDR ou GR vai marcar um Lead como "Perdido" Quando ele clica no picklist de Motivos Então o sistema NÃO exibe a opção "Preço", garantindo que o descarte embrionário possua a categorização correta.
+Cenário 2: Encerramento de Oportunidade por Preço
+Dado que o GR avança para fechar uma Oportunidade B2B como "Closed Lost"
+Quando ele visualiza o modal de justificativa
+Então a opção "Preço" é exibida e exige a seleção de um submotivo condizente.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Lista consolidada de motivos/submotivos entregue pela área de Negócios/Planejamento Comercial.
+Governor Limits & Edge Cases: N/A.
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Conversão de Lead B2B para Status Perdido (verificando a ausência do valor "Preço"); Reprovação de Oportunidade (verificando a presença de "Preço" e obrigatoriedade de submotivo).
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Restrição do motivo preço na perda de Lead
+Dado que o SDR ou GR vai marcar um Lead como "Perdido" Quando ele clica no picklist de Motivos Então o sistema NÃO exibe a opção "Preço", garantindo que o descarte embrionário possua a categorização correta.
+
+Critério 2 - Encerramento de Oportunidade por Preço
+Dado que o GR avança para fechar uma Oportunidade B2B como "Closed Lost"
+Quando ele visualiza o modal de justificativa
+Então a opção "Preço" é exibida e exige a seleção de um submotivo condizente.

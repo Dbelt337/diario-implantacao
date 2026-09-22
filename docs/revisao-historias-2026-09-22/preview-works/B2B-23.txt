@@ -1,0 +1,45 @@
+SUBJECT: [MACD / ENTERPRISE CPQ] - Upgrade de Serviços B2B SEM Refidelização Contratual (Manutenção da Vigência Original)
+EPICO: 4) Realizar upgrade
+CLASSE: PARCIAL (upgrade SEM refidelizacao (vigencia original) ganha work propria)
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+NARRATIVA DE NEGÓCIO
+Como Gerente de Relacionamento (GR) / Gerente de Contas B2B Quero processar o upgrade de capacidade ou banda de um serviço ativo mantendo o prazo de fidelidade e o término do contrato original inalterados Para que atendamos à necessidade de expansão do cliente corporativo sem impor uma nova carência compulsória, garantindo agilidade no aditamento contratual e preservando o relacionamento comercial.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Operação MACD de alteração de serviço (Change Asset) onde o cliente corporativo solicita ampliação de banda/recursos no mesmo site, mas recusa a extensão do período de fidelização vigente. O sistema deve recalcular o valor delta da mensalidade, manter o término da carência original do contrato e verificar se a alteração exige investimento de CAPEX/troca de infraestrutura que inviabilize a manutenção do prazo antigo. Mapeamento eTOM: 1.2.1.4 Order Handling, 1.2.1.6 Quotation Management.
+Regras de Negócio:
+[Regra 1: Manutenção da Fidelidade Vigente e Pró-Rata] Ao optar por NÃO refidelizar o contrato no fluxo de Upgrade, o sistema preserva rigorosamente a data de término de carência e as penalidades do Contrato guarda-chuva original, aplicando o recálculo financeiro (Delta MRR) proporcional apenas para o período restante da vigência.
+[Regra 2: Trava de CAPEX / Troca de Equipamento sem Refidelização] Se o upgrade técnico exigir troca física de equipamentos (CPE/Roteador) ou nova obra de infraestrutura com custo relevante (CAPEX), o sistema bloqueia a opção "Sem Refidelização" e exige refidelização compulsória ou aprovação de alçada gerencial/diretoria para assumir o custo residual do equipamento.
+[Regra 3: Aditivo Simplificado e Sincronização BKO] O upgrade sem refidelização gera um Aditivo de Alteração de Serviço e Valor (sem alteração de prazo), passa pela validação técnica da Arquitetura para verificação de banda e segue para auditoria simplificada do BKO antes da emissão da ordem de alteração.
+Google Docs+ 4
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Business Account, Contract, Asset, Opportunity (RecordType: MACD), Quote, QuoteLineItem, Order, OrderItem. Automação / Front-end: OmniScript Guided MACD, Enterprise CPQ Cart (Asset-to-Quote / Delta Pricing Engine), Advanced Approvals (para exceção de CAPEX sem fidelidade), DocGen para Aditivo Contratual de Alteração de Serviço. Integração / APIs TM Forum: TMF637 (Product Inventory), TMF645 (Service Qualification), TMF622 (Product Order - Modify), TMF651 (Agreement Management). Segurança e Acessos: Imutabilidade do campo "Data Fim de Fidelidade" no Contrato/Asset quando a flag "Sem Refidelização" estiver marcada.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Upgrade de banda sem refidelização mantendo a data de término do contrato: Dado que o GR inicia um Upgrade em um contrato B2B ativo que possui 10 meses restantes de fidelidade Quando o GR altera o produto para uma banda superior no CPQ Cart e desmarca/deixa desmarcada a opção de "Refidelizar" Então o sistema aplica o Delta MRR, gera o Aditivo Contratual mantendo exatamente a mesma data de término de fidelidade original e encaminha o pedido para auditoria do BKO.
+Google Docs+ 3
+Cenário 2: Bloqueio da opção sem refidelização por necessidade de novo equipamento (CAPEX) Dado que o GR solicita um Upgrade sem refidelização para um cliente B2B Quando a validação técnica da Arquitetura (TMF645) indica a necessidade de substituição de CPE com custo de CAPEX Então o sistema bloqueia a finalização da cotação sem refidelização, informando que o investimento exige refidelização compulsória do contrato ou submissão para aprovação da Diretoria Comercial.
+Google Docs
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Business Account com Contrato B2B ativo e 12 meses restantes de carência; Asset de Banda Larga/Link Dedicado; Solicitação de upgrade de 200 Mbps para 300 Mbps sem refidelização; Confirmação de que a data final de carência do Asset/Contrato resultante permanece inalterada.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): neste exemplo (quando tem modificação de serviço) primeiro iria para Arquitetura >> aprovação gestão >> aceite formal do cliente >> validação técnica >> BKO >> Liberação da ordem para o field
+- Fernanda da Silveira Duarte (2026-09-15): ?
+- Fernanda da Silveira Duarte (2026-09-16): Aqui não deveria ter uma regra que mostre o caminho para acessar a tela de upgrade? Ex: Pesquisar o cliente >> sistema realizar a busca no customer core >> cliente acessar a opção "Contratos" >>> o sistema Retornar os dados do cliente e sua(s) proposta(s) >>> o cliente selecionar o contrato que vai passar pelo upgrade >>> o sistema retornar os dados referente ao contrato selecionado.. ??
+- Fernanda da Silveira Duarte (2026-09-15): Não mapeamos isso. 
+O que ficou acordado é que pode ser que o time de Arquitetura, nas suas avaliações perceba a situação, relate e quando for aberta a solicitação de aprovação comercial o gestor responsável já esteja munido destas informações para tomada de decisão.
+- Fernanda da Silveira Duarte (2026-09-15): neste exemplo (quando tem modificação de serviço) primeiro iria para Arquitetura >> aprovação gestão >> aceite formal do cliente >> validação técnica >> BKO >> Liberação da ordem para o field
+- Fernanda da Silveira Duarte (2026-09-15): Não mapeamos isso. 
+O que ficou acordado é que pode ser que o time de Arquitetura, nas suas avaliações perceba a situação, relate e quando for aberta a solicitação de aprovação comercial o gestor responsável já esteja munido destas informações para tomada de decisão.
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Upgrade de banda sem refidelização mantendo a data de términ
+Google Docs+ 3
+
+Critério 2 - Bloqueio da opção sem refidelização por necessidade de novo 
+Google Docs

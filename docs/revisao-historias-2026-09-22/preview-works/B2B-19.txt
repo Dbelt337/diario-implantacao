@@ -1,0 +1,43 @@
+SUBJECT: [ENTERPRISE ORDER MANAGEMENT - EOM] - Decomposição, Provisionamento e Handoff de Cortesia (Payload Faturamento Nulo)
+EPICO: 2) Vender soluções como cortesia
+CLASSE: NAO_EXISTE (handoff de cortesia com payload de faturamento nulo (EOM))
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+NARRATIVA DE NEGÓCIO
+Como Sistema Order Management (EOM) / Analista de Backoffice Quero orquestrar pedidos de cortesia para o delivery técnico enviando um payload com faturamento nulo para o BSS/ERP Para que a equipe de engenharia/campo (Field Service) realize a ativação do serviço normalmente, mas o motor financeiro (SAP/Customer Core) não gere faturas indevidas para o cliente B2B.
+CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2B)
+Contexto: Uma cortesia B2B exige provisionamento técnico completo (designação de porta, envio de CPE, ativação de link), mas exige tratamento diferenciado no sistema de billing para garantir que nenhuma fatura seja gerada, alocando os custos em centros de custos internos. Mapeamento eTOM: 1.2.1.4 Order Handling, 1.2.1.3 Customer Credit Profile Management (Bypass).
+Regras de Negócio:
+[Regra 1: Plano de Orquestração Específico] Ordens B2B flagradas como Cortesia devem derivar para um plano de orquestração (Orchestration Plan) que execute o provisionamento técnico, mas envie parâmetros nulos (valor zerado e justificativa comercial) para o SAP/Billing.
+[Regra 2: Auditoria BKO Simplificada] O BKO visualiza a ordem de cortesia, mas a validação de crédito/débitos externos (Serasa) é dispensada (bypass) ou tratada como informativa, uma vez que não haverá risco de inadimplência financeira na cortesia pura.
+ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2B)
+Objetos Impactados: Order, OrderItem, vlocity_cmt__OrchestrationPlan__c, vlocity_cmt__OrchestrationItem__c, Asset. Automação / Front-end: Vlocity Order Management (EOM), Integration Procedures para mapeamento de payload (DataRaptor Transform). Integração / APIs TM Forum: TMF622 (Product Order - envio de payload técnico completo e payload financeiro zerado), Integração SAP / Customer Core. Segurança e Acessos: Permissão exclusiva do orquestrador sistêmico para criar os Assets com status ativo e valor R$ 0,00 após callback de sucesso do provisionamento.
+CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Envio de payload técnico sem faturamento (Cortesia):
+Dado que a Ordem B2B de Cortesia foi aprovada, auditada pelo BKO e submetida Quando o EOM inicia a decomposição e orquestração do pedido Então o sistema gera as tarefas técnicas (Field Service) normalmente e envia uma chamada via TMF622 ao Customer Core/SAP com o valor do faturamento fixado em R$ 0,00, indicando o centro de custo interno.
+Cenário 2: Bypass de restrição financeira:
+Dado que o cliente base (Grupo Econômico) possui um débito ativo no Customer Core Quando o BKO submete uma nova ordem estritamente de Cortesia para um novo Premise Então o sistema permite a imputação da venda e orquestração, ignorando o travamento de crédito, pois não há geração de nova dívida.
+ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite. [ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de Apex CPU/SOQL). [ ] Validação E2E no ambiente de Sandbox/QA. Massa de Teste Sugerida: Ordem contendo 1 produto pago e 1 produto cortesia; Decomposição validando que o payload de faturamento envia valor apenas para o item pago.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Fernanda da Silveira Duarte (2026-09-15): Faturamento nulo, mas há uma etapa após a seleção dos produtos que irão compor o contrato, onde o GR irá "Preencher o período do contrato, fidelidade e motivo da negociação"
+*Preenchimento obrigatório:
+- Tempo de contrato (meses): 12, 24, 36, 48, 60 ou outros (se "outros" habilitar o campo para inserção do período);
+- Tempo de término do contrato (preenchido automaticamente conforme o tempo de contrato estipulado);
+- Tempo de fidelização (meses): 12, 24, 36, 48, 60 ou outros (se "outros" habilitar o campo para inserção do período). Obs: se o tempo de contrato for diferente do tempo da fidelidade é necessário habilitar o campo para descrever o motivo da exceção;
+- Segmento de mercado: corporativo (preenchido automaticamente); 
+- Motivo da negociação (campo texto);
+- Não ocorrerá a geração de faturamento em contratos classificados como cortesia.
+
+Origem: Especificação Funcional e Técnica B2B (3).docx, secao Adicionada em 09/09/26
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Envio de payload técnico sem faturamento (Cortesia)
+Dado que a Ordem B2B de Cortesia foi aprovada, auditada pelo BKO e submetida Quando o EOM inicia a decomposição e orquestração do pedido Então o sistema gera as tarefas técnicas (Field Service) normalmente e envia uma chamada via TMF622 ao Customer Core/SAP com o valor do faturamento fixado em R$ 0,00, indicando o centro de custo interno.
+
+Critério 2 - Bypass de restrição financeira
+Dado que o cliente base (Grupo Econômico) possui um débito ativo no Customer Core Quando o BKO submete uma nova ordem estritamente de Cortesia para um novo Premise Então o sistema permite a imputação da venda e orquestração, ignorando o travamento de crédito, pois não há geração de nova dívida.

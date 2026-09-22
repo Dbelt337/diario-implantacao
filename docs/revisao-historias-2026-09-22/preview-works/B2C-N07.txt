@@ -1,0 +1,56 @@
+SUBJECT: [MACD & CPQ] - Venda Cortesia com Aprovação Prévia e Faturamento Zerado
+EPICO: B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente
+CLASSE: PARCIAL (W-000115 (B2C-30) e guarda-chuva dos tipos de operacao sem faturamento; venda cortesia ganha work propria)
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+1. NARRATIVA DE NEGÓCIO
+Como Vendedor B2C / Backoffice B2C
+Quero realizar a cotação e emissão de um contrato de cortesia para pessoa física (CPF)
+Para que o cliente receba o serviço com faturamento zerado, garantindo a proteção jurídica dos equipamentos cedidos em comodato e a correta contabilização do benefício.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: A jornada de cortesia exige a formalização de um contrato para garantir a responsabilidade sobre a instalação e a ONT/Roteador em comodato. O faturamento é zerado, o que requer travas de auditoria para evitar fraudes de concessão indevida a CPFs inadimplentes.
+Mapeamento eTOM: 1.2.1.2 Sales Pitch/Offer Configuration, 1.3.3.1 Customer Contract Management.
+Regras de Negócio:
+[Regra 1: Inadimplência e Crédito] Para a venda cortesia, a validação externa de Serasa não é fator de bloqueio, mas a verificação de débitos internos no BSS (Customer Core) é obrigatória. CPFs inadimplentes na própria base não podem receber cortesias.
+[Regra 2: Faturamento e Aprovação] A cotação terá o valor transacional zerado (R$ 0,00). Isso aciona um fluxo de aprovação obrigatória do gestor imediato antes do contrato ser liberado para assinatura do cliente ou para o agendamento do Field Service.
+[Regra 3: SLA de Assinatura] Após liberação, o cliente tem 5 dias corridos para assinar o contrato (digital ou via evidência física). Caso contrário, a Oportunidade é marcada automaticamente como "Perdida".
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Person Account, Opportunity (RecordType: Cortesia), Quote, QuoteLineItem, ProcessInstance (Approval Process), Order.
+Automação / Front-end: OmniScript (Guided Selling customizado para Cortesia pulando o step de Serasa); Advanced Approvals nativo roteando para o ManagerId do Vendedor; Record-Triggered Flow (Timeout de 5 dias).
+Integração / APIs TM Forum: TMF622 (Order Management) enviando payload de ativação com pricing zerado para o Billing (Customer Core); TMF666 (Account Receivables) validando débitos internos no CPF.
+Segurança e Acessos: Validation Rule impedindo a transição do StageName da Opportunity para "Closed Won" sem que o campo ApprovalStatus__c seja "Approved". FLS restrito no campo de preço para impedir edições.
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Submissão e Aprovação de Cortesia para CPF Adimplente
+Dado que o Vendedor inicia uma Oportunidade de Cortesia para um CPF sem débitos internos
+Quando o carrinho de produtos é submetido com valor R$ 0,00
+Então o sistema bloqueia a geração da Ordem e direciona uma notificação de Aprovação (Approval Process) ao Gestor Imediato.
+Cenário 2: Excedente do SLA de Assinatura
+Dado que o Gestor aprovou a cortesia e a minuta do contrato foi enviada ao consumidor
+Quando o prazo de 5 dias expirar sem o status do contrato ser atualizado para "Assinado"
+Então o sistema executa a ação temporizada, alterando a Oportunidade para "Fechada Perdida" com o motivo "Expiração do Prazo de Assinatura".
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Sistema legado de Faturamento apto a provisionar instâncias de serviço a custo zero e integração consolidada de hierarquia (Manager) via Okta/SSO.
+Governor Limits & Edge Cases: Ao utilizar Time-Based Workflows para o cancelamento de 5 dias, prever expurgos de fila caso a oportunidade seja alterada ou ganha antes do timeout.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Person Account nova; Record Type Cortesia; CPF sem histórico de débito interno; Gestor parametrizado na role hierarchy.
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Submissão e Aprovação de Cortesia para CPF Adimplente
+Dado que o Vendedor inicia uma Oportunidade de Cortesia para um CPF sem débitos internos
+Quando o carrinho de produtos é submetido com valor R$ 0,00
+Então o sistema bloqueia a geração da Ordem e direciona uma notificação de Aprovação (Approval Process) ao Gestor Imediato.
+
+Critério 2 - Excedente do SLA de Assinatura
+Dado que o Gestor aprovou a cortesia e a minuta do contrato foi enviada ao consumidor
+Quando o prazo de 5 dias expirar sem o status do contrato ser atualizado para "Assinado"
+Então o sistema executa a ação temporizada, alterando a Oportunidade para "Fechada Perdida" com o motivo "Expiração do Prazo de Assinatura".

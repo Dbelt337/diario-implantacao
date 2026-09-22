@@ -1,0 +1,56 @@
+SUBJECT: [MACD / CPQ] - Downgrade B2C com Isenção de Multa Condicionada à Refidelização
+EPICO: B2C - Jornadas de Venda e Gestão do Ciclo de Vida do Cliente
+CLASSE: PARCIAL (idem; downgrade com isencao de multa condicionada ganha work propria (cobertura 0,40))
+CRITERIOS DE ACEITE (objeto proprio): 2
+
+================================================================================
+1. NARRATIVA DE NEGÓCIO
+Como Agente de Relacionamento (Loja) / Call Center B2C
+Quero realizar a redução de plano (Downgrade) de um cliente da base retendo-o através de condições contratuais flexíveis
+Para que eu cumpra o Regulamento Geral do Consumidor (RGC) da Anatel, exigindo o mínimo de vida útil do contrato, e automatize o cálculo de dispensa de multas caso ele renove a fidelidade conosco.
+2. CONTEXTO E REGRAS DE NEGÓCIO (TELECOM B2C)
+Contexto: Historicamente a multa de downgrade no B2C não gerava cobrança efetiva no BSS. O processo agora validará o prazo de carência mínima e forçará a engine CPQ a calcular a quebra de fidelidade caso não ocorra uma nova negociação de aceite.
+Mapeamento eTOM: 1.3.3.1 Customer Contract Management, 1.2.1.4 Service Order Handling.
+Regras de Negócio:
+[Regra 1: Trava dos 3 Meses] O sistema deve impedir tecnicamente alterações de pacote para o mesmo serviço (downgrade tarifário) se a data de ativação (ProvisionDate) do Asset for inferior a 3 meses.
+[Regra 2: Downgrade e Multa Contratual] Passados os 3 meses, o cliente tem direito ao downgrade. Se ele optar pela quebra de contrato simples, a engine gerará o valor da multa com base no tempo faltante.
+[Regra 3: Isenção por Refidelização] O Agente pode realizar o downgrade de pacote sem cobrar multa SE E SOMENTE SE o cliente der o aceite para firmar um novo termo de permanência de 12 meses a partir do momento da troca.
+3. ESPECIFICAÇÃO TÉCNICA (SALESFORCE B2C)
+Objetos Impactados: Asset, Quote (MACD Change), vlocity_cmt__ContractTerm__c, vlocity_cmt__Contract__c.
+Automação / Front-end: Context Rules no Vlocity EPC consultando a data de criação do Asset. Vlocity Advanced Rules e Penalty Rules avaliando a flag (Boolean) de Refidelização do carrinho.
+Integração / APIs TM Forum: TMF622 via Payload de Change (Remoção do produto principal e adição do menor). TMF651 atualizando as datas do contrato no BSS.
+Segurança e Acessos: Atendentes restritos de remover as taxas de multa/penalidade manualmente no carrinho. Toda manipulação deve ocorrer baseada na decisão lógica do Flow (Cliente refidelizou? S/N).
+4. CRITÉRIOS DE ACEITE (FORMATO GHERKIN)
+Cenário 1: Tentativa de Downgrade no Período Proibido
+Dado que o cliente adquiriu o produto há menos de 3 meses
+Quando o agente tenta iniciar a jornada de MACD para reduzir o pacote
+Então o sistema exibe notificação de validação bloqueando a ação, por descumprimento de carência mínima inicial.
+Cenário 2: Downgrade com Refidelização Substituta (Isenção de Multa)
+Dado que o cliente possui um contrato ativo há 6 meses e pede o rebaixamento de banda
+Quando o Agente configura o carrinho para a oferta menor e marca a opção "Cliente Aceita Nova Refidelização de 12 Meses"
+Então as regras do CPQ suprimem automaticamente a linha de faturamento de Multa Rescisória e parametrizam o recálculo do tempo de contrato (+12 meses) a partir de hoje.
+5. ESTIMATIVA, DEPENDÊNCIAS E GOVERNOR LIMITS
+Dependências: Alinhamento com a diretoria de produtos sobre o comportamento definitivo de reajuste das faturas B2C para o catálogo em uso.
+Governor Limits & Edge Cases: Evitar uso excessivo de Reprice no carrinho durante o Flow. Parametrizar a verificação das Context Rules na entrada do Asset, e não em cada manipulação do QuoteLineItem.
+6. DEFINITION OF DONE (DoD) & MASSA DE TESTES
+[ ] Desenvolvimento concluído conforme critérios de aceite.
+[ ] Cobertura de testes unitários mínima de 85% (sem violação de limites de transação).
+[ ] Validação E2E no ambiente de Sandbox/QA.
+Massa de Teste Sugerida: Person Account com Asset Fibra ativo há 2 meses (Falha de Trava); Asset Fibra ativo há 5 meses (Sucesso de isenção via refidelização); Asset Fibra ativo há 7 meses (Sucesso de multa gerada sem refidelização).
+
+PONTOS EM ABERTO DA REVISAO DE NEGOCIO
+- Nenhum comentario de revisao ancorado a esta historia.
+
+Origem: Histórias Refinadas B2C - Backlog Completo e Consolidado (3).docx, secao Novas histórias 22/09
+
+================================================================================
+CRITERIOS DE ACEITE
+Critério 1 - Tentativa de Downgrade no Período Proibido
+Dado que o cliente adquiriu o produto há menos de 3 meses
+Quando o agente tenta iniciar a jornada de MACD para reduzir o pacote
+Então o sistema exibe notificação de validação bloqueando a ação, por descumprimento de carência mínima inicial.
+
+Critério 2 - Downgrade com Refidelização Substituta (Isenção de Multa)
+Dado que o cliente possui um contrato ativo há 6 meses e pede o rebaixamento de banda
+Quando o Agente configura o carrinho para a oferta menor e marca a opção "Cliente Aceita Nova Refidelização de 12 Meses"
+Então as regras do CPQ suprimem automaticamente a linha de faturamento de Multa Rescisória e parametrizam o recálculo do tempo de contrato (+12 meses) a partir de hoje.
