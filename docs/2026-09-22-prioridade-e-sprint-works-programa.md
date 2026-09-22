@@ -111,3 +111,6 @@ Pedido do Diego: Product Owner sempre Priscila De Lima; QA Engineer Fernanda da 
 Magalhaes e Joao Pedro Galvao E Albuquerque Lima. O campo Tech Writer e um lookup unico, entao a divisao foi por jornada:
 Joao Pedro nas 58 works do epico B2C e Mike nas 49 de B2B, catalogo, arquitetura e integracao. Aplicado nas 107 works do
 programa (job 750V200000mdPkTIAU); works internas nao tocadas.
+
+Ajuste 18h50 (pedido do Diego): Tech Writer = Mike De Brito Magalhaes em todas as 107; UE Engineer = Joao Pedro Galvao E
+Albuquerque Lima em todas as 107 (job 750V200000mdOLOIA2).
