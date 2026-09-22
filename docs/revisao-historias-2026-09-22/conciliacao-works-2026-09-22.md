@@ -273,3 +273,24 @@ Criacao via Bulk API 2.0: works job 750V200000mdBrCIAU (14 processadas, 0 falhas
 | B2C-N09 | W-000171 | a9IV2000000zzy0MAA | [MACD / CPQ] - Upgrade B2C com Trava de Inadimplência e Refidelização Guarda-Chuva |
 | B2C-N10 | W-000172 | a9IV2000000zzy1MAA | [MACD / CPQ] - Downgrade B2C com Isenção de Multa Condicionada à Refidelização |
 | B2C-N11 | W-000173 | a9IV2000000zzy2MAA | [MACD / CPQ] - Sincronização Automática de Refidelização e Data de Reajuste Anual |
+
+## Ajuste de nomenclatura (22/09, 17h50)
+
+As 14 works passaram para o padrao das existentes, "US B2B-nn — Titulo" e "US B2C-nn — Titulo", com o titulo exatamente igual ao cabecalho do documento de negocio e a tag original do cabecalho na primeira linha da descricao (job 750V200000mcv1eIAA, 14 processadas, 0 falhas). Numeracao segue a sequencia existente: B2B-17 a B2B-23, B2C-35 a B2C-41.
+
+| Work | Subject |
+|---|---|
+| W-000160 | US B2B-17 — Restrição de Edição pelo BKO e Bypass de Arquitetura para Vendas Expressas |
+| W-000161 | US B2B-18 — Estruturação de Motivos e Submotivos para Perda de Leads e Oportunidades |
+| W-000162 | US B2B-19 — Configuração e Precificação de Produtos na Modalidade Cortesia / Degustação |
+| W-000163 | US B2B-20 — Aprovação Mandatória e Trava Comercial para Cortesias |
+| W-000164 | US B2B-21 — Decomposição, Provisionamento e Handoff de Cortesia (Payload Faturamento Nulo) |
+| W-000165 | US B2B-22 — Negociação de Permuta de Serviços (Swap/SUAP) e Justificativa Comercial |
+| W-000166 | US B2B-23 — Upgrade de Serviços B2B SEM Refidelização Contratual (Manutenção da Vigência Original) |
+| W-000167 | US B2C-35 — Tratamento de Desligamento e Reversão de Plano Colaborador |
+| W-000168 | US B2C-36 — Relatório de Auditoria de Vendas (Cortesia e SWAP) com Débito Interno |
+| W-000169 | US B2C-37 — Venda Cortesia com Aprovação Prévia e Faturamento Zerado |
+| W-000170 | US B2C-38 — Venda Swap (Permuta) com Preço Flexível e Comprovação |
+| W-000171 | US B2C-39 — Upgrade B2C com Trava de Inadimplência e Refidelização Guarda-Chuva |
+| W-000172 | US B2C-40 — Downgrade B2C com Isenção de Multa Condicionada à Refidelização |
+| W-000173 | US B2C-41 — Sincronização Automática de Refidelização e Data de Reajuste Anual |
