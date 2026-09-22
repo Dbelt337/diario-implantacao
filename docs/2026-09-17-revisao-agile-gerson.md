@@ -164,3 +164,18 @@ Estado final do Agile em 17/09: 111 works; 33 em sprints 1 a 4 (5 + 11 + 10 + 2 
 Todas as works abertas com prioridade, epico, time e responsavel. Sprints vazias apagadas. Pendente: Gerson gerar a v2 do
 documento (Sprint 1 sai 123 e entra 132; Sprint 2 sai 124 e entram 056, 070, 102; Sprint 4 recebe 123 e 124; internas com "-i"
 e fora de sprint) e atualizar as colunas Sprint/Prioridade do CSV do pacote.
+
+## 22/09: painel "KPI Gestao de Works - Projetos BTP" (Gerson) x works internas
+
+Pedido do Gerson (22/09, 10h): tirar do painel as internas que nao sao do projeto Salesforce e conferir se todas as works
+estao la. Regra dada por ele: "todas que comecam com US" sao do projeto.
+
+- Todas as works estao no painel: 111 na org = 93 do programa (epico diferente de "Projetos Internos") + 18 internas.
+- O proprio Gerson ja tirou os blocos "Internos" e "Total geral" do painel hoje as 10h19 (metadado baixado nao os tem
+  mais). Dos 12 relatorios que alimentam o painel, 11 ja excluem o epico "Projetos Internos"; o "02. Por Sprint x Status" nao
+  tinha o filtro (hoje sem efeito, nenhuma interna esta em sprint) e recebeu o mesmo filtro (pacote `org/agile-dash`).
+- Nenhuma das 18 internas comeca com "US": todas ficam fora do painel. Mas 8 works do PROGRAMA tambem nao comecam com "US":
+  W-000070 (EPC-10 catalogo), W-000133 a W-000137 (Sprint 1 Brasil TecPar: CI/CD, ambientes, MuleSoft, arquitetura) e
+  W-000140/141 (B2B integracao e historias). Ficam no painel ate o Gerson dizer o contrario; se a regra "US" for literal,
+  o filtro passa a ser Assunto comeca com "US" em todos os relatorios.
+- A tela do Gerson mostrava dados "a partir de 21/09 20:01": o painel precisa de "Atualizar" para refletir a edicao.
