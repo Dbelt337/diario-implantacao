@@ -179,3 +179,12 @@ estao la. Regra dada por ele: "todas que comecam com US" sao do projeto.
   W-000140/141 (B2B integracao e historias). Ficam no painel ate o Gerson dizer o contrario; se a regra "US" for literal,
   o filtro passa a ser Assunto comeca com "US" em todos os relatorios.
 - A tela do Gerson mostrava dados "a partir de 21/09 20:01": o painel precisa de "Atualizar" para refletir a edicao.
+
+### 22/09, 11h: prefixo US nas 8 works do programa e conferencia de duplicidade
+
+Gerson confirmou que W-000070, W-000133 a W-000137, W-000140 e W-000141 sao do projeto e pediu o prefixo "US" no assunto,
+com verificacao de duplicadas (se houvesse, as mais recentes seriam as criadas por ele) e um comentario. Feito: 8 assuntos
+prefixados ("US " + assunto original, ex.: "US EPC-10 — Criacao dos catalogos comerciais..."), 1 comentario de governanca em
+cada. Duplicidade: nenhum codigo de historia (EPC-nn, B2B-nn, B2C-nn...) repetido nas 111 works e nenhum par de assuntos
+com similaridade acima de 0,75; os pares entre 0,55 e 0,75 sao temas diferentes com palavras em comum. Nenhuma das 8 foi
+criada pelo Gerson (todas do Diego, 31/08 a 16/09). Com isso, 93 works do programa comecam com US; as 18 internas nao.
