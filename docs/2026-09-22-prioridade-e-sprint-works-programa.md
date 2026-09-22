@@ -103,3 +103,11 @@ E uma alocacao de planejamento, feita por prioridade e dependencia e sem estimat
 | W-000171 | P3 | Sprint 7 - SysMap (08-19/12) | US B2C-39 — Upgrade B2C com Trava de Inadimplência e Refidelização Guarda-Chuva |
 | W-000172 | P3 | Sprint 7 - SysMap (08-19/12) | US B2C-40 — Downgrade B2C com Isenção de Multa Condicionada à Refidelização |
 | W-000173 | P4 | Sprint 9 - SysMap (19-30/01) | US B2C-41 — Sincronização Automática de Refidelização e Data de Reajuste Anual |
+
+## Papeis nas works (22/09, 18h40)
+
+Pedido do Diego: Product Owner sempre Priscila De Lima; QA Engineer Fernanda da Silveira Duarte; Performance Engineer
+(campo agf__System_Test_Engineer__c, rotulo "Performance Engineer") Diego Beltrao de Moraes; Tech Writer Mike De Brito
+Magalhaes e Joao Pedro Galvao E Albuquerque Lima. O campo Tech Writer e um lookup unico, entao a divisao foi por jornada:
+Joao Pedro nas 58 works do epico B2C e Mike nas 49 de B2B, catalogo, arquitetura e integracao. Aplicado nas 107 works do
+programa (job 750V200000mdPkTIAU); works internas nao tocadas.
