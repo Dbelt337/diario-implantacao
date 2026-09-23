@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>RowCount / PARENTGROUPVAL(RowCount, GRAND_SUMMARY)</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA1</developerName>
+        <downGroupingContext>BucketField_Destino</downGroupingContext>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Taxa (% dos projetos desenhados)</masterLabel>
+        <scale>1</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_Destino</developerName>
+        <masterLabel>Destino do projeto</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Outros</otherBucketLabel>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Fechado/Ganho</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Closed Won</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Instalado</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Aguardando instalação</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Contrato assinado</sourceValue>
+            </sourceValues>
+            <value>1 Negócio fechado</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Análise cliente</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Aprovação comercial</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Análise financeira</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Aprovação crédito</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Validação técnica</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Aguardando contrato</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Negociação</sourceValue>
+            </sourceValues>
+            <value>2 Validado, em proposta ou contratação</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Em negociação</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Nova</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Viabilidade e desenho da solução</sourceValue>
+            </sourceValues>
+            <value>3 Devolvido ao vendedor ou em nova elaboração</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Fechado/Perdido</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Closed Lost</sourceValue>
+            </sourceValues>
+            <value>4 Perdido</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>RowCount</column>
+        </chartSummaries>
+        <chartType>Donut</chartType>
+        <enableHoverLabels>true</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>BucketField_Destino</groupingColumn>
+        <location>CHART_TOP</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>true</showPercentage>
+        <showTotal>true</showTotal>
+        <showValues>true</showValues>
+        <size>Large</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <title>TAP: destino dos projetos (90 dias)</title>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>FULL_NAME</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Architect__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.ArchViabilityConcludedAt__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.ArchitectureApproved__c</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <description>TAP: projetos com item de Arquitetura concluído em Viabilidade nos últimos 90 dias, por destino atual: negócio fechado, validado e em proposta ou contratação, devolvido ao vendedor, perdido. Taxa = % do total desenhado.</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity.ArchViabilityConcludedAt__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>true</isUnlocked>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_Destino</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Arq - TAP: taxa de aprovação de projetos</name>
+    <params>
+        <name>probability</name>
+        <value>>0</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.ArchViabilityConcludedAt__c</dateColumn>
+        <interval>INTERVAL_LAST90</interval>
+    </timeFrameFilter>
+</Report>

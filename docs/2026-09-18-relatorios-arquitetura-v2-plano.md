@@ -167,3 +167,25 @@ Relatorios de fase (18/09) continuam publicados: sao eles que atendem 3a, 3b, 4d
 depois: 223 itens no momento do script (224 na leitura dos relatorios minutos depois, um item novo entrou), todos de
 oportunidades em Viabilidade e desenho da solucao ou Validacao tecnica. Idade maxima na fila caiu de 200,8 para 76 dias.
 Itens assumidos: Paul Nabih Raad 18, Gilmar Balbinot 2; 204 ainda na fila sem dono.
+
+## 23/09: indicadores do e-mail do Vilson (TMEP, TAP, SLA de entregas) medidos do item de aprovacao
+
+Decisao do Diego: o relogio comeca quando o item de aprovacao e criado para a Arquitetura, nao quando a fase muda. A org ja
+tinha os marcos de inicio (SLAViability__c "Inicio Viabilidade" e SLAArchitect__c "Inicio Arquitetura", gravados pelo flow
+[Anexo] Anexar documentos no envio para aprovacao, no mesmo instante da criacao do item). Faltava a conclusao e o arquiteto.
+
+Construido (org/force-app, validado na staging 0AfHZ00000QQUQ50AP e na producao em check-only 0AfV2000000uMInKAM):
+- Campos na Oportunidade: ArchViabilityConcludedAt__c, ArchTechValidConcludedAt__c (conclusao do item por fase),
+  Architect__c (quem concluiu = LastModifiedBy do FlowOrchestrationWorkItem, que bate com os 17 nomes; so 132 dos 5.802
+  itens de 120 dias tinham sido assumidos, por isso o assignee nao serve), ArchViabilityDays__c e ArchTechValidDays__c.
+- Flow record-triggered [Oportunidade] Marcos da fila de Arquitetura: quando Send4Approval__c passa a falso com a fase
+  anterior em Viabilidade ou Validacao tecnica, busca o ultimo item "Aprovacao - Arquitetura" concluido apos o marco de
+  inicio e grava conclusao e arquiteto. Nao toca no flow de controle nem na orquestracao.
+- Permission set Arquitetura_Marcos_Leitura (leitura dos 7 campos).
+- Relatorios novos na pasta Performance Arquitetura, tipo Oportunidades, 90 dias pela data de conclusao:
+  "Arq - TMEP: tempo de elaboracao" (dias item criado ate concluido, por arquiteto), "Arq - TAP: taxa de aprovacao de
+  projetos" (bucket de destino: negocio fechado / validado e em proposta / devolvido / perdido, com % do total) e
+  "Arq - SLA de entregas" (bucket dentro/fora da meta, 5 dias como valor provisorio, por arquiteto, com %).
+- Carga retroativa: tools/relatorios/gerar_backfill_marcos_arquitetura.py (120 dias: 4.456 oportunidades).
+Comandos de implantacao, carga e permission set: scripts/52_marcos_arquitetura_e_relatorios_TMEP_TAP_SLA_2309.md.
+Pendente: meta de SLA (Vilson) e decisao sobre apagar os 8 relatorios anteriores (sugestao: manter os dois de fila).
