@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ArchViabilityDays__c</fullName>
+    <description>Dias entre a criação do item de aprovação de Arquitetura na fase Viabilidade e desenho da solução (SLAViability__c) e a sua conclusão (ArchViabilityConcludedAt__c). Base do indicador TMEP.</description>
+    <externalId>false</externalId>
+    <formula>IF(OR(ISBLANK(SLAViability__c), ISBLANK(ArchViabilityConcludedAt__c)), NULL, ArchViabilityConcludedAt__c - SLAViability__c)</formula>
+    <formulaTreatBlanksAs>BlankAsBlank</formulaTreatBlanksAs>
+    <inlineHelpText>Dias da criação do item de Arquitetura em Viabilidade até a conclusão pelo arquiteto.</inlineHelpText>
+    <label>Dias Arquitetura - Viabilidade</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>1</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

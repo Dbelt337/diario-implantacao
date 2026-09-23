@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ArchTechValidConcludedAt__c</fullName>
+    <description>Data/hora em que a Arquitetura concluiu o item de aprovação criado na fase Validação técnica (LastModifiedDate do item de orquestração). Preenchido pelo flow [Oportunidade] Marcos da fila de Arquitetura. Par de SLAArchitect__c (Início Arquitetura).</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Conclusão do item de aprovação de Arquitetura na fase Validação técnica. Preenchido automaticamente.</inlineHelpText>
+    <label>Conclusão Arq. - Validação técnica</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>DateTime</type>
+</CustomField>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ArchTechValidDays__c</fullName>
+    <description>Dias entre a criação do item de aprovação de Arquitetura na fase Validação técnica (SLAArchitect__c) e a sua conclusão (ArchTechValidConcludedAt__c).</description>
+    <externalId>false</externalId>
+    <formula>IF(OR(ISBLANK(SLAArchitect__c), ISBLANK(ArchTechValidConcludedAt__c)), NULL, ArchTechValidConcludedAt__c - SLAArchitect__c)</formula>
+    <formulaTreatBlanksAs>BlankAsBlank</formulaTreatBlanksAs>
+    <inlineHelpText>Dias da criação do item de Arquitetura em Validação técnica até a conclusão pelo arquiteto.</inlineHelpText>
+    <label>Dias Arquitetura - Validação técnica</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>1</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

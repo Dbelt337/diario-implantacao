@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Architect__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Arquiteto que concluiu o último item de aprovação de Arquitetura desta oportunidade (LastModifiedBy do item de orquestração). Preenchido pelo flow [Oportunidade] Marcos da fila de Arquitetura.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Quem concluiu o último item de aprovação de Arquitetura. Preenchido automaticamente.</inlineHelpText>
+    <label>Arquiteto</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>OportunidadesArquiteto</relationshipName>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>
