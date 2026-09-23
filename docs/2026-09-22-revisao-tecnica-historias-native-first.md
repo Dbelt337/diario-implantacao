@@ -278,3 +278,12 @@ Execucao (22/09, 19h): carga aplicada pelo Diego, job 750V200000me2InIAI, 107 pr
 Conferencia com `tools/agile/conferir_carga_details.py`: 107 lidas na org, 0 divergentes. No terminal do Diego o alias
 `python` cai no atalho da Microsoft Store; usar o caminho completo
 `C:\Users\DIego\AppData\Local\Programs\Python\Python312\python.exe`.
+
+## 23/09: PDF das works de licenciamento do OM e MuleSoft para a Salesforce
+
+Pedido do Bismarck (Salesforce) para a agenda de licenciamento: `docs/2026-09-23-works-licenciamento-om-mulesoft.pdf`,
+gerado por `tools/agile/gerar_pdf_works_om_mule.py` a partir do Agile em producao. Conteudo: situacao do licenciamento
+(entitlement de OM zerado desde 16/06/2026, Plan A/B/C), tabela de 19 pendencias com a Salesforce e a Brasil Tecpar
+(work de origem e quem responde), 16 works bloqueadas ate a provisao do OM e o texto completo de 13 works do tema
+(W-000134, 135, 136, 137, 140, 133, 087, 088, 118, 093, 105, 110, 131). Para regerar apos mudancas nas works, rodar o
+script na raiz do repo com o caminho completo do Python.
