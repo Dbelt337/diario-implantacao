@@ -32,18 +32,24 @@ class T(unittest.TestCase):
         fone, cel, sobra = v.roteia_telefones('11 3874-711', '')
         self.assertEqual((fone, cel), ('', '')); self.assertEqual(sobra, ['11 3874-711'])
     def test_offline(self):
-        A, B, C = v.processa([linha(), linha(CNPJ='01.145.642/0001-42'), linha(Email='', TelefoneFixo=''), linha(Sobrenome=''),
+        A, B, C = v.processa([linha(), linha(CNPJ='01.145.642/0001-42'), linha(Email='', TelefoneFixo=''), linha(Nome='', Sobrenome=''),
                               linha(Temperatura='50'), linha(Cluster=''), linha(CNPJ='01.655.910/0001-75', TelefoneFixo='11976078975'),
-                              linha(CNPJ='02.954.620/0001-95', Celular='1138747111')], [], [], [], online=False)
+                              linha(CNPJ='02.954.620/0001-95', Celular='1138747111'), linha(CNPJ='03.254.681/0001-02', Sobrenome='')], [], [], [], online=False)
         self.assertEqual(len(A), 0)
         self.assertTrue(B[0]['Motivo'].startswith('FORMATO OK'))
         self.assertIn('digito verificador', B[1]['Motivo'])
         self.assertIn('sem telefone e sem e-mail', B[2]['Motivo'])
-        self.assertIn('Sobrenome do contato vazio', B[3]['Motivo'])
+        self.assertIn('Nome do contato vazio', B[3]['Motivo'])
+        self.assertTrue(B[8]['Motivo'].startswith('FORMATO OK'))  # v3: so o nome, sem sobrenome, nao retem
         self.assertIn('Temperatura fora da lista: 50', B[4]['Motivo'])
         self.assertIn('Time/Cluster vazio', B[5]['Motivo'])
         self.assertTrue(B[6]['Motivo'].startswith('FORMATO OK'))  # celular na coluna de fixo: roteado, nao retido
         self.assertIn('telefone nao aproveitado', B[7]['Motivo'])     # dois fixos na mesma linha: o segundo e retido
+    def test_um_nome_so(self):
+        A, B, C = v.processa([linha(Sobrenome=''), linha(CNPJ='01.655.910/0001-75', Nome='', Sobrenome='Castelucci')], [], [], USERS, online=True)
+        self.assertEqual(len(A), 2)
+        self.assertEqual((A[0]['FirstName'], A[0]['LastName']), ('', 'Jeferson'))      # nome conhecido vai para LastName
+        self.assertEqual((A[1]['FirstName'], A[1]['LastName']), ('', 'Castelucci'))
     def test_duplicado_no_arquivo(self):
         A, B, C = v.processa([linha(), linha(CNPJ='01145642000141')], [], [], USERS, online=True)
         self.assertEqual(len(A), 1); self.assertIn('duplicado no arquivo (linha 2)', B[0]['Motivo'])

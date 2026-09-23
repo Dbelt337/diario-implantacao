@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Nome_completo_antes_de_converter</fullName>
+    <active>true</active>
+    <description>Leads carregados pelos SDRs podem entrar so com um nome (gravado em Sobrenome). A conversao em Oportunidade exige o nome completo, que e responsabilidade do GR. Exige "Exigir validacao para leads convertidos" ativo em Configuracoes de Lead.</description>
+    <errorConditionFormula>AND(IsConverted, ISBLANK(FirstName))</errorConditionFormula>
+    <errorDisplayField>FirstName</errorDisplayField>
+    <errorMessage>Informe o nome completo do contato (Nome e Sobrenome) antes de converter o lead em Oportunidade.</errorMessage>
+</ValidationRule>

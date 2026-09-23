@@ -82,13 +82,33 @@ def telefone_ok(t):
 def email_ok(e): return bool(re.fullmatch(r'[\w.+-]+@[\w-]+(\.[\w-]+)+', (e or '').strip()))
 
 # ---- leitura
-def read_xlsx(path):
+def sheet_part(z, aba):
+    """Devolve o caminho do XML da aba pelo nome (v3 tem uma aba por remessa). Sem nome: primeira aba."""
+    wbx = z.read('xl/workbook.xml').decode('utf8')
+    sheets = []
+    for tag in re.findall(r'<sheet\b[^>]*/?>', wbx):
+        nm = re.search(r'\bname="([^"]*)"', tag); rid = re.search(r'\br:id="([^"]*)"', tag)
+        if nm and rid: sheets.append((html.unescape(nm.group(1)), rid.group(1)))
+    rels = {}
+    for tag in re.findall(r'<Relationship\b[^>]*/?>', z.read('xl/_rels/workbook.xml.rels').decode('utf8')):
+        i = re.search(r'\bId="([^"]*)"', tag); t = re.search(r'\bTarget="([^"]*)"', tag)
+        if i and t: rels[i.group(1)] = t.group(1)
+    nomes = [n for n, _ in sheets]
+    if aba:
+        if aba not in nomes: raise SystemExit(f'aba "{aba}" nao existe; abas: {nomes}')
+        rid = sheets[nomes.index(aba)][1]
+    else:
+        rid = sheets[0][1] if sheets else 'rId1'
+    alvo = rels.get(rid, 'worksheets/sheet1.xml').lstrip('/')
+    return alvo if alvo.startswith('xl/') else 'xl/' + alvo
+
+def read_xlsx(path, aba=None):
     z = zipfile.ZipFile(path)
     ss = []
     if 'xl/sharedStrings.xml' in z.namelist():
         sx = z.read('xl/sharedStrings.xml').decode('utf8')
         ss = [''.join(html.unescape(t) for t in re.findall(r'<t[^>]*>(.*?)</t>', si, flags=re.S)) for si in re.findall(r'<si>.*?</si>', sx, flags=re.S)]
-    x = z.read('xl/worksheets/sheet1.xml').decode('utf8')
+    x = z.read(sheet_part(z, aba)).decode('utf8')
     rows = []
     for row in re.findall(r'<row [^>]*>(.*?)</row>', x, flags=re.S):
         d = {}
@@ -165,8 +185,12 @@ def processa(rows, leads, accounts, users, online):
         if not r['CNPJ']: motivos.append('CNPJ vazio')
         elif tipo != 'OK': motivos.append(f'{tipo}: {m}')
         for campo, rotulo in (('SDR', 'SDR'), ('Proprietario', 'Proprietario do Lead'), ('Origem', 'Origem do Lead'), ('Temperatura', 'Temperatura'),
-                              ('Segmento', 'Segmento'), ('Cluster', 'Time/Cluster'), ('RazaoSocial', 'Razao Social'), ('Sobrenome', 'Sobrenome do contato')):
+                              ('Segmento', 'Segmento'), ('Cluster', 'Time/Cluster'), ('RazaoSocial', 'Razao Social')):
             if not r[campo]: motivos.append(f'{rotulo} vazio')
+        # v3: basta um nome. Sem sobrenome, o nome conhecido vai para LastName (unico obrigatorio na org) e FirstName fica vazio;
+        # o GR completa na conversao (regra de validacao Nome_completo_antes_de_converter).
+        if not r['Nome'] and not r['Sobrenome']: motivos.append('Nome do contato vazio (informe ao menos um nome)')
+        first, last = (r['Nome'], r['Sobrenome']) if r['Sobrenome'] else ('', r['Nome'])
         for campo, lista_ok in (('Temperatura', TEMPERATURAS), ('Segmento', SEGMENTOS), ('Cluster', CLUSTERS), ('ProdutoInteresse', PRODUTOS), ('UF', UFS)):
             if r[campo] and r[campo] not in lista_ok: motivos.append(f'{campo} fora da lista: {r[campo]}')
         if not r['TelefoneFixo'] and not r['Celular'] and not r['Email']: motivos.append('sem telefone e sem e-mail')
@@ -198,7 +222,7 @@ def processa(rows, leads, accounts, users, online):
             B.append({**r, 'Linha': i, 'Motivo': ' | '.join(motivos)})
         else:
             A.append({'SDR__c': sdr_id, 'OwnerId': owner_id, 'LeadSource': ORIGENS.get(r['Origem'], r['Origem']), 'DocumentNumber__c': mascara_cnpj(n),
-                      'Company': r['RazaoSocial'], 'FantasyName__c': r['NomeFantasia'], 'FirstName': r['Nome'], 'LastName': r['Sobrenome'],
+                      'Company': r['RazaoSocial'], 'FantasyName__c': r['NomeFantasia'], 'FirstName': first, 'LastName': last,
                       'Title': r['Cargo'], 'Phone': fone, 'MobilePhone': cel, 'Email': r['Email'].lower(),
                       'City': r['Cidade'], 'StateCode': r['UF'], 'CountryCode': 'BR', 'Description': r['Observacoes'], 'Status': STATUS_NOVO,
                       'Stage__c': r['Temperatura'], 'Segment__c': r['Segmento'], 'ClusterManual__c': r['Cluster'],
@@ -225,7 +249,9 @@ def escreve(out, A, B, C, rows, online):
     rel = [f'Modo: {"ONLINE (cruzado com a org)" if online else "OFFLINE (sem exports da org)"}',
            f'Linhas lidas: {len(rows)}', f'A) aprovadas para inserir: {len(A)}',
            f'B) retidas (erro/duvida): {len(B) - fmt_ok}' + (f'  (+{fmt_ok} com formato OK, aguardando cruzamento com a org)' if fmt_ok else ''),
-           f'C) ja cliente (abrir Oportunidade): {len(C)}', '']
+           f'C) ja cliente (abrir Oportunidade): {len(C)}',
+           f'Contatos com um nome so (nome completo pendente para o GR): {sum(1 for a in A if not a["FirstName"])} nas aprovadas, '
+           f'{sum(1 for r in rows if bool(r["Nome"]) != bool(r["Sobrenome"]))} no arquivo', '']
     from collections import Counter
     cnt = Counter(m.split(':')[0] for b in B for m in b['Motivo'].split(' | '))
     rel += ['Motivos de retencao:'] + [f'  {v:4d}  {k}' for k, v in cnt.most_common()]
@@ -234,9 +260,10 @@ def escreve(out, A, B, C, rows, online):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('--arquivo', required=True); ap.add_argument('--leads'); ap.add_argument('--accounts'); ap.add_argument('--users'); ap.add_argument('--out', default='saida')
+    ap.add_argument('--arquivo', required=True); ap.add_argument('--aba', help='nome da aba (remessa) no template v3, ex.: "Leads 22.09"; padrao: primeira aba')
+    ap.add_argument('--leads'); ap.add_argument('--accounts'); ap.add_argument('--users'); ap.add_argument('--out', default='saida')
     a = ap.parse_args()
-    rows = read_xlsx(a.arquivo) if a.arquivo.lower().endswith('.xlsx') else read_csv(a.arquivo)
+    rows = read_xlsx(a.arquivo, a.aba) if a.arquivo.lower().endswith('.xlsx') else read_csv(a.arquivo)
     online = bool(a.leads and a.accounts and a.users)
     A, B, C = processa(rows, load_records(a.leads), load_records(a.accounts), load_records(a.users), online)
     escreve(a.out, A, B, C, rows, online)

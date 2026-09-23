@@ -34,8 +34,8 @@ COLS = [
     ('CNPJ *',                     'DocumentNumber__c',      True,  20, '01.145.642/0001-41'),
     ('Razão Social *',             'Company',                True,  40, 'Phonoway Locacoes Ltda'),
     ('Nome Fantasia',              'FantasyName__c',         False, 26, 'Phonoway'),
-    ('Nome do contato',            'FirstName',              False, 18, 'Jeferson'),
-    ('Sobrenome do contato *',     'LastName',               True,  26, 'Benedito Castelucci'),
+    ('Nome do contato *',          'FirstName',              True,  18, 'Jeferson'),
+    ('Sobrenome do contato',       'LastName',               False, 26, 'Benedito Castelucci'),
     ('Cargo',                      'Title',                  False, 18, 'Sócio'),
     ('Telefone fixo',              'Phone',                  False, 16, '1138747111'),
     ('Celular',                    'MobilePhone',            False, 16, '11976078975'),
@@ -47,7 +47,7 @@ COLS = [
 ]
 # colunas de conferencia (formulas), a partir da coluna T
 CHK = [('CNPJ (só dígitos)', 16), ('CNPJ válido?', 22), ('Duplicado na planilha?', 20), ('Telefone fixo?', 26), ('Celular?', 26),
-       ('E-mail?', 22), ('Obrigatórios?', 40), ('LINHA', 10)]
+       ('E-mail?', 22), ('Nome completo?', 30), ('Obrigatórios?', 40), ('LINHA', 10)]
 
 # ---- listas (valores reais da btp-prod em 21/09/2026)
 ORIGENS = ['Outbound - Listas GRs ALT', 'Outbound - Econodata', 'Outbound - Neoway', 'Outbound - Indicação', 'Outbound indicação GR p/ aquecer',
@@ -82,8 +82,8 @@ def dv(p, n, pesos):
 ND = len(COLS); LASTD = col(ND)  # S
 
 def formulas(r):
-    A, B, C, D, E, F, G, H, K, M, N, O = (f'{c}{r}' for c in 'ABCDEFGHKMNO')
-    T, U, V, W, X, Y, Z = (f'{c}{r}' for c in 'TUVWXYZ')
+    A, B, C, D, E, F, G, H, J, K, M, N, O = (f'{c}{r}' for c in 'ABCDEFGHJKMNO')
+    T, U, V, W, X, Y, Z, AA = (f'{c}{r}' for c in ('T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA'))
     d1 = dv(T, 12, [5,4,3,2,9,8,7,6,5,4,3,2]); d2 = dv(T, 13, [6,5,4,3,2,9,8,7,6,5,4,3,2])
     fT = f'IF({G}="","",{digits_formula(G)})'
     fU = (f'IF({T}="","",IF(LEN({T})<>14,"ERRO: "&LEN({T})&" dígitos",IF(NOT(ISNUMBER(VALUE({T}))),"ERRO: não numérico",'
@@ -97,12 +97,13 @@ def formulas(r):
           f'IF(LEN({dn})=10,"ERRO: é fixo (ou falta o 9), use a coluna Telefone fixo","ERRO: DDD + 9 + 8 dígitos")))')
     fY = (f'IF({O}="","vazio",IF(AND(ISNUMBER(FIND("@",{O})),ISNUMBER(FIND(".",MID({O},FIND("@",{O}),99))),'
           f'NOT(ISNUMBER(FIND(" ",TRIM({O})))),NOT(ISNUMBER(FIND(";",{O}))),NOT(ISNUMBER(FIND(",",{O})))),"OK","ERRO: um e-mail válido por linha"))')
-    fZ = (f'IF(COUNTA(A{r}:{LASTD}{r})=0,"",IF(AND({A}<>"",{B}<>"",{C}<>"",{D}<>"",{E}<>"",{F}<>"",{G}<>"",{H}<>"",{K}<>"",OR({M}<>"",{N}<>"",{O}<>"")),"OK",'
-          f'"ERRO: faltam "&IF({A}="","SDR; ","")&IF({B}="","Proprietário; ","")&IF({C}="","Origem; ","")&IF({D}="","Temperatura; ","")'
-          f'&IF({E}="","Segmento; ","")&IF({F}="","Time/Cluster; ","")&IF({G}="","CNPJ; ","")&IF({H}="","Razão Social; ","")'
-          f'&IF({K}="","Sobrenome; ","")&IF(AND({M}="",{N}="",{O}=""),"telefone, celular ou e-mail; ","")))')
-    fAA = (f'IF(COUNTA(A{r}:{LASTD}{r})=0,"",IF(AND({U}="OK",{V}="OK",LEFT({W},4)<>"ERRO",LEFT({X},4)<>"ERRO",LEFT({Y},4)<>"ERRO",{Z}="OK"),"OK","REVISAR"))')
-    return [fT, fU, fV, fW, fX, fY, fZ, fAA]
+    fZ = (f'IF(AND({J}="",{K}=""),"",IF(AND({J}<>"",{K}<>""),"OK","pendente: só um nome (o GR completa ao converter)"))')
+    fAA = (f'IF(COUNTA(A{r}:{LASTD}{r})=0,"",IF(AND({A}<>"",{B}<>"",{C}<>"",{D}<>"",{E}<>"",{F}<>"",{G}<>"",{H}<>"",OR({J}<>"",{K}<>""),OR({M}<>"",{N}<>"",{O}<>"")),"OK",'
+           f'"ERRO: faltam "&IF({A}="","SDR; ","")&IF({B}="","Proprietário; ","")&IF({C}="","Origem; ","")&IF({D}="","Temperatura; ","")'
+           f'&IF({E}="","Segmento; ","")&IF({F}="","Time/Cluster; ","")&IF({G}="","CNPJ; ","")&IF({H}="","Razão Social; ","")'
+           f'&IF(AND({J}="",{K}=""),"nome do contato; ","")&IF(AND({M}="",{N}="",{O}=""),"telefone, celular ou e-mail; ","")))')
+    fAB = (f'IF(COUNTA(A{r}:{LASTD}{r})=0,"",IF(AND({U}="OK",{V}="OK",LEFT({W},4)<>"ERRO",LEFT({X},4)<>"ERRO",LEFT({Y},4)<>"ERRO",{AA}="OK"),"OK","REVISAR"))')
+    return [fT, fU, fV, fW, fX, fY, fZ, fAA, fAB]
 
 # ---- estilos (indices em cellXfs)
 # 0 padrao | 1 cabecalho | 2 cabecalho obrigatorio | 3 cabecalho conferencia | 4 dado | 5 dado obrigatorio (amarelo) | 6 conferencia (cinza) | 7 titulo | 8 texto instrucoes | 9 negrito
@@ -171,7 +172,8 @@ def build_leads_sheet(data_rows):
     pc, vc = col(nd + 1), col(nd + nchk)
     cf = (f'<conditionalFormatting sqref="{pc}2:{vc}{last}"><cfRule type="containsText" dxfId="0" priority="1" operator="containsText" text="ERRO"><formula>NOT(ISERROR(SEARCH("ERRO",{pc}2)))</formula></cfRule>'
           f'<cfRule type="containsText" dxfId="0" priority="2" operator="containsText" text="DUPLICADO"><formula>NOT(ISERROR(SEARCH("DUPLICADO",{pc}2)))</formula></cfRule>'
-          f'<cfRule type="containsText" dxfId="0" priority="3" operator="containsText" text="REVISAR"><formula>NOT(ISERROR(SEARCH("REVISAR",{pc}2)))</formula></cfRule></conditionalFormatting>'
+          f'<cfRule type="containsText" dxfId="0" priority="3" operator="containsText" text="REVISAR"><formula>NOT(ISERROR(SEARCH("REVISAR",{pc}2)))</formula></cfRule>'
+          f'<cfRule type="containsText" dxfId="2" priority="5" operator="containsText" text="pendente"><formula>NOT(ISERROR(SEARCH("pendente",{pc}2)))</formula></cfRule></conditionalFormatting>'
           f'<conditionalFormatting sqref="{vc}2:{vc}{last}"><cfRule type="cellIs" dxfId="1" priority="4" operator="equal"><formula>"OK"</formula></cfRule></conditionalFormatting>')
     dvs = [
         lista(f'A2:A{last}', 'Listas!$B$2:$B$30', 'SDR', 'Escolha o SDR da lista (aba Listas). Se faltar alguém, peça à governança para incluir.'),
@@ -211,7 +213,7 @@ def build_listas_sheet():
 
 def build_instrucoes_sheet():
     linhas = [
-        ('Template de carga massiva de Leads B2B — BrasilTecPar (v2, 21/09/2026)', 7),
+        ('Template de carga massiva de Leads B2B — BrasilTecPar (v3, 23/09/2026)', 7),
         ('', 0),
         ('Como usar', 9),
         ('1. Preencha uma linha por empresa na aba Leads. Colunas com * e fundo amarelo são obrigatórias. Não altere a linha 1 nem as colunas cinza (conferência automática). As 8 primeiras colunas ficam congeladas para facilitar a rolagem.', 8),
@@ -226,7 +228,7 @@ def build_instrucoes_sheet():
         ('Segmento e Time/Cluster: escolha da lista. Lista de provedores (wholesale) = "B2W - Wholesale"; empresa usuária final = "Corporativo".', 8),
         ('CNPJ: com ou sem máscara. São conferidos tamanho (14 dígitos) e dígitos verificadores. CPF (11 dígitos) não entra nesta carga.', 8),
         ('Razão Social: como consta na Receita. Nome Fantasia é opcional.', 8),
-        ('Contato: Nome e Sobrenome em colunas separadas (o Salesforce exige Sobrenome). Um contato por linha; outros contatos vão em Observações.', 8),
+        ('Contato: Nome e Sobrenome em colunas separadas. Se o SDR só conseguiu um nome, preencha só o Nome e deixe Sobrenome vazio: a linha fica marcada como "pendente" na coluna Nome completo?, mas não bloqueia a carga (o lead entra no Salesforce com esse nome, e o GR completa o nome ao converter em Oportunidade). Não invente sobrenome nem use a razão social. Um contato por linha; outros contatos vão em Observações.', 8),
         ('Telefone fixo: DDD + 8 dígitos (ex.: 1138747111) ou 0800 + 7 dígitos. Celular: DDD + 9 + 8 dígitos (ex.: 11976078975). Pode digitar com máscara, a conferência tira. Um número de cada tipo; outros vão em Observações. Número no tipo errado é retido pela org.', 8),
         ('E-mail: um por linha, sem ponto e vírgula. E-mails adicionais validados vão em Observações.', 8),
         ('É obrigatório ter telefone fixo, celular ou e-mail.', 8),
@@ -238,16 +240,24 @@ def build_instrucoes_sheet():
         ('', 0),
         ('Referências no diário do projeto', 9),
         ('docs/2026-09-21-carga-leads-sdr-vitoria.md (primeira carga real, 104 leads, e o que a org exigiu). W-000071 (US B2C-14): carga massiva restrita a Coordenação e Marketing. W-000096 (US B2B-01): CNPJ já cliente vira Oportunidade, não Lead.', 8),
+        ('', 0),
+        ('O que mudou na v3 (23/09/2026)', 9),
+        ('Sobrenome deixou de ser obrigatório: basta o Nome. Motivo: o SDR nem sempre consegue o nome completo no primeiro contato, e o nome completo é responsabilidade do GR na conversão. A org passa a impedir a conversão do lead sem nome completo.', 8),
+        ('Abas por data de envio (Leads 21.09, Leads 22.09, ...): cada aba é uma remessa. A governança valida e carrega uma aba por vez; não misture remessas na mesma aba.', 8),
     ]
     rows = [(i + 1, [c_str(f'A{i+1}', t, s)]) for i, (t, s) in enumerate(linhas)]
     return sheet_xml(rows, [(1, 150)], tabcolor='1B7A4E')
 
-def write_xlsx(path, leads_xml):
+def write_xlsx(path, leads_sheets):
+    """leads_sheets: lista de (nome da aba, xml da aba Leads). Depois delas entram Listas e Instrucoes."""
+    if isinstance(leads_sheets, str): leads_sheets = [('Leads', leads_sheets)]
+    xmls = list(leads_sheets) + [('Listas', build_listas_sheet()), ('Instrucoes', build_instrucoes_sheet())]
+    n = len(xmls)
     ct = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
           '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>'
           '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
           '<Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
-          + ''.join(f'<Override PartName="/xl/worksheets/sheet{i}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' for i in (1, 2, 3)) +
+          + ''.join(f'<Override PartName="/xl/worksheets/sheet{i}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' for i in range(1, n + 1)) +
           '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
           '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>')
     rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
@@ -256,20 +266,18 @@ def write_xlsx(path, leads_xml):
             '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>')
     wb = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
           '<bookViews><workbookView xWindow="0" yWindow="0" windowWidth="24000" windowHeight="12000"/></bookViews>'
-          '<sheets><sheet name="Leads" sheetId="1" r:id="rId1"/><sheet name="Listas" sheetId="2" r:id="rId2"/><sheet name="Instrucoes" sheetId="3" r:id="rId3"/></sheets>'
+          '<sheets>' + ''.join(f'<sheet name="{esc(nm)}" sheetId="{i}" r:id="rId{i}"/>' for i, (nm, _) in enumerate(xmls, 1)) + '</sheets>'
           '<calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>')
     wbrels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-              '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
-              '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/>'
-              '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/>'
-              '<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>')
+              + ''.join(f'<Relationship Id="rId{i}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet{i}.xml"/>' for i in range(1, n + 1)) +
+              f'<Relationship Id="rId{n+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>')
     core = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
-            '<dc:title>Template de carga massiva de Leads B2B v2</dc:title><dc:creator>Governança Salesforce BTP</dc:creator></cp:coreProperties>')
+            '<dc:title>Template de carga massiva de Leads B2B v3</dc:title><dc:creator>Governança Salesforce BTP</dc:creator></cp:coreProperties>')
     app = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Microsoft Excel</Application></Properties>')
     with zipfile.ZipFile(path, 'w', zipfile.ZIP_DEFLATED) as z:
         z.writestr('[Content_Types].xml', ct); z.writestr('_rels/.rels', rels)
         z.writestr('xl/workbook.xml', wb); z.writestr('xl/_rels/workbook.xml.rels', wbrels); z.writestr('xl/styles.xml', STYLES)
-        z.writestr('xl/worksheets/sheet1.xml', leads_xml); z.writestr('xl/worksheets/sheet2.xml', build_listas_sheet()); z.writestr('xl/worksheets/sheet3.xml', build_instrucoes_sheet())
+        for i, (_, x) in enumerate(xmls, 1): z.writestr(f'xl/worksheets/sheet{i}.xml', x)
         z.writestr('docProps/core.xml', core); z.writestr('docProps/app.xml', app)
 
 # ---- leitura da planilha antiga da SDR (formato Massiva_SDR: SDR | Proprietario | Origem | CNPJ | Razao | Tel1 | Tel2 | Cliente | E-mails | Atualizado)
@@ -321,12 +329,53 @@ def sdr_to_template(rows):
                      first.title() if first.isupper() or first.islower() else first, last, '', fixo, cel, emails[0] if emails else '', '', '', '', obs])
     return data
 
+CLUSTER_POR_DOMINIO = {'avato.com.br': 'AVATO', 'brasiltecpar.com.br': 'ALT/GGNET'}
+ORIGENS_V1 = {'Listas GRs ALT': 'Outbound - Listas GRs ALT', 'Outbound Allrede': 'Outbound - Allrede', 'Outbound - Allrede': 'Outbound - Allrede'}
+
+def migrar_v1(path):
+    """Le um arquivo no layout v1 (15 colunas: SDR, Proprietario, Origem, CNPJ, Razao, Fantasia, Nome, Sobrenome, Cargo, Tel principal,
+    Tel secundario, E-mail, Cidade, UF, Observacoes), uma aba por remessa ("Leads dd.mm"), e devolve [(nome da aba, linhas v3)].
+    Defaults quando a v1 nao tem a coluna: Temperatura 10; Time/Cluster pelo dominio do e-mail do SDR; Segmento B2W - Wholesale
+    para origem Listas GRs ALT e Corporativo para as demais. Sao marcados na coluna Observacoes para o SDR conferir."""
+    from openpyxl import load_workbook
+    wb = load_workbook(path, data_only=True)
+    sdr_email = {n: e for n, e in SDRS}
+    out, nao_mapeadas = [], set()
+    for ws in wb.worksheets:
+        if not ws.title.lower().startswith('leads'): continue
+        data = []
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            v = [('' if x is None else str(x)).strip() for x in row[:15]] + [''] * 15
+            if not any(v[:15]): continue
+            sdr, prop, origem, cnpj, razao, fant, nome, sobre, cargo, t1, t2, email, cidade, uf, obs = v[:15]
+            if '@' in prop or not prop: prop = sdr
+            orig = ORIGENS_V1.get(origem, origem)
+            if orig not in ORIGENS and origem: nao_mapeadas.add(origem)
+            dominio = sdr_email.get(sdr, '').split('@')[-1]
+            cluster = CLUSTER_POR_DOMINIO.get(dominio, '')
+            segmento = 'B2W - Wholesale' if orig == 'Outbound - Listas GRs ALT' else 'Corporativo'
+            fixo, cel, sobra = separa_telefones(t1, t2)
+            extras = ('Outros telefones: ' + ', '.join(sobra)) if sobra else ''
+            obs2 = '; '.join(x for x in [obs, extras, 'Temperatura, segmento e cluster preenchidos pela governança na migração do template: conferir'] if x)
+            data.append([sdr, prop, orig, '10', segmento, cluster, cnpj, razao, fant, nome, sobre, cargo, fixo, cel, email, cidade, uf, '', obs2])
+        out.append((ws.title, data))
+    if nao_mapeadas: print('AVISO: origens fora da lista da org (a conferência da planilha vai apontar):', sorted(nao_mapeadas))
+    return out
+
 if __name__ == '__main__':
-    ap = argparse.ArgumentParser(); ap.add_argument('--dados', help='planilha no formato Massiva_SDR para despejar no template'); ap.add_argument('--saida')
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--dados', help='planilha no formato Massiva_SDR para despejar no template')
+    ap.add_argument('--migrar', help='arquivo v1 preenchido (abas Leads dd.mm) para migrar ao layout v3 mantendo as abas')
+    ap.add_argument('--saida')
     a = ap.parse_args()
-    if a.dados:
-        data = sdr_to_template(read_xlsx_rows(a.dados)); out = a.saida or 'Leads_no_template.xlsx'
+    if a.migrar:
+        abas = migrar_v1(a.migrar); out = a.saida or 'Template_Carga_Leads_B2B_v3.xlsx'
+        write_xlsx(out, [(nm, build_leads_sheet(d)) for nm, d in abas])
+        print('ok', out, ' | '.join(f'{nm}: {len(d)} linhas' for nm, d in abas))
     else:
-        data = [[ex for (_, _, _, _, ex) in COLS]]; out = a.saida or 'Template_Carga_Leads_B2B.xlsx'
-    write_xlsx(out, build_leads_sheet(data))
-    print('ok', out, len(data), 'linha(s) de dados')
+        if a.dados:
+            data = sdr_to_template(read_xlsx_rows(a.dados)); out = a.saida or 'Leads_no_template.xlsx'
+        else:
+            data = [[ex for (_, _, _, _, ex) in COLS]]; out = a.saida or 'Template_Carga_Leads_B2B.xlsx'
+        write_xlsx(out, [('Leads', build_leads_sheet(data))])
+        print('ok', out, len(data), 'linha(s) de dados')

@@ -9,11 +9,18 @@ validar antes, reter dúvidas, gravar em lotes pequenos, conferir depois.
 
 | Arquivo | O que é |
 |---|---|
-| `gerar_template_leads.py` | Gera `Template_Carga_Leads_B2B.xlsx` (aba Leads com conferência por fórmula, aba Listas, aba Instrucoes). Com `--dados Massiva.xlsx` despeja a planilha da SDR no template. |
-| `validar_leads.py` | Lê o template preenchido, cruza com a org e separa em A (inserir), B (retidos) e C (já cliente). Não faz DML. |
-| `Template_Carga_Leads_B2B.xlsx` | Template **v2** (21/09/2026) vazio, com uma linha de exemplo. É o arquivo para entregar à SDR/cliente. |
+| `gerar_template_leads.py` | Gera `Template_Carga_Leads_B2B.xlsx` (aba Leads com conferência por fórmula, aba Listas, aba Instrucoes). Com `--dados Massiva.xlsx` despeja a planilha da SDR no template. Com `--migrar arquivo_v1.xlsx` converte um arquivo v1 preenchido (uma aba por remessa, "Leads dd.mm") para o layout v3 mantendo as abas. |
+| `validar_leads.py` | Lê o template preenchido (`--aba "Leads 22.09"` escolhe a remessa), cruza com a org e separa em A (inserir), B (retidos) e C (já cliente). Não faz DML. |
+| `Template_Carga_Leads_B2B.xlsx` | Template **v3** (23/09/2026) vazio, com uma linha de exemplo. É o arquivo para entregar à SDR/cliente. |
 
-## Template v2: colunas da aba Leads
+O que mudou na v3 (23/09/2026): Sobrenome deixou de ser obrigatório. Basta um nome; sem sobrenome, o nome conhecido vai
+para `LastName` (o único obrigatório na org) e `FirstName` fica vazio. A coluna de conferência "Nome completo?" marca a linha
+como "pendente" sem bloquear. A regra de validação `Nome_completo_antes_de_converter` (org/force-app, objeto Lead) impede a
+conversão em Oportunidade sem o nome completo; ela só age se "Exigir validação para leads convertidos" estiver ativo em
+Configurações de Lead. Motivo: os SDRs nem sempre conseguem o nome completo no primeiro contato e o nome completo é
+responsabilidade do GR (alinhado com a Priscila em 23/09).
+
+## Template v3: colunas da aba Leads
 
 | Coluna | Obrigatória | Campo do Lead | Como preencher |
 |---|---|---|---|
@@ -25,7 +32,7 @@ validar antes, reter dúvidas, gravar em lotes pequenos, conferir depois.
 | Time/Cluster | sim | `ClusterManual__c` | lista: ALT/GGNET, AVATO, BLINK, SEMPRE |
 | CNPJ | sim | `DocumentNumber__c` | com ou sem máscara; DV conferido na planilha |
 | Razão Social, Nome Fantasia | sim / não | `Company`, `FantasyName__c` | |
-| Nome, Sobrenome, Cargo | não / sim / não | `FirstName`, `LastName`, `Title` | |
+| Nome, Sobrenome, Cargo | ao menos um nome / não | `FirstName`, `LastName`, `Title` | só um nome: vai para `LastName`, conferência marca "pendente" |
 | Telefone fixo | não | `Phone` | DDD + 8 dígitos ou 0800 + 7 (máscara é tirada) |
 | Celular | não | `MobilePhone` | DDD + 9 + 8 dígitos |
 | E-mail | não | `Email` | um por linha; fixo, celular ou e-mail é obrigatório |
@@ -66,7 +73,7 @@ valores exatos da org (a v1 aceitava texto livre e veio errado); Produto de inte
 ## Regras aplicadas
 
 - CNPJ: 14 dígitos, dígito verificador, sem repetição; CPF é retido (carga só de PJ).
-- Obrigatórios: SDR, proprietário, origem, temperatura, segmento, cluster, CNPJ, razão social, sobrenome do contato, e
+- Obrigatórios: SDR, proprietário, origem, temperatura, segmento, cluster, CNPJ, razão social, ao menos um nome do contato, e
   telefone fixo, celular ou e-mail. Temperatura, segmento, cluster, produto de interesse e UF precisam estar na lista.
 - Um e-mail por linha.
 - Duplicidade: no arquivo, contra Lead aberto e contra Conta (por `DocumentNumber__c`, nos dois formatos, com e sem máscara).
