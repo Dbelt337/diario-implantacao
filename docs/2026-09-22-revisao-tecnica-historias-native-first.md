@@ -287,3 +287,12 @@ gerado por `tools/agile/gerar_pdf_works_om_mule.py` a partir do Agile em produca
 (work de origem e quem responde), 16 works bloqueadas ate a provisao do OM e o texto completo de 13 works do tema
 (W-000134, 135, 136, 137, 140, 133, 087, 088, 118, 093, 105, 110, 131). Para regerar apos mudancas nas works, rodar o
 script na raiz do repo com o caminho completo do Python.
+
+## 23/09: planilha de ordem de desenvolvimento (leads, oportunidades, cotacao, pedido)
+
+`docs/2026-09-23-ordem-de-desenvolvimento-works.xlsx`, gerada por `tools/agile/gerar_planilha_ordem_dev.py` a partir do
+Agile em producao. Aba "Ordem de inicio": 70 works em sequencia (5 fundacoes minimas, 11 leads, 17 oportunidades, 19 cotacao
+e contrato, 18 pedido e ativacao) com prioridade, status, sprint atual, dependencias extraidas do texto e observacao de
+inicio. Aba "Leads": as 11 works de leads com narrativa e dependencias. Aba "Todas as works": 107 classificadas por etapa
+(inclui pos-venda/MACD, catalogo e tecnicas). Alerta registrado: as works de leads B2C estao alocadas nas Sprints 5 e 6;
+para comecar por elas e preciso realocar no Agile.
