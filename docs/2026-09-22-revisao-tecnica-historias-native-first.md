@@ -273,3 +273,8 @@ sf data update bulk --sobject agf__ADM_Work__c --file org/tmp/agile_carga/carga_
 Conferencia depois da carga: `python tools/agile/conferir_carga_details.py` compara o campo na org com o CSV e lista
 divergencias. Rollback: `python tools/agile/conferir_carga_details.py --gerar-rollback` recorta o backup para as colunas
 Id e agf__Details__c em `org/tmp/agile_carga/rollback_details_2026-09-22_v2.csv`, que se aplica com o mesmo comando de carga.
+
+Execucao (22/09, 19h): carga aplicada pelo Diego, job 750V200000me2InIAI, 107 processadas, 107 com sucesso, 0 falhas.
+Conferencia com `tools/agile/conferir_carga_details.py`: 107 lidas na org, 0 divergentes. No terminal do Diego o alias
+`python` cai no atalho da Microsoft Store; usar o caminho completo
+`C:\Users\DIego\AppData\Local\Programs\Python\Python312\python.exe`.
