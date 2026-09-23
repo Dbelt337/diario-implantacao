@@ -172,3 +172,22 @@ Ordem, com package.xml **explicito** (sem curingas), sempre check-only antes:
 Depois do deploy: rodar os casos 1, 7 e 8 na prod com uma oportunidade de teste; conferir que as 20 revisoes abertas
 continuam decidiveis; atualizar os relatorios de Arquitetura para tirar Paul e Gilmar da fila pendente (sao revisoes de
 diretoria, nao arquitetura).
+
+## 23/09: SENAC SC (006V200000yiZh3IAE), aprovacao comercial presa, e causa raiz das aprovacoes que nao chegam ao gerente
+
+Causa raiz (vale para a org toda): a aprovacao comercial vai para o campo Gerente da Conta (ManagerAccount__c) da
+oportunidade. Em 303 oportunidades B2B abertas esse campo e o proprio dono (64 na equipe B2G do Samuel Helbig); nelas a
+solicitacao nasce no nome do vendedor e o gerente nunca ve. Na SENAC o Gerente da Conta era o Hermes (dono); o script 27
+(15/09) moveu so o item de orquestracao para o Samuel e os dois registros descolaram, com bloqueio orfao na oportunidade.
+
+Tentativas 23/09: script 51 (DML no item de orquestracao) e 51b/51c (acao padrao reassignApprovalWorkItem, direta e em dois
+passos) falharam com UNABLE_TO_UPDATE_RECORD_LOCK. Solucao: 51d cancelou a orquestracao 00022847 e recuperou a submissao
+(recall pela acao padrao recallApprovalSubmission); 51e destravou a oportunidade (Approval.unlock) e a preparou
+(Send4Approval = false, Gerente da Conta = Samuel), com a permissao "Administrativo / Validacao B2B" atribuida ao Diego so
+durante a execucao (a regra BloqueiaAlteracaoAprovacaoComercial exige $Permission.SalesManager) e removida em seguida.
+Fase continua "Aprovacao comercial" e ArchitectureApproved__c preservado. Proximo passo: Hermes reenvia pela tela; conferir
+que o item nasce com o Samuel.
+
+Pendente: corrigir o Gerente da Conta nas 303 oportunidades (planilha para os gerentes validarem em
+org/tmp/gerente_conta/, fora do git; 182 vendedores sem gerente na hierarquia de usuarios) e trava para o vendedor nao ser
+o proprio Gerente da Conta. Licao: reatribuicao de aprovacao so pelo botao Reatribuir; nunca alterar o item de orquestracao.
